@@ -188,7 +188,7 @@ export default function Home() {
               </p>
               <button
                 onClick={() => setActiveAgent("AI ARCHITECT AGENT")}
-                className="mt-6 text-emerald-500 text-sm font-medium cursor-pointer"
+                 className="mt-6 text-sky-500 text-sm font-medium cursor-pointer"
               >
                 TALK NOW →
               </button>
