@@ -2,105 +2,216 @@
 
 import { useEffect, useRef } from "react";
 
-export default function ThreeDView() {
-  const mapCanvasRef = useRef<HTMLCanvasElement | null>(null);
+export default function Map3DEffect() {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
-    const canvas = mapCanvasRef.current;
+    const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const width = 900;
-    const height = 520;
+    const MAP_BASE_W = 848.9999389648438;
+    const MAP_BASE_H = 503.4253234863281;
+    let raf = 0;
 
-    canvas.width = width;
-    canvas.height = height;
+    const rawPoints: Record<string, [number, number]> = {
+      entry: [60, 170],
+      canada: [250, 95],
+      usa: [220, 150],
+      mexico: [245, 205],
+      brazil: [320, 315],
+      uk: [430, 125],
+      france: [455, 150],
+      germany: [485, 135],
+      russia: [610, 95],
+      dubai: [545, 190],
+      india: [610, 225],
+      china: [690, 175],
+      japan: [790, 190],
+      singapore: [690, 270],
+      southAfrica: [520, 345],
+      australia: [760, 360],
+    };
 
-    const points: [number, number][] = [
-      [20, 175], [80, 145], [140, 145], [190, 165], [245, 120], [305, 150],
-      [370, 115], [430, 130], [485, 105], [550, 120], [615, 105], [680, 115],
-      [740, 105], [810, 120], [880, 135],
+    const links: [string, string][] = [
+      ["entry", "usa"],
+      ["entry", "canada"],
 
-      [55, 210], [110, 230], [165, 215], [225, 250], [280, 225], [340, 245],
-      [400, 230], [455, 255], [510, 230], [570, 255], [630, 240], [690, 265],
-      [750, 235], [820, 255],
+      ["canada", "usa"],
+      ["usa", "mexico"],
+      ["usa", "uk"],
+      ["mexico", "brazil"],
 
-      [90, 285], [135, 330], [185, 360], [230, 405], [280, 430],
-      [365, 315], [420, 350], [470, 390], [520, 335], [575, 365],
-      [635, 325], [695, 355], [760, 390], [825, 420],
+      ["uk", "france"],
+      ["france", "germany"],
+      ["germany", "russia"],
+      ["france", "dubai"],
 
-      [210, 470], [235, 500], [480, 455], [530, 495], [700, 470], [800, 470],
+      ["dubai", "india"],
+      ["india", "china"],
+      ["china", "japan"],
+      ["india", "singapore"],
+      ["singapore", "australia"],
+
+      ["dubai", "southAfrica"],
+      ["southAfrica", "australia"],
     ];
 
-    ctx.clearRect(0, 0, width, height);
+    const controlPoint = (
+      a: [number, number],
+      b: [number, number]
+    ): [number, number] => {
+      const [x1, y1] = a;
+      const [x2, y2] = b;
 
-    for (let i = 0; i < points.length; i++) {
-      const connected = points
-        .map((p, j) => {
-          const dx = points[i][0] - p[0];
-          const dy = points[i][1] - p[1];
+      const mx = (x1 + x2) / 2;
+      const my = (y1 + y2) / 2;
+      const dx = x2 - x1;
+      const dy = y2 - y1;
+      const len = Math.hypot(dx, dy) || 1;
 
-          return {
-            j,
-            d: Math.sqrt(dx * dx + dy * dy),
-          };
-        })
-        .filter((item) => item.j !== i && item.d < 155)
-        .sort((a, b) => a.d - b.d)
-        .slice(0, 5);
+      const lift = Math.min(60, len * 0.25);
+      const nx = -dy / len;
+      const ny = dx / len;
 
-      connected.forEach(({ j, d }) => {
-        if (j < i) return;
+      return [mx + nx * lift, my + ny * lift];
+    };
 
-        const [x1, y1] = points[i];
-        const [x2, y2] = points[j];
+    const pointOnCurve = (
+      a: [number, number],
+      c: [number, number],
+      b: [number, number],
+      t: number
+    ): [number, number] => {
+      const mt = 1 - t;
+
+      return [
+        mt * mt * a[0] + 2 * mt * t * c[0] + t * t * b[0],
+        mt * mt * a[1] + 2 * mt * t * c[1] + t * t * b[1],
+      ];
+    };
+
+    const draw = (time: number) => {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      const w = rect.width;
+      const h = rect.height;
+
+      if (
+        canvas.width !== Math.floor(w * dpr) ||
+        canvas.height !== Math.floor(h * dpr)
+      ) {
+        canvas.width = Math.floor(w * dpr);
+        canvas.height = Math.floor(h * dpr);
+      }
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, w, h);
+
+      const sx = w / MAP_BASE_W;
+      const sy = h / MAP_BASE_H;
+
+      const points = Object.fromEntries(
+        Object.entries(rawPoints).map(([key, [x, y]]) => [
+          key,
+          [x * sx, y * sy],
+        ])
+      ) as Record<string, [number, number]>;
+
+      links.forEach(([from, to], i) => {
+        const a = points[from];
+        const b = points[to];
+        const c = controlPoint(a, b);
 
         ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.strokeStyle = `rgba(255,255,255,${0.75 - d / 280})`;
-        ctx.lineWidth = 1.4;
-        ctx.shadowBlur = 12;
-        ctx.shadowColor = "rgba(255,255,255,0.9)";
+        ctx.moveTo(a[0], a[1]);
+        ctx.quadraticCurveTo(c[0], c[1], b[0], b[1]);
+        ctx.strokeStyle = "rgba(188,215,255,0.42)";
+        ctx.lineWidth = 1.3;
+        ctx.shadowBlur = 9;
+        ctx.shadowColor = "rgba(170,210,255,0.65)";
         ctx.stroke();
+        ctx.shadowBlur = 0;
 
+        const speed = 0.00013 + (i % 3) * 0.00005;
+        const t = ((time * speed + i * 0.17) % 1 + 1) % 1;
+        const [px, py] = pointOnCurve(a, c, b, t);
+
+        const pulse = 0.75 + Math.sin(time * 0.006 + i) * 0.25;
+
+        ctx.beginPath();
+        ctx.arc(px, py, 4.2 + pulse, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255,255,255,0.96)";
+        ctx.shadowBlur = 16;
+        ctx.shadowColor = "rgba(255,255,255,1)";
+        ctx.fill();
         ctx.shadowBlur = 0;
       });
-    }
 
-    points.forEach(([x, y]) => {
-      ctx.beginPath();
-      ctx.arc(x, y, 16, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(255,255,255,0.16)";
-      ctx.shadowBlur = 22;
-      ctx.shadowColor = "rgba(255,255,255,1)";
-      ctx.fill();
+      Object.values(points).forEach(([x, y], i) => {
+        const pulse = 0.9 + Math.sin(time * 0.005 + i * 0.9) * 0.35;
 
-      ctx.beginPath();
-      ctx.arc(x, y, 6, 0, Math.PI * 2);
-      ctx.fillStyle = "#ffffff";
-      ctx.shadowBlur = 18;
-      ctx.shadowColor = "#ffffff";
-      ctx.fill();
+        ctx.beginPath();
+        ctx.arc(x, y, 10.5 * pulse, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255,255,255,0.16)";
+        ctx.shadowBlur = 14;
+        ctx.shadowColor = "rgba(255,255,255,0.8)";
+        ctx.fill();
 
-      ctx.shadowBlur = 0;
-    });
+        ctx.beginPath();
+        ctx.arc(x, y, 4.8, 0, Math.PI * 2);
+        ctx.fillStyle = "#fff";
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = "#fff";
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      });
+
+      raf = requestAnimationFrame(draw);
+    };
+
+    raf = requestAnimationFrame(draw);
+
+    return () => cancelAnimationFrame(raf);
   }, []);
 
   return (
-    <div className="w-full h-[430px] bg-black flex items-center justify-center overflow-hidden">
-      <div className="relative w-full max-w-[900px] h-[430px]">
+    <div className="w-full h-[503px] bg-black flex items-center justify-center overflow-hidden">
+      <div
+        className="relative overflow-hidden"
+       style={{
+  width: "849px",
+  height: "503px",
+  background: "#000",
+}}
+      >
         <img
-          src="/map/map1.png"
-          alt="World Map"
-          className="absolute inset-0 w-full h-full object-contain scale-[1.02] drop-shadow-[0_0_45px_rgba(255,255,255,0.20)]"
+          src="/map/map2.svg"
+          alt="World map"
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "92%",
+            top: "4%",
+            objectFit: "fill",
+            opacity: 1,
+            filter: "brightness(1.9) contrast(1.35) saturate(1.45)",
+          }}
         />
 
         <canvas
-          ref={mapCanvasRef}
-          className="absolute inset-0 w-full h-full scale-[1.02] [transform:translateY(-18px)] drop-shadow-[0_0_16px_rgba(255,255,255,0.75)]"
+          ref={canvasRef}
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            zIndex: 2,
+            filter: "none",
+          }}
         />
       </div>
     </div>
