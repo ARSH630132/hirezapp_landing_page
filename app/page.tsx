@@ -958,50 +958,56 @@ export default function Home() {
               </div>
 
               {[
-                {
-                  title: "Information",
-                  items: [
-                    "Responsible AI",
-                    "Careers",
-                    "Resources",
-                    "About Us",
-                    "Contact Us",
-                    "Privacy Policy",
-                    "Terms & Conditions",
-                  ],
-                },
-                {
-                  title: "Service",
-                  items: [
-                    "AI Chips",
-                    "Authentication",
-                    "Edtech",
-                    "Femtech",
-                    "TravelTech",
-                    "Proptech",
-                  ],
-                },
-              ].map((col) => (
-                <div key={col.title}>
-                  <h3 className="text-white text-[28px] font-semibold">
-                    {col.title}
-                  </h3>
+  {
+    title: "Information",
+    items: [
+      "Responsible AI",
+      "Careers",
+      "Resources",
+      "About Us",
+      "Contact Us",
+      "Privacy Policy",
+      "Terms & Conditions",
+    ],
+  },
+  {
+    title: "Service",
+    items: [
+      "AI Chips",
+      "Authentication",
+      "Edtech",
+      "Femtech",
+      "TravelTech",
+      "Proptech",
+    ],
+  },
+].map((col) => (
+  <div key={col.title}>
+    <h3 className="text-white text-[28px] font-semibold">
+      {col.title}
+    </h3>
 
-                  <div
-                    className="mt-[10px] h-[1px] w-[90px]"
-                    style={{
-                      background:
-                        "linear-gradient(270deg, #000000 49.66%, #FF0004 100%)",
-                    }}
-                  />
+    <div
+      className="mt-[10px] h-[1px] w-[90px]"
+      style={{
+        background:
+          "linear-gradient(270deg, #000000 49.66%, #FF0004 100%)",
+      }}
+    />
 
-                  <div className="mt-[34px] space-y-[18px] text-white/70 text-[14px]">
-                    {col.items.map((item) => (
-                      <p key={item}>{item}</p>
-                    ))}
-                  </div>
-                </div>
-              ))}
+    <div className="mt-[34px] space-y-[18px] text-[14px]">
+      {col.items.map((item) => (
+        <button
+          key={item}
+          type="button"
+          className="block text-white/70 hover:text-white transition-colors duration-300 cursor-pointer text-left"
+        >
+          {item}
+        </button>
+      ))}
+    </div>
+  </div>
+))}
 
               <div>
                 <h3 className="text-white text-[28px] font-semibold">
