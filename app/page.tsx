@@ -6,13 +6,14 @@ import Image from "next/image";
 
 export default function Home() {
   const [activeAgent, setActiveAgent] = useState<string | null>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openSolution, setOpenSolution] = useState<number | null>(null);
 
   return (
     <main className="min-h-screen bg-[#010101] text-white overflow-x-hidden">
       <div className="w-full max-w-[1920px] mx-auto bg-[#010101] overflow-x-hidden">
         <section className="relative w-full min-h-[700px] lg:h-[700px] overflow-hidden bg-black">
-          <header className="w-full h-[84px] bg-[#000000B8] backdrop-blur-[20px] flex items-center gap-4 px-[12px] sm:px-[17px] overflow-x-auto">
+       <header className="relative w-full h-[84px] bg-[#000000B8] backdrop-blur-[20px] flex items-center justify-between px-[12px] sm:px-[17px]">
   <div className="flex items-center gap-2 sm:gap-3 shrink-0">
     <img
       src="/footer/logo.svg"
@@ -35,21 +36,11 @@ export default function Home() {
     </div>
   </div>
 
-  <div className="flex items-center gap-[18px] sm:gap-[28px] text-white shrink-0">
-    {[
-      "Global Navigation",
-      "Home",
-      "Capabilities",
-      "Industries",
-      "Platforms",
-      "Build With Gff",
-      "Client Portal",
-      "Insights",
-      "Company",
-    ].map((item) => (
+  <div className="hidden md:flex items-center gap-[55px] text-white ml-auto mr-[60px]">
+    {["Home", "Capabilities", "Industries", "Company"].map((item) => (
       <button
         key={item}
-        className="text-white text-[14px] sm:text-[16px] leading-[24px] font-medium cursor-pointer hover:text-red-400 transition-colors whitespace-nowrap"
+        className="text-white text-[16px] leading-[24px] font-medium cursor-pointer hover:text-red-400 transition-colors whitespace-nowrap"
       >
         {item}
       </button>
@@ -57,14 +48,70 @@ export default function Home() {
   </div>
 
   <button
-    className="w-[170px] sm:w-[207px] h-[44px] sm:h-[48px] rounded-[98px] text-white text-[14px] sm:text-[16px] leading-[24px] font-semibold cursor-pointer transition-all duration-300 hover:opacity-90 shrink-0"
+    className="hidden md:block w-[207px] h-[48px] rounded-[98px] text-white text-[16px] leading-[24px] font-semibold cursor-pointer transition-all duration-300 hover:opacity-90 shrink-0"
     style={{
       background: "linear-gradient(90deg, #E4000F 0%, #009DFF 100%)",
     }}
   >
     Book a Consultation
   </button>
+
+  <button
+    onClick={() => setIsMenuOpen(!isMenuOpen)}
+    className="md:hidden flex flex-col gap-[6px] cursor-pointer"
+  >
+    <span className="w-[34px] h-[4px] bg-white rounded-full" />
+    <span className="w-[34px] h-[4px] bg-white rounded-full" />
+    <span className="w-[34px] h-[4px] bg-white rounded-full" />
+  </button>
 </header>
+{isMenuOpen && (
+  <div
+    className="fixed inset-0 z-[999] md:hidden bg-black/65"
+    onClick={() => setIsMenuOpen(false)}
+  >
+    <div
+      className="absolute left-0 right-0 bottom-0 h-[62vh] rounded-t-[28px] bg-[#050505] px-6 pt-6 pb-8 overflow-y-auto"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="flex items-center justify-between pb-5 border-b border-white/10">
+        <div>
+          <p className="text-white text-[18px] font-semibold">GFF AI</p>
+          <p className="text-white/50 text-[13px]">Navigation Menu</p>
+        </div>
+
+        <button
+          onClick={() => setIsMenuOpen(false)}
+          className="text-white text-[34px] leading-none cursor-pointer"
+        >
+          ×
+        </button>
+      </div>
+
+      <div className="mt-6 flex flex-col">
+        {["Home", "Capabilities", "Industries", "Company"].map((item) => (
+          <button
+            key={item}
+            onClick={() => setIsMenuOpen(false)}
+            className="w-full py-4 border-b border-white/10 text-white/80 text-[18px] leading-[24px] font-semibold text-left hover:text-white transition-colors"
+          >
+            {item}
+          </button>
+        ))}
+
+        <button
+          onClick={() => setIsMenuOpen(false)}
+          className="mt-6 w-full h-[56px] rounded-[98px] text-white text-[16px] leading-[24px] font-semibold cursor-pointer"
+          style={{
+            background: "linear-gradient(90deg, #E4000F 0%, #009DFF 100%)",
+          }}
+        >
+          Book a Consultation
+        </button>
+      </div>
+    </div>
+  </div>
+)}
           <div className="relative z-10 mt-[70px] lg:mt-[120px] ml-0 lg:ml-[64px] px-6 lg:px-0 w-full lg:w-[705px] min-h-[376px]">
             <h1 className="text-[40px] sm:text-[48px] lg:text-[60px] leading-[100%] font-semibold tracking-[0px]">
               The Intelligent
@@ -114,7 +161,7 @@ export default function Home() {
                 </span>
               </button>
 
-              <button className="w-full sm:w-[201px] h-[50px] rounded-[100px] border border-[#969696] bg-black px-[20px] flex items-center justify-start gap-[10px] cursor-pointer">
+              <button className="w-full sm:w-[201px] h-[50px] rounded-[100px] border border-[#969696] bg-black px-[20px] flex items-center justify-center sm:justify-start gap-[10px] cursor-pointer">
                 <Image
                   src="/intellegent_enterprise/robot.svg"
                   alt="Agent"
@@ -127,7 +174,7 @@ export default function Home() {
                 </span>
               </button>
 
-              <button className="w-full sm:w-[254px] h-[50px] rounded-[100px] border border-[#969696] bg-black px-[20px] flex items-center justify-start gap-[11px] cursor-pointer sm:-ml-[22px]">
+              <button className="w-full sm:w-[254px] h-[50px] rounded-[100px] border border-[#969696] bg-black px-[20px] flex items-center justify-center sm:justify-start gap-[11px] cursor-pointer sm:-ml-[22px]">
                 <Image
                   src="/intellegent_enterprise/blueprint.svg"
                   alt="Blueprint"
@@ -217,19 +264,72 @@ export default function Home() {
                   "linear-gradient(149.2deg, rgba(156,77,240,0.3) 1.08%, rgba(142,153,183,0.3) 98.68%)",
               },
             ].map((agent) => (
-              <div
-                key={agent.name}
-                className="w-full max-w-[339px] h-[435px] rounded-[20px] p-[1px] mx-auto"
-                style={{ background: agent.gradient }}
-              >
-                <div className="w-full h-full rounded-[19px] bg-[#000102] flex flex-col items-center text-center px-[20px]">
-                  <Image
-                    src={agent.icon}
-                    alt={agent.name}
-                    width={170}
-                    height={170}
-                    className="mt-[22px] w-[170px] h-[170px] object-contain"
-                  />
+  <div key={agent.name} className="flex flex-col items-center">
+<div
+ 
+className={`
+  group relative w-full max-w-[339px] h-[435px] rounded-[20px] p-[1px] mx-auto
+  transition-all duration-100
+  hover:shadow-[0_0_10px_var(--agent-color),0_0_24px_var(--agent-color)]
+  ${
+    activeAgent === agent.name
+  ? "md:scale-[1.04] z-30 shadow-[0_0_10px_var(--agent-color),0_0_24px_var(--agent-color)]"
+  : "scale-100 z-10"
+  }
+`}
+  style={{
+    background: agent.gradient,
+    "--agent-color": agent.color,
+  } as React.CSSProperties}
+>
+                
+ <div
+  className="relative w-full h-full rounded-[19px] bg-[#000102] flex flex-col items-center text-center px-[20px] overflow-hidden transition-all duration-200"
+  style={{
+    boxShadow: "none",
+  }}
+>
+<div
+  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+  style={{
+    background: `radial-gradient(circle at center,
+      ${agent.color}18 0%,
+      ${agent.color}10 35%,
+      ${agent.color}08 55%,
+      transparent 80%)`,
+  }}
+/>
+
+<div
+  className="absolute inset-0 rounded-[19px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+  style={{
+    boxShadow: `
+      0 0 18px ${agent.color},
+      0 0 42px ${agent.color}99,
+      inset 0 0 30px ${agent.color}55
+    `,
+  }}
+/>
+<div
+  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+  style={{
+    background: `radial-gradient(circle at center,
+      ${agent.color}18 0%,
+      ${agent.color}10 35%,
+      ${agent.color}08 55%,
+      transparent 80%)`,
+  }}
+/>
+  <Image
+  src={agent.icon}
+  alt={agent.name}
+  width={170}
+  height={170}
+  className="mt-[22px] w-[170px] h-[170px] object-contain relative z-10 transition-all duration-200 group-hover:scale-105 group-hover:drop-shadow-[0_0_18px_currentColor]"
+  style={{
+    color: agent.color,
+  }}
+/>
 
                   <h3
                     className="mt-[22px] w-full text-[24px] leading-[100%] tracking-[0px] font-semibold text-center uppercase font-montserrat"
@@ -242,50 +342,161 @@ export default function Home() {
                     {agent.desc}
                   </p>
 
-                  <button
-                    onClick={() => setActiveAgent(agent.name)}
-                    className="mt-auto mb-[28px] flex items-center gap-[8px] text-[16px] leading-[24px] font-medium cursor-pointer"
-                    style={{ color: agent.color }}
-                  >
-                    TALK NOW <span>→</span>
-                  </button>
+             <button
+  onClick={() => setActiveAgent(activeAgent === agent.name ? null : agent.name)}
+  className="relative z-10 mt-auto mb-[28px] flex items-center gap-[8px] text-[16px] leading-[24px] font-medium cursor-pointer"
+  style={{ color: agent.color }}
+>
+  TALK NOW <span>→</span>
+</button>
                 </div>
-              </div>
-            ))}
+                </div>
+                {activeAgent === agent.name && (
+  <div className="block md:hidden mt-4 w-full max-w-[339px] rounded-[18px] border border-[#1E1E1E] bg-[#111111] p-4">
+   <button
+  onClick={() => setActiveAgent(null)}
+  className="ml-auto text-white/70 text-xl"
+>
+      ×
+    </button>
+
+    <div className="flex items-center gap-3">
+      <div
+        className="w-[40px] h-[40px] rounded-full flex items-center justify-center"
+        style={{
+          background: `${agent.color}20`,
+          border: `1px solid ${agent.color}`,
+        }}
+      >
+        <img
+          src={agent.icon}
+          alt={agent.name}
+          className="w-[22px] h-[22px]"
+        />
+      </div>
+
+      <div>
+        <h3 className="text-white text-[16px] font-semibold">
+          {agent.name}
+        </h3>
+        <p className="text-[#C1C1C1] text-[12px]">Online</p>
+      </div>
+    </div>
+
+    <div className="mt-4 rounded-[10px] bg-[#1B1B1B] px-4 py-3 text-white/80 text-[14px]">
+      Hello! I'm your AI assistant. How can I help you today?
+    </div>
+
+    <div className="mt-4 flex items-center gap-2">
+      <input
+        type="text"
+        placeholder="Type your message..."
+        className="w-full h-[44px] rounded-[6px] bg-black border border-[#1E1E1E] px-4 text-white outline-none"
+      />
+
+      <button
+        className="w-[44px] h-[44px] rounded-[10px] text-white"
+        style={{
+          background:
+            "linear-gradient(135deg, #E4000F 0%, #009DFF 100%)",
+        }}
+      >
+        ➤
+      </button>
+    </div>
+  </div>
+)}
+                          </div>
+          ))}
           </div>
+{activeAgent && (() => {
+  const selectedAgent = [
+    {
+      name: "STRATEGY AGENT",
+      icon: "/talk-to-an-ai-agent/strategy-agent.svg",
+      color: "#E53434",
+    },
+    {
+      name: "AI ARCHITECT AGENT",
+      icon: "/talk-to-an-ai-agent/architect-agent.svg",
+      color: "#04B0FE",
+    },
+    {
+      name: "GOVERNANCE AGENT",
+      icon: "/talk-to-an-ai-agent/governance-agent.svg",
+      color: "#1DEE7B",
+    },
+    {
+      name: "INDUSTRY AGENT",
+      icon: "/talk-to-an-ai-agent/industry-agent.svg",
+      color: "#EB5620",
+    },
+    {
+      name: "TRAINING ADVISOR",
+      icon: "/talk-to-an-ai-agent/training-agent.svg",
+      color: "#9C4DF0",
+    },
+  ].find((agent) => agent.name === activeAgent);
 
-          {activeAgent && (
-            <div className="mt-10 w-full max-w-[900px] mx-auto rounded-[18px] bg-[#050505] p-6 md:p-8">
-              <div className="flex items-center justify-between gap-4">
-                <h3 className="text-2xl md:text-3xl font-bold text-white">
-                  {activeAgent}
-                </h3>
+  return (
+    <div className="hidden md:block mt-10 w-full max-w-[1700px] min-h-[430px] mx-auto rounded-[18px] border border-[#1E1E1E] bg-[#111111] p-5 md:p-8 relative">
+      <button
+        onClick={() => setActiveAgent(null)}
+        className="absolute top-6 right-6 text-white/70 hover:text-white text-2xl cursor-pointer"
+      >
+        ×
+      </button>
 
-                <button
-                  onClick={() => setActiveAgent(null)}
-                  className="text-white/60 hover:text-white text-xl cursor-pointer"
-                >
-                  ×
-                </button>
-              </div>
+      <div className="flex items-center gap-3">
+        <div
+          className="w-[46px] h-[46px] rounded-full flex items-center justify-center"
+          style={{
+            background: `${selectedAgent?.color}20`,
+            border: `1px solid ${selectedAgent?.color}`,
+          }}
+        >
+          <Image
+            src={selectedAgent?.icon || ""}
+            alt={activeAgent}
+            width={28}
+            height={28}
+            className="w-[28px] h-[28px] object-contain"
+          />
+        </div>
 
-              <p className="mt-3 text-white/70 text-sm md:text-base">
-                Ask anything to {activeAgent}.
-              </p>
+        <div>
+          <h3 className="text-white text-[18px] font-semibold">
+            {activeAgent
+              .toLowerCase()
+              .replace(/\b\w/g, (char) => char.toUpperCase())}
+          </h3>
+          <p className="text-[#C1C1C1] text-[13px]">Online</p>
+        </div>
+      </div>
 
-              <div className="mt-6 flex flex-col md:flex-row gap-4">
-                <input
-                  type="text"
-                  placeholder={`Message ${activeAgent}`}
-                  className="w-full h-[48px] rounded-full border border-white/20 bg-black px-5 text-white outline-none placeholder:text-white/40"
-                />
+      <div className="mt-6 inline-block max-w-[900px] rounded-[10px] bg-[#1B1B1B] px-4 py-3 text-white/80 text-[15px] leading-[24px]">
+        Hello! I'm your {activeAgent.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}. I can help you craft an AI transformation roadmap tailored to your enterprise goals. What industry are you in?
+      </div>
 
-                <button className="h-[48px] px-8 rounded-full bg-gradient-to-r from-red-500 to-blue-500 text-white font-semibold cursor-pointer">
-                  Send
-                </button>
-              </div>
-            </div>
-          )}
+      <div className="absolute left-5 right-5 bottom-5 flex items-center gap-3">
+        <input
+          type="text"
+          placeholder="Type your message..."
+          className="w-full h-[48px] rounded-[6px] bg-black border border-[#1E1E1E] px-4 text-white outline-none placeholder:text-white/30"
+        />
+
+        <button
+          className="w-[48px] h-[48px] rounded-[12px] flex items-center justify-center text-white cursor-pointer"
+          style={{
+            background: "linear-gradient(135deg, #E4000F 0%, #009DFF 100%)",
+          }}
+        >
+          ➤
+        </button>
+      </div>
+    </div>
+  );
+})()}
         </section>
 
         <section className="w-[calc(100%-24px)] sm:w-[calc(100%-55px)] max-w-[1792px] min-h-[633px] mx-auto mt-0 rounded-[20px] border border-[#151926] bg-[#000613] px-4 sm:px-6 py-8 overflow-hidden">
@@ -465,7 +676,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="w-full min-h-[586px] mt-0 bg-black px-6 py-8">
+        <section className="w-full min-h-[586px] mt-0 bg-black px-6 pt-[56px] pb-[56px]">
           <div className="flex items-center justify-center gap-4 sm:gap-10">
             <div className="hidden sm:block h-[1px] w-[260px] bg-white/30" />
             <h2 className="text-[24px] sm:text-[30px] leading-[100%] tracking-[0px] font-medium text-center uppercase text-white">
@@ -474,7 +685,7 @@ export default function Home() {
             <div className="hidden sm:block h-[1px] w-[260px] bg-white/30" />
           </div>
 
-          <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+          <div className="mt-[48px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
             {[
               {
                 title: "GARAGE",
@@ -565,14 +776,14 @@ export default function Home() {
             ))}
           </div>
 
-          <p className="mt-8 text-center text-[20px] sm:text-[26px] leading-[130%] sm:leading-[100%] tracking-[0px] font-medium uppercase text-white">
+          <p className="mt-[40px] mb-[-60px] text-center text-[20px] sm:text-[26px] leading-[130%] sm:leading-[100%] tracking-[0px] font-medium uppercase text-white">
             BUILT IN OUR <span className="text-[#F74539]">GARAGE.</span>{" "}
             FORGED IN OUR <span className="text-[#E98828]">FOUNDRY.</span>{" "}
             DEPLOYED IN YOUR <span className="text-[#0186E4]">FACTORY.</span>
           </p>
         </section>
 
-        <section className="w-full min-h-[531px] mt-0 px-6 py-8">
+        <section className="w-full min-h-[531px] mt-0 px-6 pt-[56px] pb-[56px]">
           <div className="flex items-center justify-center gap-4">
             <div
               className="hidden sm:block h-[1px] w-[120px]"
@@ -593,12 +804,12 @@ export default function Home() {
             />
           </div>
 
-          <h2 className="mt-4 text-center text-[30px] sm:text-[40px] leading-[115%] sm:leading-[100%] tracking-[0px] font-semibold uppercase text-white">
+          <h2 className="mt-[32px] text-center text-[30px] sm:text-[40px] leading-[115%] sm:leading-[100%] tracking-[0px] font-semibold uppercase text-white">
             AI SOLUTIONS FOR THE{" "}
             <span className="text-[#47B9FF]">NEXT GENERATION</span> ENTERPRISE
           </h2>
 
-          <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+          <div className="mt-[48px] mb-[-60px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
             {[
               {
                 title: "AGENTIC AI SYSTEMS",
@@ -694,7 +905,7 @@ export default function Home() {
           )}
         </section>
 
-        <section className="w-full min-h-[610px] mt-0 bg-black px-6 py-8">
+        <section className="w-full min-h-[610px] mt--10  bg-black px-6 pt-[56px] pb-[56px]">
           <div className="flex items-center justify-center gap-4 sm:gap-10">
             <div
               className="hidden sm:block h-[1px] w-[333px]"
@@ -715,7 +926,7 @@ export default function Home() {
             />
           </div>
 
-          <div className="mt-14 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+          <div className="mt-[48px]  grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
             {[1, 2, 3, 4].map((item) => (
               <div
                 key={item}
@@ -864,42 +1075,55 @@ export default function Home() {
             <div className="w-full min-h-[260px] md:min-h-[360px] lg:min-h-[430px] flex items-center justify-center overflow-hidden bg-black">
               <ThreeDView />
             </div>
+<div
+  className="relative w-full max-w-[853px] min-h-[475px] rounded-[10px] bg-[#0000001A] backdrop-blur-[40px] p-6 md:p-8"
+  style={{
+    border: "1px solid transparent",
+  }}
+>
+  <div
+    className="pointer-events-none absolute inset-0 rounded-[10px]"
+    style={{
+      border: "1px solid transparent",
+      background:
+        "linear-gradient(180deg, #78A7FF 0%, #57000F 100%) border-box",
+      WebkitMask:
+        "linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)",
+      WebkitMaskComposite: "xor",
+      maskComposite: "exclude",
+    }}
+  />
 
-            <div
-              className="w-full h-fit rounded-[8px] border border-transparent bg-black/10 backdrop-blur-[40px] p-6 md:p-8"
-              style={{
-                borderImageSource:
-                  "linear-gradient(180deg, #78A7FF 0%, #57000F 100%)",
-                borderImageSlice: 1,
-              }}
-            >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-                {[
-                  "Full Name",
-                  "Enter your full name",
-                  "Company / Organization",
-                  "Enter company or institution name",
-                  "Business Email",
-                  "Enter your official email address",
-                ].map((label) => (
-                  <div key={label}>
-                    <label className="block text-white font-[var(--font-montserrat)] font-medium text-[15px] sm:text-[16px] lg:text-[18px] leading-[100%] tracking-[0.02em] whitespace-nowrap overflow-hidden text-ellipsis">
-                      {label}
-                    </label>
-                    <input
-                      placeholder="Enter"
-                      className="mt-3 w-full h-[50px] rounded-[10px] border border-[#1E1E2D] bg-[#16060680] px-4 text-white outline-none font-[var(--font-montserrat)] font-medium text-[18px] leading-[100%] tracking-[0.02em] placeholder:text-[#C1C1C1]"
-                    />
-                  </div>
-                ))}
-              </div>
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+    {[
+      "Full Name",
+      "Enter your full name",
+      "Company / Organization",
+      "Enter company or institution name",
+      "Business Email",
+      "Enter your official email address",
+    ].map((label) => (
+      <div key={label}>
+        <label className="block text-white font-[var(--font-montserrat)] font-medium text-[15px] sm:text-[16px] lg:text-[18px] leading-[100%] tracking-[0.02em] whitespace-nowrap overflow-hidden text-ellipsis">
+          {label}
+        </label>
+        <input
+          placeholder="Enter"
+          className="mt-3 w-full h-[50px] rounded-[18px] border border-[#1A2145] bg-[#16060680] px-4 text-white outline-none font-[var(--font-montserrat)] font-medium text-[18px] leading-[100%] tracking-[0.02em] placeholder:text-[#C1C1C1]"
+          style={{
+            boxShadow: "inset 0 0 0 1px rgba(120,167,255,0.08)",
+          }}
+        />
+      </div>
+    ))}
+  </div>
 
-              <div className="mt-10 w-full rounded-full p-[2px] shadow-[0px_4px_4px_0px_#00000040] bg-[linear-gradient(90deg,#9A0003_0%,#1173BC_100%)]">
-                <button className="w-full h-[42px] rounded-full text-white text-[13px] font-semibold backdrop-blur-[40px] bg-[linear-gradient(90deg,rgba(85,6,7,0.213)_0%,rgba(7,78,156,0.24)_100%)] cursor-pointer">
-                  Send Message
-                </button>
-              </div>
-            </div>
+  <div className="mt-10 w-full rounded-full p-[2px] shadow-[0px_4px_4px_0px_#00000040] bg-[linear-gradient(90deg,#9A0003_0%,#1173BC_100%)]">
+    <button className="w-full h-[42px] rounded-full text-white text-[13px] font-semibold backdrop-blur-[40px] bg-[linear-gradient(90deg,rgba(85,6,7,0.213)_0%,rgba(7,78,156,0.24)_100%)] cursor-pointer">
+      Send Message
+    </button>
+  </div>
+</div>
           </div>
         </section>
 
