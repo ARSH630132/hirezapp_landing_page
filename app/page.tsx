@@ -772,88 +772,91 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="relative z-20 mt-8 lg:-mt-[70px] mx-auto max-w-[1746px] px-4 sm:px-8 lg:px-[63px]">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-[24px]">
-              {[
-                {
-                  title: "Mission",
-                  desc: "Autonomous agents that plan, reason and execute complex enterprise tasks.",
-                  icon: "/garage/mission.svg",
-                  borderGradient:
-                    "linear-gradient(149.2deg,#422B2A 1.08%,#09112B 98.68%)",
-                },
-                {
-                  title: "Leadership",
-                  desc: "Roadmaps and operating models for AI-driven transformation.",
-                  icon: "/garage/Leadership.svg",
-                  borderGradient:
-                    "linear-gradient(149.2deg,#321716 1.08%,#09112B 98.68%)",
-                },
-                {
-                  title: "Locations",
-                  desc: "Custom AI solutions and platforms built for scale.",
-                  icon: "/garage/Location.svg",
-                  borderGradient:
-                    "linear-gradient(149.2deg,#582F19 1.08%,#09112B 98.68%)",
-                },
-                {
-                  title: "Partners",
-                  desc: "End-to-end automation of enterprise workflows with AI at the core.",
-                  icon: "/garage/end-end.svg",
-                  borderGradient:
-                    "linear-gradient(149.2deg,#003881 1.08%,#09112B 98.68%)",
-                },
-                {
-                  title: "Advisors",
-                  desc: "Responsible AI with trust, transparency and compliance.",
-                  icon: "/garage/advisors.svg",
-                  borderGradient:
-                    "linear-gradient(149.2deg,#192636 1.08%,#182F76 98.68%)",
-                },
-                {
-                  title: "Investors",
-                  desc: "Co-innovate in our labs and build what's next, together.",
-                  icon: "/garage/investors.svg",
-                  borderGradient:
-                    "linear-gradient(149.2deg,#250537 1.08%,#182F76 98.68%)",
-                },
-              ].map((item) => (
-                <div
-                  key={item.title}
-                  className="relative w-full max-w-[282px] h-[330px] rounded-[28px] overflow-hidden bg-[rgba(0,1,2,0.04)] backdrop-blur-[8px] px-[20px] pt-[34px] pb-[24px] flex flex-col mx-auto"
-                >
-                  <div
-                    className="pointer-events-none absolute inset-0 rounded-[28px] p-[1px]"
-                    style={{
-                      background: item.borderGradient,
-                      WebkitMask:
-                        "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-                      WebkitMaskComposite: "xor",
-                      maskComposite: "exclude",
-                    }}
-                  />
+<div className="relative z-20 mt-8 lg:-mt-[70px] mx-auto max-w-[1746px] px-4 sm:px-8 lg:px-[63px]">
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-[24px]">
+    {[
+      {
+        title: "Mission",
+        desc: "Autonomous agents that plan, reason and execute complex enterprise tasks.",
+        icon: "/garage/mission.svg",
+        borderGradient:
+          "linear-gradient(149.2deg,#422B2A 1.08%,#09112B 98.68%)",
+      },
+      {
+        title: "Leadership",
+        desc: "Roadmaps and operating models for AI-driven transformation.",
+        icon: "/garage/Leadership.svg",
+        borderGradient:
+          "linear-gradient(149.2deg,#321716 1.08%,#09112B 98.68%)",
+      },
+      {
+        title: "Locations",
+        desc: "Custom AI solutions and platforms built for scale.",
+        icon: "/garage/Location .svg",
+        borderGradient:
+          "linear-gradient(149.2deg,#582F19 1.08%,#09112B 98.68%)",
+      },
+      {
+        title: "Partners",
+        desc: "End-to-end automation of enterprise workflows with AI at the core.",
+        icon: "/garage/end-end.svg",
+        borderGradient:
+          "linear-gradient(149.2deg,#003881 1.08%,#09112B 98.68%)",
+      },
+      {
+        title: "Advisors",
+        desc: "Responsible AI with trust, transparency and compliance.",
+        icon: "/garage/advisors.svg",
+        borderGradient:
+          "linear-gradient(149.2deg,#192636 1.08%,#182F76 98.68%)",
+      },
+      {
+        title: "Investors",
+        desc: "Co-innovate in our labs and build what's next, together.",
+        icon: "/garage/investors.svg",
+        borderGradient:
+          "linear-gradient(149.2deg,#250537 1.08%,#182F76 98.68%)",
+      },
+    ].map((item) => (
+      <div
+        key={item.title}
+        className="relative w-full max-w-[282px] h-[330px] rounded-[28px] overflow-hidden bg-[rgba(0,1,2,0.04)] backdrop-blur-[8px] px-[20px] pt-[34px] pb-[24px] flex flex-col mx-auto"
+      >
+        <div
+          className="pointer-events-none absolute inset-0 rounded-[28px] p-[1px]"
+          style={{
+            background: item.borderGradient,
+            WebkitMask:
+              "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+            WebkitMaskComposite: "xor",
+            maskComposite: "exclude",
+          }}
+        />
 
-                  <img
-                    src={item.icon}
-                    alt={item.title}
-                    className="w-[72px] h-[72px] object-contain mb-[24px]"
-                  />
+        {/* Centered Icon */}
+        <div className="w-full flex justify-center items-center mb-[24px]">
+          <img
+            src={item.icon}
+            alt={item.title}
+            className="w-[72px] h-[72px] object-contain"
+          />
+        </div>
 
-                  <h3 className="mt-8 text-[18px] leading-[100%] tracking-[0px] font-semibold text-white">
-                    {item.title}
-                  </h3>
+        <h3 className="text-[18px] leading-[100%] tracking-[0px] font-semibold text-white">
+          {item.title}
+        </h3>
 
-                  <p className="mt-[14px] text-[#C1C1C1] text-[18px] leading-[100%] tracking-[0px] font-medium">
-                    {item.desc}
-                  </p>
+        <p className="mt-[14px] text-[#C1C1C1] text-[18px] leading-[100%] tracking-[0px] font-medium">
+          {item.desc}
+        </p>
 
-                  <button className="mt-auto text-[#FF2B2B] text-[16px] leading-[24px] tracking-[0px] font-medium text-left cursor-pointer">
-                    Learn More →
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
+        <button className="mt-auto text-[#FF2B2B] text-[16px] leading-[24px] tracking-[0px] font-medium text-left cursor-pointer">
+          Learn More →
+        </button>
+      </div>
+    ))}
+  </div>
+</div>
         </section>
 
         <section className="w-full mt-0 bg-black px-6 py-10 overflow-hidden">
