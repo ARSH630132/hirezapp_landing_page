@@ -15,7 +15,7 @@ export default function Home() {
           <header className="w-full h-[84px] bg-[#000000B8] backdrop-blur-[20px] flex items-center gap-4 px-[12px] sm:px-[17px] overflow-x-auto">
   <div className="flex items-center gap-2 sm:gap-3 shrink-0">
     <img
-      src="/footer/logo.png"
+      src="/footer/logo.svg"
       alt="GFF AI"
       className="w-[52px] h-[52px] sm:w-[70px] sm:h-[70px] object-contain"
     />
@@ -90,7 +90,7 @@ export default function Home() {
             <div className="mt-[30px] grid grid-cols-1 sm:grid-cols-2 gap-x-[9px] gap-y-[20px] w-full sm:w-fit">
               <button className="w-full sm:w-[231px] h-[50px] rounded-[100px] border border-[#969696] bg-black px-[20px] flex items-center justify-center gap-[10px] cursor-pointer">
                 <Image
-                  src="/intellegent_enterprise/industry.png"
+                  src="/intellegent_enterprise/industry.svg"
                   alt="Industry"
                   width={26}
                   height={28}
@@ -103,7 +103,7 @@ export default function Home() {
 
               <button className="w-full sm:w-[228px] h-[50px] rounded-[100px] border border-[#969696] bg-black px-[20px] flex items-center justify-center gap-[11px] cursor-pointer">
                 <Image
-                  src="/intellegent_enterprise/internet.png"
+                  src="/intellegent_enterprise/internet.svg"
                   alt="AI Journey"
                   width={30}
                   height={30}
@@ -116,7 +116,7 @@ export default function Home() {
 
               <button className="w-full sm:w-[201px] h-[50px] rounded-[100px] border border-[#969696] bg-black px-[20px] flex items-center justify-start gap-[10px] cursor-pointer">
                 <Image
-                  src="/intellegent_enterprise/robot.png"
+                  src="/intellegent_enterprise/robot.svg"
                   alt="Agent"
                   width={30}
                   height={30}
@@ -129,7 +129,7 @@ export default function Home() {
 
               <button className="w-full sm:w-[254px] h-[50px] rounded-[100px] border border-[#969696] bg-black px-[20px] flex items-center justify-start gap-[11px] cursor-pointer sm:-ml-[22px]">
                 <Image
-                  src="/intellegent_enterprise/blueprint.png"
+                  src="/intellegent_enterprise/blueprint.svg"
                   alt="Blueprint"
                   width={30}
                   height={30}
@@ -179,7 +179,7 @@ export default function Home() {
               {
                 name: "STRATEGY AGENT",
                 desc: "AI transformation strategy and roadmap advisor",
-                icon: "/talk-to-an-ai-agent/strategy-agent.png",
+                icon: "/talk-to-an-ai-agent/strategy-agent.svg",
                 color: "#E53434",
                 gradient:
                   "linear-gradient(149.2deg, rgba(229,52,52,0.3) 1.08%, rgba(142,153,183,0.3) 98.68%)",
@@ -187,7 +187,7 @@ export default function Home() {
               {
                 name: "AI ARCHITECT AGENT",
                 desc: "Enterprise AI architecture and solution designer",
-                icon: "/talk-to-an-ai-agent/architect-agent.png",
+                icon: "/talk-to-an-ai-agent/architect-agent.svg",
                 color: "#04B0FE",
                 gradient:
                   "linear-gradient(149.2deg, rgba(0,177,255,0.3) 1.08%, rgba(142,153,183,0.3) 98.68%)",
@@ -195,7 +195,7 @@ export default function Home() {
               {
                 name: "GOVERNANCE AGENT",
                 desc: "AI governance, risk and compliance expert",
-                icon: "/talk-to-an-ai-agent/governance-agent.png",
+                icon: "/talk-to-an-ai-agent/governance-agent.svg",
                 color: "#1DEE7B",
                 gradient:
                   "linear-gradient(149.2deg, rgba(29,238,123,0.3) 1.08%, rgba(142,153,183,0.3) 98.68%)",
@@ -203,7 +203,7 @@ export default function Home() {
               {
                 name: "INDUSTRY AGENT",
                 desc: "Industry-specific AI use cases and transformation guide",
-                icon: "/talk-to-an-ai-agent/industry-agent.png",
+                icon: "/talk-to-an-ai-agent/industry-agent.svg",
                 color: "#EB5620",
                 gradient:
                   "linear-gradient(149.2deg, rgba(235,86,32,0.3) 1.08%, rgba(142,153,183,0.3) 98.68%)",
@@ -211,7 +211,7 @@ export default function Home() {
               {
                 name: "TRAINING ADVISOR",
                 desc: "AI talent, training and capability advisor",
-                icon: "/talk-to-an-ai-agent/training-agent.png",
+                icon: "/talk-to-an-ai-agent/training-agent.svg",
                 color: "#9C4DF0",
                 gradient:
                   "linear-gradient(149.2deg, rgba(156,77,240,0.3) 1.08%, rgba(142,153,183,0.3) 98.68%)",
@@ -441,7 +441,7 @@ export default function Home() {
                 ].map(([phase, title, time]) => (
                   <div key={phase} className="flex items-center gap-3 min-w-0">
                     <Image
-                      src="/intellegent_enterprise/robot.png"
+                      src="/intellegent_enterprise/robot.svg"
                       alt="Robot"
                       width={38}
                       height={38}
@@ -481,7 +481,7 @@ export default function Home() {
                 step: "01",
                 name: "IDEATE",
                 desc: "We explore ideas, problems and possibilities.",
-                icon: "/ai_foundary/garage.png",
+                icon: "/ai_foundary/garage.svg",
                 color: "text-[#F74539]",
                 borderGradient:
                   "linear-gradient(149.2deg, #F74539 1.08%, #8E99B7 98.68%)",
@@ -491,7 +491,7 @@ export default function Home() {
                 step: "02",
                 name: "FORGE",
                 desc: "We engineer, train and forge AI models and agents.",
-                icon: "/ai_foundary/foundry.png",
+                icon: "/ai_foundary/foundry.svg",
                 color: "text-[#E98828]",
                 borderGradient:
                   "linear-gradient(155.78deg, #E98828 3.75%, #8E99B7 98.35%)",
@@ -501,7 +501,7 @@ export default function Home() {
                 step: "03",
                 name: "ORCHESTRATE",
                 desc: "We orchestrate intelligent workflows and integrate systems.",
-                icon: "/ai_foundary/factory.png",
+                icon: "/ai_foundary/factory.svg",
                 color: "text-[#0186E4]",
                 borderGradient:
                   "linear-gradient(149.2deg, #24ABFF 1.91%, #8E99B7 97.57%)",
@@ -511,7 +511,7 @@ export default function Home() {
                 step: "04",
                 name: "DEPLOY",
                 desc: "We launch AI solutions into your enterprise environment.",
-                icon: "/ai_foundary/deploy.png",
+                icon: "/ai_foundary/deploy.svg",
                 color: "text-[#0D95E9]",
                 borderGradient:
                   "linear-gradient(149.1deg, #FF3424 1.89%, #8E99B7 97.91%)",
@@ -521,7 +521,7 @@ export default function Home() {
                 step: "05",
                 name: "EVOLVE",
                 desc: "We monitor, learn and continuously evolve for greater impact.",
-                icon: "/ai_foundary/evolve.png",
+                icon: "/ai_foundary/evolve.svg",
                 color: "text-[#976BFF]",
                 borderGradient:
                   "linear-gradient(150.6deg, #976BFF 1.33%, #8E99B7 98.72%)",
@@ -602,42 +602,42 @@ export default function Home() {
             {[
               {
                 title: "AGENTIC AI SYSTEMS",
-                icon: "/what_we_build/agentic-ai.png",
+                icon: "/what_we_build/agentic-ai.svg",
                 desc: "Autonomous agents that plan, reason and execute complex enterprise tasks.",
                 more: "Detailed information about Agentic AI Systems.",
                 borderColor: "#422B2A",
               },
               {
                 title: "AI STRATEGY & ADVISORY",
-                icon: "/what_we_build/strategy.png",
+                icon: "/what_we_build/strategy.svg",
                 desc: "Roadmaps and operating models for AI-driven transformation.",
                 more: "Detailed information about AI Strategy & Advisory.",
                 borderColor: "#321716",
               },
               {
                 title: "AI ENGINEERING",
-                icon: "/what_we_build/engineering.png",
+                icon: "/what_we_build/engineering.svg",
                 desc: "Custom AI solutions and platforms built for scale.",
                 more: "Detailed information about AI Engineering.",
                 borderColor: "#582F19",
               },
               {
                 title: "INTELLIGENT AUTOMATION",
-                icon: "/what_we_build/automation.png",
+                icon: "/what_we_build/automation.svg",
                 desc: "End-to-end automation of enterprise workflows.",
                 more: "Detailed information about Intelligent Automation.",
                 borderColor: "#003881",
               },
               {
                 title: "AI GOVERNANCE",
-                icon: "/what_we_build/governance.png",
+                icon: "/what_we_build/governance.svg",
                 desc: "Responsible AI with trust, transparency and compliance.",
                 more: "Detailed information about AI Governance.",
                 borderColor: "#192636",
               },
               {
                 title: "AI LABS & INNOVATION",
-                icon: "/what_we_build/labs.png",
+                icon: "/what_we_build/labs.svg",
                 desc: "Co-innovate in our labs and build what's next.",
                 more: "Detailed information about AI Labs.",
                 borderColor: "#250537",
@@ -726,7 +726,7 @@ export default function Home() {
                 }}
               >
                 <img
-                  src="/insights/insight.jpg"
+                  src="/insights/insight.svg"
                   alt="Agentic AI Lab"
                   className="w-full h-[190px] object-contain"
                 />
@@ -753,7 +753,7 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 lg:h-[430px]">
             <div className="relative h-[300px] lg:h-full">
               <img
-                src="/garage/main.png"
+                src="/garage/main.svg"
                 alt="Garage"
                 className="w-full h-full object-cover"
               />
@@ -778,42 +778,42 @@ export default function Home() {
                 {
                   title: "Mission",
                   desc: "Autonomous agents that plan, reason and execute complex enterprise tasks.",
-                  icon: "/garage/mission.png",
+                  icon: "/garage/mission.svg",
                   borderGradient:
                     "linear-gradient(149.2deg,#422B2A 1.08%,#09112B 98.68%)",
                 },
                 {
                   title: "Leadership",
                   desc: "Roadmaps and operating models for AI-driven transformation.",
-                  icon: "/garage/Leadership.png",
+                  icon: "/garage/Leadership.svg",
                   borderGradient:
                     "linear-gradient(149.2deg,#321716 1.08%,#09112B 98.68%)",
                 },
                 {
                   title: "Locations",
                   desc: "Custom AI solutions and platforms built for scale.",
-                  icon: "/garage/Location.png",
+                  icon: "/garage/Location.svg",
                   borderGradient:
                     "linear-gradient(149.2deg,#582F19 1.08%,#09112B 98.68%)",
                 },
                 {
                   title: "Partners",
                   desc: "End-to-end automation of enterprise workflows with AI at the core.",
-                  icon: "/garage/end-end.png",
+                  icon: "/garage/end-end.svg",
                   borderGradient:
                     "linear-gradient(149.2deg,#003881 1.08%,#09112B 98.68%)",
                 },
                 {
                   title: "Advisors",
                   desc: "Responsible AI with trust, transparency and compliance.",
-                  icon: "/garage/advisors.png",
+                  icon: "/garage/advisors.svg",
                   borderGradient:
                     "linear-gradient(149.2deg,#192636 1.08%,#182F76 98.68%)",
                 },
                 {
                   title: "Investors",
                   desc: "Co-innovate in our labs and build what's next, together.",
-                  icon: "/garage/investors.png",
+                  icon: "/garage/investors.svg",
                   borderGradient:
                     "linear-gradient(149.2deg,#250537 1.08%,#182F76 98.68%)",
                 },
@@ -906,7 +906,7 @@ export default function Home() {
               <div>
                 <div className="flex items-center gap-3">
                   <img
-                    src="/footer/logo.png"
+                    src="/footer/logo.svg"
                     alt="Logo"
                     className="h-[55px] w-auto object-contain"
                   />
