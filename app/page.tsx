@@ -605,7 +605,7 @@ export default function Home() {
                 icon: "/what_we_build/agentic-ai.svg",
                 desc: "Autonomous agents that plan, reason and execute complex enterprise tasks.",
                 more: "Detailed information about Agentic AI Systems.",
-                borderColor: "#422B2A",
+                borderColor: "background: linear-gradient(270deg, #000000 49.66%, #FF0004 100%)",
               },
               {
                 title: "AI STRATEGY & ADVISORY",
@@ -991,7 +991,7 @@ export default function Home() {
     </h3>
 
     <div
-      className="mt-[10px] h-[1px] w-[90px]"
+      className="mt-[10px] h-[1px] w-[149px]"
       style={{
         background:
           "linear-gradient(270deg, #000000 49.66%, #FF0004 100%)",
@@ -1018,7 +1018,7 @@ export default function Home() {
                 </h3>
 
                 <div
-                  className="mt-[10px] h-[1px] w-[90px]"
+                  className="mt-[10px] h-[1px] w-[149px]"
                   style={{
                     background:
                       "linear-gradient(270deg, #000000 49.66%, #FF0004 100%)",
