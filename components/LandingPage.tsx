@@ -1320,8 +1320,8 @@ className="min-h-[330px] rounded-[16px] border bg-[#000102] p-5 flex flex-col tr
         </div>
 
         <div>
-          <label className="block text-white font-[var(--font-montserrat)] font-medium text-[14px] sm:text-[15px] lg:text-[16px] leading-[100%] tracking-[0.02em]">
-            Enter official email address
+<label className="block text-white font-[var(--font-montserrat)] font-medium text-[18px] sm:text-[18px] lg:text-[18px] leading-[100%] tracking-[0.02em]">
+          Enter official email address
           </label>
           <input
   type="email"
