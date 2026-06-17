@@ -1191,8 +1191,7 @@ className="min-h-[330px] rounded-[16px] border bg-[#000102] p-5 flex flex-col tr
 
 <section className="w-full mt-0 bg-black px-6 py-10 overflow-hidden">
   <div className="grid grid-cols-1 lg:grid-cols-[56%_44%] gap-0 items-center max-w-[1500px] mx-auto">
-    <div className="w-full h-[510px] flex items-center justify-center overflow-hidden rounded-[28px] border border-[#005BFF] bg-black">
-<WorldMap
+<div className="w-[95%] h-[510px] flex items-center justify-center overflow-hidden rounded-[28px] border border-[#005BFF] bg-black"><WorldMap
   dots={dots}
   lineColor="#0ea5e9"
 />
