@@ -854,11 +854,11 @@ className={`
                 borderColor: "#250537",
               },
             ].map((item, index) => (
-              <div
-                key={item.title}
-                className="min-h-[330px] rounded-[16px] border bg-[#000102] p-5 flex flex-col"
-                style={{ borderColor: item.borderColor }}
-              >
+  <div key={item.title} className="flex flex-col">
+    <div
+      className="min-h-[330px] rounded-[16px] border bg-[#000102] p-5 flex flex-col"
+      style={{ borderColor: item.borderColor }}
+    >
                 <div className="flex justify-center">
                   <img
                     src={item.icon}
@@ -877,32 +877,41 @@ className={`
 
                 <div className="mt-auto pt-4">
                   <button
-                    onClick={() =>
-                      setOpenSolution(openSolution === index ? null : index)
-                    }
-                    className="text-[#FF2B2B] text-[16px] leading-[24px] font-medium text-left cursor-pointer"
-                  >
-                    Learn More →
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+        onClick={() =>
+          setOpenSolution(openSolution === index ? null : index)
+        }
+      >
+        Learn More →
+      </button>
+    </div>
 
-          {openSolution !== null && (
-            <div className="mt-6 w-full rounded-[16px] border border-white/15 bg-[#080808] p-6 text-white/70">
-              {
-                [
-                  "Detailed information about Agentic AI Systems.",
-                  "Detailed information about AI Strategy & Advisory.",
-                  "Detailed information about AI Engineering.",
-                  "Detailed information about Intelligent Automation.",
-                  "Detailed information about AI Governance.",
-                  "Detailed information about AI Labs.",
-                ][openSolution]
-              }
-            </div>
-          )}
+    </div>
+
+{openSolution === index && (
+  <div className="block md:hidden mt-4 w-full rounded-[16px] border border-white/20 bg-[#07101f] p-4">
+    {item.more}
+  </div>
+)}
+</div>
+))} 
+ </div> {/* cards grid close */}
+
+{openSolution !== null && (
+  <div className="mt-25 w-full rounded-[20px] border border-white/10 bg-[#0A0A0A] p-8">
+    <p className="text-white/70">
+      {
+        [
+          "Detailed information about Agentic AI Systems.",
+          "Detailed information about AI Strategy & Advisory.",
+          "Detailed information about AI Engineering.",
+          "Detailed information about Intelligent Automation.",
+          "Detailed information about AI Governance.",
+          "Detailed information about AI Labs & Innovation."
+        ][openSolution]
+      }
+    </p>
+  </div>
+)}
         </section>
 
         <section className="w-full min-h-[610px] mt--10  bg-black px-6 pt-[56px] pb-[56px]">
