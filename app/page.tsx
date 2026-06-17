@@ -816,7 +816,7 @@ className={`
                 icon: "/what_we_build/agentic-ai.svg",
                 desc: "Autonomous agents that plan, reason and execute complex enterprise tasks.",
                 more: "Detailed information about Agentic AI Systems.",
-                borderColor: "background: linear-gradient(270deg, #000000 49.66%, #FF0004 100%)",
+                borderColor: "linear-gradient(149.2deg, #422B2A 1.08%, #09112B 98.68%)",
               },
               {
                 title: "AI STRATEGY & ADVISORY",
