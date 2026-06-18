@@ -5,10 +5,10 @@ import Link from "next/link";
 import ContactSection from "@/components/ContactSection";
 
 const navItems = [
-  { label: "Home", href: "/landing_page#home" },
-  { label: "Capabilities", href: "/landing_page#capabilities" },
-  { label: "Industries", href: "/landing_page#industries" },
-  { label: "Company", href: "/landing_page#contact" },
+  { label: "Home", href: "/#home" },
+  { label: "Capabilities", href: "/#capabilities" },
+  { label: "Industries", href: "/#industries" },
+  { label: "Company", href: "/#contact" },
 ];
 
 export default function Page() {
@@ -18,7 +18,7 @@ export default function Page() {
     <main className="min-h-screen bg-[#010101] text-white overflow-x-hidden">
       <div className="w-full max-w-[1920px] mx-auto bg-[#010101] overflow-x-hidden">
         <header className="fixed top-0 left-0 right-0 z-50 w-full h-[84px] bg-black/60 backdrop-blur-[20px] border-b border-white/5 flex items-center justify-between px-6 lg:px-16">
-          <Link href="/landing_page#home" className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <Link href="/#home" className="flex items-center gap-2 sm:gap-3 shrink-0">
             <img
               src="/footer/logo.svg"
               alt="GFF AI"
@@ -53,7 +53,7 @@ export default function Page() {
           </div>
 
           <a
-            href="/landing_page#contact"
+            href="/#contact"
             className="hidden md:flex w-[207px] h-[48px] items-center justify-center rounded-[98px] text-white text-[16px] leading-[24px] font-semibold cursor-pointer transition-all duration-300 hover:opacity-90 shrink-0 text-center"
             style={{
               background: "linear-gradient(90deg, #E4000F 0%, #009DFF 100%)",
@@ -108,7 +108,7 @@ export default function Page() {
                 ))}
 
                 <a
-                  href="/landing_page#contact"
+                  href="/#contact"
                   onClick={() => setIsMenuOpen(false)}
                   className="mt-6 w-full h-[56px] rounded-[98px] text-white text-[16px] leading-[24px] font-semibold cursor-pointer flex items-center justify-center text-center"
                   style={{

@@ -112,7 +112,7 @@ export default function ContactSection() {
   return (
     <section
       id="contact"
-      className="w-full mt-0 px-6 lg:px-16 py-10 overflow-hidden"
+      className="w-full px-6 lg:px-16 py-[50px] overflow-hidden"
     >
       {notification.open && (
         <div
@@ -350,9 +350,16 @@ export default function ContactSection() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full h-[42px] rounded-full text-white text-[13px] font-semibold backdrop-blur-[40px] bg-[linear-gradient(90deg,rgba(85,6,7,0.213)_0%,rgba(7,78,156,0.24)_100%)] cursor-pointer"
+              className="w-full h-[42px] rounded-full bg-transparent text-[13px] font-semibold cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {isSubmitting ? "Sending..." : "Send Message"}
+              <span
+                className="bg-clip-text text-transparent"
+                style={{
+                  backgroundImage: "linear-gradient(90deg, #9A0003 0%, #1173BC 100%)",
+                }}
+              >
+                {isSubmitting ? "Sending..." : "Send Message"}
+              </span>
             </button>
           </div>
         </form>

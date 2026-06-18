@@ -1,0 +1,35 @@
+export const siteConfig = {
+  name: "GFF AI",
+  legalName: "GFF AI",
+  tagline: "The Intelligent Enterprise Starts Here",
+  description:
+    "GFF AI delivers enterprise AI consulting, agentic automation, and intelligent systems from Garage to Foundry to Factory. Explore AI agents, industry solutions, productized assets, and transformation roadmaps.",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://gff.ai",
+  locale: "en_US",
+  email: "contact@gff.ai",
+  keywords: [
+    "GFF AI",
+    "enterprise AI",
+    "agentic AI",
+    "AI consulting",
+    "AI foundry",
+    "intelligent automation",
+    "AI transformation",
+    "AI agents",
+    "enterprise automation",
+    "AI governance",
+    "productized AI assets",
+    "Garage Foundry Factory",
+  ],
+  authors: [{ name: "GFF AI", url: "https://gff.ai" }],
+  creator: "GFF AI",
+  publisher: "GFF AI",
+  twitterHandle: "@gffai",
+  ogImage: "/footer/logo.svg",
+  themeColor: "#010101",
+} as const;
+
+export const siteRoutes = {
+  home: "/",
+  about: "/about-us",
+} as const;
