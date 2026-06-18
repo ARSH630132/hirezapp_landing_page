@@ -2,83 +2,90 @@
 // import ThreeDView from "./3d_view";
 import { useState } from "react";
 import Image from "next/image";
-import WorldMap from "@/components/ui/world-map";
-export default function LandingPage() {
-  const dots = [
-  {
-    start: { lat: 65, lng: -150 },
-    end: { lat: 48, lng: -118 },
-  },
-  {
-    start: { lat: 65, lng: -150 },
-    end: { lat: 8, lng: -106 },
-  },
-  {
-    start: { lat: 65, lng: -150 },
-    end: { lat: -16, lng: -58 },
-  },
-  {
-    start: { lat: 38, lng: -25 },
-    end: { lat: 44, lng: -3 },
-  },
-  {
-    start: { lat: 50, lng: 10 },
-    end: { lat: 26, lng: 77 },
-  },
-  {
-    start: { lat: -2, lng: 45 },
-    end: { lat: 26, lng: 77 },
-  },
-  {
-    start: { lat: 26, lng: 77 },
-    end: { lat: 40, lng: 135 },
-  },
+import Link from "next/link";
+import { motion } from "motion/react";
+import { FaLocationDot, FaPhone } from "react-icons/fa6";
+import { MdEmail } from "react-icons/md";
+import ContactSection from "@/components/ContactSection";
+
+const navItems = [
+  { label: "Home", href: "/landing_page#home" },
+  { label: "Capabilities", href: "#capabilities" },
+  { label: "Industries", href: "#industries" },
+  { label: "Company", href: "#contact" },
 ];
+
+const heroActions = [
+  { label: "Explore Foundry", href: "#foundry", icon: "/intellegent_enterprise/industry.svg" },
+  { label: "Start AI Journey", href: "#blueprint", icon: "/intellegent_enterprise/internet.svg" },
+  { label: "Talk to Agent", href: "#capabilities", icon: "/intellegent_enterprise/robot.svg" },
+  { label: "Generate Blueprint", href: "#blueprint", icon: "/intellegent_enterprise/blueprint.svg" },
+];
+
+const pageFadeVariants = {
+  hidden: { opacity: 0, y: 18, filter: "blur(6px)" },
+  show: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: {
+      duration: 0.7,
+    },
+  },
+};
+
+function SectionHeading({
+  title,
+  titleClassName,
+  dividerWidthClassName = "w-[333px]",
+  dividerClassName = "hidden sm:block h-[1px]",
+  leftGradient = "linear-gradient(270deg, #FFFFFF 0%, #000000 100%)",
+  rightGradient = "linear-gradient(90deg, #FFFFFF 0%, #000000 100%)",
+}: {
+  title: React.ReactNode;
+  titleClassName: string;
+  dividerWidthClassName?: string;
+  dividerClassName?: string;
+  leftGradient?: string;
+  rightGradient?: string;
+}) {
+  return (
+    <div className="flex items-center justify-center gap-4 sm:gap-10">
+      <div
+        className={`${dividerClassName} ${dividerWidthClassName}`}
+        style={{ background: leftGradient }}
+      />
+      <div className={titleClassName}>{title}</div>
+      <div
+        className={`${dividerClassName} ${dividerWidthClassName}`}
+        style={{ background: rightGradient }}
+      />
+    </div>
+  );
+}
+
+export default function LandingPage() {
   const [activeAgent, setActiveAgent] = useState<string | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openSolution, setOpenSolution] = useState<number | null>(null);
-const [contactForm, setContactForm] = useState({
-  fullName: "",
-  fullNameDetail: "",
-  company: "",
-  companyDetail: "",
-  businessEmail: "",
-  businessEmailDetail: "",
-});
-
-const handleContactSubmit = async () => {
-  try {
-    const response = await fetch("/api/contact", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(contactForm),
-    });
-
-    if (response.ok) {
-      alert("Message sent successfully!");
-     setContactForm({
-  fullName: "",
-  fullNameDetail: "",
-  company: "",
-  companyDetail: "",
-  businessEmail: "",
-  businessEmailDetail: "",
-});
-    } else {
-      alert("Failed to send message.");
-    }
-  } catch (error) {
-    alert("Something went wrong.");
-  }
-};
   return (
-    <main className="min-h-screen bg-[#010101] text-white overflow-x-hidden">
+    <motion.main
+      className="min-h-screen bg-[#010101] text-white overflow-x-hidden"
+      initial="hidden"
+      animate="show"
+      variants={{
+        hidden: {},
+        show: {
+          transition: {
+            staggerChildren: 0.08,
+            delayChildren: 0.04,
+          },
+        },
+      }}
+    >
       <div className="w-full max-w-[1920px] mx-auto bg-[#010101] overflow-x-hidden">
-        <section className="relative w-full min-h-[700px] lg:h-[700px] overflow-hidden bg-black">
-       <header className="relative w-full h-[84px] bg-[#000000B8] backdrop-blur-[20px] flex items-center justify-between px-[12px] sm:px-[17px]">
-  <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+        <header className="fixed top-0 left-0 right-0 z-50 w-full h-[84px] bg-black/60 backdrop-blur-[20px] border-b border-white/5 flex items-center justify-between px-6 lg:px-16">
+  <Link href="/landing_page#home" className="flex items-center gap-2 sm:gap-3 shrink-0">
     <img
       src="/footer/logo.svg"
       alt="GFF AI"
@@ -98,27 +105,29 @@ const handleContactSubmit = async () => {
         <span className="text-[#009DFF]">FACTORY</span>
       </div>
     </div>
-  </div>
+  </Link>
 
   <div className="hidden md:flex items-center gap-[55px] text-white absolute left-1/2 -translate-x-1/2">
-    {["Home", "Capabilities", "Industries", "Company"].map((item) => (
-      <button
-        key={item}
+    {navItems.map((item) => (
+      <Link
+        key={item.label}
+        href={item.href}
         className="text-white text-[16px] leading-[24px] font-medium cursor-pointer hover:text-red-400 transition-colors whitespace-nowrap"
       >
-        {item}
-      </button>
+        {item.label}
+      </Link>
     ))}
   </div>
 
-  <button
-    className="hidden md:block w-[207px] h-[48px] rounded-[98px] text-white text-[16px] leading-[24px] font-semibold cursor-pointer transition-all duration-300 hover:opacity-90 shrink-0"
+  <a
+    href="#contact"
+    className="hidden md:flex w-[207px] h-[48px] items-center justify-center rounded-[98px] text-white text-[16px] leading-[24px] font-semibold cursor-pointer transition-all duration-300 hover:opacity-90 shrink-0 text-center"
     style={{
       background: "linear-gradient(90deg, #E4000F 0%, #009DFF 100%)",
     }}
   >
     Book a Consultation
-  </button>
+  </a>
 
   <button
     onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -153,30 +162,37 @@ const handleContactSubmit = async () => {
       </div>
 
       <div className="mt-6 flex flex-col">
-        {["Home", "Capabilities", "Industries", "Company"].map((item) => (
-          <button
-            key={item}
+        {navItems.map((item) => (
+          <a
+            key={item.label}
+            href={item.href}
             onClick={() => setIsMenuOpen(false)}
             className="w-full py-4 border-b border-white/10 text-white/80 text-[18px] leading-[24px] font-semibold text-left hover:text-white transition-colors"
           >
-            {item}
-          </button>
+            {item.label}
+          </a>
         ))}
 
-        <button
+        <a
+          href="#contact"
           onClick={() => setIsMenuOpen(false)}
-          className="mt-6 w-full h-[56px] rounded-[98px] text-white text-[16px] leading-[24px] font-semibold cursor-pointer"
+          className="mt-6 w-full h-[56px] rounded-[98px] text-white text-[16px] leading-[24px] font-semibold cursor-pointer flex items-center justify-center text-center"
           style={{
             background: "linear-gradient(90deg, #E4000F 0%, #009DFF 100%)",
           }}
         >
           Book a Consultation
-        </button>
+        </a>
       </div>
     </div>
   </div>
 )}
-          <div className="relative z-10 mt-[70px] lg:mt-[120px] ml-0 lg:ml-[64px] px-6 lg:px-0 w-full lg:w-[705px] min-h-[376px]">
+        <motion.section
+          id="home"
+          className="relative w-full h-[90vh] pt-[24px] lg:pt-[36px] overflow-hidden bg-black"
+          variants={pageFadeVariants}
+        >
+          <div className="relative z-10 mt-[88px] lg:mt-[150px] ml-0 lg:ml-[64px] px-6 lg:px-0 w-full lg:w-[705px] min-h-[376px]">
             <h1 className="text-[40px] sm:text-[48px] lg:text-[60px] leading-[100%] font-semibold tracking-[0px]">
               The Intelligent
               <br />
@@ -199,61 +215,38 @@ const handleContactSubmit = async () => {
             </p>
 
             <div className="mt-[80px] sm:mt-[380px] lg:mt-[30px] grid grid-cols-1 sm:grid-cols-2 gap-x-[9px] gap-y-[20px] w-full sm:w-fit">
-              <button className="w-full sm:w-[231px] h-[50px] rounded-[100px] border border-[#969696] bg-black px-[20px] flex items-center justify-center gap-[10px] cursor-pointer">
-                <Image
-                  src="/intellegent_enterprise/industry.svg"
-                  alt="Industry"
-                  width={26}
-                  height={28}
-                  className="w-[26px] h-[28px] object-contain shrink-0"
-                />
-                <span className="text-white text-[18px] leading-[100%] font-medium whitespace-nowrap">
-                  Explore Foundry
-                </span>
-              </button>
-
-              <button className="w-full sm:w-[228px] h-[50px] rounded-[100px] border border-[#969696] bg-black px-[20px] flex items-center justify-center gap-[11px] cursor-pointer">
-                <Image
-                  src="/intellegent_enterprise/internet.svg"
-                  alt="AI Journey"
-                  width={30}
-                  height={30}
-                  className="w-[30px] h-[30px] object-contain shrink-0"
-                />
-                <span className="text-white text-[18px] leading-[100%] font-medium whitespace-nowrap">
-                  Start AI Journey
-                </span>
-              </button>
-
-              <button className="w-full sm:w-[201px] h-[50px] rounded-[100px] border border-[#969696] bg-black px-[20px] flex items-center justify-center sm:justify-start gap-[10px] cursor-pointer">
-                <Image
-                  src="/intellegent_enterprise/robot.svg"
-                  alt="Agent"
-                  width={30}
-                  height={30}
-                  className="w-[30px] h-[30px] object-contain shrink-0"
-                />
-                <span className="text-white text-[18px] leading-[100%] font-medium whitespace-nowrap">
-                  Talk to Agent
-                </span>
-              </button>
-
-              <button className="w-full sm:w-[254px] h-[50px] rounded-[100px] border border-[#969696] bg-black px-[20px] flex items-center justify-center sm:justify-start gap-[11px] cursor-pointer sm:-ml-[22px]">
-                <Image
-                  src="/intellegent_enterprise/blueprint.svg"
-                  alt="Blueprint"
-                  width={30}
-                  height={30}
-                  className="w-[30px] h-[30px] object-contain shrink-0"
-                />
-                <span className="text-white text-[18px] leading-[100%] font-medium whitespace-nowrap">
-                  Generate Blueprint
-                </span>
-              </button>
+              {heroActions.map((action, index) => (
+                <a
+                  key={action.label}
+                  href={action.href}
+                  className={`w-full ${
+                    index === 0
+                      ? "sm:w-[231px]"
+                      : index === 1
+                      ? "sm:w-[228px]"
+                      : index === 2
+                      ? "sm:w-[201px]"
+                      : "sm:w-[254px] sm:-ml-[22px]"
+                  } h-[50px] rounded-[100px] border border-[#969696] bg-black px-[20px] flex items-center justify-center ${
+                    index === 2 || index === 3 ? "sm:justify-start" : ""
+                  } gap-[10px] cursor-pointer`}
+                >
+                  <Image
+                    src={action.icon}
+                    alt={action.label}
+                    width={30}
+                    height={30}
+                    className="w-[30px] h-[30px] object-contain shrink-0"
+                  />
+                  <span className="text-white text-[18px] leading-[100%] font-medium whitespace-nowrap">
+                    {action.label}
+                  </span>
+                </a>
+              ))}
             </div>
           </div>
 
-         <div className="absolute top-[84px] right-0 w-full lg:w-[63%] h-[360px] lg:h-[560px]">
+         <div className="absolute inset-y-0 right-0 w-full lg:w-[63%] h-full">
   <div className="relative w-full h-full overflow-hidden">
     <video
       autoPlay
@@ -275,20 +268,30 @@ const handleContactSubmit = async () => {
     />
   </div>
 </div>
-        </section>
+        </motion.section>
 
-        <section className="w-full bg-black px-6 py-10 overflow-hidden">
+        <motion.section
+          id="capabilities"
+          className="w-full bg-black px-6 lg:px-16 py-10 overflow-hidden"
+          variants={pageFadeVariants}
+        >
+          <SectionHeading
+            title={
+              <h2 className="text-[#E8EDFF] text-[30px] sm:text-[40px] leading-[100%] font-semibold uppercase text-center">
+                TALK TO AN AI AGENT
+              </h2>
+            }
+            titleClassName="text-center"
+            dividerWidthClassName="w-[260px]"
+          />
           <div className="text-center">
-            <h2 className="text-[#E8EDFF] text-[30px] sm:text-[40px] leading-[100%] font-semibold uppercase">
-              TALK TO AN AI AGENT
-            </h2>
             <p className="mt-[6px] text-[#C1C1C1] text-[15px] sm:text-[18px] leading-[130%] sm:leading-[100%] font-medium">
               Get instant insights, strategies and roadmaps from our Ai-powered
               expert agents.
             </p>
           </div>
 
-          <div className="mt-[50px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 max-w-[1795px] mx-auto">
+          <div className="mt-[50px] max-w-[1795px] mx-auto grid grid-cols-1 xl:grid-cols-5 gap-6">
             {[
               {
                 name: "STRATEGY AGENT",
@@ -331,9 +334,9 @@ const handleContactSubmit = async () => {
                   "linear-gradient(149.2deg, rgba(156,77,240,0.3) 1.08%, rgba(142,153,183,0.3) 98.68%)",
               },
             ].map((agent) => (
-  <div key={agent.name} className="flex flex-col items-center">
+  <div key={agent.name} className="flex flex-col items-center xl:col-span-1">
 <div
- 
+
 className={`
   group relative w-full max-w-[339px] h-[435px] rounded-[20px] p-[1px] mx-auto
   transition-all duration-100
@@ -419,7 +422,7 @@ className={`
                 </div>
                 </div>
                 {activeAgent === agent.name && (
-  <div className="block md:hidden mt-4 w-full max-w-[339px] rounded-[18px] border border-[#1E1E1E] bg-[#111111] p-4">
+  <div className="block md:hidden mt-4 w-full max-w-[339px] h-[280px] rounded-[18px] border border-[#1E1E1E] bg-[#111111] p-4 overflow-hidden">
    <button
   onClick={() => setActiveAgent(null)}
   className="ml-auto text-white/70 text-xl"
@@ -451,7 +454,7 @@ className={`
     </div>
 
     <div className="mt-4 rounded-[10px] bg-[#1B1B1B] px-4 py-3 text-white/80 text-[14px]">
-      Hello! I'm your AI assistant. How can I help you today?
+      Hello! I&apos;m your AI assistant. How can I help you today?
     </div>
 
     <div className="mt-4 flex items-center gap-2">
@@ -473,10 +476,9 @@ className={`
     </div>
   </div>
 )}
-                          </div>
-          ))}
-          </div>
-{activeAgent && (() => {
+  </div>
+))}
+          {activeAgent && (() => {
   const selectedAgent = [
     {
       name: "STRATEGY AGENT",
@@ -506,7 +508,7 @@ className={`
   ].find((agent) => agent.name === activeAgent);
 
   return (
-    <div className="hidden md:block mt-10 w-full max-w-[100%] min-h-[400px] mx-auto rounded-[18px] border border-[#1E1E1E] bg-[#111111] p-5 md:p-8 relative">
+    <div className="hidden md:block xl:col-span-5 mt-10 w-full max-w-[100%] h-[400px] mx-auto rounded-[18px] border border-[#1E1E1E] bg-[#111111] p-5 md:p-8 relative overflow-hidden">
       <button
         onClick={() => setActiveAgent(null)}
         className="absolute top-6 right-6 text-white/70 hover:text-white text-2xl cursor-pointer"
@@ -542,7 +544,7 @@ className={`
       </div>
 
       <div className="mt-6 inline-block max-w-[900px] rounded-[10px] bg-[#1B1B1B] px-4 py-3 text-white/80 text-[15px] leading-[24px]">
-        Hello! I'm your {activeAgent.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}. I can help you craft an AI transformation roadmap tailored to your enterprise goals. What industry are you in?
+        Hello! I&apos;m your {activeAgent.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase())}. I can help you craft an AI transformation roadmap tailored to your enterprise goals. What industry are you in?
       </div>
 
       <div className="absolute left-5 right-5 bottom-5 flex items-center gap-3">
@@ -564,21 +566,26 @@ className={`
     </div>
   );
 })()}
-        </section>
+          </div>
+        </motion.section>
 
-        <section className="w-[calc(100%-24px)] sm:w-[calc(100%-55px)] max-w-[1792px] min-h-[633px] mx-auto mt-0 rounded-[20px] border border-[#151926] bg-[#000613] px-4 sm:px-6 py-8 overflow-hidden">
-          <div className="grid grid-cols-1 lg:grid-cols-[550px_1fr] xl:grid-cols-[550px_1fr_320px] gap-8">
+        <motion.section
+          id="blueprint"
+          className="w-[calc(100%-24px)] lg:w-[calc(100%-128px)] max-w-[1792px] min-h-[633px] mx-auto mt-0 rounded-[20px] border border-[#151926] bg-[#000613] px-4 sm:px-6 py-8 overflow-hidden"
+          variants={pageFadeVariants}
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr_320px] xl:grid-cols-[430px_1fr_340px] gap-6 xl:gap-8">
             <div className="pl-0 lg:pl-[22px]">
-              <h2 className="text-[30px] sm:text-[40px] leading-[100%] font-semibold text-[#E8EDFF] uppercase">
+              <h2 className="text-[32px] sm:text-[40px] lg:text-[42px] xl:text-[44px] leading-[100%] font-semibold text-[#E8EDFF] uppercase">
                 BUILD YOUR <br /> AI ENTERPRISE
               </h2>
 
-              <p className="mt-6 w-full lg:w-[414px] text-[#C1C1C1] text-[16px] lg:text-[18px] leading-[140%] lg:leading-[100%] font-medium">
+              <p className="mt-6 w-full lg:w-[360px] xl:w-[414px] text-[#C1C1C1] text-[15px] lg:text-[16px] xl:text-[18px] leading-[145%] xl:leading-[140%] font-medium">
                 Answer a few questions. Our AI engine will design your operating
                 model, architecture, agent ecosystem and transformation roadmap.
               </p>
 
-              <div className="mt-[50px] lg:mt-[110px] grid grid-cols-1 sm:grid-cols-2 gap-x-[16px] gap-y-[14px] w-full max-w-[550px]">
+              <div className="mt-[48px] lg:mt-[88px] xl:mt-[110px] grid grid-cols-1 sm:grid-cols-2 gap-x-[14px] gap-y-[12px] w-full max-w-[550px]">
                 {[
                   "Select Indiatry",
                   "Enterprise Stre",
@@ -589,7 +596,7 @@ className={`
                 ].map((item) => (
                   <button
                     key={item}
-                    className="w-full h-[48px] rounded-[10px] border border-[#2F2B3E] bg-[#070D1D] text-white text-[16px] leading-[100%] tracking-[0.02em] font-semibold px-[20px] flex items-center gap-[8px] cursor-pointer whitespace-nowrap shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]"
+                    className="w-full h-[48px] rounded-[10px] border border-[#2F2B3E] bg-[#070D1D] text-white text-[15px] lg:text-[16px] leading-[100%] tracking-[0.02em] font-semibold px-[20px] flex items-center gap-[8px] cursor-pointer whitespace-nowrap shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]"
                   >
                     <Image
                       src="/ai_enterprise/Arrow - Right 4.png"
@@ -659,19 +666,19 @@ className={`
                   </div>
                 </div>
 
-                <div className="min-h-[260px] rounded-[18px] flex items-center justify-center cursor-pointer">
+                <div className="min-h-[300px] rounded-[18px] flex items-center justify-center cursor-pointer">
                   <Image
                     src="/ai_enterprise/main.png"
                     alt="AI Enterprise Blueprint"
                     width={637}
                     height={404}
-                    className="w-full max-w-[637px] h-auto object-contain"
+                    className="w-full max-w-[720px] h-auto object-contain"
                   />
                 </div>
 
                 <div className="space-y-5">
-                  <div className="min-h-[150px] rounded-[14px] border border-white/20 bg-[#07101f] px-3 py-6">
-                    <h4 className="text-white text-[18px] leading-[100%] tracking-[0.02em] font-semibold text-center whitespace-nowrap">
+                  <div className="min-h-[150px] rounded-[14px] border border-white/20 bg-[#07101f] px-4 py-6">
+                    <h4 className="text-white text-[16px] lg:text-[18px] leading-[100%] tracking-[0.02em] font-semibold text-center whitespace-nowrap">
                       AI ARCHITECTURE
                     </h4>
                     <div className="mt-5 space-y-4 text-sm font-semibold text-white/90">
@@ -689,7 +696,7 @@ className={`
                             height={6}
                             className="w-[20px] h-[20px] object-contain shrink-0"
                           />
-                          <span className="text-[16px] leading-[100%] tracking-[0.02em] font-semibold text-white whitespace-nowrap">
+                          <span className="text-[15px] lg:text-[16px] leading-[100%] tracking-[0.02em] font-semibold text-white whitespace-nowrap">
                             {item}
                           </span>
                         </div>
@@ -697,11 +704,11 @@ className={`
                     </div>
                   </div>
 
-                  <div className="min-h-[110px] rounded-[14px] border border-white/20 bg-[#07101f] px-3 py-6 flex flex-col items-center justify-center text-center">
-                    <h4 className="text-white text-[18px] leading-[100%] tracking-[0.02em] font-semibold whitespace-nowrap">
+                  <div className="min-h-[110px] rounded-[14px] border border-white/20 bg-[#07101f] px-4 py-6 flex flex-col items-center justify-center text-center">
+                    <h4 className="text-white text-[16px] lg:text-[18px] leading-[100%] tracking-[0.02em] font-semibold whitespace-nowrap">
                       GOVERNANCE FRAMEWORK
                     </h4>
-                    <p className="mt-3 text-[#C1C1C1] text-[18px] leading-[26px] font-medium text-center">
+                    <p className="mt-3 text-[#C1C1C1] text-[16px] lg:text-[18px] leading-[24px] lg:leading-[26px] font-medium text-center">
                       Trust Risk Security Compliance
                       <br />
                       Ethics
@@ -710,7 +717,7 @@ className={`
                 </div>
               </div>
 
-              <div className="mt-6 w-full rounded-[16px] border border-white/20 bg-[#07101f] px-4 sm:px-8 py-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+              <div className="mt-6 w-full rounded-[16px] border border-white/20 bg-[#07101f] px-4 sm:px-8 py-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
                 {[
                   ["PHASE 1", "Foundation", "0-3 Months"],
                   ["PHASE 2", "Scale", "3-9 Months"],
@@ -723,16 +730,16 @@ className={`
                       alt="Robot"
                       width={38}
                       height={38}
-                      className="w-[50px] h-[50px] object-contain shrink-0"
+                      className="w-[44px] h-[44px] lg:w-[50px] lg:h-[50px] object-contain shrink-0"
                     />
-                    <div>
-                      <p className="text-[#C1C1C1] text-[16px] leading-[100%] font-medium uppercase">
+                    <div className="min-w-0">
+                      <p className="text-[#C1C1C1] text-[15px] leading-[100%] font-medium uppercase whitespace-nowrap">
                         {phase}
                       </p>
-                      <h5 className="text-[20px] leading-[100%] font-semibold text-white">
+                      <h5 className="text-[18px] leading-[110%] font-semibold text-white break-words">
                         {title}
                       </h5>
-                      <p className="text-[#C1C1C1] text-[18px] leading-[100%] font-medium">
+                      <p className="text-[#C1C1C1] text-[16px] leading-[100%] font-medium whitespace-nowrap">
                         {time}
                       </p>
                     </div>
@@ -741,18 +748,24 @@ className={`
               </div>
             </div>
           </div>
-        </section>
+        </motion.section>
 
-        <section className="w-full min-h-[586px] mt-0 bg-black px-6 pt-[56px] pb-[56px]">
-          <div className="flex items-center justify-center gap-4 sm:gap-10">
-            <div className="hidden sm:block h-[1px] w-[260px] bg-white/30" />
-            <h2 className="text-[24px] sm:text-[30px] leading-[100%] tracking-[0px] font-medium text-center uppercase text-white">
-              THE <span className="text-red-500">AI FOUNDRY</span> PROCESS
-            </h2>
-            <div className="hidden sm:block h-[1px] w-[260px] bg-white/30" />
-          </div>
+        <motion.section
+          id="foundry"
+          className="w-full min-h-[586px] mt-0 bg-black px-6 lg:px-16 pt-[56px] pb-[56px]"
+          variants={pageFadeVariants}
+        >
+          <SectionHeading
+            title={
+              <h2 className="text-[24px] sm:text-[30px] leading-[100%] tracking-[0px] font-medium text-center uppercase text-white">
+                THE <span className="text-red-500">AI FOUNDRY</span> PROCESS
+              </h2>
+            }
+            titleClassName="text-center"
+            dividerWidthClassName="w-[260px]"
+          />
 
-          <div className="mt-[48px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+          <div className="mt-[48px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 max-w-[1795px] mx-auto">
             
             {[
               {
@@ -837,7 +850,7 @@ className="group relative min-h-[420px] rounded-[20px] p-[1px] transition-all du
     }}
   />
                   <h3
-                    className={`relative z-10 text-center text-[30px] leading-[100%] font-semibold uppercase ${item.color}`}
+                    className={`relative z-10 text-center text-[25px] leading-[100%] font-semibold uppercase ${item.color}`}
                   >
                     {item.title}
                   </h3>
@@ -857,15 +870,15 @@ className="group relative min-h-[420px] rounded-[20px] p-[1px] transition-all du
                   </div>
 
                   <div className="relative z-10 mt-auto">
-                    <p className="text-[30px] leading-[100%] font-medium text-white">
+                    <p className="text-[25px] leading-[100%] font-medium text-white">
                       {item.step}
                     </p>
 
-                    <h4 className="mt-1 text-[30px] leading-[100%] font-medium text-white uppercase">
+                    <h4 className="mt-1 text-[25px] leading-[100%] font-medium text-white uppercase">
                       {item.name}
                     </h4>
 
-                    <p className="mt-3 text-[18px] leading-[100%] font-medium text-[#C1C1C1]">
+                    <p className="mt-3 text-[15px] leading-[100%] font-medium text-[#C1C1C1]">
                       {item.desc}
                     </p>
                   </div>
@@ -879,35 +892,29 @@ className="group relative min-h-[420px] rounded-[20px] p-[1px] transition-all du
             FORGED IN OUR <span className="text-[#E98828]">FOUNDRY.</span>{" "}
             DEPLOYED IN YOUR <span className="text-[#0186E4]">FACTORY.</span>
           </p>
-        </section>
+        </motion.section>
 
-        <section className="w-full min-h-[531px] mt-0 px-6 pt-[56px] pb-[56px]">
-          <div className="flex items-center justify-center gap-4">
-            <div
-              className="hidden sm:block h-[1px] w-[120px]"
-              style={{
-                background: "linear-gradient(270deg, #FFFFFF 0%, #000000 100%)",
-              }}
-            />
-
-            <p className="text-[#408CFF] text-[24px] sm:text-[30px] leading-[100%] tracking-[0px] font-medium uppercase">
-              INDUSTRY SOLUTIONS
-            </p>
-
-            <div
-              className="hidden sm:block h-[1px] w-[120px]"
-              style={{
-                background: "linear-gradient(90deg, #FFFFFF 0%, #000000 100%)",
-              }}
-            />
-          </div>
+        <motion.section
+          id="industries"
+          className="w-full min-h-[531px] mt-0 px-6 lg:px-16 pt-[56px] pb-[56px]"
+          variants={pageFadeVariants}
+        >
+          <SectionHeading
+            title={
+              <p className="text-[#408CFF] text-[24px] sm:text-[30px] leading-[100%] tracking-[0px] font-medium uppercase">
+                INDUSTRY SOLUTIONS
+              </p>
+            }
+            titleClassName="text-center"
+            dividerWidthClassName="w-[120px]"
+          />
 
           <h2 className="mt-[32px] text-center text-[30px] sm:text-[40px] leading-[115%] sm:leading-[100%] tracking-[0px] font-semibold uppercase text-white">
             AI SOLUTIONS FOR THE{" "}
             <span className="text-[#47B9FF]">NEXT GENERATION</span> ENTERPRISE
           </h2>
 
-          <div className="mt-[48px] mb-[-60px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+          <div className="mt-[48px] mb-[-60px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 max-w-[1795px] mx-auto">
             {[
               {
                 title: "AGENTIC AI SYSTEMS",
@@ -1022,30 +1029,24 @@ className="min-h-[330px] rounded-[16px] border bg-[#000102] p-5 flex flex-col tr
     </p>
   </div>
 )}
-        </section>
+        </motion.section>
 
-        <section className="w-full min-h-[610px] mt--10  bg-black px-6 pt-[56px] pb-[56px]">
-          <div className="flex items-center justify-center gap-4 sm:gap-10">
-            <div
-              className="hidden sm:block h-[1px] w-[333px]"
-              style={{
-                background: "linear-gradient(270deg, #FFFFFF 0%, #000000 100%)",
-              }}
-            />
+        <motion.section
+          id="insights"
+          className="w-full min-h-[610px] mt--10 px-6 lg:px-16 pt-[56px] pb-[56px]"
+          variants={pageFadeVariants}
+        >
+          <SectionHeading
+            title={
+              <h2 className="text-[#408CFF] text-[24px] sm:text-[30px] leading-[100%] tracking-[0px] font-medium text-center uppercase">
+                INSIGHTS
+              </h2>
+            }
+            titleClassName="text-center"
+            dividerWidthClassName="w-[333px]"
+          />
 
-            <h2 className="text-[#408CFF] text-[24px] sm:text-[30px] leading-[100%] tracking-[0px] font-medium text-center uppercase">
-              INSIGHTS
-            </h2>
-
-            <div
-              className="hidden sm:block h-[1px] w-[333px]"
-              style={{
-                background: "linear-gradient(90deg, #FFFFFF 0%, #000000 100%)",
-              }}
-            />
-          </div>
-
-          <div className="mt-[48px]  grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+          <div className="mt-[48px] grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 max-w-[1795px] mx-auto">
             {[1, 2, 3, 4].map((item) => (
               <div
                 key={item}
@@ -1077,9 +1078,13 @@ className="min-h-[330px] rounded-[16px] border bg-[#000102] p-5 flex flex-col tr
               </div>
             ))}
           </div>
-        </section>
+        </motion.section>
 
-        <section className="relative w-full min-h-[760px] mt-0 bg-black overflow-hidden">
+        <motion.section
+          id="garage"
+          className="relative w-full min-h-[760px] mt-0 bg-black overflow-hidden"
+          variants={pageFadeVariants}
+        >
           <div className="grid grid-cols-1 lg:grid-cols-2 lg:h-[430px]">
             <div className="relative h-[300px] lg:h-full">
               <img
@@ -1095,9 +1100,7 @@ className="min-h-[330px] rounded-[16px] border bg-[#000102] p-5 flex flex-col tr
                 <br />
                 FORGED IN OUR FOUNDRY.
                 <br />
-                DEPLOYED IN YOUR
-                <br />
-                ENTERPRISE.
+                DEPLOYED IN YOUR ENTERPRISE.
               </h2>
             </div>
           </div>
@@ -1187,170 +1190,9 @@ className="min-h-[330px] rounded-[16px] border bg-[#000102] p-5 flex flex-col tr
     ))}
   </div>
 </div>
-        </section>
+        </motion.section>
 
-<section className="w-full mt-0 bg-black px-6 py-10 overflow-hidden">
-  <div className="grid grid-cols-1 lg:grid-cols-[56%_44%] gap-0 items-center max-w-[1500px] mx-auto">
-<div className="w-[95%] h-[510px] flex items-center justify-center overflow-hidden rounded-[28px] border border-[#005BFF] bg-black"><WorldMap
-  dots={dots}
-  lineColor="#0ea5e9"
-/>
-</div>
-
-    <div
-      className="relative w-full max-w-[853px] min-h-[475px] rounded-[10px] bg-[#0000001A] backdrop-blur-[40px] p-6 md:p-8"
-      style={{
-        border: "1px solid transparent",
-      }}
-    >
-      <div
-        className="pointer-events-none absolute inset-0 rounded-[10px]"
-        style={{
-          border: "1px solid transparent",
-          background:
-            "linear-gradient(180deg, #78A7FF 0%, #57000F 100%) border-box",
-          WebkitMask:
-            "linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)",
-          WebkitMaskComposite: "xor",
-          maskComposite: "exclude",
-        }}
-      />
-
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-x-8 gap-y-6">
-        <div>
-          <label className="block text-white font-[var(--font-montserrat)] font-medium text-[15px] sm:text-[16px] lg:text-[18px] leading-[100%] tracking-[0.02em]">
-            Full Name
-          </label>
-          <input
-            value={contactForm.fullName}
-            onChange={(e) =>
-              setContactForm({
-                ...contactForm,
-                fullName: e.target.value,
-              })
-            }
-            placeholder="Enter"
-            className="mt-3 w-full h-[50px] rounded-[18px] border border-[#1A2145] bg-[#16060680] px-4 text-white outline-none font-[var(--font-montserrat)] font-medium text-[18px] leading-[100%] tracking-[0.02em] placeholder:text-[#C1C1C1]"
-            style={{
-              boxShadow: "inset 0 0 0 1px rgba(120,167,255,0.08)",
-            }}
-          />
-        </div>
-
-        <div>
-          <label className="block text-white font-[var(--font-montserrat)] font-medium text-[15px] sm:text-[16px] lg:text-[18px] leading-[100%] tracking-[0.02em]">
-            Enter your full name
-          </label>
-          <input
-  value={contactForm.fullNameDetail}
-  onChange={(e) =>
-    setContactForm({
-      ...contactForm,
-      fullNameDetail: e.target.value,
-    })
-  }
-  placeholder="Enter"
-  className="mt-3 w-full h-[50px] rounded-[18px] border border-[#1A2145] bg-[#16060680] px-4 text-white outline-none font-[var(--font-montserrat)] font-medium text-[18px] leading-[100%] tracking-[0.02em] placeholder:text-[#C1C1C1]"
-  style={{
-    boxShadow: "inset 0 0 0 1px rgba(120,167,255,0.08)",
-  }}
-/>
-        </div>
-
-        <div>
-          <label className="block text-white font-[var(--font-montserrat)] font-medium text-[15px] sm:text-[16px] lg:text-[18px] leading-[100%] tracking-[0.02em]">
-            Company / Organization
-          </label>
-          <input
-            value={contactForm.company}
-            onChange={(e) =>
-              setContactForm({
-                ...contactForm,
-                company: e.target.value,
-              })
-            }
-            placeholder="Enter"
-            className="mt-3 w-full h-[50px] rounded-[18px] border border-[#1A2145] bg-[#16060680] px-4 text-white outline-none font-[var(--font-montserrat)] font-medium text-[18px] leading-[100%] tracking-[0.02em] placeholder:text-[#C1C1C1]"
-            style={{
-              boxShadow: "inset 0 0 0 1px rgba(120,167,255,0.08)",
-            }}
-          />
-        </div>
-
-        <div>
-<label className="block whitespace-nowrap text-white font-[var(--font-montserrat)] font-medium text-[15px] sm:text-[16px] lg:text-[18px] leading-[100%] tracking-[0.02em]">
-  Enter company  name
-</label>
-         <input
-  value={contactForm.companyDetail}
-  onChange={(e) =>
-    setContactForm({
-      ...contactForm,
-      companyDetail: e.target.value,
-    })
-  }
-  placeholder="Enter"
-  className="mt-3 w-full h-[50px] rounded-[18px] border border-[#1A2145] bg-[#16060680] px-4 text-white outline-none font-[var(--font-montserrat)] font-medium text-[18px] leading-[100%] tracking-[0.02em] placeholder:text-[#C1C1C1]"
-  style={{
-    boxShadow: "inset 0 0 0 1px rgba(120,167,255,0.08)",
-  }}
-/>
-        </div>
-
-        <div>
-          <label className="block text-white font-[var(--font-montserrat)] font-medium text-[15px] sm:text-[16px] lg:text-[18px] leading-[100%] tracking-[0.02em]">
-            Business Email
-          </label>
-          <input
-            type="email"
-            value={contactForm.businessEmail}
-            onChange={(e) =>
-              setContactForm({
-                ...contactForm,
-                businessEmail: e.target.value,
-              })
-            }
-            placeholder="Enter"
-            className="mt-3 w-full h-[50px] rounded-[18px] border border-[#1A2145] bg-[#16060680] px-4 text-white outline-none font-[var(--font-montserrat)] font-medium text-[18px] leading-[100%] tracking-[0.02em] placeholder:text-[#C1C1C1]"
-            style={{
-              boxShadow: "inset 0 0 0 1px rgba(120,167,255,0.08)",
-            }}
-          />
-        </div>
-
-        <div>
-<label className="block text-white font-[var(--font-montserrat)] font-medium text-[18px] sm:text-[18px] lg:text-[18px] leading-[100%] tracking-[0.02em]">
-          Enter official email address
-          </label>
-          <input
-  type="email"
-  value={contactForm.businessEmailDetail}
-  onChange={(e) =>
-    setContactForm({
-      ...contactForm,
-      businessEmailDetail: e.target.value,
-    })
-  }
-  placeholder="Enter"
-  className="mt-3 w-full h-[50px] rounded-[18px] border border-[#1A2145] bg-[#16060680] px-4 text-white outline-none font-[var(--font-montserrat)] font-medium text-[18px] leading-[100%] tracking-[0.02em] placeholder:text-[#C1C1C1]"
-  style={{
-    boxShadow: "inset 0 0 0 1px rgba(120,167,255,0.08)",
-  }}
-/>
-        </div>
-      </div>
-
-      <div className="mt-10 w-full rounded-full p-[2px] shadow-[0px_4px_4px_0px_#00000040] bg-[linear-gradient(90deg,#9A0003_0%,#1173BC_100%)]">
-        <button
-          onClick={handleContactSubmit}
-          className="w-full h-[42px] rounded-full text-white text-[13px] font-semibold backdrop-blur-[40px] bg-[linear-gradient(90deg,rgba(85,6,7,0.213)_0%,rgba(7,78,156,0.24)_100%)] cursor-pointer"
-        >
-          Send Message
-        </button>
-      </div>
-    </div>
-  </div>
-</section>
+        <ContactSection />
 
         <footer className="w-full mt-0 bg-black">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-8 lg:px-12 py-14">
@@ -1372,40 +1214,32 @@ className="min-h-[330px] rounded-[16px] border bg-[#000102] p-5 flex flex-col tr
 
                 <p className="mt-6 text-white/70 text-[14px] leading-8 max-w-[380px]">
                   Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry. Lorem Ipsum has been the industry's
+                  typesetting industry. Lorem Ipsum has been the industry&apos;s
                   standard dummy text ever since the 1500s.
                 </p>
 
-                <div className="flex items-center gap-5 mt-8 text-white text-xl">
-                  <img
-                    src="/footer/linkedin.png"
-                    alt="LinkedIn"
-                    className="w-5 h-5 object-contain brightness-0 invert cursor-pointer"
-                  />
-
-                  <img
-                    src="/footer/twitter.png"
-                    alt="Twitter"
-                    className="w-5 h-5 object-contain brightness-0 invert cursor-pointer"
-                  />
-
-                  <img
-                    src="/footer/mail.png"
-                    alt="mail"
-                    className="w-5 h-5 object-contain brightness-0 invert cursor-pointer"
-                  />
-
-                  <img
-                    src="/footer/youtube.png"
-                    alt="Youtube"
-                    className="w-5 h-5 object-contain brightness-0 invert cursor-pointer"
-                  />
-
-                  <img
-                    src="/footer/instagram.png"
-                    alt="Instagram"
-                    className="w-5 h-5 object-contain brightness-0 invert cursor-pointer"
-                  />
+                <div className="flex items-center gap-3 mt-8 text-white text-xl">
+                  {[
+                    { src: "/footer/linkedin.png", alt: "LinkedIn" },
+                    { src: "/footer/twitter.png", alt: "Twitter" },
+                    { src: "/footer/mail.png", alt: "Mail" },
+                    { src: "/footer/youtube.png", alt: "YouTube" },
+                    { src: "/footer/instagram.png", alt: "Instagram" },
+                  ].map((icon) => (
+                    <button
+                      key={icon.alt}
+                      type="button"
+                      aria-label={icon.alt}
+                      title={icon.alt}
+                      className="group inline-flex h-10 w-10 items-center justify-center text-white/80 transition-all duration-300 hover:-translate-y-0.5 hover:text-white active:scale-95 cursor-pointer"
+                    >
+                      <img
+                        src={icon.src}
+                        alt={icon.alt}
+                        className="h-5 w-5 object-contain brightness-0 invert transition-transform duration-300 group-hover:scale-110"
+                      />
+                    </button>
+                  ))}
                 </div>
               </div>
 
@@ -1447,19 +1281,29 @@ className="min-h-[330px] rounded-[16px] border bg-[#000102] p-5 flex flex-col tr
       }}
     />
 
-    <div className="mt-[34px] space-y-[18px] text-[14px]">
-      {col.items.map((item) => (
-        <button
-          key={item}
-          type="button"
-          className="block text-white/70 hover:text-white transition-colors duration-300 cursor-pointer text-left"
-        >
-          {item}
-        </button>
-      ))}
-    </div>
-  </div>
-))}
+                  <div className="mt-[34px] space-y-[18px] text-[14px]">
+                    {col.items.map((item) => (
+                      item === "About Us" ? (
+                        <Link
+                          key={item}
+                          href="/about-us"
+                          className="block text-white/70 hover:text-white transition-colors duration-300 cursor-pointer text-left"
+                        >
+                          {item}
+                        </Link>
+                      ) : (
+                        <button
+                          key={item}
+                          type="button"
+                          className="block text-white/70 hover:text-white transition-colors duration-300 cursor-pointer text-left"
+                        >
+                          {item}
+                        </button>
+                      )
+                    ))}
+                  </div>
+                </div>
+              ))}
 
               <div>
                 <h3 className="text-white text-[28px] font-semibold">
@@ -1475,9 +1319,18 @@ className="min-h-[330px] rounded-[16px] border bg-[#000102] p-5 flex flex-col tr
                 />
 
                 <div className="mt-[34px] space-y-[24px] text-white/70 text-[14px]">
-                  <p>71 Pennington Lane Vernon Rockville, CT 06066</p>
-                  <p>✉ thefactoryai@gmail.com</p>
-                  <p>☎ 12345 67890</p>
+                  <p className="flex items-center gap-3">
+                    <FaLocationDot className="text-[#E8EDFF] text-[16px] shrink-0" />
+                    <span>71 Pennington Lane Vernon Rockville, CT 06066</span>
+                  </p>
+                  <p className="flex items-center gap-3">
+                    <MdEmail className="text-[#E8EDFF] text-[16px] shrink-0" />
+                    <span>thefactoryai@gmail.com</span>
+                  </p>
+                  <p className="flex items-center gap-3">
+                    <FaPhone className="text-[#E8EDFF] text-[14px] shrink-0" />
+                    <span>12345 67890</span>
+                  </p>
                 </div>
               </div>
             </div>
@@ -1488,6 +1341,6 @@ className="min-h-[330px] rounded-[16px] border bg-[#000102] p-5 flex flex-col tr
           </div>
         </footer>
       </div>
-    </main>
+    </motion.main>
   );
 }
