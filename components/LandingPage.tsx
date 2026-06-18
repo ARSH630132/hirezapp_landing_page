@@ -1,11 +1,25 @@
 "use client";
 // import ThreeDView from "./3d_view";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { FaLocationDot, FaPhone } from "react-icons/fa6";
 import { MdEmail } from "react-icons/md";
+import {
+  Bot,
+  Building2,
+  Factory,
+  GraduationCap,
+  Gauge,
+  HeartPulse,
+  Landmark,
+  ShieldCheck,
+  ShoppingBag,
+  Sparkles,
+  Workflow,
+  Layers3,
+} from "lucide-react";
 import ContactSection from "@/components/ContactSection";
 
 const navItems = [
@@ -64,10 +78,168 @@ function SectionHeading({
   );
 }
 
+const industryCards = [
+  {
+    title: "Financial Services & Trust",
+    icon: Landmark,
+    accent: "linear-gradient(135deg, #4F8CFF 0%, #34D3FF 100%)",
+    glow: "#4F8CFF",
+    eyebrow: "High-trust systems",
+    summary:
+      "From claims to client service, build dependable AI experiences for regulated teams.",
+    items: ["Fraud review", "Client onboarding", "Policy servicing"],
+    outcome: "Faster approvals with auditability built in",
+  },
+  {
+    title: "Industry & Natural Resources",
+    icon: Factory,
+    accent: "linear-gradient(135deg, #FF7A59 0%, #FFB84A 100%)",
+    glow: "#FF7A59",
+    eyebrow: "Operational intelligence",
+    summary:
+      "Support plant operations, procurement, and asset reliability with AI-driven workflows.",
+    items: ["Asset maintenance", "Supply planning", "Field support"],
+    outcome: "Better uptime across the value chain",
+  },
+  {
+    title: "Health & Life Sciences",
+    icon: HeartPulse,
+    accent: "linear-gradient(135deg, #24D39B 0%, #7DDEFF 100%)",
+    glow: "#24D39B",
+    eyebrow: "Patient-first AI",
+    summary:
+      "Design helpful AI touchpoints for intake, care coordination, and life sciences teams.",
+    items: ["Patient intake", "Care ops", "Research support"],
+    outcome: "Less admin, more time for care",
+  },
+  {
+    title: "Public Service & Education",
+    icon: GraduationCap,
+    accent: "linear-gradient(135deg, #7C5CFF 0%, #29B7FF 100%)",
+    glow: "#7C5CFF",
+    eyebrow: "Civic and learning systems",
+    summary:
+      "Modernize student, citizen, and back-office experiences with transparent AI.",
+    items: ["Citizen services", "Learning ops", "Grants"],
+    outcome: "More responsive public and campus services",
+  },
+  {
+    title: "Consumer & Digital Industry",
+    icon: ShoppingBag,
+    accent: "linear-gradient(135deg, #FF3B7A 0%, #8E63FF 100%)",
+    glow: "#FF3B7A",
+    eyebrow: "Growth engines",
+    summary:
+      "Bring speed to commerce, support, and digital operations where experience matters.",
+    items: ["Retail", "Telecom", "Customer experience"],
+    outcome: "Smoother journeys and stronger conversion",
+  },
+];
+
+const productizedFeatures = [
+  {
+    title: "Agent Marketplace",
+    desc: "Curated agents ready for ops, support, and internal teams.",
+    icon: Bot,
+  },
+  {
+    title: "AI Academy",
+    desc: "Learning paths for builders, leaders, and enterprise users.",
+    icon: Sparkles,
+  },
+  {
+    title: "AI Control Center",
+    desc: "Monitor usage, approvals, and task health in one place.",
+    icon: Gauge,
+  },
+  {
+    title: "Runtime Governance",
+    desc: "Policy checks, audit trails, and guardrails by design.",
+    icon: ShieldCheck,
+  },
+];
+
+const productizedColumns = [
+  {
+    title: "Garage",
+    icon: Building2,
+    items: ["Discover AI use cases", "Workshops and ideation", "AI labs", "Experiment zone"],
+  },
+  {
+    title: "Runtime",
+    icon: Workflow,
+    items: ["Build agents", "Runtime orchestration", "Data fabric", "AI engineering"],
+  },
+  {
+    title: "AI Architecture",
+    icon: Layers3,
+    items: [
+      "Data & Intelligence Layer",
+      "AI & Agent Layer",
+      "Orchestration Layer",
+      "Integration Layer",
+    ],
+  },
+];
+
 export default function LandingPage() {
   const [activeAgent, setActiveAgent] = useState<string | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [openSolution, setOpenSolution] = useState<number | null>(null);
+  const industryCarouselRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const container = industryCarouselRef.current;
+    if (!container) return;
+
+    let raf = 0;
+    let last = performance.now();
+    let paused = false;
+    const desktopQuery = window.matchMedia("(min-width: 1024px)");
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    const tick = (now: number) => {
+      if (desktopQuery.matches && !paused && !prefersReducedMotion) {
+        const delta = now - last;
+        const scrollAmount = delta * 0.03;
+        container.scrollLeft += scrollAmount;
+
+        const halfWidth = container.scrollWidth / 2;
+        if (container.scrollLeft >= halfWidth) {
+          container.scrollLeft -= halfWidth;
+        }
+      }
+
+      last = now;
+      raf = window.requestAnimationFrame(tick);
+    };
+
+    const onEnter = () => {
+      paused = true;
+    };
+
+    const onLeave = () => {
+      paused = false;
+    };
+
+    container.addEventListener("mouseenter", onEnter);
+    container.addEventListener("mouseleave", onLeave);
+    container.addEventListener("touchstart", onEnter, { passive: true });
+    container.addEventListener("touchend", onLeave, { passive: true });
+
+    raf = window.requestAnimationFrame(tick);
+
+    return () => {
+      window.cancelAnimationFrame(raf);
+      container.removeEventListener("mouseenter", onEnter);
+      container.removeEventListener("mouseleave", onLeave);
+      container.removeEventListener("touchstart", onEnter);
+      container.removeEventListener("touchend", onLeave);
+    };
+  }, []);
+
   return (
     <motion.main
       className="min-h-screen bg-[#010101] text-white overflow-x-hidden"
@@ -896,139 +1068,232 @@ className="group relative min-h-[420px] rounded-[20px] p-[1px] transition-all du
 
         <motion.section
           id="industries"
-          className="w-full min-h-[531px] mt-0 px-6 lg:px-16 pt-[56px] pb-[56px]"
+          className="w-full mt-0 px-6 lg:px-16 pt-[56px] pb-[52px]"
           variants={pageFadeVariants}
         >
-          <SectionHeading
-            title={
-              <p className="text-[#408CFF] text-[24px] sm:text-[30px] leading-[100%] tracking-[0px] font-medium uppercase">
-                INDUSTRY SOLUTIONS
-              </p>
-            }
-            titleClassName="text-center"
-            dividerWidthClassName="w-[120px]"
-          />
+          <div className="max-w-[1795px] mx-auto">
+            <SectionHeading
+              title={
+                <p className="text-[#408CFF] text-[24px] sm:text-[30px] leading-[100%] tracking-[0px] font-medium uppercase">
+                  INDUSTRY SOLUTIONS
+                </p>
+              }
+              titleClassName="text-center"
+              dividerWidthClassName="w-[120px]"
+            />
 
-          <h2 className="mt-[32px] text-center text-[30px] sm:text-[40px] leading-[115%] sm:leading-[100%] tracking-[0px] font-semibold uppercase text-white">
-            AI SOLUTIONS FOR THE{" "}
-            <span className="text-[#47B9FF]">NEXT GENERATION</span> ENTERPRISE
-          </h2>
+            <p className="mt-5 mx-auto max-w-[880px] text-center text-white/68 text-[15px] sm:text-[17px] leading-[28px]">
+              Industry-ready AI patterns for regulated, operational, and customer-facing teams.
+              Each card points to a practical starting point for automation, copilot experiences,
+              and decision support.
+            </p>
 
-          <div className="mt-[48px] mb-[-60px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 max-w-[1795px] mx-auto">
-            {[
-              {
-                title: "AGENTIC AI SYSTEMS",
-                icon: "/what_we_build/agentic-ai.svg",
-                desc: "Autonomous agents that plan, reason and execute complex enterprise tasks.",
-                more: "Detailed information about Agentic AI Systems.",
-                borderColor: "linear-gradient(149.2deg, #422B2A 1.08%, #09112B 98.68%)",
-                glowColor: "#F74539",
-              },
-              {
-                title: "AI STRATEGY & ADVISORY",
-                icon: "/what_we_build/strategy.svg",
-                desc: "Roadmaps and operating models for AI-driven transformation.",
-                more: "Detailed information about AI Strategy & Advisory.",
-                borderColor: "#321716",
-                glowColor: "#E98828",
-              },
-              {
-                title: "AI ENGINEERING",
-                icon: "/what_we_build/engineering.svg",
-                desc: "Custom AI solutions and platforms built for scale.",
-                more: "Detailed information about AI Engineering.",
-                borderColor: "#582F19",
-                glowColor: "#24ABFF",
-              },
-              {
-                title: "INTELLIGENT AUTOMATION",
-                icon: "/what_we_build/automation.svg",
-                desc: "End-to-end automation of enterprise workflows.",
-                more: "Detailed information about Intelligent Automation.",
-                borderColor: "#003881",
-                glowColor: "#FF3424",
-              },
-              {
-                title: "AI GOVERNANCE",
-                icon: "/what_we_build/governance.svg",
-                desc: "Responsible AI with trust, transparency and compliance.",
-                more: "Detailed information about AI Governance.",
-                borderColor: "#192636",
-                glowColor: "#F74539",
-              },
-              {
-                title: "AI LABS & INNOVATION",
-                icon: "/what_we_build/labs.svg",
-                desc: "Co-innovate in our labs and build what's next.",
-                more: "Detailed information about AI Labs.",
-                borderColor: "#250537",
-                glowColor: "#976BFF",
-              },
-            ].map((item, index) => (
-  <div key={item.title} className="flex flex-col">
-  <div
-  key={item.title}
-className="min-h-[330px] rounded-[16px] border bg-[#000102] p-5 flex flex-col transition-all duration-300 hover:-translate-y-3 hover:scale-[1.02] hover:shadow-[0_0_12px_var(--solution-glow),0_0_28px_var(--solution-glow)]"  style={
-  {
-    borderColor: item.borderColor,
-    "--solution-glow":
-  item.title === "AGENTIC AI SYSTEMS" ? "#422B2A" : item.borderColor,
-  } as React.CSSProperties
-}
->
-                <div className="flex justify-center">
-                  <img
-                    src={item.icon}
-                    alt={item.title}
-                    className="w-[70px] h-[70px] object-contain"
-                  />
-                </div>
+            <div
+              ref={industryCarouselRef}
+              className="mt-[34px] overflow-x-auto pb-2 -mx-1 px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory lg:snap-none"
+            >
+              <div className="flex w-max gap-4 pr-4">
+                {[...industryCards, ...industryCards].map((item, index) => (
+                  <div
+                    key={`${item.title}-${index}`}
+                    className="group relative w-[86vw] max-w-[330px] sm:w-[320px] lg:w-[330px] shrink-0 min-h-[286px] overflow-hidden rounded-[24px] border border-[#10162B] bg-[linear-gradient(180deg,rgba(4,7,18,0.96)_0%,rgba(2,4,10,0.98)_100%)] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-white/15 hover:shadow-[0_0_22px_rgba(64,140,255,0.12)] snap-start"
+                  >
+                    <div
+                      className="pointer-events-none absolute inset-0 opacity-100"
+                      style={{
+                        background: `
+                          radial-gradient(circle at 20% 18%, ${item.glow}20 0%, transparent 34%),
+                          radial-gradient(circle at 88% 10%, ${item.glow}16 0%, transparent 24%),
+                          radial-gradient(circle at 86% 82%, ${item.glow}12 0%, transparent 28%),
+                          linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 48%)
+                        `,
+                      }}
+                    />
 
-                <h3 className="mt-8 text-[18px] leading-[100%] font-semibold text-white">
-                  {item.title}
-                </h3>
+                    <div className="relative z-10 flex h-full flex-col">
+                      <div className="flex items-start justify-between gap-3">
+                        <div
+                          className="inline-flex h-[52px] w-[52px] items-center justify-center rounded-[16px] shadow-[0_16px_30px_rgba(0,0,0,0.35)]"
+                          style={{ backgroundImage: item.accent }}
+                        >
+                          <item.icon className="h-[24px] w-[24px] text-white" />
+                        </div>
 
-                <p className="mt-4 text-[18px] leading-[100%] font-medium text-[#C1C1C1]">
-                  {item.desc}
+                        <div className="rounded-full bg-white/[0.05] px-3 py-1 text-[12px] font-medium uppercase tracking-[0.14em] text-white/65">
+                          {item.eyebrow}
+                        </div>
+                      </div>
+
+                      <h3 className="mt-6 text-[19px] leading-[25px] font-semibold text-white">
+                        {item.title}
+                      </h3>
+
+                      <p className="mt-3 text-[14px] leading-[23px] text-white/70">
+                        {item.summary}
+                      </p>
+
+                      <div className="mt-5 grid grid-cols-1 gap-2">
+                        {item.items.map((listItem) => (
+                          <div
+                            key={listItem}
+                            className="flex items-center gap-3 rounded-[12px] bg-white/[0.05] px-3 py-2 text-[13px] leading-[18px] text-white/86"
+                          >
+                            <span
+                              className="h-[6px] w-[6px] rounded-full shadow-[0_0_10px_rgba(141,198,255,0.75)]"
+                              style={{ backgroundColor: item.glow }}
+                            />
+                            <span>{listItem}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="mt-auto pt-5">
+                        <div className="flex items-center justify-between gap-3 rounded-[14px] bg-white/[0.04] px-4 py-3">
+                          <span className="text-[12px] font-medium uppercase tracking-[0.12em] text-white/50">
+                            Outcome
+                          </span>
+                          <span className="text-right text-[13px] leading-[18px] font-medium text-white/82">
+                            {item.outcome}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </motion.section>
+
+        <motion.section
+          id="productized-assets"
+          className="w-full mt-0 px-6 lg:px-16 pt-[24px] pb-[52px]"
+          variants={pageFadeVariants}
+        >
+          <div className="max-w-[1795px] mx-auto rounded-[28px] border border-white/8 bg-[linear-gradient(180deg,#050816_0%,#02040a_100%)] px-5 sm:px-6 lg:px-8 py-8 lg:py-10">
+            <div className="grid grid-cols-1 xl:grid-cols-[1.02fr_0.92fr_1.08fr] gap-6 items-stretch">
+              <div className="rounded-[24px] border border-[#18223C] bg-[linear-gradient(180deg,rgba(8,12,24,0.95)_0%,rgba(3,6,14,0.98)_100%)] p-6 lg:p-7">
+                <h2 className="text-white text-[34px] sm:text-[42px] lg:text-[48px] leading-[0.95] font-semibold uppercase">
+                  PRODUCTIZED
+                  <br />
+                  ASSETS
+                </h2>
+
+                <p className="mt-5 max-w-[360px] text-white/72 text-[15px] sm:text-[16px] leading-[26px]">
+                  Practical tools and repeatable systems that help teams move from
+                  idea to delivery with less friction and more confidence.
                 </p>
 
-                <div className="mt-auto pt-4">
-                  <button
-        onClick={() =>
-          setOpenSolution(openSolution === index ? null : index)
-        }
-      >
-        Learn More →
-      </button>
-    </div>
+                <div className="mt-6 flex flex-wrap gap-2">
+                  {["Agent-ready", "Governed", "Composable", "Enterprise scale"].map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full bg-white/[0.06] px-3 py-1 text-[13px] text-white/76"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
 
-    </div>
+                <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {productizedFeatures.map((item, index) => {
+                    const Icon = item.icon;
+                    const accent =
+                      index === 0
+                        ? "from-[#FF5F6D] to-[#FFD36D]"
+                        : index === 1
+                        ? "from-[#7C5CFF] to-[#29B7FF]"
+                        : index === 2
+                        ? "from-[#24D39B] to-[#7DDEFF]"
+                        : "from-[#FF7A59] to-[#FFB84A]";
 
-{openSolution === index && (
-  <div className="block md:hidden mt-4 w-full rounded-[16px] border border-white/20 bg-[#07101f] p-4">
-    {item.more}
-  </div>
-)}
-</div>
-))} 
- </div> {/* cards grid close */}
+                    return (
+                      <div
+                        key={item.title}
+                        className="group rounded-[16px] bg-[#0A0F1F] p-4 transition-all duration-300 hover:-translate-y-1 hover:bg-[#0D1324]"
+                      >
+                        <div className={`inline-flex h-11 w-11 items-center justify-center rounded-[12px] bg-gradient-to-br ${accent}`}>
+                          <Icon className="h-5 w-5 text-[#07111D]" />
+                        </div>
+                        <h3 className="mt-4 text-[16px] font-semibold text-white">
+                          {item.title}
+                        </h3>
+                        <p className="mt-2 text-[13px] leading-[21px] text-white/66">
+                          {item.desc}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
 
-{openSolution !== null && (
-  <div className="mt-25 w-full rounded-[20px] border border-white/10 bg-[#0A0A0A] p-8">
-    <p className="text-white/70">
-      {
-        [
-          "Detailed information about Agentic AI Systems.",
-          "Detailed information about AI Strategy & Advisory.",
-          "Detailed information about AI Engineering.",
-          "Detailed information about Intelligent Automation.",
-          "Detailed information about AI Governance.",
-          "Detailed information about AI Labs & Innovation."
-        ][openSolution]
-      }
-    </p>
-  </div>
-)}
+              <div className="relative overflow-hidden rounded-[24px] border border-[#18223C] bg-[radial-gradient(circle_at_top,rgba(16,213,255,0.14),transparent_48%),linear-gradient(180deg,rgba(4,9,20,0.96)_0%,rgba(2,4,10,1)_100%)] p-5 lg:p-6 flex items-center justify-center">
+                <div className="absolute inset-x-8 top-8 h-[1px] bg-gradient-to-r from-transparent via-[#29B7FF]/60 to-transparent" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(16,213,255,0.12)_0%,transparent_62%)]" />
+
+                <div className="relative w-full max-w-[420px] aspect-square">
+                  <div className="absolute inset-12 rounded-full bg-[#10D5FF]/20 blur-3xl" />
+                  <div className="absolute left-[10%] top-[14%] rounded-full border border-white/10 bg-black/35 px-3 py-2 text-[12px] text-white/80 backdrop-blur-md">
+                    AI workflow
+                  </div>
+                  <div className="absolute right-[10%] top-[18%] rounded-full border border-white/10 bg-black/35 px-3 py-2 text-[12px] text-white/80 backdrop-blur-md">
+                    Governance
+                  </div>
+                  <div className="absolute left-[12%] bottom-[14%] rounded-full border border-white/10 bg-black/35 px-3 py-2 text-[12px] text-white/80 backdrop-blur-md">
+                    Runtime
+                  </div>
+                  <div className="absolute right-[12%] bottom-[14%] rounded-full border border-white/10 bg-black/35 px-3 py-2 text-[12px] text-white/80 backdrop-blur-md">
+                    Scale
+                  </div>
+
+                  <Image
+                    src="/intellegent_enterprise/blueprint.png"
+                    alt="Productized assets blueprint"
+                    width={840}
+                    height={840}
+                    className="relative z-10 h-full w-full object-contain drop-shadow-[0_0_26px_rgba(16,213,255,0.34)]"
+                  />
+                </div>
+              </div>
+
+                <div className="grid grid-cols-1 gap-4">
+                {productizedColumns.map((column) => {
+                  const Icon = column.icon;
+                  return (
+                    <div
+                      key={column.title}
+                      className="rounded-[20px] bg-[linear-gradient(180deg,rgba(7,12,28,0.94)_0%,rgba(3,6,14,0.98)_100%)] p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.05)_inset]"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-[12px] bg-white/5">
+                          <Icon className="h-5 w-5 text-[#8DC6FF]" />
+                        </div>
+                        <div>
+                          <h3 className="text-[16px] font-semibold uppercase text-white">
+                            {column.title}
+                          </h3>
+                          <p className="text-[13px] text-white/52">
+                            Core capabilities and building blocks
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="mt-4 h-[1px] w-full bg-white/10" />
+
+                      <ul className="mt-4 space-y-3 text-[14px] sm:text-[15px] leading-[22px] font-medium text-white/84">
+                        {column.items.map((item) => (
+                          <li key={item} className="flex items-start gap-2">
+                            <span className="text-white/80">→</span>
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
         </motion.section>
 
         <motion.section
