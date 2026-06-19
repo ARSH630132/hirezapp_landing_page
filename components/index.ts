@@ -11,6 +11,7 @@ export {
 };
 
 export { default as SectionHeading } from "@/components/SectionHeading";
+export { default as AgentChatPanel } from "@/components/AgentChatPanel";
 export { default as LandingPage } from "@/components/LandingPage";
 export { default as HeroSection } from "@/components/sections/HeroSection";
 export { default as TalkToAgentSection } from "@/components/sections/TalkToAgentSection";

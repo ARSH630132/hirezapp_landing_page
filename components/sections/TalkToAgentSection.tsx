@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { motion } from "motion/react";
+import AgentChatPanel from "@/components/AgentChatPanel";
 import SectionHeading from "@/components/SectionHeading";
 import { pageFadeVariants } from "@/lib/animations";
 import { agents } from "@/lib/landing-data";
@@ -50,9 +51,9 @@ export default function TalkToAgentSection() {
                 <Image
                   src={agent.icon}
                   alt={agent.name}
-                  width={170}
-                  height={170}
-                  className="mt-[22px] w-[150px] h-[150px] object-contain relative z-10 transition-all duration-200 group-hover:scale-105"
+                  width={120}
+                  height={120}
+                  className="mt-[22px] w-[120px] h-[120px] object-contain relative z-10 transition-all duration-200 group-hover:scale-105"
                   style={{ color: agent.color }}
                 />
 
@@ -66,7 +67,7 @@ export default function TalkToAgentSection() {
 
                 <button
                   onClick={() => setActiveAgent(activeAgent === agent.name ? null : agent.name)}
-                  className="relative z-10 mt-6 flex items-center gap-2 text-[16px] leading-none font-medium"
+                  className="relative z-10 mt-6 flex items-center gap-2 text-[16px] leading-none font-medium cursor-pointer"
                   style={{ color: agent.color }}
                 >
                   TALK NOW <span>→</span>
@@ -75,56 +76,27 @@ export default function TalkToAgentSection() {
             </div>
 
             {activeAgent === agent.name && (
-              <div className="block md:hidden mt-4 w-full max-w-[339px] h-[400px] rounded-[18px] border border-[#1E1E1E] bg-[#111111] p-4 flex flex-col overflow-hidden">
-                <div className="flex items-center justify-between mb-4 shrink-0">
-                  <div className="flex items-center gap-3">
-                    <div className="w-[40px] h-[40px] rounded-full flex items-center justify-center" style={{ background: `${agent.color}20`, border: `1px solid ${agent.color}` }}>
-                      <img src={agent.icon} alt={agent.name} className="w-[22px] h-[22px]" />
-                    </div>
-                    <div>
-                      <h3 className="text-white text-[16px] font-semibold">{agent.name}</h3>
-                      <p className="text-[#C1C1C1] text-[12px]">Online</p>
-                    </div>
-                  </div>
-                  <button onClick={() => setActiveAgent(null)} className="text-white/70 text-2xl leading-none">×</button>
-                </div>
-                <div className="flex-1 min-h-0 overflow-y-auto">
-                  <div className="rounded-[10px] bg-[#1B1B1B] px-4 py-3 text-white/80 text-[14px]">Hello! I&apos;m your AI assistant. How can I help you today?</div>
-                </div>
-                <div className="mt-4 flex items-center gap-2 shrink-0">
-                  <input type="text" placeholder="Type your message..." className="w-full h-[44px] rounded-[6px] bg-black border border-[#1E1E1E] px-4 text-white outline-none" />
-                  <button className="w-[44px] h-[44px] rounded-[10px] text-white flex items-center justify-center shrink-0" style={{ background: "linear-gradient(135deg, #E4000F 0%, #009DFF 100%)" }}>➤</button>
-                </div>
-              </div>
+              <AgentChatPanel
+                variant="mobile"
+                agentName={agent.name}
+                agentIcon={agent.icon}
+                agentColor={agent.color}
+                onClose={() => setActiveAgent(null)}
+                className="mt-4 block w-full max-w-[339px] md:hidden"
+              />
             )}
           </div>
         ))}
 
         {activeAgent && selectedAgent && (
-          <div className="hidden md:block xl:col-span-5 mt-10 w-full h-[480px] rounded-[18px] border border-[#1E1E1E] bg-[#111111] p-6 md:p-8 relative flex flex-col overflow-hidden">
-            <button onClick={() => setActiveAgent(null)} className="absolute top-6 right-6 text-white/70 hover:text-white text-2xl">×</button>
-
-            <div className="flex items-center gap-3 shrink-0">
-              <div className="w-[46px] h-[46px] rounded-full flex items-center justify-center" style={{ background: `${selectedAgent.color}20`, border: `1px solid ${selectedAgent.color}` }}>
-                <Image src={selectedAgent.icon} alt={activeAgent} width={28} height={28} className="w-[28px] h-[28px] object-contain" />
-              </div>
-              <div>
-                <h3 className="text-white text-[18px] font-semibold">{activeAgent.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase())}</h3>
-                <p className="text-[#C1C1C1] text-[13px]">Online</p>
-              </div>
-            </div>
-
-            <div className="flex-1 min-h-0 overflow-y-auto mt-6">
-              <div className="inline-block max-w-[900px] rounded-[10px] bg-[#1B1B1B] px-4 py-3 text-white/80 text-[15px] leading-[24px]">
-                Hello! I&apos;m your {activeAgent.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase())}. I can help you craft an AI transformation roadmap tailored to your enterprise goals. What industry are you in?
-              </div>
-            </div>
-
-            <div className="mt-6 flex items-center gap-3 shrink-0">
-              <input type="text" placeholder="Type your message..." className="w-full h-[48px] rounded-[6px] bg-black border border-[#1E1E1E] px-4 text-white outline-none placeholder:text-white/30" />
-              <button className="w-[48px] h-[48px] rounded-[12px] flex items-center justify-center text-white shrink-0" style={{ background: "linear-gradient(135deg, #E4000F 0%, #009DFF 100%)" }}>➤</button>
-            </div>
-          </div>
+          <AgentChatPanel
+            variant="desktop"
+            agentName={selectedAgent.name}
+            agentIcon={selectedAgent.icon}
+            agentColor={selectedAgent.color}
+            onClose={() => setActiveAgent(null)}
+            className="relative hidden w-full md:flex xl:col-span-5"
+          />
         )}
       </div>
     </motion.section>
