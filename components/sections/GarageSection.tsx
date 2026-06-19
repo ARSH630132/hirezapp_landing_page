@@ -13,7 +13,7 @@ export default function GarageSection() {
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 lg:h-[430px]">
         <div className="relative h-[300px] lg:h-full">
-          <img src="/garage/main.svg" alt="Garage" className="w-full h-full object-cover" />
+          <img src="/factory.png" alt="Garage" className="w-full h-full object-cover" />
         </div>
         <div className="h-full bg-black flex items-center px-6 lg:pl-[60px] py-10 lg:py-0">
           <h2 className="text-white font-semibold uppercase text-[30px] sm:text-[40px] leading-[1.4] tracking-[0.01em]">

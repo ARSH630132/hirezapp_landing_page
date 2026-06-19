@@ -84,10 +84,16 @@ export default function IndustrySolutionsSection() {
 
                 <div className="relative z-10 flex h-full flex-col">
                   <div className="flex items-start justify-between gap-3">
-                    <div className="inline-flex h-[52px] w-[52px] items-center justify-center rounded-[16px] shadow-[0_16px_30px_rgba(0,0,0,0.35)]" style={{ backgroundImage: item.accent }}>
-                      <item.icon className="h-[24px] w-[24px] text-white" />
+                    <div
+                      className="inline-flex h-[52px] w-[52px] items-center justify-center rounded-[16px]"
+                    >
+                      <item.icon
+                        className="h-[60px] w-[60px]"
+                        strokeWidth={1.75}
+                        fill="none"
+                        style={{ color: item.glow, stroke: item.glow }}
+                      />
                     </div>
-                    <div className="rounded-full bg-white/[0.05] px-3 py-1 text-[12px] font-medium uppercase tracking-[0.14em] text-white/65">{item.eyebrow}</div>
                   </div>
 
                   <h3 className="mt-6 text-[19px] leading-[25px] font-semibold text-white">{item.title}</h3>
@@ -104,8 +110,7 @@ export default function IndustrySolutionsSection() {
 
                   <div className="mt-auto pt-5">
                     <div className="flex items-center justify-between gap-3 rounded-[14px] bg-white/[0.04] px-4 py-3">
-                      <span className="text-[12px] font-medium uppercase tracking-[0.12em] text-white/50">Outcome</span>
-                      <span className="text-right text-[13px] leading-[18px] font-medium text-white/82">{item.outcome}</span>
+                      <span className="text-center text-[13px] leading-[18px] font-medium text-white/82">{item.outcome}</span>
                     </div>
                   </div>
                 </div>

@@ -15,7 +15,7 @@ import {
 
 export const heroActions = [
   { label: "Explore Foundry", href: "#foundry", icon: "/intellegent_enterprise/industry.svg" },
-  { label: "Start AI Journey", href: "#blueprint", icon: "/intellegent_enterprise/internet.svg" },
+  { label: "Start AI Journey", href: "#productized-assets", icon: "/intellegent_enterprise/internet.svg" },
   { label: "Talk to Agent", href: "#capabilities", icon: "/intellegent_enterprise/robot.svg" },
   { label: "Generate Blueprint", href: "#blueprint", icon: "/intellegent_enterprise/blueprint.svg" },
 ];
@@ -83,21 +83,25 @@ export const productizedFeatures = [
 export const insightsCards = [
   {
     title: "AI Factory",
+    image: "/ai_foundary/factory.svg",
     description:
       "Build, deploy, and govern enterprise AI agents at scale. Highlights: 500+ agents, multi-cloud, enterprise governance.",
   },
   {
     title: "Manufacturing Intelligence Lab",
+    image: "/manufacturing.png",
     description:
       "AI systems for modern industrial operations. Highlights: Digital twins, quality AI, supply chain optimisation, predictive maintenance, demand forecasting, plant copilots.",
   },
   {
     title: "Financial Services Lab",
+    image: "/finance.webp",
     description:
       "AI for banking, insurance, and regulated financial operations. Highlights: Banking AI, insurance intelligence, wealth management AI, compliance / AML agents, loan origination agents.",
   },
   {
     title: "University AI Lab",
+    image: "/what_we_build/labs.svg",
     description:
       "Future-ready AI education ecosystems for universities and higher education institutions. Highlights: Faculty enablement, AI curriculum, student innovation labs.",
   },
