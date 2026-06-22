@@ -29,8 +29,8 @@ export default function GarageSection() {
           {garageCards.map((item) => (
             <div
               key={item.title}
-              className="relative w-full max-w-[282px] rounded-[28px] overflow-hidden bg-black/10 backdrop-blur-[8px] px-5 pt-8 pb-6 flex flex-col mx-auto"
-            >
+              className="group relative w-full max-w-[282px] rounded-[28px] overflow-hidden bg-black/10 backdrop-blur-[8px] px-5 pt-8 pb-6 flex flex-col mx-auto transition-all duration-300 hover:-translate-y-2"
+>
               <div
                 className="pointer-events-none absolute inset-0 rounded-[28px] p-[1px]"
                 style={{
@@ -40,12 +40,49 @@ export default function GarageSection() {
                   maskComposite: "exclude",
                 }}
               />
-              <div className="w-full flex justify-center mb-6">
-                <img src={item.icon} alt={item.title} className="w-[72px] h-[72px] object-contain" />
+<div
+  className="absolute inset-0 rounded-[28px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+  style={{
+    boxShadow:
+      item.title === "Mission"
+        ? "inset 0 0 35px #422B2A99"
+        : item.title === "Leadership"
+        ? "inset 0 0 35px #32171699"
+        : item.title === "Locations"
+        ? "inset 0 0 35px #582F1999"
+        : item.title === "Partners"
+        ? "inset 0 0 35px #00388199"
+        : item.title === "Advisors"
+        ? "inset 0 0 35px #19263699"
+        : "inset 0 0 35px #25053799",
+  }}
+/>
+<div
+  className="w-full flex justify-center mb-6 group-hover:[filter:drop-shadow(0_0_14px_currentColor)]"
+  style={{
+    color:
+      item.title === "Mission"
+        ? "#B000FF"
+        : item.title === "Leadership"
+        ? "#8E4DFF"
+        : item.title === "Locations"
+        ? "#A855F7"
+        : item.title === "Partners"
+        ? "#FF7A1A"
+        : item.title === "Advisors"
+        ? "#24ABFF"
+        : "#04B0FE",
+  }}
+>
+<img
+  src={item.icon}
+  alt={item.title}
+  className="w-[72px] h-[72px] object-contain relative z-10 transition-all duration-300 group-hover:scale-105"
+/>
               </div>
-              <h3 className="text-[18px] leading-none font-semibold text-white">{item.title}</h3>
-              <p className="mt-3 text-[#C1C1C1] text-[16px] leading-[1.5] font-medium">{item.desc}</p>
-              <button className="mt-6 text-[#FF2B2B] text-[16px] leading-none font-medium text-left">Learn More →</button>
+              <h3 className="relative z-10 text-[18px] leading-none font-semibold text-white">{item.title}</h3>
+              <p className="relative z-10 mt-3 text-[#C1C1C1] text-[16px] leading-[1.5] font-medium">{item.desc}</p>
+              <button className="relative z-10 mt-6 text-[#FF2B2B] text-[16px] leading-none font-medium text-left">Learn More →</button>
             </div>
           ))}
         </div>

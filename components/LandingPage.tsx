@@ -30,7 +30,7 @@ export default function LandingPage() {
         <FoundrySection />
         <IndustrySolutionsSection />
         <InsightsSection />
-        <ProductizedAssetsSection />
+        {/* <ProductizedAssetsSection /> */}
         <GarageSection />
         <ContactSection />
         <Footer />
