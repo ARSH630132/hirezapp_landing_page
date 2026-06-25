@@ -2,7 +2,8 @@
   "completed": [
     "00-preflight-project-context",
     "01-safety-cleanup-no-slug-no-publicroutepage",
-    "02-global-design-system-for-inner-pages"
+    "02-global-design-system-for-inner-pages",
+    "03-homepage-hero-preservation-and-metrics"
   ],
   "failed": []
 }
