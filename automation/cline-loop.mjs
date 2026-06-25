@@ -51,47 +51,146 @@ const LANDING_PROTECTED_PATTERNS = [
 ];
 
 const GLOBAL_GUARDRAILS = `
-GLOBAL NON-NEGOTIABLE RULES
+UI QUALITY CONSTITUTION
 
-You are working in the GFF AI website codebase.
+The UI must not look AI-generated, generic, templated, repetitive, or unfinished.
 
-Do not hallucinate. Do not invent fake clients, fake metrics, fake dashboards, fake logos, fake reports, fake authors, fake downloads, fake office addresses, fake auth, fake OTP, or fake exports.
+Every new page, page family, section, or component must feel like it was designed intentionally by a senior Figma designer and implemented by a senior frontend engineer.
 
-Do not add backend functionality.
-Do not add FastAPI yet.
-Do not add AWS.
-Do not add auth.
-Do not add real OTP sending.
-Do not add real email sending.
-Do not add database calls.
-Do not add real API integrations.
-Do not add credentials or env requirements.
+The site must feel:
 
-Do not reintroduce slug routing.
-Do not create app/[...slug]/page.tsx.
-Do not create components/PublicRoutePage.tsx.
-Do not import PublicRoutePage.
+* Premium
+* Enterprise-grade
+* Expensive
+* Custom
+* Strategic
+* Modern
+* Calm
+* Spacious
+* Interactive
+* Built for 2026
+* Consistent with the approved landing page theme
 
-All public routes must remain explicit App Router pages.
+The UI must not feel:
 
-For existing approved landing page UI:
-- Preserve hero layout.
-- Preserve right-side video placement.
-- Preserve approved header/footer visual design.
-- Preserve existing landing section visual design.
-- Only touch landing sections when the specific task says allowLandingChanges=true.
+* Generic SaaS
+* Random AI template
+* Badge-heavy
+* Box-inside-box heavy
+* Overloaded with gradients
+* Overloaded with pills
+* Robotic
+* Repetitive across pages
+* Like copied cards with different text
+* Like a basic CMS page
+* Like AI slop
+
+For every page or section, create a clear design idea before implementation:
+
+* What is the story of this page?
+* What should the user understand in the first 5 seconds?
+* What visual metaphor fits this page?
+* What interaction makes this page feel alive?
+* What layout makes this page different from its siblings?
+* How does this page still belong to the GFF AI design system?
+
+Every public inner page should include at least three of these design elements where appropriate:
+
+* Custom hero visual
+* SVG/CSS architecture graphic
+* Narrative timeline
+* Bento grid
+* Tabbed content system
+* Carousel or horizontal story rail
+* Interactive selector
+* Layered product preview
+* Operating model diagram
+* Agent workflow map
+* Knowledge graph visual
+* Global hub visual
+* Research/report visual
+* Secure portal preview
+* Subtle animated background grid
+* Motion reveal
+* Hover micro-interactions
+* Premium CTA section
+
+Do not use the same generic layout for every page.
+
+Category pages should have unique design families:
+
+* Why GFF AI: executive narrative, editorial, global, strategic
+* Capabilities: technical architecture, systems, stacks, diagrams
+* Industries: challenge maps, agent maps, reference solutions, outcomes
+* Platforms: product pages, modules, workflows, software previews
+* Build With GFF: interactive tools, forms, guided journeys, result panels
+* Resources: editorial library, research archive, intelligence hub
+* Company: institutional, global footprint, leadership, credibility
+* Contact/Portal: secure, operational, enterprise workspace
+
+Subpages inside a category should share a coherent family design, but each page must still feel individually tailored with:
+
+* Unique hero copy
+* Unique hero visual
+* Unique section order where useful
+* Unique page-specific modules
+* Unique related links
+* Unique CTA framing
+* Unique visual metaphor
+
+Use motion carefully:
+
+* Use Framer Motion or motion/react only if already installed.
+* Use subtle page entrance, section reveal, tab transition, carousel motion, hover states, and diagram animation.
+* Respect prefers-reduced-motion.
+* Do not animate everything.
+* Motion should feel expensive, not noisy.
+
+Use Aceternity-inspired patterns carefully:
+
+* Bento grids
+* Spotlight cards
+* Moving borders
+* Sticky scroll reveals
+* Timeline sections
+* Card stacks
+* Background beams
+* Animated tabs
+* Hover cards
+* Grid backgrounds
+
+Do not install Aceternity UI unless explicitly approved.
+Recreate lightweight effects locally with Tailwind/CSS/SVG/Framer Motion.
+
+Graphics rules:
+
+* Prefer SVG/CSS visuals over external images.
+* Use existing local assets if available.
+* Do not use random internet images.
+* Do not use copyrighted images.
+* Do not use fake client logos.
+* Do not use fake product screenshots.
+* Do not use fake dashboards with made-up numbers.
 
 Design quality:
 - Premium 2026 enterprise AI website.
 - Follow current landing page theme.
-- Clean, Apple-like, custom, expensive.
-- Avoid box-inside-box clutter.
-- Avoid excessive pills/badges.
-- Avoid random neon.
-- Avoid generic robot imagery.
-- Use Framer Motion only if already installed.
-- Use lightweight local CSS/SVG/animation effects.
-- Mobile responsive and accessible.
+
+Before finishing any implementation, run a self-review:
+
+1. Does this page look custom or generic?
+2. Is there a real narrative?
+3. Is the visual hierarchy strong?
+4. Is there at least one page-specific visual idea?
+5. Is the mobile layout excellent?
+6. Are interactions useful, not decorative noise?
+7. Does it match the approved landing page theme?
+8. Does it avoid AI slop?
+9. Does it avoid excessive pills, badges, nested boxes, and random gradients?
+10. Would this look credible in a premium enterprise AI company website?
+
+If the answer to any of these is no, improve the UI before finishing.
+
 `;
 
 function run(cmd, args = [], opts = {}) {
@@ -275,6 +374,16 @@ Required final response:
 function makeImplementationPrompt(task) {
   return `
 Implement this task only.
+Before writing code, create a short internal design plan:
+1. Page or section narrative
+2. Visual metaphor
+3. Layout strategy
+4. Interaction strategy
+5. Mobile strategy
+6. Files to change
+7. Files not to touch
+
+Then implement the task.
 
 Title:
 ${task.title}
@@ -327,9 +436,33 @@ Rules:
 `;
 }
 
+
 function makeReviewPrompt(task) {
   return `
 Review the most recent changes for this task. You may make small fixes only if they are necessary.
+
+Act as a senior UI/UX design reviewer and frontend quality reviewer.
+
+Do not add unrelated features.
+Do not redesign unrelated areas.
+Do not touch the landing page unless allowLandingChanges is true.
+
+Review the UI against this quality bar:
+1. Does it look premium and custom?
+2. Does it avoid generic AI/SaaS template design?
+3. Does it have a clear narrative?
+4. Does it have page-specific visual thinking?
+5. Does it use the current landing page theme without copying it lazily?
+6. Does it avoid box-inside-box clutter?
+7. Does it avoid excessive pills and badges?
+8. Does it avoid fake dashboards, fake data, fake clients, fake logos, and fake screenshots?
+9. Does it include useful interaction, motion, tabs, carousels, diagrams, or graphics where appropriate?
+10. Does it look excellent on mobile?
+11. Are spacing, typography, CTA hierarchy, and visual rhythm polished?
+12. Is it accessible and keyboard-friendly?
+
+If the UI feels generic, repetitive, or unfinished, improve only this task's target area.
+If everything is good, do not edit files.
 
 Task:
 ${task.title}
@@ -345,8 +478,6 @@ Checklist:
 8. Mobile responsive?
 9. Accessible headings/buttons/forms?
 10. No obvious broken links/imports?
-
-If everything is good, do not edit files. If there is a clear issue, fix only that issue.
 `;
 }
 
