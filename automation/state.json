@@ -1,5 +1,7 @@
 {
-  "completed": [],
+  "completed": [
+    "00-preflight-project-context"
+  ],
   "failed": [
     {
       "id": "00-preflight-project-context",
