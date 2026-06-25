@@ -1,7 +1,8 @@
 {
   "completed": [
     "00-preflight-project-context",
-    "01-safety-cleanup-no-slug-no-publicroutepage"
+    "01-safety-cleanup-no-slug-no-publicroutepage",
+    "02-global-design-system-for-inner-pages"
   ],
   "failed": []
 }
