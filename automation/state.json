@@ -1,6 +1,7 @@
 {
   "completed": [
-    "00-preflight-project-context"
+    "00-preflight-project-context",
+    "01-safety-cleanup-no-slug-no-publicroutepage"
   ],
   "failed": []
 }
