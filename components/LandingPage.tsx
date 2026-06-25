@@ -12,6 +12,16 @@ import IndustrySolutionsSection from "@/components/sections/IndustrySolutionsSec
 import InsightsSection from "@/components/sections/InsightsSection";
 import ProductizedAssetsSection from "@/components/sections/ProductizedAssetsSection";
 import TalkToAgentSection from "@/components/sections/TalkToAgentSection";
+
+import QuickSearchSection from "@/components/sections/QuickSearchSection";
+import JourneySection from "@/components/sections/JourneySection";
+import WhatWeBuildSection from "@/components/sections/WhatWeBuildSection";
+import InteractiveExperienceSection from "@/components/sections/InteractiveExperienceSection";
+import GlobalPresenceSection from "@/components/sections/GlobalPresenceSection";
+import LiveDashboardSection from "@/components/sections/LiveDashboardSection";
+import ClientSuccessSection from "@/components/sections/ClientSuccessSection";
+import LatestResearchSection from "@/components/sections/LatestResearchSection";
+
 import { pageStaggerVariants } from "@/lib/animations";
 
 export default function LandingPage() {
@@ -25,12 +35,19 @@ export default function LandingPage() {
       <div className="w-full max-w-[1920px] mx-auto bg-[#010101] overflow-x-hidden">
         <Header />
         <HeroSection />
+        <QuickSearchSection />
+        <JourneySection />
+        <WhatWeBuildSection />
+        <InteractiveExperienceSection />
+        <GlobalPresenceSection />
+        <ClientSuccessSection />
+        <LiveDashboardSection />
+        <LatestResearchSection />
         <TalkToAgentSection />
         <BuildAIEnterpriseSection />
         <FoundrySection />
         <IndustrySolutionsSection />
         <InsightsSection />
-        {/* <ProductizedAssetsSection /> */}
         <GarageSection />
         <ContactSection />
         <Footer />

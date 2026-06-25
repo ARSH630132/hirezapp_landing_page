@@ -243,3 +243,69 @@ export function getFieldLabel(key: BlueprintFieldKey) {
 export function getSelectedOptionLabel(key: BlueprintFieldKey, value: string) {
   return getOptionLabel(key, value);
 }
+
+export function calculateBlueprintScore(input: {
+  aiMaturityScore: number;
+  businessNeedScore: number;
+  dataReadinessScore: number;
+  processComplexityScore: number;
+  transformationReadinessScore: number;
+}) {
+  const {
+    aiMaturityScore,
+    businessNeedScore,
+    dataReadinessScore,
+    processComplexityScore,
+    transformationReadinessScore,
+  } = input;
+  
+  const score = 
+    (aiMaturityScore * 0.20) + 
+    (businessNeedScore * 0.25) + 
+    (dataReadinessScore * 0.20) + 
+    (processComplexityScore * 0.20) + 
+    (transformationReadinessScore * 0.15);
+    
+  return Math.round(score);
+}
+
+export function getScoreCategory(score: number) {
+  if (score <= 25) return "AI Beginner";
+  if (score <= 50) return "AI Explorer";
+  if (score <= 70) return "AI Adopter";
+  if (score <= 85) return "AI Transformer";
+  return "AI-Native Leader";
+}
+
+export function getRecommendedOpportunities(industry: string, priorities: string[]) {
+  const defaults = [
+    "Procurement Copilot",
+    "HR Assistant",
+    "Contract Intelligence",
+    "Knowledge Search",
+    "Executive Dashboard"
+  ];
+  
+  if (industry === "Banking" && priorities.includes("Strengthen Compliance")) {
+    return ["Contract Intelligence", "Compliance Copilot", "Executive Dashboard", "Knowledge Search", "Risk Operations Assistant"];
+  }
+  
+  if (industry === "Retail" && (priorities.includes("Increase Revenue") || priorities.includes("Improve Customer Experience"))) {
+    return ["Customer Experience Copilot", "Store Operations Assistant", "Merchandising Intelligence", "Knowledge Search", "Executive Dashboard"];
+  }
+  
+  if (industry === "Manufacturing" && (priorities.includes("Improve Productivity") || priorities.includes("Automate Processes"))) {
+    return ["Maintenance Copilot", "Production Knowledge Search", "Procurement Copilot", "Quality Intelligence", "Executive Dashboard"];
+  }
+  
+  return defaults;
+}
+
+export function getRecommendedSolutions(input: any) {
+  return [
+    "Agent Factory™",
+    "Knowledge Graph™",
+    "AI Governance™",
+    "Managed AI Operations™"
+  ];
+}

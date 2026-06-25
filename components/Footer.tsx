@@ -5,12 +5,20 @@ import { MdEmail } from "react-icons/md";
 const footerColumns = [
   {
     title: "Information",
-    items: ["Responsible AI", "Careers", "Resources", "About Us", "Contact Us", "Privacy Policy", "Terms & Conditions"],
+    items: ["Careers", "Resources", "Privacy", "NDA", "Terms", "Investor Relations", "Contact"],
   },
   {
-    title: "Service",
-    items: ["AI Chips", "Authentication", "Edtech", "Femtech", "TravelTech", "Proptech"],
+    title: "Solutions",
+    items: ["Capabilities", "Agentic AI", "AI Governance", "Managed AI", "Knowledge Graph", "AI Labs"],
   },
+  {
+    title: "Industries",
+    items: ["Banking", "Insurance", "Healthcare", "Manufacturing", "Retail", "Government", "Telecom"],
+  },
+  {
+    title: "Company",
+    items: ["Mission", "Leadership", "Locations", "Partners", "Media", "Client Portal"],
+  }
 ];
 
 const socialIcons = [

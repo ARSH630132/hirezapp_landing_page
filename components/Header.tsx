@@ -28,12 +28,37 @@ export default function Header({ contactHref = "/#contact" }: HeaderProps) {
           </div>
         </Link>
 
-        <div className="hidden md:flex items-center gap-[55px] text-white absolute left-1/2 -translate-x-1/2">
-          {navItems.map((item) => (
-            <Link key={item.label} href={item.href} className="text-white text-[16px] leading-[24px] font-medium hover:text-red-400 transition-colors whitespace-nowrap">
-              {item.label}
-            </Link>
-          ))}
+        <div className="hidden lg:flex items-center gap-6 xl:gap-[40px] text-white absolute left-1/2 -translate-x-1/2">
+          <Link href="/" className="text-white text-[14px] xl:text-[16px] leading-[24px] font-medium hover:text-red-400 transition-colors whitespace-nowrap">HOME</Link>
+          
+          <div className="group relative">
+            <button className="flex items-center gap-1 text-white text-[14px] xl:text-[16px] leading-[24px] font-medium hover:text-red-400 transition-colors whitespace-nowrap py-4">
+              SOLUTIONS
+              <svg className="w-4 h-4 opacity-70 group-hover:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div className="absolute top-full left-0 hidden group-hover:flex flex-col bg-[#050505] border border-white/10 rounded-[12px] p-3 shadow-xl min-w-[200px]">
+              <Link href="/capabilities" className="text-white/80 hover:text-white hover:bg-white/5 px-4 py-2 rounded-md text-[14px] transition-colors">CAPABILITIES</Link>
+              <Link href="/platforms" className="text-white/80 hover:text-white hover:bg-white/5 px-4 py-2 rounded-md text-[14px] transition-colors">PLATFORMS</Link>
+              <Link href="/build" className="text-white/80 hover:text-white hover:bg-white/5 px-4 py-2 rounded-md text-[14px] transition-colors">BUILD WITH GFF</Link>
+            </div>
+          </div>
+
+          <Link href="/industries" className="text-white text-[14px] xl:text-[16px] leading-[24px] font-medium hover:text-red-400 transition-colors whitespace-nowrap">INDUSTRIES</Link>
+          
+          <div className="group relative">
+            <button className="flex items-center gap-1 text-white text-[14px] xl:text-[16px] leading-[24px] font-medium hover:text-red-400 transition-colors whitespace-nowrap py-4">
+              ABOUT
+              <svg className="w-4 h-4 opacity-70 group-hover:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div className="absolute top-full left-0 hidden group-hover:flex flex-col bg-[#050505] border border-white/10 rounded-[12px] p-3 shadow-xl min-w-[200px]">
+              <Link href="/why-gff-ai" className="text-white/80 hover:text-white hover:bg-white/5 px-4 py-2 rounded-md text-[14px] transition-colors">WHY GFF AI</Link>
+              <Link href="/company" className="text-white/80 hover:text-white hover:bg-white/5 px-4 py-2 rounded-md text-[14px] transition-colors">COMPANY</Link>
+              <Link href="/resources" className="text-white/80 hover:text-white hover:bg-white/5 px-4 py-2 rounded-md text-[14px] transition-colors">RESOURCES</Link>
+            </div>
+          </div>
+
+          <Link href="/contact" className="text-white text-[14px] xl:text-[16px] leading-[24px] font-medium hover:text-red-400 transition-colors whitespace-nowrap">CONTACT</Link>
+          <Link href="/portal" className="text-white text-[14px] xl:text-[16px] leading-[24px] font-medium text-[#009DFF] hover:text-white transition-colors whitespace-nowrap">CLIENT LOGIN</Link>
         </div>
 
         <a

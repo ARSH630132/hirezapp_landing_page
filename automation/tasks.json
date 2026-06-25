@@ -1,0 +1,306 @@
+[
+  {
+    "id": "00-preflight-project-context",
+    "title": "Preflight project context and guardrail audit",
+    "scope": "audit",
+    "target": "whole project",
+    "allowLandingChanges": false,
+    "prompt": "Perform a preflight audit only. Do not edit files. Inspect package.json, app route tree, app/page.tsx, components/LandingPage.tsx, components/Header.tsx, components/Footer.tsx, components/sections, lib/site-map-data.ts, lib/public-page-content.ts, lib/landing-data.ts, lib/blueprint-data.ts, lib/frontend-placeholders.ts, components/Phase2PublicPages.tsx, components/Phase2InteractivePanels.tsx, and components/CommandCenter.tsx if they exist. Confirm the framework, routing model, styling stack, animation libraries, current page architecture, and whether framer-motion or motion/react is installed. Confirm whether any Aceternity UI components already exist; do not install anything. Check that there is no app/[...slug]/page.tsx and no components/PublicRoutePage.tsx. Search for PublicRoutePage imports and slug catch-all references. Check whether the landing page has all required homepage sections: Hero, Enterprise Quick Search, Garage Foundry Factory journey, What We Build, Interactive Experience, Global Presence, Client Success, Live Dashboard, Latest Research, Contact, Footer. Check whether all public pages are explicit App Router pages. Check whether the Blueprint scoring formula exists and whether the banking test case can return 87/100. Produce a gap list only. Do not edit files. Final response must include files inspected, missing items, route gaps, homepage gaps, design-system observations, animation-library availability, and recommended next task."
+  },
+  {
+    "id": "01-safety-cleanup-no-slug-no-publicroutepage",
+    "title": "Remove forbidden slug route leftovers",
+    "scope": "routing-safety",
+    "target": "explicit public route architecture",
+    "allowLandingChanges": false,
+    "prompt": "Implement only routing safety cleanup. Remove any forbidden catch-all slug route leftovers. There must be no app/[...slug]/page.tsx, no empty app/[...slug] directory, no components/PublicRoutePage.tsx, and no imports or references to PublicRoutePage. Do not redesign anything. Do not touch the landing page. Ensure all public pages remain explicit App Router pages. If an explicit page is missing, create a minimal explicit page file that uses the existing shared inner-page template, not slug logic. Run lint and build. Acceptance: no module-not-found for PublicRoutePage, no slug route files, no slug references, build passes, landing page unchanged."
+  },
+  {
+    "id": "02-global-design-system-for-inner-pages",
+    "title": "Create premium inner-page design primitives",
+    "scope": "design-system",
+    "target": "public pages except landing",
+    "allowLandingChanges": false,
+    "prompt": "Create or improve shared design primitives for all public inner pages except the landing page. Do not modify app/page.tsx, components/LandingPage.tsx, or existing landing sections. Inspect the landing page visual language and create inner-page-only components that follow its theme while allowing unique page designs. Build lightweight, maintainable components such as InnerPageShell, InnerPageHero, NarrativeSection, PremiumCTA, MotionReveal, BentoGrid, RelatedPagesGrid, ArchitectureDiagram, OperatingModelTimeline, EnterpriseFlowDiagram, AnimatedBackgroundGrid, PlatformProductPreview, IndustrySolutionMap, ResearchLibraryGrid, GlobalHubMap, SecurePortalPreview, and Carousel if useful. Use Framer Motion or motion/react only if already installed. Use Aceternity-inspired patterns such as bento grids, spotlight backgrounds, moving borders, sticky reveals, timelines, and card stacks by implementing lightweight local components with current Tailwind/CSS, not by installing heavy dependencies. Add SVG/CSS graphics and abstract visual panels. No external image URLs, no copyrighted images, no fake screenshots, no fake client logos. All components must be responsive, accessible, respect reduced motion, and scoped so they do not alter the landing page. Run lint/build. Final response must confirm landing page untouched."
+  },
+  {
+    "id": "03-homepage-hero-preservation-and-metrics",
+    "title": "Verify approved hero and required metrics",
+    "scope": "homepage-section",
+    "target": "landing hero",
+    "allowLandingChanges": true,
+    "prompt": "Inspect the landing hero only. Preserve the approved hero UI exactly, especially the right-side video placement, hero layout, spacing, typography, video container, overlay, and responsive behavior. Do not redesign the hero. Verify the hero contains the required headline: Building the World's First AI-Native Enterprise Transformation Company. Verify the subheading: Combining Agentic AI, Knowledge Graphs, Industry Platforms, Talent Cloud, and Managed AI Operations into a single transformation ecosystem. Verify primary CTA: Generate My Enterprise AI Blueprint. Verify secondary CTA: Experience GFF AI Live. Add or preserve hero metrics in the least intrusive existing style: 500+ AI Use Cases, 20+ Industries, Global Delivery Model, Agent Factory, Knowledge Graph Factory, AI Academy. Do not create fake metrics. Do not replace the video with a dashboard or foundry visual. Run lint/build. Final response must confirm hero video placement untouched."
+  },
+  {
+    "id": "04-homepage-enterprise-quick-search",
+    "title": "Restore or build Section 2 Enterprise Quick Search",
+    "scope": "homepage-section",
+    "target": "Enterprise Quick Search after hero",
+    "allowLandingChanges": true,
+    "prompt": "Add or restore Section 2 Enterprise Quick Search immediately after the approved hero. This section is mandatory. Preserve the approved hero and all existing landing styles. Build a local, frontend-only AI concierge style search that searches static local content across Industries, Capabilities, Platforms, Build With GFF tools, Resources, and Company pages. Include clickable example searches: Build AI for Banking, Create University AI Lab, Insurance AI, Mining AI, Retail AI, Build AI GCC. Results must appear instantly when typing or clicking examples. Each result must show title, category, short description, and route link. No API calls. No backend. No fake data. Design must be premium, clean, Apple-like, and consistent with the current landing theme. Use subtle Framer Motion or CSS transitions if available. Avoid box-inside-box clutter, excessive pills, badge soup, and neon overload. Mobile must be excellent. Acceptance: section appears after hero, search works locally, examples work, empty state is polished, links resolve, build passes."
+  },
+  {
+    "id": "05-homepage-garage-foundry-factory-journey",
+    "title": "Complete Garage Foundry Factory journey",
+    "scope": "homepage-section",
+    "target": "Garage Foundry Factory journey",
+    "allowLandingChanges": true,
+    "prompt": "Verify or restore the homepage transformation journey. It must include Garage, Foundry, Factory, Operate, Optimize, and Scale. Use the existing approved landing section if one already maps to this. Do not create duplicates. Do not redesign approved sections unnecessarily. Each step should have a concise description, outcome, and route link: Garage /platforms/garage, Foundry /platforms/foundry, Factory /platforms/factory, Operate /capabilities/operations or /platforms/control-center, Optimize /platforms/control-center, Scale /platforms/factory. UI should feel premium, like an enterprise operating model timeline, with subtle motion and responsive vertical mobile layout. Avoid visual clutter. Run lint/build."
+  },
+  {
+    "id": "06-homepage-what-we-build",
+    "title": "Complete What We Build section",
+    "scope": "homepage-section",
+    "target": "What We Build capabilities section",
+    "allowLandingChanges": true,
+    "prompt": "Verify or restore the homepage What We Build section. It must include these required cards: AI Strategy, AI Engineering, Agentic AI, AI Governance, AI Labs, AI Factory, AI Marketplace, AI Operations. Use existing approved card/grid design if present. Do not duplicate an existing capabilities section. Add links: AI Strategy /capabilities/strategy, AI Engineering /capabilities/engineering, Agentic AI /capabilities/agents, AI Governance /capabilities/governance, AI Labs /capabilities/labs, AI Factory /platforms/factory or /capabilities/operations, AI Marketplace /platforms/marketplace, AI Operations /capabilities/operations. Include secondary references where natural: Knowledge Graph, Data Platforms, Digital Twins, University Platforms, Managed Services. Design must be elegant, expensive, responsive, and not a generic card dump. Use subtle hover and reveal animations. No fake claims. Run lint/build."
+  },
+  {
+    "id": "07-homepage-interactive-experience",
+    "title": "Complete Interactive Experience section",
+    "scope": "homepage-section",
+    "target": "Interactive Experience tools section",
+    "allowLandingChanges": true,
+    "prompt": "Verify or restore the Interactive Experience section on the homepage. It must include Talk to Agent, Blueprint Generator, AI Readiness, ROI Calculator, Marketplace, and Foundry Studio. Link to /build/talk, /build/blueprint, /build/assessment, /build/roi, /platforms/marketplace or /build/marketplace, /build/foundry-studio or /platforms/foundry. If an existing BuildAIEnterpriseSection or similar approved section exists, update it minimally instead of replacing it. The design should feel like premium self-service enterprise tools, with tasteful cards or tabs, subtle motion, frontend-only preview behavior, no real API calls, and no fake outputs. Avoid nested boxes and excessive badges. Run lint/build."
+  },
+  {
+    "id": "08-homepage-global-presence",
+    "title": "Add Global Presence section",
+    "scope": "homepage-section",
+    "target": "Global Presence",
+    "allowLandingChanges": true,
+    "prompt": "Add or restore the Global Presence section on the homepage. Include Singapore as Global Headquarters, London UK as Client Innovation Centre or Client Center, India as AI Engineering Factory or Build Shop, and future regions Australia, Middle East, USA. Use an existing world map component if available. If not, create a lightweight SVG/CSS global hub visual or premium region grid. Do not add a heavy 3D globe dependency. Do not invent office addresses. Do not invent fake headcount unless already approved in content. Make the UI clean, cinematic, enterprise-grade, responsive, and aligned with landing theme. Add subtle motion or hover states. Run lint/build."
+  },
+  {
+    "id": "09-homepage-client-success",
+    "title": "Add Client Success section",
+    "scope": "homepage-section",
+    "target": "Client Success",
+    "allowLandingChanges": true,
+    "prompt": "Add or restore the homepage Client Success section. Required elements: Case Studies, Video, Architecture, Business Outcomes. Use only anonymized representative patterns, never fake clients or fake logos. Representative patterns may include Global Banking Transformation, Healthcare Knowledge Operations, Manufacturing AI Factory, Retail Agent Operations. Label them as representative patterns. No fake numbers, no fake ROI, no fake customer names. Create a premium design with tabs, carousel, or narrative cards if appropriate. Include an architecture preview panel and outcome themes such as faster decision making, reduced manual effort, better knowledge access, improved compliance workflows, and improved employee experience. Mobile friendly. Run lint/build."
+  },
+  {
+    "id": "10-homepage-live-dashboard",
+    "title": "Add Live Dashboard preview section",
+    "scope": "homepage-section",
+    "target": "Live Dashboard",
+    "allowLandingChanges": true,
+    "prompt": "Add or restore the homepage Live Dashboard section. Required labels: Active Clients, Agents Running, AI Projects, Countries, Industries, Agent Health, Delivery, Spend, Adoption, Governance. Do not invent precise values. You may use only approved values such as 500+ AI Use Cases and 20+ Industries where appropriate. Other dashboard items must be label-only states such as Monitoring-ready, Connected in Control Center, Frontend preview, or Governance-ready. Design should feel like a premium enterprise AI operations control center, not a crypto dashboard. Use subtle animated status lines, charts without fake data, and clean dashboard panels. No backend, no real-time claims. Responsive and accessible. Run lint/build."
+  },
+  {
+    "id": "11-homepage-latest-research",
+    "title": "Add Latest Research section",
+    "scope": "homepage-section",
+    "target": "Latest Research",
+    "allowLandingChanges": true,
+    "prompt": "Add or restore the homepage Latest Research section. Include Articles, Videos, Podcasts, Whitepapers, plus links to Blog, Research, Case Studies, Architecture Library, Webinars, Events, Developer Docs, Downloads, Reports, Newsroom, Thought Leadership, and Patterns of Intelligence routes where they exist. Do not invent article titles with fake authors, fake dates, fake PDFs, or fake downloads. Use category cards, editorial visuals, research library previews, and coming-soon states. Design should feel like a premium research and intelligence library. Mobile friendly. Run lint/build."
+  },
+  {
+    "id": "12-blueprint-generator-compliance",
+    "title": "Verify and fix Blueprint Generator scoring",
+    "scope": "functionality",
+    "target": "Blueprint Generator",
+    "allowLandingChanges": true,
+    "prompt": "Verify and fix the Blueprint Generator. It must be frontend-only and may appear on homepage and /build/blueprint. It must include title: Get Your Enterprise AI Blueprint in 60 Seconds. Required inputs: Industry, Company Size, Top Priorities with max 3 selection, AI Journey, Data Readiness, Leadership Commitment, Biggest Challenge, Email, OTP placeholder. Optional: Budget and Geography. It must not send real OTP or call backend. Formula: Blueprint Score = 0.20(AI Maturity)+0.25(Business Need)+0.20(Data Readiness)+0.20(Process Complexity)+0.15(Transformation Readiness). Scoring: No AI 10, Exploring AI 30, Running Pilots 60, Scaling AI 85, AI-Driven Enterprise or AI-Native 100. Business Need: Cost Reduction 20, Productivity 20, Customer Experience 15, Revenue Growth 15, Compliance 10, AI Transformation 20, Automate Processes 20, capped at 100. Data Readiness: Highly fragmented 20, Partially connected 50, Mostly integrated 75, Fully integrated 100. Process Complexity: <100 20, 100-1000 50, 1000-10000 80, 10000+ 100. Transformation Readiness: Not Discussed 20, Exploring 50, Budget Approved 80, Executive Mandate 100. Categories: 0-25 AI Beginner, 26-50 AI Explorer, 51-70 AI Adopter, 71-85 AI Transformer, 86-100 AI-Native Leader. Test example Banking, 15000 employees, Scaling AI, Productivity + Cost Reduction + Compliance, Mostly Integrated Data, Budget Approved must display 87/100. Required outputs: AI Readiness Score, Top 5 Recommended AI Opportunities, Recommended GFF AI Solution, Expected Business Impact, 90-Day Roadmap. Label impacts as expected/modelled, not guaranteed. Run lint/build."
+  },
+  {
+    "id": "13-nav-footer-and-sitemap-completion",
+    "title": "Complete navigation footer and sitemap links",
+    "scope": "navigation-footer",
+    "target": "Header Footer Sitemap",
+    "allowLandingChanges": false,
+    "prompt": "Verify and complete the public navigation, footer, and sitemap route links. Do not redesign header or footer. Keep the current approved visual style. Header must include HOME, WHY GFF AI, CAPABILITIES, INDUSTRIES, PLATFORMS, BUILD WITH GFF, RESOURCES, COMPANY, CONTACT, CLIENT LOGIN. Footer must include Quick Links, Solutions, Industries, Platforms, Company, Legal, Newsletter where current layout supports it. Required legal/support links: Privacy, NDA, Terms, Investor Relations, Client Portal. All hrefs must resolve to explicit pages. Do not use slug routing. Do not create fake newsletter sending; frontend-only state only. Run lint/build."
+  },
+  {
+    "id": "14-command-center",
+    "title": "Command Center CmdK CtrlK",
+    "scope": "functionality",
+    "target": "Command Center",
+    "allowLandingChanges": false,
+    "prompt": "Verify or implement a frontend-only Command Center. It should open with Cmd+K on Mac and Ctrl+K on Windows/Linux. Commands: Talk to Agent /build/talk, Generate Blueprint /build/blueprint, Estimate ROI /build/roi, Launch Sandbox /build/sandbox, Book Workshop /contact. It must be keyboard accessible, have focus handling, work on desktop, and have a safe mobile trigger if needed. Use existing header or global layout mounting without redesigning the header or landing page. No API calls. Use premium modal/command UI inspired by modern command palettes and Aceternity-style effects if lightweight. Run lint/build."
+  },
+  {
+    "id": "15-frontend-only-placeholder-safety",
+    "title": "Ensure frontend-only placeholders",
+    "scope": "frontend-safety",
+    "target": "forms and interactive tools",
+    "allowLandingChanges": false,
+    "prompt": "Audit and fix all forms and interactive tools to be frontend-only placeholders. Check Contact, Newsletter, Portal login, Control Center, Talk to Agent, Blueprint, Assessment, ROI, Sandbox, Proposal Builder, Marketplace, Foundry Studio. No real API calls, no auth, no AWS, no OTP sending, no real email sending, no database calls, no export file generation, no env dependency. If an existing legacy API route exists, do not use it from the public frontend. Placeholder copy must clearly say backend/FastAPI integration will come later only where appropriate. Run grep/search for fetch, axios, app/api calls, localhost, NEXT_PUBLIC_API, AWS, Cognito, SES, S3. Fix violations only. Run lint/build."
+  },
+  {
+    "id": "16-why-gff-ai-design-family",
+    "title": "Design Why GFF AI page family",
+    "scope": "page-family-design",
+    "target": "Why GFF AI explicit pages",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /why-gff-ai and all Why GFF AI subpages into a premium executive narrative design family. Do not touch the landing page. Pages: /why-gff-ai, /why-gff-ai/mission, /why-gff-ai/vision, /why-gff-ai/garage-foundry-factory, /why-gff-ai/operating-model, /why-gff-ai/leadership, /why-gff-ai/global-model, /why-gff-ai/technology-philosophy, /why-gff-ai/differentiator. Design mood: strategic, editorial, boardroom-level, global, premium. Use unique page-specific hero visuals, narrative sections, operating model diagrams, timeline/storytelling blocks, global hub visuals, research/IP panels, differentiator grids, carousels or tabs where useful. Use Framer Motion if available, lightweight Aceternity-inspired bento/timeline/spotlight patterns, CSS/SVG graphics, and responsive layouts. Content must include GFF AI PTE LTD., UEN 202621347N where appropriate, Architects of the Agent Economy, Dr. Ashish Chandra only where approved, Singapore Global HQ, London Client Innovation Centre, India AI Engineering Factory, Garage Innovation Layer, Foundry Co-Creation Layer, Factory Industrialisation Layer, GFF AI Research Division, proprietary indices, Agentic GDP Index, Digital Labour Penetration Score, AI Board Readiness Index, GFF AI Reference Architecture. Do not invent other leaders, addresses, clients, or fake metrics. Leadership page must use approved Dr. Ashish Chandra and polished placeholders for other profiles if needed. Every page must have one H1, strong narrative, CTA, related links, mobile excellence. Run lint/build."
+  },
+  {
+    "id": "17-capabilities-design-family",
+    "title": "Design Capabilities page family",
+    "scope": "page-family-design",
+    "target": "Capabilities explicit pages",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /capabilities and all capability subpages into a premium technical architecture design family. Do not touch landing page. Pages: /capabilities, /capabilities/strategy, /capabilities/engineering, /capabilities/agents, /capabilities/governance, /capabilities/data, /capabilities/labs, /capabilities/operations, /capabilities/twins, /capabilities/universities, /capabilities/knowledge-graph, /capabilities/managed-services. Design mood: technical, architectural, systems-driven, precise, credible, expensive. Build a unique capabilities landing page with capability command grid, enterprise AI stack, Agent Factory and Knowledge Graph Factory visual, Garage-to-Factory mapping, related platforms, and CTA. Subpages must share a coherent family template but feel tailored through unique hero visuals, use-case grids, architecture diagrams, delivery model panels, business outcome sections, tabs or carousels where helpful, and related platforms/industries. Use SVG/CSS architecture visuals with layers such as Experience Layer, Agentic AI Layer, Knowledge Graph Layer, Data and Integration Layer, Governance Layer, Managed AI Operations Layer. Use Framer Motion and Aceternity-inspired bento, spotlight, moving-border, sticky reveal, or tab patterns if lightweight. Do not make legal/compliance/ROI guarantees. No fake clients or dashboards. Mobile excellent. Run lint/build."
+  },
+  {
+    "id": "18-industries-hub-and-batch1",
+    "title": "Design Industries hub plus Financial Services Banking Insurance",
+    "scope": "page-family-design",
+    "target": "Industries hub batch 1",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /industries, /industries/financial-services, /industries/banking, and /industries/insurance. Do not touch landing page. Design mood: industry-specific, outcome-driven, executive, practical, premium. /industries should feel like a high-end industry solution map with industry selector, carousel or tabbed grid, common challenge patterns, reference solution architecture, common enterprise agents, and CTA to Build AI for Your Industry. Each industry subpage must include: industry hero, challenge landscape, reference solution, architecture visual, AI agent map, business outcome levers, demo preview, ROI/value levers without fake percentages, Talk to Agent CTA, related platforms and capabilities. Financial Services challenges: legacy systems, compliance pressure, fragmented data, manual documentation, risk visibility. Banking challenges: customer service scale, compliance review, knowledge fragmentation, manual back-office processes, product/policy search. Insurance challenges: claims operations, policy search, risk assessment, document-heavy workflows, customer response time. Use agents such as Compliance Assistant, Customer Intelligence Agent, Risk Review Agent, Knowledge Search Agent, Executive Dashboard Agent, Banking Knowledge Agent, Relationship Manager Copilot, Contract Intelligence Agent, Claims Triage Agent, Policy Intelligence Agent, Underwriting Copilot. No fake clients, fake logos, fake ROI, or guarantees. Use clean graphics, carousels/tabs, Framer Motion if available, and responsive mobile layouts. Run lint/build."
+  },
+  {
+    "id": "19-industries-batch2-health-education",
+    "title": "Design Healthcare Life Sciences Education pages",
+    "scope": "page-family-design",
+    "target": "Industries batch 2",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /industries/healthcare, /industries/life-sciences, and /industries/education using the same premium industry family design but tailored visuals and content. Do not touch landing page. Healthcare challenges: operational complexity, patient communication workflows, staff knowledge access, administrative burden, compliance-sensitive processes. Life Sciences challenges: research documentation, regulatory workflows, knowledge management, trial operations support, cross-functional collaboration. Education challenges: student support, faculty enablement, knowledge access, university operations, AI labs and learning platforms. Suggested agents: Care Operations Copilot, Knowledge Search Agent, Document Intelligence Agent, Scheduling Assistant, Executive Dashboard Agent, Research Knowledge Agent, Regulatory Document Assistant, Trial Operations Copilot, Student Support Agent, Faculty Assistant, Learning Assistant, University Operations Copilot. Do not make medical diagnosis claims. Do not make compliance guarantees. Include challenge landscape, reference solution, architecture visual, agent map, outcome levers, demo preview, Talk to Agent CTA, related platforms such as University OneVerse and AI Academy where relevant. Add page-specific graphics, tabs/carousels, subtle motion, and excellent mobile layout. Run lint/build."
+  },
+  {
+    "id": "20-industries-batch3-ops-retail-mining",
+    "title": "Design Manufacturing Retail Mining pages",
+    "scope": "page-family-design",
+    "target": "Industries batch 3",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /industries/manufacturing, /industries/retail, and /industries/mining using the premium industry solution family. Do not touch landing page. Manufacturing challenges: production visibility, maintenance workflows, quality management, supplier coordination, operational knowledge transfer. Retail challenges: customer experience, merchandising operations, store support, inventory visibility, employee knowledge access. Mining challenges: field operations, safety workflows, asset visibility, remote site knowledge access, operational reporting. Suggested agents: Maintenance Copilot, Quality Intelligence Agent, Procurement Copilot, Field Operations Agent, Executive Dashboard Agent, Customer Experience Agent, Store Operations Copilot, Merchandising Intelligence Agent, Safety Knowledge Agent. Related platforms: RetailMesh for Retail, OREMesh for Mining, Factory/Control Center for Manufacturing. Include challenge maps, reference solution, architecture, agent map, outcome levers, demo preview, CTA. No fake clients, fake logos, fake ROI numbers. Premium 2026 UI with carousels/tabs/graphics/motion. Run lint/build."
+  },
+  {
+    "id": "21-industries-batch4-regulated-public-telecom",
+    "title": "Design Energy Telecom Government Public Sector pages",
+    "scope": "page-family-design",
+    "target": "Industries batch 4",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /industries/energy, /industries/telecom, /industries/government, and /industries/public-sector using the premium industry family design. Do not touch landing page. Energy challenges: asset operations, field service, regulatory documentation, grid or plant knowledge, operational optimization. Telecom challenges: network operations, customer service, field operations, knowledge fragmentation, service delivery visibility. Government/Public Sector challenges: citizen services, policy search, case workflows, documentation, transparency and governance. Suggested agents: Asset Operations Agent, Field Service Copilot, Document Intelligence Agent, Knowledge Search Agent, Executive Dashboard Agent, Network Operations Copilot, Customer Experience Agent, Citizen Service Agent, Policy Intelligence Agent, Case Triage Agent. Related platforms: TelecomVerse, Control Center, Runtime Governance. Avoid government or compliance guarantees. No fake clients, fake agencies, or fake metrics. Include rich visuals, tabs/carousels, architecture panels, and mobile responsive layouts. Run lint/build."
+  },
+  {
+    "id": "22-industries-batch5-professional-services",
+    "title": "Design Audit Tax Legal Advisory pages",
+    "scope": "page-family-design",
+    "target": "Industries batch 5",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /industries/audit, /industries/tax, /industries/legal, and /industries/advisory using the premium industry family design. Do not touch landing page. Audit challenges: evidence collection, documentation review, risk assessment, workflow consistency, knowledge retrieval. Tax challenges: document-heavy workflows, knowledge search, advisory support, compliance tracking, client response time. Legal challenges: contract review, matter knowledge, document intelligence, research workflows, risk review. Advisory challenges: research acceleration, proposal development, knowledge reuse, client delivery operations, executive reporting. Suggested agents: Evidence Review Agent, Audit Knowledge Assistant, Risk Review Agent, Document Intelligence Agent, Executive Dashboard Agent, Tax Knowledge Agent, Advisory Copilot, Compliance Assistant, Contract Intelligence Agent, Legal Knowledge Search Agent, Matter Assistant, Advisory Research Agent, Proposal Copilot, Delivery Operations Agent. Do not provide legal/tax/audit advice claims or compliance guarantees. No fake clients or fake outcomes. Include strong narrative, architecture, agent map, demo preview, and CTA. Run lint/build."
+  },
+  {
+    "id": "23-platforms-hub-garage-foundry-factory",
+    "title": "Design Platforms hub Garage Foundry Factory",
+    "scope": "page-family-design",
+    "target": "Platforms hub batch 1",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /platforms, /platforms/garage, /platforms/foundry, and /platforms/factory into premium enterprise software product pages. Do not touch landing page. Design mood: productized assets, platform stack, enterprise software, control systems, expensive. /platforms should include hero, platform grid, Garage Foundry Factory product stack, industry mesh platforms, control/governance layer, and CTA. Garage page must include Discover AI, Workshops, AI Labs, Experiment Zone and describe innovation layer. Foundry must include Build Agents, Runtime, Data Fabric, AI Engineering and describe co-creation layer. Factory must include Scale, Monitor, Operate, Monetize and describe industrialisation layer. Use product OS visuals, module cards, workflow diagrams, sticky scroll or tabs, carousel where useful, SVG/CSS product previews, Framer Motion if available, Aceternity-inspired bento/spotlight/moving-border patterns. No fake screenshots, fake metrics, or fake pricing. Mobile excellent. Run lint/build."
+  },
+  {
+    "id": "24-platforms-blueprint-marketplace-control-center",
+    "title": "Design Blueprint Marketplace Control Center pages",
+    "scope": "page-family-design",
+    "target": "Platforms batch 2",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /platforms/blueprint, /platforms/marketplace, and /platforms/control-center as premium enterprise product pages. Do not touch landing page. Blueprint page: explain enterprise AI blueprints, readiness scoring, solution recommendations, expected impact, 90-day roadmap, and link to /build/blueprint. Marketplace page: curated agent patterns and accelerators, no fake purchasable products or pricing. Control Center page: monitor AI programs, agent health, spend, adoption, governance, delivery operations, but no fake live metrics. Use product-grade hero visuals, tabs, carousels, dashboard-style preview panels without fake numbers, architecture diagrams, and CTAs. Make each page unique while sharing platform family design. Use Framer Motion and local Aceternity-inspired effects if available. Run lint/build."
+  },
+  {
+    "id": "25-platforms-academy-university-assessment",
+    "title": "Design AI Academy University OneVerse Assessment Mesh",
+    "scope": "page-family-design",
+    "target": "Platforms batch 3",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /platforms/ai-academy, /platforms/university-oneverse, and /platforms/assessment-mesh. Do not touch landing page. AI Academy should feel like enterprise learning and adoption enablement. University OneVerse should feel like a university AI operating platform for students, faculty, research, operations, and learning ecosystems. Assessment Mesh should feel like a structured AI readiness and opportunity-mapping product. Use tailored hero graphics, module grids, learning/assessment journey diagrams, carousel or tabs, premium CTA, responsive design, and subtle motion. No fake university partners, fake course catalogs, fake certifications, or fake metrics. Run lint/build."
+  },
+  {
+    "id": "26-platforms-industry-meshes",
+    "title": "Design OREMesh RetailMesh TelecomVerse pages",
+    "scope": "page-family-design",
+    "target": "Platforms batch 4",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /platforms/oremesh, /platforms/retailmesh, and /platforms/telecomverse into premium industry platform product pages. Do not touch landing page. OREMesh should support mining/resource operations narrative. RetailMesh should support retail operations, customer experience, merchandising, store support, and executive visibility. TelecomVerse should support telecom operations, network support, customer experience, and field operations. Use industry-specific product hero visuals, mesh network diagrams, module carousels, agent cards, reference workflows, and related industry links. No fake clients, fake metrics, fake pricing, or fake deployments. Use Framer Motion/local CSS/SVG visuals. Run lint/build."
+  },
+  {
+    "id": "27-platforms-agent-runtime-developer",
+    "title": "Design Agent Marketplace Runtime Governance Developer Platform",
+    "scope": "page-family-design",
+    "target": "Platforms batch 5",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /platforms/agent-marketplace, /platforms/runtime-governance, and /platforms/developer-platform. Do not touch landing page. Agent Marketplace should feel like a catalog of reusable enterprise agent patterns: knowledge agents, operations agents, compliance agents, customer experience agents, executive agents, document intelligence agents. Runtime Governance should focus on agent behavior, human oversight, permissions, monitoring, risk controls, auditability, and governance-first design without guaranteeing compliance. Developer Platform should feel like a developer-facing surface for building, testing, integrating, and operating enterprise agents, but no fake API keys or fake docs. Use product pages with tabs, carousels, technical diagrams, code-like visual blocks that are clearly illustrative, and strong CTAs. Run lint/build."
+  },
+  {
+    "id": "28-build-with-gff-pages",
+    "title": "Design Build With GFF self-service tool pages",
+    "scope": "page-family-design",
+    "target": "Build pages",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /build and all Build With GFF subpages into polished self-service enterprise tool pages. Pages: /build, /build/talk, /build/blueprint, /build/assessment, /build/roi, /build/sandbox, /build/proposal, /build/marketplace, /build/foundry-studio. Do not touch landing page. Design mood: interactive, guided journey, conversion-focused, enterprise self-service. /build should show the journey: Visitor, AI Assessment, Blueprint, Workshop, Proposal, Contract, Delivery, Operate, Expand. /build/talk should feel like AI challenge intake with challenge description, industry, company size, frontend-only preview outputs Proposal, Squad, Timeline. /build/blueprint should be a polished wizard using the scoring rules. /build/assessment should feel like readiness diagnostic. /build/roi should feel like executive calculator with illustrative estimates only. /build/sandbox should feel like secure preview environment with no real runtime. /build/proposal should feel like proposal studio with PPT/PDF/SOW export cards as frontend preview only. /build/marketplace and /build/foundry-studio should be premium previews. Use forms, tabs, stepped flows, carousels, result panels, Framer Motion if available, Aceternity-inspired UI effects locally. No real API calls, no fake exports, no fake OTP. Run lint/build."
+  },
+  {
+    "id": "29-resources-pages",
+    "title": "Design Resources and research library pages",
+    "scope": "page-family-design",
+    "target": "Resources pages",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /resources and all resource subpages into a premium research and intelligence library. Pages: /resources, /resources/blog, /resources/research, /resources/whitepapers, /resources/case-studies, /resources/architecture-library, /resources/videos, /resources/webinars, /resources/events, /resources/developer-docs, /resources/downloads, /resources/podcasts, /resources/reports, /resources/newsroom, /resources/patterns-of-intelligence, plus /insights and /insights/patterns-of-intelligence if present. Do not touch landing page. Design mood: editorial, research archive, thought leadership, intelligence library. Use featured research placeholder, category grids, resource carousels, architecture library visuals, report panels, newsletter CTA, filters using local state only if useful. Do not invent authors, dates, PDFs, downloads, report titles that imply real published assets, or fake media coverage. Use coming-soon states and category descriptions. Make every subpage feel intentionally designed but within the resource family. Run lint/build."
+  },
+  {
+    "id": "30-company-pages",
+    "title": "Design Company pages",
+    "scope": "page-family-design",
+    "target": "Company pages",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /company and all company subpages into credible institutional pages. Pages: /company, /company/mission, /company/leadership, /company/locations, /company/partners, /company/advisors, /company/careers, /company/investors, /company/media, /company/contact. Do not touch landing page. Design mood: institutional, credible, global, leadership-driven. Include approved content: GFF AI PTE LTD., UEN 202621347N where appropriate, global AI strategy and deployment firm, Architects of the Agent Economy, founded and led by CEO Dr. Ashish Chandra, Singapore Global Headquarters, London Client Innovation Centre, India AI Engineering Factory, GFF AI Research Division, Garage Foundry Factory operating model. Locations page must show Singapore, London, India without inventing addresses. Leadership page may show Dr. Ashish Chandra where approved and placeholders for other leadership/advisors, no invented profiles. Partners/advisors/careers/investors/media should be polished pathways without fake names, fake job openings, fake partners, or fake press. Use global hub maps, institutional cards, narrative sections, carousels/tabs, premium CTAs, motion. Run lint/build."
+  },
+  {
+    "id": "31-contact-portal-client-control-center",
+    "title": "Design Contact Portal Client Control Center pages",
+    "scope": "utility-page-design",
+    "target": "Contact Portal Client pages",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /contact, /portal, /portal/control-center, /client, and /client/control-center into premium secure enterprise utility pages. Do not touch landing page. Contact must show pathways: Talk To Sales, Book Workshop, Book Consultation, Sales, Support, Partnership, Media, University, Investors, Become Partner, Careers. Contact forms are frontend-only and must not call APIs. Portal must be a secure client workspace preview with login UI placeholder and modules: Dashboard, Projects, Programs, Documents, Invoices, Billing, Approvals, Support, Analytics, Governance, AI Operations, Control Center. Control Center must show preview modules: Agent Health, Delivery, Spend, Adoption, Governance without fake metrics or real data. Use secure product UI, clean forms, dashboard preview panels without fake numbers, subtle motion, mobile excellent. No auth, no backend, no fake data. Run lint/build."
+  },
+  {
+    "id": "32-legal-investor-pages",
+    "title": "Design Legal Investor NDA privacy terms pages",
+    "scope": "utility-page-design",
+    "target": "Legal and investor pages",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /privacy, /terms, /nda, and /investor-relations into clean premium public utility pages. Do not touch landing page. These pages should be readable, institutional, and aligned with the site theme. Do not invent legal text that pretends to be final counsel-approved policy. Use clear placeholder copy where final legal language is required. Investor Relations should be a credible pathway page, not fake financial information. NDA page should explain how NDA requests will be handled later, not generate real legal documents. Use refined typography, structured sections, simple graphics, and CTA to contact. Run lint/build."
+  },
+  {
+    "id": "33-mobile-responsive-pass",
+    "title": "Mobile responsive polish across all pages",
+    "scope": "responsive-qa",
+    "target": "all public pages",
+    "allowLandingChanges": true,
+    "prompt": "Perform a mobile responsive polish pass across landing and all public pages. Do not redesign. Fix only layout issues. Check hero, Quick Search, all homepage sections, Why GFF AI, Capabilities, Industries, Platforms, Build, Resources, Company, Contact, Portal, Client, Legal pages. Ensure no horizontal overflow, good section spacing, readable text, tappable buttons, stacked cards, simplified timelines, usable forms, scrollable tabs where needed, and architecture diagrams that adapt to mobile. Preserve approved landing visual design and hero video placement. Do not add new features. Run lint/build."
+  },
+  {
+    "id": "34-accessibility-and-motion-pass",
+    "title": "Accessibility and motion quality pass",
+    "scope": "accessibility-qa",
+    "target": "all public pages",
+    "allowLandingChanges": true,
+    "prompt": "Perform accessibility and motion quality pass. Do not redesign. Ensure each public page has one clear H1, semantic sections, accessible links/buttons, visible focus states, form labels, keyboard-friendly interactions, no clickable divs without keyboard behavior, readable contrast, and prefers-reduced-motion support for animations. Check Command Center focus handling if present. Check carousels/tabs have accessible controls. Keep animations subtle and premium. Do not remove approved landing animations unless broken. Run lint/build."
+  },
+  {
+    "id": "35-visual-premium-polish-pass",
+    "title": "Premium UI polish pass",
+    "scope": "visual-polish",
+    "target": "all public pages except approved hero",
+    "allowLandingChanges": true,
+    "prompt": "Perform a final premium UI polish pass. Do not redesign the approved landing hero or move its video. Improve visual quality only where the implementation looks generic, unfinished, boxy, or cheap. Target all new public pages and new homepage sections. Make the UI feel like a custom expensive 2026 enterprise AI website: refined spacing, strong hierarchy, clean cards, thoughtful graphics, carousels/tabs where useful, SVG architecture visuals, subtle gradients, balanced motion, no excessive pills or badges, no box-inside-box clutter. Do not add fake data or content. Do not add dependencies. Do not change global styles in a way that breaks landing. Run lint/build."
+  },
+  {
+    "id": "36-link-route-content-audit",
+    "title": "Route link and content audit",
+    "scope": "audit-fix",
+    "target": "all links and content",
+    "allowLandingChanges": false,
+    "prompt": "Audit all nav, footer, homepage section, CTA, related-link, card, carousel, tab, and form links. Fix broken or incorrect links only. Ensure all public pages are explicit. Ensure no href points to removed slug/catch-all paths. Check that required public routes exist: top-level, Why GFF AI, Capabilities, Industries, Platforms, Build, Resources, Company, Contact, Portal, Client, Insights, Privacy, Terms, NDA, Investor Relations. Ensure content includes GFF AI positioning, Garage Foundry Factory, global footprint, research/IP where appropriate, and no fake data. Run lint/build."
+  },
+  {
+    "id": "37-final-full-build-and-qa",
+    "title": "Final full Phase 0-2 QA",
+    "scope": "final-qa",
+    "target": "whole project",
+    "allowLandingChanges": false,
+    "prompt": "Perform final QA for the complete Phase 0 to Phase 2 build. Do not add new features unless fixing a small clear issue. Verify landing page has approved hero preserved, hero video placement unchanged, hero copy and metrics correct, Enterprise Quick Search present and local, Garage Foundry Factory journey present, What We Build present, Interactive Experience present, Global Presence present, Client Success present, Live Dashboard present without fake numbers, Latest Research present, Footer complete. Verify explicit routes exist and no slug logic or PublicRoutePage exists. Verify all public pages have premium unique UI, category design families, mobile responsiveness, accessibility basics, no fake data, no backend/API/AWS/auth/OTP/export behavior. Verify Blueprint banking test returns 87/100. Run npm run lint and npm run build if available. Final response must include pass/fail checklist, files changed in final QA, commands run, remaining warnings, and any remaining TODOs."
+  }
+]

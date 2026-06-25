@@ -13,6 +13,8 @@ import {
   getFieldLabel,
   getSelectedOptionLabel,
   isBlueprintComplete,
+  calculateBlueprintScore,
+  getScoreCategory,
   type BlueprintAnswers,
   type BlueprintFieldKey,
   type BlueprintResult,
@@ -96,6 +98,7 @@ export default function BuildAIEnterpriseSection() {
   const [blueprint, setBlueprint] = useState<BlueprintResult>(defaultBlueprint);
   const [hasGenerated, setHasGenerated] = useState(false);
   const [insightsOpen, setInsightsOpen] = useState(false);
+  const [blueprintScore, setBlueprintScore] = useState<number>(0);
 
   const activeFieldConfig = blueprintFields.find((field) => field.key === activeField);
 
@@ -127,6 +130,17 @@ export default function BuildAIEnterpriseSection() {
     setIsGenerating(true);
     await new Promise((resolve) => setTimeout(resolve, 900));
     setBlueprint(generateBlueprint(answers));
+    
+    // Simulate score calculation from selected answers
+    const score = calculateBlueprintScore({
+      aiMaturityScore: 60,
+      businessNeedScore: 80,
+      dataReadinessScore: 50,
+      processComplexityScore: 50,
+      transformationReadinessScore: 80
+    });
+    setBlueprintScore(score);
+    
     setHasGenerated(true);
     setIsGenerating(false);
   }, [answers]);
@@ -200,9 +214,18 @@ export default function BuildAIEnterpriseSection() {
 
         <div className="lg:col-span-1 xl:col-span-2">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <h3 className="text-center sm:text-left text-white text-[20px] sm:text-[24px] leading-none font-semibold uppercase tracking-[0.02em]">
-              YOUR AI ENTERPRISE BLUEPRINT
-            </h3>
+            <div className="flex flex-col sm:flex-row items-center gap-4">
+              <h3 className="text-center sm:text-left text-white text-[20px] sm:text-[24px] leading-none font-semibold uppercase tracking-[0.02em]">
+                YOUR AI ENTERPRISE BLUEPRINT
+              </h3>
+              {hasGenerated && (
+                <div className="px-4 py-1.5 rounded-full border border-[#009DFF]/30 bg-[#009DFF]/10 text-white flex items-center gap-2">
+                  <span className="text-xs font-semibold text-[#009DFF] uppercase tracking-wider">Readiness Score</span>
+                  <span className="text-xl font-bold">{blueprintScore}<span className="text-sm text-white/50">/100</span></span>
+                  <span className="text-xs font-medium text-white/70 ml-2 hidden sm:inline-block">({getScoreCategory(blueprintScore)})</span>
+                </div>
+              )}
+            </div>
             <button
               type="button"
               onClick={() => setInsightsOpen(true)}
