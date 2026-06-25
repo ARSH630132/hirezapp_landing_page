@@ -96,12 +96,13 @@ Design quality:
 
 function run(cmd, args = [], opts = {}) {
   const result = spawnSync(cmd, args, {
-    cwd: PROJECT_ROOT,
-    encoding: "utf8",
-    shell: false,
-    maxBuffer: 1024 * 1024 * 50,
-    ...opts
-  });
+  cwd: PROJECT_ROOT,
+  encoding: "utf8",
+  shell: false,
+  timeout: Number(process.env.CLINE_TIMEOUT_MS || 1000 * 60 * 25),
+  maxBuffer: 1024 * 1024 * 50,
+  ...opts
+});
 
   return {
     code: result.status ?? 1,
@@ -127,9 +128,15 @@ function sh(command) {
 }
 
 function log(taskId, name, content) {
+  fs.mkdirSync(LOG_DIR, { recursive: true });
+
   const safe = `${taskId}-${name}`.replace(/[^a-z0-9._-]+/gi, "-");
-  const file = path.join(LOG_DIR, `${new Date().toISOString().replace(/[:.]/g, "-")}-${safe}.log`);
-  fs.writeFileSync(file, content);
+  const file = path.join(
+    LOG_DIR,
+    `${new Date().toISOString().replace(/[:.]/g, "-")}-${safe}.log`
+  );
+
+  fs.writeFileSync(file, content || "");
   return file;
 }
 
@@ -345,8 +352,14 @@ If everything is good, do not edit files. If there is a clear issue, fix only th
 
 function revertTask(task) {
   console.error(`Reverting task ${task.id} due to guardrail failure.`);
-  sh("git checkout -- .");
-  sh("git clean -fd");
+
+  // Revert tracked changes back to the last checkpoint commit.
+  sh("git reset --hard HEAD");
+
+  // Remove untracked files created by the failed task, but preserve automation runtime files.
+  sh("git clean -fd -e automation/logs -e automation/state.json");
+
+  fs.mkdirSync(LOG_DIR, { recursive: true });
 }
 
 async function main() {
