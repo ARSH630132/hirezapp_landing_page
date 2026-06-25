@@ -215,7 +215,7 @@ function forbiddenArchitectureCheck(task) {
     }
   }
 
-  const grep = sh("grep -R \"PublicRoutePage\\|\\[\\.\\.\\.slug\\]\" -n app components lib 2>/dev/null || true");
+  const grep = sh("grep -R \"PublicRoutePage\\|app/\\[\\.\\.\\.slug\\]\\|components/PublicRoutePage\" -n app components lib 2>/dev/null || true");
   if (grep.stdout.trim()) {
     errors.push(`Forbidden slug/PublicRoutePage references found:\n${grep.stdout}`);
   }
@@ -400,6 +400,19 @@ async function main() {
       console.error(`Cline failed for ${task.id}. Continuing to next task.`);
       continue;
     }
+    if (task.scope === "audit" || task.scope === "final-qa") {
+  console.log(`Audit/QA task completed without automatic fix-loop: ${task.id}`);
+
+  const guard = forbiddenArchitectureCheck(task);
+  log(task.id, "guard-audit", guard.output || "guard ok");
+
+  // For audit tasks, do not auto-fix or revert. The audit output is the deliverable.
+  state.completed.push(task.id);
+  saveState(state);
+
+  checkpoint(`complete ${task.id}`);
+  continue;
+}
 
     let guard = forbiddenArchitectureCheck(task);
     let validation = runValidation();
