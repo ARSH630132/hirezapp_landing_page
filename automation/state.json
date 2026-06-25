@@ -10,5 +10,10 @@
     "07-homepage-interactive-experience",
     "08-homepage-global-presence"
   ],
-  "failed": []
+  "failed": [
+    {
+      "id": "09-homepage-client-success",
+      "reason": "cline implementation failed"
+    }
+  ]
 }
