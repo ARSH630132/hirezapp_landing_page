@@ -55,7 +55,8 @@
     "51-phase3-proposal-builder-preview",
     "53-phase3-sandbox-simulated-agent-preview",
     "54-phase3-agent-marketplace-tool",
-    "55-phase3-foundry-studio-workflow-builder"
+    "55-phase3-foundry-studio-workflow-builder",
+    "56-phase3-build-hub-unified-experience"
   ],
   "failed": [
     {
