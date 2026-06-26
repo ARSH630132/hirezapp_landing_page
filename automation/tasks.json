@@ -302,5 +302,253 @@
     "target": "whole project",
     "allowLandingChanges": false,
     "prompt": "Perform final QA for the complete Phase 0 to Phase 2 build. Do not add new features unless fixing a small clear issue. Verify landing page has approved hero preserved, hero video placement unchanged, hero copy and metrics correct, Enterprise Quick Search present and local, Garage Foundry Factory journey present, What We Build present, Interactive Experience present, Global Presence present, Client Success present, Live Dashboard present without fake numbers, Latest Research present, Footer complete. Verify explicit routes exist and no slug logic or PublicRoutePage exists. Verify all public pages have premium unique UI, category design families, mobile responsiveness, accessibility basics, no fake data, no backend/API/AWS/auth/OTP/export behavior. Verify Blueprint banking test returns 87/100. Run npm run lint and npm run build if available. Final response must include pass/fail checklist, files changed in final QA, commands run, remaining warnings, and any remaining TODOs."
+  },
+  {
+    "id": "38-phase3-preflight-interactive-tools-audit",
+    "title": "Phase 3 preflight audit for interactive Build With GFF tools",
+    "scope": "phase3-audit",
+    "target": "Build With GFF interactive product layer",
+    "allowLandingChanges": false,
+    "prompt": "This is the first task of Phase 3. Do not edit files. Audit the current implementation of all Build With GFF interactive experiences and related shared components. Inspect /build, /build/talk, /build/blueprint, /build/assessment, /build/roi, /build/sandbox, /build/proposal, /build/marketplace, /build/foundry-studio, components/Phase2InteractivePanels.tsx, components/Phase2PublicPages.tsx, lib/frontend-placeholders.ts, lib/blueprint-data.ts, lib/public-page-content.ts, lib/site-map-data.ts, and any existing form/tool/wizard components. Determine what is currently only a visual placeholder and what already has local functionality. Confirm that no backend, AWS, auth, real OTP, real email, database, or export dependency is being used. Confirm that landing page files are not required to be touched for Phase 3. Produce a detailed gap report for building Phase 3 as a frontend-only interactive product layer. The gap report must cover: shared tool architecture, reusable wizard needs, Blueprint Generator, AI Readiness Assessment, ROI Calculator, Talk to Agent, Proposal Builder, Sandbox, Marketplace, Foundry Studio, local workspace state, validation, accessibility, mobile UX, motion polish, and final QA. Do not make changes. Final response must list files inspected, existing capabilities found, missing functionality, risky files to avoid, and recommended implementation order."
+  },
+  {
+    "id": "39-phase3-shared-tool-architecture",
+    "title": "Create shared frontend tool architecture",
+    "scope": "phase3-foundation",
+    "target": "shared interactive tool foundation",
+    "allowLandingChanges": false,
+    "prompt": "Build the shared frontend-only architecture for Phase 3 interactive tools. Do not touch the landing page. Do not add backend/API/AWS/auth/OTP/email/database/export integrations. Create or improve lightweight shared utilities and components needed by /build tools. The goal is to make every Build With GFF tool feel consistent, premium, and product-grade while keeping each tool unique. Inspect existing components and avoid duplicate systems. Create only necessary files. Suggested elements: ToolPageShell, ToolHero, ToolStepLayout, ToolSidebarProgress, ToolResultPanel, ToolInputGroup, ToolOptionGrid, ToolSummaryCard, ToolEmptyState, ToolPreviewNotice, ToolCTA, ToolMotionReveal, ToolTabs, ToolCarousel, ToolComparisonRail, and ToolDataCard if useful. Create shared TypeScript types for industry, company size, AI journey, data readiness, priorities, assessment answers, ROI inputs, proposal inputs, sandbox agent, marketplace agent, and generated local reports. Create local-only service helpers inside an existing placeholder/service file or a new small lib file if needed. Do not create network calls. Do not create fake real outputs. Use deterministic local calculations and clearly labelled previews. Use Framer Motion or motion/react only if already installed. Use Aceternity-inspired patterns locally, such as bento grids, moving borders, spotlight cards, tabs, and card stacks, but do not install heavy dependencies. All components must be responsive, accessible, and visually aligned with the approved landing page theme. Run lint and build."
+  },
+  {
+    "id": "40-phase3-shared-data-models-and-validation",
+    "title": "Create shared data models validation and constants",
+    "scope": "phase3-foundation",
+    "target": "tool data models and validation",
+    "allowLandingChanges": false,
+    "prompt": "Create or improve shared frontend-only data models, constants, and validation utilities for Phase 3 tools. Do not touch the landing page. Do not add backend calls. Centralize reusable data so tools do not hardcode repeated arrays. Include industries: Banking, Healthcare, Manufacturing, Retail, Education, Government, Insurance, Financial Services, Life Sciences, Mining, Energy, Telecom, Audit, Tax, Legal, Advisory, Other. Include company sizes: <100, 100-1000, 1000-10000, 10000+. Include AI journeys: No AI, Exploring AI, Running Pilots, Scaling AI, AI-Driven Enterprise, AI-Native. Include priorities: Reduce Costs, Increase Revenue, Improve Productivity, Improve Customer Experience, Automate Processes, Strengthen Compliance, AI Transformation. Include data readiness levels and leadership commitment levels exactly as required by the Blueprint scoring. Include reusable validation helpers: required text, email format, max selected priorities, number ranges, non-negative currency/volume inputs, safe empty states. Include common suggested AI opportunities: Procurement Copilot, HR Assistant, Contract Intelligence, Knowledge Search, Executive Dashboard, Compliance Assistant, Customer Experience Agent, Document Intelligence Agent, Operations Copilot. Include GFF solution recommendations: Agent Factory, Knowledge Graph, AI Governance, Managed AI Operations, Garage, Foundry, Factory, Control Center. All helpers must be local and deterministic. Add unit-style pure functions where sensible, but do not introduce a test framework unless already present. Run lint and build."
+  },
+  {
+    "id": "41-phase3-reusable-wizard-and-stepper",
+    "title": "Build reusable premium wizard and stepper system",
+    "scope": "phase3-component",
+    "target": "wizard and stepper UI",
+    "allowLandingChanges": false,
+    "prompt": "Build a reusable wizard/stepper system for Build With GFF tools. Do not touch landing page. The system should support multi-step flows for Blueprint, Assessment, ROI, Proposal, and Talk to Agent. It must support step labels, progress, back/next actions, keyboard accessibility, validation messages, mobile stacking, summary side panel, result state, and local-only reset. Design must be premium and custom, not generic form UI. Use current site theme, tasteful motion, clear hierarchy, and mobile-friendly interactions. Use Framer Motion or motion/react only if already installed for step transitions and progress animations. Respect prefers-reduced-motion. Avoid excessive pills, nested boxes, and badge clutter. Do not add backend calls. Do not change actual page content yet except where needed to wire the reusable system into existing tool pages if safe. Run lint and build."
+  },
+  {
+    "id": "42-phase3-talk-to-agent-tool",
+    "title": "Build Talk to Agent frontend-only experience",
+    "scope": "phase3-tool",
+    "target": "/build/talk",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /build/talk into a premium frontend-only AI challenge intake experience. Do not touch landing page. This page should feel like a real enterprise intake tool, not a static contact form. Build a guided flow with fields: challenge description, industry selector, company size selector, geography optional, urgency optional, function/team optional, current AI stage optional. Add smart local preview after submit with three result panels: Proposed Direction, Suggested Squad, Indicative Timeline. The preview must be deterministic and clearly labelled as frontend preview. No API calls. No fake AI generation. Include examples such as 'Employees spend too much time searching for information' and 'Too many manual processes across departments'. Add an elegant side panel showing how Garage, Foundry, and Factory would engage. Add CTA links to /build/blueprint and /contact. Use premium UI with thoughtful spacing, animated step transition, textarea experience, option cards, and result cards. Mobile must be excellent. Accessibility: labels, keyboard navigation, visible focus, clear validation. Run lint and build."
+  },
+  {
+    "id": "43-phase3-blueprint-wizard-inputs",
+    "title": "Build Blueprint Generator wizard input flow",
+    "scope": "phase3-tool",
+    "target": "/build/blueprint input flow",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /build/blueprint input flow into a polished multi-step wizard. Do not touch landing page. Preserve the required Blueprint scoring rules and do not break existing homepage Blueprint if it shares logic. Build steps: 1 Organization: industry and company size. 2 Priorities: select up to 3 priorities. 3 AI Journey: AI maturity stage. 4 Data and Leadership: data readiness and leadership commitment. 5 Challenge: biggest challenge text area. 6 Email and OTP placeholder: email field and clearly-labelled OTP placeholder state. Do not send OTP. Do not call backend. Add optional budget and geography only if they fit cleanly. Design should feel like an expensive enterprise self-assessment tool with progress rail, animated transitions, summary preview, and mobile-friendly step layout. Use local state only. Enforce validation before moving to next step. Result generation can remain existing if already present; this task focuses on the input wizard quality. Run lint and build."
+  },
+  {
+    "id": "44-phase3-blueprint-scoring-engine-and-results",
+    "title": "Finalize Blueprint scoring engine and results report",
+    "scope": "phase3-tool",
+    "target": "/build/blueprint scoring and results",
+    "allowLandingChanges": false,
+    "prompt": "Finalize the Blueprint Generator scoring engine and results report. Do not touch landing page unless shared Blueprint logic requires a safe bug fix, and do not alter hero UI. Use exact formula: Blueprint Score = 0.20(AI Maturity) + 0.25(Business Need) + 0.20(Data Readiness) + 0.20(Process Complexity) + 0.15(Transformation Readiness). AI Maturity scores: No AI 10, Exploring AI 30, Running Pilots 60, Scaling AI 85, AI-Driven Enterprise or AI-Native 100. Business Need: Reduce Costs/Cost Reduction 20, Improve Productivity/Productivity 20, Improve Customer Experience/Customer Experience 15, Increase Revenue/Revenue Growth 15, Strengthen Compliance/Compliance 10, AI Transformation 20, Automate Processes 20, capped at 100. Data Readiness: Highly fragmented 20, Partially connected 50, Mostly integrated 75, Fully integrated 100. Process Complexity: <100 20, 100-1000 50, 1000-10000 80, 10000+ 100. Transformation Readiness: Not Discussed 20, Exploring 50, Budget Approved 80, Executive Mandate 100. Score categories: 0-25 AI Beginner, 26-50 AI Explorer, 51-70 AI Adopter, 71-85 AI Transformer, 86-100 AI-Native Leader. Test case Banking, 15000 employees or 10000+ company size, Scaling AI, Productivity + Cost Reduction + Compliance, Mostly Integrated Data, Budget Approved must show 87/100. Results must include AI Readiness Score, category, dimension breakdown, Top 5 Recommended AI Opportunities, Recommended GFF AI Solution, Expected Business Impact, and 90-Day Roadmap: Garage Discovery, Foundry Pilot, Factory Enterprise Rollout, Operate Managed AI Operations. Impact labels must be expected/modelled, not guaranteed. Create premium report UI with charts or visual score rings using CSS/SVG only, no fake dashboards. Run lint and build."
+  },
+  {
+    "id": "45-phase3-blueprint-local-save-share-copy",
+    "title": "Add local save copy and share-ready Blueprint report actions",
+    "scope": "phase3-tool",
+    "target": "/build/blueprint report actions",
+    "allowLandingChanges": false,
+    "prompt": "Add safe frontend-only actions to the Blueprint results report. Do not touch landing page. Do not create real backend exports. Add local actions: Copy summary to clipboard, Save locally in browser localStorage, Reset assessment, and Print using browser print if easy and safe. Do not generate fake PDFs/PPTs/SOW files. If print view is implemented, ensure it is clearly browser print and does not require backend. Add a clean saved-report state and a small local-history drawer showing recent locally saved Blueprint previews without storing sensitive data beyond user's own local browser. Add privacy note: frontend preview only, no server submission in this phase. Ensure accessibility and mobile usability. Run lint and build."
+  },
+  {
+    "id": "46-phase3-ai-readiness-assessment-framework",
+    "title": "Build AI Readiness Assessment framework",
+    "scope": "phase3-tool",
+    "target": "/build/assessment framework",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /build/assessment into a polished AI Readiness Assessment tool. Do not touch landing page. Build a frontend-only diagnostic framework with dimensions: Strategy, Data Readiness, Process Readiness, Talent Readiness, Governance, Technology Stack, Leadership Commitment, Operating Model. Use local state only. Each dimension should have 3 to 5 carefully written questions with answer options mapped to scores. Do not make fake AI claims. Do not call APIs. Design should feel like a premium enterprise diagnostic with tabs or stepper, dimension navigation, progress indicator, and a side summary. Keep copy concise and executive-friendly. Add validation and clear completion flow. Use subtle motion. Mobile must be excellent. Run lint and build."
+  },
+  {
+    "id": "47-phase3-ai-readiness-scoring-results",
+    "title": "Build AI Readiness scoring and result report",
+    "scope": "phase3-tool",
+    "target": "/build/assessment results",
+    "allowLandingChanges": false,
+    "prompt": "Build the scoring and results report for /build/assessment. Do not touch landing page. Use deterministic local scoring across the assessment dimensions. Show overall readiness score, maturity band, dimension breakdown, strengths, risk areas, recommended next actions, and recommended GFF path: Garage, Foundry, Factory, Operate. Do not guarantee outcomes. Do not use fake benchmarks. Use CSS/SVG charts such as radar-style visual, bar breakdown, score ring, or maturity ladder without external chart dependency unless already installed. Add a CTA to Generate Blueprint and Talk to Agent. Add local-only copy/save/reset actions if shared utilities exist. Design must be highly polished, unique from Blueprint, and mobile-friendly. Run lint and build."
+  },
+  {
+    "id": "48-phase3-roi-calculator-input-model",
+    "title": "Build ROI Calculator input model",
+    "scope": "phase3-tool",
+    "target": "/build/roi input model",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /build/roi into an executive ROI Calculator frontend-only tool. Do not touch landing page. Build a polished input flow with fields: industry, company size, function, annual cost baseline, process volume, average handling time optional, automation target percentage, current manual effort level, expected productivity improvement range, implementation horizon. Use safe validation for numbers and non-negative currency/volume inputs. Do not call APIs. Do not guarantee ROI. Make all outputs illustrative and modelled. Use a premium calculator UI with side preview, sliders or segmented controls where appropriate, and mobile-first form layout. Use subtle motion and clear helper text. Run lint and build."
+  },
+  {
+    "id": "49-phase3-roi-results-and-scenarios",
+    "title": "Build ROI Calculator results and scenario comparison",
+    "scope": "phase3-tool",
+    "target": "/build/roi results",
+    "allowLandingChanges": false,
+    "prompt": "Build the ROI Calculator results experience. Do not touch landing page. Create deterministic local calculations using provided user inputs. Show illustrative annual efficiency opportunity, estimated hours saved, productivity range, payback-style narrative if inputs allow, and scenario comparison for Conservative, Expected, and Aggressive. Clearly label every number as illustrative/modelled and not guaranteed. Add charts using CSS/SVG only unless a chart library already exists. Add scenario cards, waterfall-style value breakdown, and recommended next step CTAs to Assessment, Blueprint, and Proposal Builder. Add copy-to-clipboard and reset actions. No fake benchmarks, no backend, no real financial advice. Mobile excellent. Run lint and build."
+  },
+  {
+    "id": "50-phase3-proposal-builder-intake",
+    "title": "Build Proposal Builder intake flow",
+    "scope": "phase3-tool",
+    "target": "/build/proposal intake",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /build/proposal into a premium frontend-only Proposal Builder. Do not touch landing page. Build intake flow with fields: organization name optional, industry, company size, primary challenge, priority outcomes, target timeline, preferred engagement path, budget range optional, geography optional, stakeholders optional. Use local state and validation. Do not call backend. Do not generate real legal SOW documents. The UI should feel like an enterprise proposal studio: guided form, live outline preview, engagement path cards for Garage, Foundry, Factory, Operate, and a clean summary panel. Use subtle motion, polished cards, and mobile-friendly layout. Run lint and build."
+  },
+  {
+    "id": "51-phase3-proposal-builder-preview",
+    "title": "Build Proposal Builder preview and outline",
+    "scope": "phase3-tool",
+    "target": "/build/proposal preview",
+    "allowLandingChanges": false,
+    "prompt": "Build the local proposal preview experience for /build/proposal. Do not touch landing page. Generate a deterministic local proposal outline using user inputs. Sections should include Executive Summary, Challenge Statement, Recommended GFF Path, Proposed Workstreams, 90-Day Roadmap, Suggested Squad, Governance Approach, Success Measures, Assumptions, Risks, and Next Steps. Label output as frontend preview only and not a final commercial/legal proposal. Add actions: copy outline to clipboard, save locally in browser, reset, and browser print if safe. Export cards for PPT, PDF, and SOW may be shown as disabled or future integration previews only. No fake file generation. Create a polished document-preview UI that looks expensive and enterprise-ready. Run lint and build."
+  },
+  {
+    "id": "52-phase3-sandbox-agent-demo-catalog",
+    "title": "Build Sandbox agent demo catalog",
+    "scope": "phase3-tool",
+    "target": "/build/sandbox",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /build/sandbox into a premium frontend-only Sandbox preview. Do not touch landing page. Build a catalog of representative agent demos using local static data only. Suggested demo categories: Knowledge Search, Procurement Copilot, HR Assistant, Contract Intelligence, Executive Dashboard, Compliance Assistant, Customer Experience Agent, Operations Copilot. Each demo card should include purpose, sample workflow, recommended industry, related platform, and frontend-preview status. Add filters by industry, function, and agent type. Add a demo detail panel or carousel that shows sample steps without pretending a real agent is running. No API calls, no chat model, no fake live runtime. Design should feel like a secure enterprise sandbox with high-quality visuals, tabs/carousel, and subtle motion. Run lint and build."
+  },
+  {
+    "id": "53-phase3-sandbox-simulated-agent-preview",
+    "title": "Build safe simulated Sandbox agent preview",
+    "scope": "phase3-tool",
+    "target": "/build/sandbox simulated preview",
+    "allowLandingChanges": false,
+    "prompt": "Add a safe simulated agent preview inside /build/sandbox. Do not touch landing page. When a user selects a demo agent, show a deterministic, local, prewritten workflow simulation: user challenge, agent interpretation, knowledge needed, actions it would take, human approval point, governance check, and expected output preview. Make it clear this is a static frontend simulation and not a live AI agent. No API calls. No fake real-time claims. Use a premium step-by-step timeline, animated workflow path, or tabbed execution viewer. Add related CTAs to Talk to Agent, Blueprint, and Foundry Studio. Mobile and accessibility must be excellent. Run lint and build."
+  },
+  {
+    "id": "54-phase3-agent-marketplace-tool",
+    "title": "Build Build Marketplace interactive catalog",
+    "scope": "phase3-tool",
+    "target": "/build/marketplace",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /build/marketplace into a premium interactive agent and accelerator catalog. Do not touch landing page. Use local static data only. Include categories: Knowledge Agents, Operations Agents, Compliance Agents, Customer Experience Agents, Executive Agents, Document Intelligence Agents, Procurement Agents, HR Agents. Add filters by industry, function, maturity stage, and platform fit. Add search. Add comparison drawer allowing up to 3 agent patterns. No pricing, no fake purchasable products, no fake availability. Each card should include use case, where it fits in Garage/Foundry/Factory, related capabilities, and CTA to Sandbox or Talk to Agent. Use carousel, bento grid, tabs, and motion if appropriate. Mobile excellent. Run lint and build."
+  },
+  {
+    "id": "55-phase3-foundry-studio-workflow-builder",
+    "title": "Build Foundry Studio visual workflow builder preview",
+    "scope": "phase3-tool",
+    "target": "/build/foundry-studio",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /build/foundry-studio into a premium visual workflow builder preview. Do not touch landing page. This must be frontend-only and not a real builder backend. Create a visual flow where users can select an industry, choose an agent pattern, add workflow stages, add knowledge sources as labels, add human approval points, and see a generated local workflow map. Use deterministic local state. No drag-and-drop dependency unless already installed; use click-to-add modules or simple reorder buttons if needed. Visual modules can include Trigger, Agent Reasoning, Knowledge Graph, Tool Action, Human Review, Governance Check, Output, Control Center Monitoring. Add a polished architecture canvas with SVG/CSS connections. Add CTAs to Proposal Builder and Sandbox. Mobile should degrade gracefully into a stacked workflow. Run lint and build."
+  },
+  {
+    "id": "56-phase3-build-hub-unified-experience",
+    "title": "Upgrade Build With GFF hub as product launcher",
+    "scope": "phase3-tool",
+    "target": "/build",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /build into a premium self-service product launcher for all Build With GFF tools. Do not touch landing page. The page should help users understand which tool to use next. Include a hero, enterprise flow: Visitor, AI Assessment, Blueprint, Workshop, Proposal, Contract, Delivery, Operate, Expand. Add tool launcher cards for Talk to Agent, Blueprint Generator, AI Readiness Assessment, ROI Calculator, Sandbox, Proposal Builder, Marketplace, Foundry Studio. Add a decision guide section: If you are exploring use Assessment, if you know the challenge use Talk, if you need a roadmap use Blueprint, if you need economics use ROI, if you need a proposal use Proposal Builder. Add a local 'continue where you left off' panel if local storage state exists. Design must be premium, clear, interactive, and mobile-friendly. Run lint and build."
+  },
+  {
+    "id": "57-phase3-local-workspace-continuity",
+    "title": "Add local workspace continuity across Build tools",
+    "scope": "phase3-state",
+    "target": "local workspace continuity",
+    "allowLandingChanges": false,
+    "prompt": "Add safe local workspace continuity across Build With GFF tools. Do not touch landing page. Use localStorage only. Do not store sensitive information beyond what the user enters locally. Create a small local workspace utility to save non-sensitive previews for Blueprint, Assessment, ROI, Proposal, Talk to Agent, Sandbox selections, Marketplace comparisons, and Foundry Studio flows. Add clear local-only messaging: saved in this browser only, no server submission in this phase. Add reset/clear workspace action. Add 'continue' panels to /build and relevant tool pages if safe. Do not add auth or backend. Ensure hydration safety in Next.js by guarding browser-only APIs. Run lint and build."
+  },
+  {
+    "id": "58-phase3-cross-tool-recommendations",
+    "title": "Add cross-tool recommendations and next-best-action system",
+    "scope": "phase3-state",
+    "target": "cross-tool recommendations",
+    "allowLandingChanges": false,
+    "prompt": "Build a local next-best-action recommendation system across Build tools. Do not touch landing page. Based on local user inputs or completed previews, recommend the next tool: after Assessment recommend Blueprint, after Blueprint recommend ROI or Proposal, after ROI recommend Proposal, after Talk recommend Blueprint, after Sandbox recommend Foundry Studio, after Marketplace recommend Sandbox or Proposal. This must be deterministic local logic, not AI generation. Add a reusable NextBestAction component with premium CTA styling. Include explanation text, related route, and one secondary action. Ensure it does not appear if there is no relevant state. No backend. Mobile friendly. Run lint and build."
+  },
+  {
+    "id": "59-phase3-command-center-deep-actions",
+    "title": "Enhance Command Center with Build tool deep actions",
+    "scope": "phase3-navigation",
+    "target": "Command Center",
+    "allowLandingChanges": false,
+    "prompt": "Enhance the Command Center with Build With GFF deep actions. Do not touch landing page. Existing Cmd+K/Ctrl+K behavior must remain. Add commands for Start Blueprint, Continue Blueprint if local state exists, Start Assessment, Estimate ROI, Build Proposal, Open Sandbox, Compare Agents, Open Foundry Studio, Clear Local Workspace, Contact Sales, Book Workshop. Keep it frontend-only. Use route navigation and local actions only. Ensure keyboard accessibility, focus trap if modal, escape close, mobile fallback button if needed, and visible focus states. Do not redesign global header unless required. Run lint and build."
+  },
+  {
+    "id": "60-phase3-tool-empty-loading-error-states",
+    "title": "Polish empty loading error and completion states",
+    "scope": "phase3-ux-polish",
+    "target": "all Build tools",
+    "allowLandingChanges": false,
+    "prompt": "Polish empty states, loading-like transitions, error states, validation states, completion states, and reset states across all Build With GFF tools. Do not touch landing page. Tools: /build/talk, /build/blueprint, /build/assessment, /build/roi, /build/sandbox, /build/proposal, /build/marketplace, /build/foundry-studio. Since everything is frontend-only, use short deterministic transitions only where tasteful. Empty states must explain what the user should do. Validation states must be clear and accessible. Completion states must include next actions. Error states must not be scary or fake backend errors. Use premium microcopy and consistent visuals. Run lint and build."
+  },
+  {
+    "id": "61-phase3-mobile-pass-build-tools",
+    "title": "Mobile UX pass for Build With GFF tools",
+    "scope": "phase3-mobile-qa",
+    "target": "Build tool pages",
+    "allowLandingChanges": false,
+    "prompt": "Perform a mobile UX pass for all Build With GFF tools. Do not redesign and do not touch landing page. Check /build, /build/talk, /build/blueprint, /build/assessment, /build/roi, /build/sandbox, /build/proposal, /build/marketplace, /build/foundry-studio. Fix only mobile and responsive issues. Ensure no horizontal overflow, readable text, easy form inputs, large tap targets, stepper usability, accessible carousels/tabs, stacked result panels, simplified diagrams, usable comparison drawer, and workflow builder fallback. Do not add new features. Run lint and build."
+  },
+  {
+    "id": "62-phase3-accessibility-pass-build-tools",
+    "title": "Accessibility pass for Build With GFF tools",
+    "scope": "phase3-accessibility-qa",
+    "target": "Build tool pages",
+    "allowLandingChanges": false,
+    "prompt": "Perform an accessibility pass for all Build With GFF interactive tools. Do not touch landing page. Check labels, aria attributes where needed, keyboard navigation, focus states, form errors, tab/carousel controls, modal/dialog focus handling, command center deep actions, reduced motion, heading order, semantic sections, color contrast, and button/link semantics. Fix only accessibility issues. Do not redesign. Ensure every tool page has one clear H1 and that result panels are announced/readable. Run lint and build."
+  },
+  {
+    "id": "63-phase3-motion-and-interaction-polish",
+    "title": "Motion and interaction polish for Build tools",
+    "scope": "phase3-visual-polish",
+    "target": "Build tool pages",
+    "allowLandingChanges": false,
+    "prompt": "Perform a motion and interaction polish pass for Build With GFF tools. Do not touch landing page. Use Framer Motion or motion/react only if already installed. Improve step transitions, hover states, selected option states, result reveals, tab transitions, carousel movement, workflow map reveal, score chart animation, and CTA micro-interactions. Keep motion subtle, expensive, and purposeful. Respect prefers-reduced-motion. Avoid noisy animation, excessive glows, and fake loading. Do not add dependencies. Run lint and build."
+  },
+  {
+    "id": "64-phase3-visual-premium-polish-build-tools",
+    "title": "Premium visual polish for Build tools",
+    "scope": "phase3-visual-polish",
+    "target": "Build tool pages",
+    "allowLandingChanges": false,
+    "prompt": "Perform final premium UI polish only on Build With GFF tools. Do not touch landing page. Make /build and all tool pages feel like a custom 2026 enterprise product suite. Fix generic-looking sections, weak spacing, repetitive cards, clumsy forms, unbalanced layouts, and any UI that feels AI-generated. Add page-specific visual ideas where missing: score ring, architecture diagram, workflow canvas, product preview, executive report panel, carousel, bento grid, tabbed insight panel, comparison drawer, or timeline. Do not add fake data. Do not add dependencies. Preserve the current site theme. Run lint and build."
+  },
+  {
+    "id": "65-phase3-tool-logic-tests-or-verification-script",
+    "title": "Add lightweight verification for tool logic",
+    "scope": "phase3-quality",
+    "target": "tool calculation logic",
+    "allowLandingChanges": false,
+    "prompt": "Add lightweight verification for deterministic tool logic without introducing a heavy testing stack. Do not touch landing page. If an existing test framework exists, add small tests for Blueprint scoring, Assessment scoring, ROI calculation, local recommendation logic, and validation helpers. If no test framework exists, add a small documented npm-safe verification script only if consistent with the project, or add pure-function self-check comments/docs instead. The Banking Blueprint example must be covered: Banking, 10000+ company size, Scaling AI, Productivity + Cost Reduction + Compliance, Mostly Integrated Data, Budget Approved returns 87/100. Do not add dependencies unless absolutely necessary. Run available test command if present, then lint/build."
+  },
+  {
+    "id": "66-phase3-api-contract-documentation-only",
+    "title": "Document future FastAPI contracts for Phase 4",
+    "scope": "phase3-docs",
+    "target": "future backend API contract documentation",
+    "allowLandingChanges": false,
+    "prompt": "Create or update documentation for future FastAPI backend contracts only. Do not build backend. Do not add FastAPI folder yet unless already present and explicitly documented as empty placeholder. Do not add API calls. Create docs/PHASE_3_INTERACTIVE_TOOLS.md or update existing docs. Document what Phase 3 built, what remains frontend-only, and future endpoints for Phase 4 or backend phase: POST /api/blueprint/generate, POST /api/assessment/score, POST /api/roi/calculate, POST /api/contact/submit, POST /api/proposal/generate, POST /api/auth/request-otp, POST /api/auth/verify-otp, POST /api/newsletter/subscribe, POST /api/sandbox/run, POST /api/foundry/workflow, GET /api/marketplace/agents. Document payload shapes at a high level, response examples clearly marked illustrative, security requirements, auth/session later, email/OTP provider later, database later, object storage later, and no AWS credentials in this phase. Run lint/build if docs affect build."
+  },
+  {
+    "id": "67-phase3-linking-and-cta-integration",
+    "title": "Integrate links and CTAs across Phase 3 tools",
+    "scope": "phase3-integration",
+    "target": "links CTAs navigation between tools",
+    "allowLandingChanges": false,
+    "prompt": "Audit and improve internal linking between Build With GFF tools and related public pages. Do not touch landing page. Ensure /build links to every tool. Each tool should link to the next logical tools. Blueprint links to Assessment, ROI, Proposal, Talk. Assessment links to Blueprint and Talk. ROI links to Proposal and Blueprint. Proposal links to Talk and Contact. Sandbox links to Marketplace and Foundry Studio. Marketplace links to Sandbox and Proposal. Foundry Studio links to Proposal and Talk. Add related links to relevant Capabilities and Platforms where useful. No broken links. No slug links. Use existing CTA style. Run lint and build."
+  },
+  {
+    "id": "68-phase3-final-interactive-tools-qa",
+    "title": "Final Phase 3 QA for interactive tools",
+    "scope": "phase3-final-qa",
+    "target": "entire Phase 3 interactive layer",
+    "allowLandingChanges": false,
+    "prompt": "Perform final QA for Phase 3 interactive Build With GFF tools. Do not add new features unless fixing a small clear issue. Verify /build, /build/talk, /build/blueprint, /build/assessment, /build/roi, /build/sandbox, /build/proposal, /build/marketplace, /build/foundry-studio. Verify shared tool architecture works. Verify frontend-only safety: no backend, no AWS, no auth, no real OTP, no real email, no database, no real API calls, no real exports. Verify Blueprint scoring and Banking example 87/100. Verify assessment and ROI calculations are deterministic and labelled illustrative. Verify local workspace does not break hydration. Verify mobile responsiveness, accessibility, reduced motion, command center deep actions, links, CTAs, empty states, error states, result states, and visual polish. Run npm run lint, npm run build, npm run typecheck if available, and npm test if available. Final response must include pass/fail checklist, files changed, commands run, remaining warnings, and TODOs for the next backend/FastAPI phase."
   }
 ]
