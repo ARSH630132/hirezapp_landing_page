@@ -12,16 +12,24 @@ export default function HeroSection() {
       className="w-full min-h-[70vh] pt-[84px] bg-black flex flex-col lg:flex-row overflow-hidden"
       variants={pageFadeVariants}
     >
-      <div className="relative z-10 w-full lg:w-[45%] shrink-0 flex flex-col justify-center px-6 lg:pl-16 lg:pr-8 py-16 lg:py-24">
-        <h1 className="text-[40px] sm:text-[48px] lg:text-[52px] leading-[1.1] font-semibold">
-          Building the World's First{" "}
-          <span
-            className="bg-clip-text text-transparent"
-            style={{ backgroundImage: "linear-gradient(90deg, #E4000F 0%, #009DFF 100%)" }}
-          >
-            AI-Native Enterprise
-          </span>{" "}
-          Transformation Company
+      <div className="relative z-10 w-full lg:w-[48%] xl:w-[46%] shrink-0 flex flex-col justify-center px-6 lg:pl-16 lg:pr-4 py-16 lg:py-24">
+        <h1 className="relative z-20 w-[115%] max-w-[760px] text-[40px] sm:text-[48px] lg:text-[52px] leading-[1.1] font-semibold">
+        Building the World's First
+<br />
+<span
+  className="bg-clip-text text-transparent"
+  style={{ backgroundImage: "linear-gradient(90deg, #E4000F 0%, #009DFF 100%)" }}
+>
+  AI-Native
+</span>{" "}
+<span
+  className="bg-clip-text text-transparent"
+  style={{ backgroundImage: "linear-gradient(90deg, #E4000F 0%, #009DFF 100%)" }}
+>
+  Enterprise
+</span>
+<br />
+Transformation Company
         </h1>
 
         <p className="mt-5 text-[15px] sm:text-[16px] lg:text-[18px] leading-[1.65] font-medium text-gray-300">
@@ -31,8 +39,10 @@ export default function HeroSection() {
         <div className="mt-10 lg:mt-12 flex flex-col sm:flex-row flex-wrap gap-4 w-full">
           <a
             href="/build/blueprint"
-            className="h-[50px] rounded-full border border-transparent bg-[#009DFF] px-6 flex items-center justify-center gap-[10px] hover:bg-[#007acc] transition-colors"
-          >
+className="h-[50px] rounded-full px-6 flex items-center justify-center gap-[10px] hover:opacity-90 transition-all duration-300 overflow-hidden"
+style={{
+  background: "linear-gradient(90deg, #E4000F 0%, #009DFF 100%)"
+}}          >
             <span className="text-white text-[16px] leading-none font-semibold whitespace-nowrap">Generate My Enterprise AI Blueprint</span>
           </a>
           <a
