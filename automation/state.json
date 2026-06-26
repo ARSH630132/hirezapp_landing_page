@@ -52,7 +52,8 @@
     "48-phase3-roi-calculator-input-model",
     "52-phase3-sandbox-agent-demo-catalog",
     "50-phase3-proposal-builder-intake",
-    "51-phase3-proposal-builder-preview"
+    "51-phase3-proposal-builder-preview",
+    "53-phase3-sandbox-simulated-agent-preview"
   ],
   "failed": [
     {
