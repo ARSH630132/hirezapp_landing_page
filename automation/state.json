@@ -25,7 +25,8 @@
     "23-platforms-hub-garage-foundry-factory",
     "24-platforms-blueprint-marketplace-control-center",
     "25-platforms-academy-university-assessment",
-    "26-platforms-industry-meshes"
+    "26-platforms-industry-meshes",
+    "27-platforms-agent-runtime-developer"
   ],
   "failed": [
     {
