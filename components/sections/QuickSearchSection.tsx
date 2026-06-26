@@ -343,7 +343,7 @@ export default function QuickSearchSection() {
                   <Sparkles className="h-5 w-5 animate-pulse" />
                 </div>
                 <h3 className="text-[17px] sm:text-lg font-semibold text-white tracking-wide">Enterprise Intelligent Concierge</h3>
-                <p className="mt-2 text-sm text-white/50 max-w-lg mx-auto leading-relaxed font-normal">
+                <p className="mt-2 text-sm text-white/50 max-w-2xl mx-auto leading-relaxed font-normal">
                   Our instant search indexing maps core architectural capabilities, delivery platforms, active research whitepapers, and build specifications across GFF AI's entire ecosystem.
                 </p>
                 <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-3 text-left">
