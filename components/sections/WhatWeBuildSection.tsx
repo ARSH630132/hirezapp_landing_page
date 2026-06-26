@@ -10,6 +10,7 @@ const items = [
     name: 'AI Strategy',
     href: '/capabilities/strategy',
     icon: '/what_we_build/strategy.svg',
+    iconGlow: '#F74539',
     color: '#F74539',
     desc: 'Maturity roadmaps and capability modeling with University Platforms R&D.',
     tags: ['Advisory', 'University Platforms']
@@ -18,6 +19,7 @@ const items = [
     name: 'AI Engineering',
     href: '/capabilities/engineering',
     icon: '/what_we_build/engineering.svg',
+    iconGlow: '#4F8DFF',
     color: '#E98828',
     desc: 'Production-grade LLM pipeline architectures built on top of Data Platforms.',
     tags: ['Fine-Tuning', 'Data Platforms']
@@ -26,6 +28,7 @@ const items = [
     name: 'Agentic AI',
     href: '/capabilities/agents',
     icon: '/what_we_build/agentic-ai.svg',
+    iconGlow: '#F74539',
     color: '#0186E4',
     desc: 'Autonomous multi-agent ecosystems integrated with Knowledge Graph indexers.',
     tags: ['Orchestration', 'Knowledge Graph']
@@ -34,6 +37,7 @@ const items = [
     name: 'AI Governance',
     href: '/capabilities/governance',
     icon: '/what_we_build/governance.svg',
+    iconGlow: '#0186E4',
     color: '#009DFF',
     desc: 'Transparent model auditing, compliance automation, and safety guardrails.',
     tags: ['Risk Control', 'Compliance']
@@ -42,6 +46,7 @@ const items = [
     name: 'AI Labs',
     href: '/capabilities/labs',
     icon: '/what_we_build/labs.svg',
+    iconGlow: '#9D00FF',
     color: '#9D00FF',
     desc: 'Sandbox incubation for advanced emerging AI and Digital Twins simulations.',
     tags: ['R&D Sandbox', 'Digital Twins']
@@ -50,6 +55,7 @@ const items = [
     name: 'AI Factory',
     href: '/platforms/factory',
     icon: '/ai_foundary/factory.svg',
+    iconGlow: '#0186E4',
     color: '#E4000F',
     desc: 'Industrialized model assembly lines and automated training/eval loops.',
     tags: ['CI/CD Assembly', 'Automated Eval']
@@ -58,6 +64,7 @@ const items = [
     name: 'AI Marketplace',
     href: '/platforms/marketplace',
     icon: '/intellegent_enterprise/internet.svg',
+    iconGlow: '#F74539',
     color: '#0186E4',
     desc: 'Registry for neural assets, secure enterprise licensing, and agent plugins.',
     tags: ['Neural Assets', 'Plugins']
@@ -66,10 +73,12 @@ const items = [
     name: 'AI Operations',
     href: '/capabilities/operations',
     icon: '/intellegent_enterprise/robot.svg',
+    iconGlow: '#F74539',
     color: '#E98828',
     desc: 'Telemetry, active monitoring, and orchestration under Managed Services.',
     tags: ['Telemetry', 'Managed Services']
   }
+  
 ];
 
 export default function WhatWeBuildSection() {
@@ -103,18 +112,39 @@ export default function WhatWeBuildSection() {
                 whileInView={{ scale: 1, opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.05 }}
-                className="relative rounded-[24px] p-[1px] bg-gradient-to-b from-white/10 to-transparent group-hover:from-[#E4000F]/40 group-hover:to-[#009DFF]/40 transition-all duration-500 h-full group-hover:-translate-y-2"
+                className="relative rounded-[24px] p-[1px] transition-all duration-300 h-full group-hover:-translate-y-2 hover:shadow-[0_0_10px_var(--card-color),0_0_24px_var(--card-color)]"
+                style={{ background: `linear-gradient(180deg, ${c.color}55 0%, rgba(255,255,255,0.04) 100%)`, "--card-color": c.color } as React.CSSProperties}
               >
-                <div className="absolute inset-0 rounded-[24px] opacity-0 group-hover:opacity-5 transition-opacity duration-500 pointer-events-none blur-lg" style={{ backgroundColor: c.color }} />
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" style={{ background: `radial-gradient(circle at 50% 20%, ${c.color}15 0%, transparent 60%)` }} />
                 <div className="h-full rounded-[23px] bg-[#050505] p-8 flex flex-col justify-between min-h-[350px] relative overflow-hidden shadow-2xl">
+                  <div
+  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+  style={{ background: `radial-gradient(circle at center, ${c.color}18 0%, ${c.color}10 35%, ${c.color}08 55%, transparent 80%)` }}
+/>
+<div
+  className="absolute inset-0 rounded-[23px] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+  style={{ boxShadow: `0 0 18px ${c.color}, 0 0 42px ${c.color}99, inset 0 0 30px ${c.color}55` }}
+/>
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" style={{ background: `radial-gradient(circle at 50% 20%, ${c.color}15 0%, transparent 60%)` }} />
                   <div>
                     <div className="relative w-12 h-12 mb-6 rounded-2xl bg-white/[0.02] border border-white/5 flex items-center justify-center p-2.5 transition-all duration-500 group-hover:bg-white/[0.05] group-hover:border-white/10 group-hover:scale-105">
-                      <div className="relative w-full h-full opacity-80 group-hover:opacity-100 transition-opacity duration-300">
-                        <Image src={c.icon} alt={c.name} fill className="object-contain" />
-                      </div>
+   <div
+  className="relative w-full h-full opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-200"
+  style={
+    {
+      "--icon-glow": c.iconGlow,
+    } as React.CSSProperties
+  }
+>
+  <Image
+    src={c.icon}
+    alt={c.name}
+    fill
+    className="object-contain transition-all duration-200 group-hover:[filter:drop-shadow(0_0_8px_var(--icon-glow))_drop-shadow(0_0_16px_var(--icon-glow))]"
+  />
+</div>
                     </div>
-                    <h3 className="text-lg font-bold tracking-wide uppercase text-white group-hover:text-transparent group-hover:bg-clip-text transition-all duration-300" style={{ backgroundImage: `linear-gradient(90deg, #fff 30%, ${c.color} 100%)` }}>
+                    <h3 className="text-lg font-bold tracking-wide uppercase text-white group-hover:text-white transition-colors duration-300">
                       {c.name}
                     </h3>
                     <p className="mt-3 text-sm text-white/50 leading-relaxed font-normal group-hover:text-white/75 transition-colors duration-300">
