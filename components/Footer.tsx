@@ -84,7 +84,7 @@ export default function Footer() {
                 <div className="mt-1 h-[1px] w-[50px] bg-gradient-to-r from-red-600 to-black" />
                 <p className="mt-2 text-white/50 text-[12px]">Subscribe to our weekly enterprise briefing. Benchmarks & architectures.</p>
                 {sub ? (
-                  <div className="mt-3 text-emerald-400 text-[12px]">✓ Subscription confirmed. Briefing pending.</div>
+                  <div className="mt-3 text-emerald-400 text-[12px]">✓ Subscription simulated. (FastAPI integration coming soon)</div>
                 ) : (
                   <form onSubmit={(e) => { e.preventDefault(); if (email) { setSub(true); setEmail(""); } }} className="mt-3 flex gap-2">
                     <input type="email" placeholder="enterprise@company.com" aria-label="Email address for newsletter" required value={email} onChange={(e) => setEmail(e.target.value)} className="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-[12px] text-white focus:border-[#009DFF] flex-grow" />

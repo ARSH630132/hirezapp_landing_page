@@ -61,41 +61,24 @@ export default function ContactSection() {
 
     try {
       setIsSubmitting(true);
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(contactForm),
-      });
+      // Simulate frontend submission with network delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      if (response.ok) {
-        setContactForm({
-          fullName: "",
-          fullNameDetail: "",
-          company: "",
-          companyDetail: "",
-          businessEmail: "",
-          businessEmailDetail: "",
-        });
-        setNotification({
-          open: true,
-          type: "success",
-          title: "Message sent successfully",
-          message:
-            "Thanks for reaching out. Your details have been delivered to our team, and we’ll review them shortly.",
-        });
-      } else {
-        const error = await response.json().catch(() => null);
-        setNotification({
-          open: true,
-          type: "error",
-          title: "Message could not be sent",
-          message:
-            error?.message ??
-            "Please try again in a moment or check the form details and resubmit.",
-        });
-      }
+      setContactForm({
+        fullName: "",
+        fullNameDetail: "",
+        company: "",
+        companyDetail: "",
+        businessEmail: "",
+        businessEmailDetail: "",
+      });
+      setNotification({
+        open: true,
+        type: "success",
+        title: "Simulation Submitted",
+        message:
+          "Thanks for interacting! This contact form is currently operating as a premium frontend-only simulation. Backend/FastAPI integration will come later. No real email or data was sent.",
+      });
     } catch {
       setNotification({
         open: true,

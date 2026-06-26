@@ -9,6 +9,8 @@ export default function AssessmentPage() {
   const [sec, setSec] = useState(2);
   const [governance, setGovernance] = useState(3);
   const [agents, setAgents] = useState(2);
+  const [downloading, setDownloading] = useState(false);
+  const [downloadMsg, setDownloadMsg] = useState("");
 
   const totalScore = Math.round(((data + sec + governance + agents) / 20) * 100);
 
@@ -19,6 +21,15 @@ export default function AssessmentPage() {
   };
 
   const report = getReport(totalScore);
+
+  const handleDownload = () => {
+    setDownloading(true);
+    setDownloadMsg("Connecting to sandbox...");
+    setTimeout(() => {
+      setDownloadMsg("FastAPI PDF generator integration will come later.");
+      setDownloading(false);
+    }, 1500);
+  };
 
   return (
     <InnerPageShell>
@@ -78,9 +89,18 @@ export default function AssessmentPage() {
               <p className="text-xs text-white/60 leading-relaxed">{report.r}</p>
             </div>
           </div>
-          <button className="w-full h-[42px] rounded-lg bg-white/5 border border-white/10 text-xs font-semibold text-white hover:bg-white/10 mt-6">
-            Download Custom Advisory PDF
-          </button>
+          <div className="mt-6 space-y-2">
+            <button
+              onClick={handleDownload}
+              disabled={downloading}
+              className="w-full h-[42px] rounded-lg bg-white/5 border border-white/10 text-xs font-semibold text-white hover:bg-white/10 disabled:opacity-50"
+            >
+              {downloading ? "Generating PDF..." : "Download Custom Advisory PDF"}
+            </button>
+            {downloadMsg && (
+              <p className="text-[11px] text-[#E98828] text-center font-mono">{downloadMsg}</p>
+            )}
+          </div>
         </div>
       </div>
     </InnerPageShell>
