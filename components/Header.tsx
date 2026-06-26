@@ -61,15 +61,15 @@ export default function Header({ contactHref = "/#contact" }: HeaderProps) {
           <Link href="/portal" className="text-white text-[14px] xl:text-[16px] leading-[24px] font-medium text-[#009DFF] hover:text-white transition-colors whitespace-nowrap">CLIENT LOGIN</Link>
         </div>
 
-        <a
+        <Link
           href={contactHref}
           className="hidden md:flex w-[207px] h-[48px] items-center justify-center rounded-[98px] text-white text-[16px] leading-[24px] font-semibold hover:opacity-90 transition-all duration-300 shrink-0"
           style={{ background: "linear-gradient(90deg, #E4000F 0%, #009DFF 100%)" }}
         >
           Book a Consultation
-        </a>
+        </Link>
 
-        <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden flex flex-col gap-[6px]">
+        <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden flex flex-col gap-[6px]" aria-label="Toggle Menu">
           <span className="w-[34px] h-[4px] bg-white rounded-full" />
           <span className="w-[34px] h-[4px] bg-white rounded-full" />
           <span className="w-[34px] h-[4px] bg-white rounded-full" />
@@ -84,22 +84,22 @@ export default function Header({ contactHref = "/#contact" }: HeaderProps) {
                 <p className="text-white text-[18px] font-semibold">GFF AI</p>
                 <p className="text-white/50 text-[13px]">Navigation Menu</p>
               </div>
-              <button onClick={() => setIsMenuOpen(false)} className="text-white text-[34px] leading-none">×</button>
+              <button onClick={() => setIsMenuOpen(false)} className="text-white text-[34px] leading-none" aria-label="Close Menu">×</button>
             </div>
             <div className="mt-6 flex flex-col">
               {navItems.map((item) => (
-                <a key={item.label} href={item.href} onClick={() => setIsMenuOpen(false)} className="w-full py-4 border-b border-white/10 text-white/80 text-[18px] font-semibold hover:text-white transition-colors">
+                <Link key={item.label} href={item.href} onClick={() => setIsMenuOpen(false)} className="w-full py-4 border-b border-white/10 text-white/80 text-[18px] font-semibold hover:text-white transition-colors">
                   {item.label}
-                </a>
+                </Link>
               ))}
-              <a
+              <Link
                 href={contactHref}
                 onClick={() => setIsMenuOpen(false)}
                 className="mt-6 w-full h-[56px] rounded-[98px] text-white text-[16px] font-semibold flex items-center justify-center"
                 style={{ background: "linear-gradient(90deg, #E4000F 0%, #009DFF 100%)" }}
               >
                 Book a Consultation
-              </a>
+              </Link>
             </div>
           </div>
         </div>
