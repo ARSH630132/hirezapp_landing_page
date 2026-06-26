@@ -12,6 +12,7 @@ const footerCols = [
       { n: "Why GFF AI", h: "/why-gff-ai" },
       { n: "Build With GFF", h: "/build" },
       { n: "Resources", h: "/resources" },
+      { n: "Executive Insights", h: "/insights" },
       { n: "Contact", h: "/contact" },
     ],
   },
@@ -19,19 +20,19 @@ const footerCols = [
     title: "Solutions",
     items: [
       { n: "Capabilities Hub", h: "/capabilities" },
-      { n: "Agentic AI", h: "/capabilities#agentic-ai" },
-      { n: "AI Governance", h: "/capabilities#governance" },
-      { n: "Managed AI", h: "/capabilities#managed-ai" },
-      { n: "AI Labs", h: "/capabilities#labs" },
+      { n: "Agentic AI", h: "/capabilities/agents" },
+      { n: "AI Governance", h: "/capabilities/governance" },
+      { n: "Managed AI", h: "/capabilities/managed-services" },
+      { n: "AI Labs", h: "/capabilities/labs" },
     ],
   },
   {
     title: "Industries",
     items: [
       { n: "Industries Hub", h: "/industries" },
-      { n: "Financial Services", h: "/industries#finance" },
-      { n: "Advanced Manufacturing", h: "/industries#manufacturing" },
-      { n: "Supply Chain", h: "/industries#logistics" },
+      { n: "Financial Services", h: "/industries/financial-services" },
+      { n: "Advanced Manufacturing", h: "/industries/manufacturing" },
+      { n: "Sovereign Audit", h: "/industries/audit" },
     ],
   },
   {
@@ -39,16 +40,17 @@ const footerCols = [
     items: [
       { n: "Platforms Hub", h: "/platforms" },
       { n: "Foundry Studio", h: "/platforms/foundry" },
-      { n: "Marketplace", h: "/platforms/marketplace" },
+      { n: "Agent Marketplace", h: "/platforms/marketplace" },
+      { n: "Control Center", h: "/platforms/control-center" },
     ],
   },
   {
     title: "Company",
     items: [
-      { n: "About Us", h: "/about-us" },
       { n: "Company Profile", h: "/company" },
-      { n: "Mission & Values", h: "/company#mission" },
-      { n: "Careers", h: "/careers" },
+      { n: "Mission & Values", h: "/company/mission" },
+      { n: "Executive Leadership", h: "/company/leadership" },
+      { n: "Careers", h: "/company/careers" },
     ],
   },
   {

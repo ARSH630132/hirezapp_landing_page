@@ -31,7 +31,7 @@ export default function InteractiveExperienceSection() {
   };
 
   return (
-    <section className="w-full bg-[#020202] px-6 lg:px-16 py-16 relative overflow-hidden">
+    <section id="experience" className="w-full bg-[#020202] px-6 lg:px-16 py-16 relative overflow-hidden">
       <div className="max-w-[1795px] mx-auto relative z-10">
         <SectionHeading
           title={<h2 className="text-[26px] sm:text-[32px] font-semibold text-center uppercase text-white">INTERACTIVE <span className="text-[#009DFF]">EXPERIENCE</span></h2>}

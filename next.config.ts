@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
         destination: "/:path*",
         permanent: true,
       },
+      {
+        source: "/experience",
+        destination: "/#experience",
+        permanent: true,
+      },
     ];
   },
 };
