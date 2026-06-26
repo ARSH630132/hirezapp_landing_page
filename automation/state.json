@@ -34,7 +34,8 @@
     "32-legal-investor-pages",
     "33-mobile-responsive-pass",
     "34-accessibility-and-motion-pass",
-    "35-visual-premium-polish-pass"
+    "35-visual-premium-polish-pass",
+    "36-link-route-content-audit"
   ],
   "failed": [
     {
