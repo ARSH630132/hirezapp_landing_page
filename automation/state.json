@@ -51,7 +51,8 @@
     "45-phase3-blueprint-local-save-share-copy",
     "48-phase3-roi-calculator-input-model",
     "52-phase3-sandbox-agent-demo-catalog",
-    "50-phase3-proposal-builder-intake"
+    "50-phase3-proposal-builder-intake",
+    "51-phase3-proposal-builder-preview"
   ],
   "failed": [
     {
