@@ -42,7 +42,8 @@
     "39-phase3-shared-tool-architecture",
     "40-phase3-shared-data-models-and-validation",
     "41-phase3-reusable-wizard-and-stepper",
-    "42-phase3-talk-to-agent-tool"
+    "42-phase3-talk-to-agent-tool",
+    "43-phase3-blueprint-wizard-inputs"
   ],
   "failed": [
     {
