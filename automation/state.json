@@ -26,7 +26,8 @@
     "24-platforms-blueprint-marketplace-control-center",
     "25-platforms-academy-university-assessment",
     "26-platforms-industry-meshes",
-    "27-platforms-agent-runtime-developer"
+    "27-platforms-agent-runtime-developer",
+    "28-build-with-gff-pages"
   ],
   "failed": [
     {
