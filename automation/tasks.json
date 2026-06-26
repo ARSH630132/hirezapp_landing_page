@@ -550,5 +550,429 @@
     "target": "entire Phase 3 interactive layer",
     "allowLandingChanges": false,
     "prompt": "Perform final QA for Phase 3 interactive Build With GFF tools. Do not add new features unless fixing a small clear issue. Verify /build, /build/talk, /build/blueprint, /build/assessment, /build/roi, /build/sandbox, /build/proposal, /build/marketplace, /build/foundry-studio. Verify shared tool architecture works. Verify frontend-only safety: no backend, no AWS, no auth, no real OTP, no real email, no database, no real API calls, no real exports. Verify Blueprint scoring and Banking example 87/100. Verify assessment and ROI calculations are deterministic and labelled illustrative. Verify local workspace does not break hydration. Verify mobile responsiveness, accessibility, reduced motion, command center deep actions, links, CTAs, empty states, error states, result states, and visual polish. Run npm run lint, npm run build, npm run typecheck if available, and npm test if available. Final response must include pass/fail checklist, files changed, commands run, remaining warnings, and TODOs for the next backend/FastAPI phase."
+  },
+  {
+    "id": "69-phase4-preflight-portal-admin-audit",
+    "title": "Phase 4 preflight audit for login admin and client portal",
+    "scope": "phase4-audit",
+    "target": "login admin client portal frontend",
+    "allowLandingChanges": false,
+    "prompt": "This is the first task of Phase 4. Do not edit files. Audit the current implementation for all login, client portal, admin portal, and private workspace related routes and components. Inspect app/portal, app/client, app/admin if present, app/login if present, app/layout.tsx, components/Header.tsx, components/Footer.tsx, components/CommandCenter.tsx, components/Phase2PublicPages.tsx, components/Phase2InteractivePanels.tsx, lib/site-map-data.ts, lib/public-page-content.ts, lib/frontend-placeholders.ts, and any existing dashboard, portal, auth, client, admin, table, document, billing, support, analytics, or governance components. Determine what currently exists as a public shell and what is missing for a proper logged-in product experience. Do not create backend, real auth, database, AWS, email, OTP, payment, upload, or API integrations. Produce a detailed implementation gap report for Phase 4 frontend. The report must cover required routes, app shell, local auth preview, role switching, route protection preview, client portal dashboard, projects, AI operations, documents, billing, support, analytics, governance, settings, admin dashboard, client management, user management, project management, documents admin, billing admin, support admin, analytics admin, governance admin, activity feed, notifications, global search, command center, tables, filters, mobile UX, accessibility, design system, and final QA. Final response must include files inspected, existing capabilities, missing routes, missing components, design risks, and recommended implementation order. Do not edit files."
+  },
+  {
+    "id": "70-phase4-private-app-design-system",
+    "title": "Create private app design system for portal and admin",
+    "scope": "phase4-foundation",
+    "target": "private app design primitives",
+    "allowLandingChanges": false,
+    "prompt": "Build the shared private app design system for login, client portal, and admin portal. Do not touch the public landing page. Do not redesign public pages. This task should create or improve reusable frontend-only UI primitives for authenticated-style product screens. The UI must feel like a premium 2026 enterprise AI operations product, not a generic admin template. Follow the public website theme but make the private workspace feel more operational, secure, data-rich, and product-grade. Create only necessary reusable components, such as PrivateAppShell, PrivateSidebar, PrivateTopbar, PrivatePageHeader, WorkspaceBreadcrumbs, WorkspaceCommandButton, WorkspaceCard, MetricTile, StatusBadge, DataTable, FilterBar, EmptyState, ActivityFeed, Timeline, DocumentCard, InvoiceCard, SupportTicketCard, AnalyticsPanel, GovernancePanel, AgentHealthCard, ProjectCard, UserAvatar, NotificationBell, RoleSwitcherPreview, and SecurePreviewNotice if useful. Use Framer Motion or motion/react only if already installed. Use Aceternity-inspired effects locally, such as subtle spotlight cards, moving borders, bento dashboards, animated tabs, sticky sidebars, and command palette surfaces. Do not install heavy dependencies without approval. All components must be responsive, accessible, keyboard-friendly, and scoped so they do not affect the public landing page. Run lint and build."
+  },
+  {
+    "id": "71-phase4-private-route-map",
+    "title": "Create explicit routes for login client portal and admin portal",
+    "scope": "phase4-routing",
+    "target": "private route structure",
+    "allowLandingChanges": false,
+    "prompt": "Create or verify explicit App Router pages for the full Phase 4 route structure. Do not use slug routing. Do not create app/[...slug]/page.tsx. Do not recreate PublicRoutePage. Do not touch the landing page. Required public entry routes: /login, /portal, /portal/login. Required client portal routes: /portal/dashboard, /portal/projects, /portal/projects/[id] if the current project supports dynamic explicit folders safely, /portal/ai-operations, /portal/ai-operations/[id] if safe, /portal/documents, /portal/documents/[id] if safe, /portal/billing, /portal/billing/invoices, /portal/billing/invoices/[id] if safe, /portal/support, /portal/support/[id] if safe, /portal/analytics, /portal/governance, /portal/settings, /portal/activity. Required compatibility client routes: /client, /client/control-center, /client/dashboard if useful. Required admin routes: /admin, /admin/dashboard, /admin/clients, /admin/clients/[id] if safe, /admin/projects, /admin/projects/[id] if safe, /admin/users, /admin/ai-operations, /admin/documents, /admin/billing, /admin/support, /admin/analytics, /admin/governance, /admin/settings, /admin/activity. If dynamic routes are risky in the current automation, create explicit list/detail pages without dynamic params and use local state/detail drawers instead. Pages may initially render shared shell placeholders, but every route must exist explicitly. Run lint and build."
+  },
+  {
+    "id": "72-phase4-local-auth-session-rbac-preview",
+    "title": "Build local auth session and role-based preview layer",
+    "scope": "phase4-auth-preview",
+    "target": "frontend-only auth and RBAC preview",
+    "allowLandingChanges": false,
+    "prompt": "Build a frontend-only local auth/session preview layer for Phase 4. Do not add real authentication. Do not call APIs. Do not add backend, cookies requiring server auth, JWT verification, OAuth, Cognito, Firebase, Clerk, Supabase, or database. Implement a safe local preview system using localStorage or in-memory state with hydration guards. Support roles: client_admin, client_member, gff_admin, gff_operator, finance_admin, support_agent, viewer. Provide local preview users with clearly fake/internal preview labels, not real identities. Add helper utilities such as getPreviewSession, setPreviewSession, clearPreviewSession, hasRole, canAccessPortalSection, canAccessAdminSection. Add safe route guard components that redirect or show a locked preview state when no local preview session exists. Every message must say this is frontend preview only and real auth will be connected in backend phase. Do not make it look like real security. Run lint and build."
+  },
+  {
+    "id": "73-phase4-client-login-landing",
+    "title": "Build Client Login public landing at /portal",
+    "scope": "phase4-login",
+    "target": "/portal public client login landing",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /portal into a premium Client Login landing page. This page is public and should explain the secure delivery workspace before login. Do not touch the main landing page. /portal must contain module previews: Dashboard, Projects, Invoices or Billing, Support, Documents, AI Operations, Analytics, Governance. It should have a premium login CTA, secure workspace narrative, module preview cards, trust/security style visual language without fake certifications, and a clear note that login/auth is frontend preview only in this phase. Add route links to /portal/login and preview module anchors or cards. Design should feel expensive, secure, enterprise-grade, and consistent with the GFF AI theme. Use polished graphics, bento cards, dashboard previews without fake data, and subtle motion. No real auth, no API calls. Run lint and build."
+  },
+  {
+    "id": "74-phase4-login-page",
+    "title": "Build premium login page and local role preview",
+    "scope": "phase4-login",
+    "target": "/login and /portal/login",
+    "allowLandingChanges": false,
+    "prompt": "Build premium frontend-only login pages for /login and /portal/login. Do not touch landing page. The login UI should feel like a secure enterprise product login, with GFF AI branding, email field, password field placeholder, SSO button placeholders, OTP login placeholder, role preview selector for local development, and clear frontend-only notice. On submit, create a local preview session only and route client roles to /portal/dashboard and GFF/admin roles to /admin/dashboard. Do not implement real auth, password validation beyond simple required fields, OTP sending, SSO, OAuth, sessions, cookies, JWT, backend calls, or API calls. Add forgot password placeholder link and contact support link. Make it mobile excellent, accessible, keyboard-friendly, and visually premium with subtle motion. Run lint and build."
+  },
+  {
+    "id": "75-phase4-forgot-password-otp-preview",
+    "title": "Build forgot password and OTP preview states",
+    "scope": "phase4-login",
+    "target": "login recovery frontend preview",
+    "allowLandingChanges": false,
+    "prompt": "Add frontend-only forgot password and OTP preview states to the login experience. Do not create real password reset, email, OTP, or backend calls. The forgot password UI should allow entering an email and then show a safe preview message: password reset will be connected in the backend authentication phase. The OTP UI should allow entering a 6 digit placeholder code only for preview and must not pretend to send or verify real OTP. Add accessible validation, clear microcopy, and safe reset/back actions. The UI should be polished and secure-looking but honest. Do not touch landing page. Run lint and build."
+  },
+  {
+    "id": "76-phase4-private-app-shell",
+    "title": "Build private workspace app shell",
+    "scope": "phase4-layout",
+    "target": "shared client and admin app shell",
+    "allowLandingChanges": false,
+    "prompt": "Build the shared private app shell used by client portal and admin portal pages. Do not touch landing page. The shell should include a responsive sidebar, topbar, workspace switcher or organization label, breadcrumb area, global search trigger, notification bell, user menu, role preview indicator, sign out preview action, and content container. The sidebar should support grouped navigation and collapse behavior on desktop, bottom or drawer navigation on mobile, and clear active states. Client portal navigation must include Dashboard, Projects, AI Operations, Documents, Billing, Support, Analytics, Governance, Activity, Settings. Admin navigation must include Dashboard, Clients, Projects, Users, AI Operations, Documents, Billing, Support, Analytics, Governance, Activity, Settings. Make the UI feel like a premium enterprise control center, not a basic admin template. Use current theme, subtle motion, accessible landmarks, keyboard focus, and mobile-first behavior. Run lint and build."
+  },
+  {
+    "id": "77-phase4-private-mock-data-model",
+    "title": "Create local mock data model for portal and admin",
+    "scope": "phase4-data",
+    "target": "local mock data",
+    "allowLandingChanges": false,
+    "prompt": "Create a local mock data model for the client portal and admin portal. Do not add a database or backend. Do not create fake real customer data that implies actual clients. Use clearly representative data and label it as preview/demo data where surfaced. Data should support dashboard, projects, AI operations, documents, billing/invoices, support tickets, analytics, governance, users, clients, activity feed, and notifications. Include types for ClientAccount, Project, Program, AgentOperation, AgentHealth, DocumentItem, Invoice, SupportTicket, AnalyticsMetric, GovernanceItem, Approval, User, Role, ActivityEvent, Notification. Include deterministic sample entries such as representative client account, representative project names, representative agent names, preview invoices, preview tickets. No fake logos or real client names. Centralize in a safe local data file. Run lint and build."
+  },
+  {
+    "id": "78-phase4-data-table-filter-system",
+    "title": "Build premium data table filter and list system",
+    "scope": "phase4-component",
+    "target": "tables lists filters",
+    "allowLandingChanges": false,
+    "prompt": "Build reusable premium table, list, filter, and detail-drawer components for portal and admin pages. Do not touch landing page. Components should support search, status filters, type filters, date range placeholder, sort controls, empty state, row click, selected state, pagination or local visible count, mobile card fallback, and accessible keyboard navigation. Use these components for Projects, Documents, Billing, Support, Users, Clients, AI Operations, Governance, and Activity. Make the design feel custom and expensive, not default HTML tables. Use subtle row hover, sticky header where useful, and clean responsive cards on mobile. No backend calls. Run lint and build."
+  },
+  {
+    "id": "79-phase4-client-dashboard",
+    "title": "Build Client Portal Dashboard",
+    "scope": "phase4-client-portal",
+    "target": "/portal/dashboard",
+    "allowLandingChanges": false,
+    "prompt": "Build /portal/dashboard as the main client portal cockpit. Do not touch landing page. Use the private app shell. The dashboard should include welcome header, account summary, active projects, AI operations status, document updates, billing snapshot, open support tickets, analytics highlights, governance alerts, recent activity, and next actions. Use representative preview data only, no fake live data. Dashboard widgets should be visually premium, with bento layout, metric tiles, progress visuals, status cards, timeline, and CTA cards. Metrics must be clearly preview/demo if they could be mistaken as real. Add links to Projects, AI Operations, Documents, Billing, Support, Analytics, Governance. Mobile must stack beautifully. Use motion lightly. Run lint and build."
+  },
+  {
+    "id": "80-phase4-client-projects-list",
+    "title": "Build Client Portal Projects list",
+    "scope": "phase4-client-portal",
+    "target": "/portal/projects",
+    "allowLandingChanges": false,
+    "prompt": "Build /portal/projects as a premium project and program management view for clients. Do not touch landing page. Include project cards or table with search, status filters, phase filters such as Garage, Foundry, Factory, Operate, owner, timeline, progress, next milestone, and health status. Use representative preview data only. Include empty state and local detail drawer if dynamic route is not used. UI should feel like a high-end enterprise delivery dashboard. Add CTA to request update or contact support using frontend-only action. No backend. Mobile card view required. Run lint and build."
+  },
+  {
+    "id": "81-phase4-client-project-detail",
+    "title": "Build Client Portal Project detail experience",
+    "scope": "phase4-client-portal",
+    "target": "project detail",
+    "allowLandingChanges": false,
+    "prompt": "Build the client project detail experience using /portal/projects/[id] if the current route architecture supports it, otherwise use a detail drawer from /portal/projects. Do not touch landing page. Project detail must include overview, project phase, scope, timeline, milestones, squad, deliverables, linked documents, approvals, support items, AI operations connected to the project, recent activity, and next steps. Include tabs: Overview, Timeline, Deliverables, Team, Documents, Activity. Use representative preview data only. Make it polished, narrative, and operational with timeline visuals and progress indicators. No API calls. Run lint and build."
+  },
+  {
+    "id": "82-phase4-client-ai-operations-overview",
+    "title": "Build Client Portal AI Operations overview",
+    "scope": "phase4-client-portal",
+    "target": "/portal/ai-operations",
+    "allowLandingChanges": false,
+    "prompt": "Build /portal/ai-operations as the client-facing AI operations command center. Do not touch landing page. Include agent health overview, managed AI operations status, active agents, human review queue preview, governance checks, runtime status, adoption indicators, spend preview, incident/issue preview, and Control Center link. Use labels and representative preview data only. Do not claim real-time operations. Use premium dashboard UI with status rails, agent cards, health rings, timeline, and tabs. Add filters by project, agent type, status, and operating stage. No backend. Run lint and build."
+  },
+  {
+    "id": "83-phase4-client-ai-operation-detail",
+    "title": "Build Client Portal AI operation detail",
+    "scope": "phase4-client-portal",
+    "target": "AI operation detail",
+    "allowLandingChanges": false,
+    "prompt": "Build AI operation detail experience using /portal/ai-operations/[id] if safe, otherwise use a detail drawer from /portal/ai-operations. Do not touch landing page. Detail must include agent purpose, linked project, health status, recent runs preview, human approval points, governance controls, knowledge sources, issue log, adoption notes, and suggested actions. This is frontend preview only and must not imply live agent runtime. Use a premium observability style with tabs: Summary, Workflow, Governance, Activity, Documents. Include SVG/CSS workflow graphic. No backend. Run lint and build."
+  },
+  {
+    "id": "84-phase4-client-documents-library",
+    "title": "Build Client Portal Documents library",
+    "scope": "phase4-client-portal",
+    "target": "/portal/documents",
+    "allowLandingChanges": false,
+    "prompt": "Build /portal/documents as a premium document library for clients. Do not touch landing page. Include document search, category filters, project filters, document type filters, status filters, recent uploads preview, pinned documents, and document cards/table. Categories may include Proposals, SOW, Architecture, Reports, Invoices, Governance, Meeting Notes, Delivery Assets. No real file upload or download. Add disabled or preview upload button with future backend note. Add document preview drawer with metadata, related project, version, owner, and activity. Use representative data only. Mobile must be excellent. Run lint and build."
+  },
+  {
+    "id": "85-phase4-client-document-detail-preview",
+    "title": "Build Client Portal Document detail preview",
+    "scope": "phase4-client-portal",
+    "target": "document detail preview",
+    "allowLandingChanges": false,
+    "prompt": "Build a document detail preview experience using /portal/documents/[id] if safe, otherwise a detail drawer from the documents page. Do not touch landing page. Include metadata, version history preview, related project, approvals, activity, file status, and related documents. Do not render real PDFs or require file storage. If a preview area is shown, make it a static styled placeholder saying file preview will be connected in the backend storage phase. No real upload/download. Design must feel secure and professional. Run lint and build."
+  },
+  {
+    "id": "86-phase4-client-billing-overview",
+    "title": "Build Client Portal Billing and invoices",
+    "scope": "phase4-client-portal",
+    "target": "/portal/billing and /portal/billing/invoices",
+    "allowLandingChanges": false,
+    "prompt": "Build /portal/billing and /portal/billing/invoices as premium billing and invoice preview pages. Do not touch landing page. Include billing summary, invoice list, invoice status, due date, project association, amount preview, payment status preview, and billing contact card. Use representative preview data only. Do not integrate payments. Do not claim real invoices. Add frontend-only actions such as View invoice preview, Copy invoice reference, Contact finance, and Download disabled with backend note. Include filters and mobile card layout. Run lint and build."
+  },
+  {
+    "id": "87-phase4-client-invoice-detail",
+    "title": "Build Client Portal Invoice detail preview",
+    "scope": "phase4-client-portal",
+    "target": "invoice detail preview",
+    "allowLandingChanges": false,
+    "prompt": "Build invoice detail preview using /portal/billing/invoices/[id] if safe, otherwise a detail drawer from invoices. Do not touch landing page. Include invoice header, status, project, line items preview, tax/fee placeholder, due date, notes, related documents, and support CTA. No real payment, no payment provider, no PDF generation, no download. If download is shown, it must be disabled or marked future backend integration. Design should feel like a premium enterprise finance page. Run lint and build."
+  },
+  {
+    "id": "88-phase4-client-support-center",
+    "title": "Build Client Portal Support center",
+    "scope": "phase4-client-portal",
+    "target": "/portal/support",
+    "allowLandingChanges": false,
+    "prompt": "Build /portal/support as a premium support center for clients. Do not touch landing page. Include ticket list, create ticket frontend-only form, priority, category, linked project, linked document optional, status filters, support SLA preview copy without guarantees, knowledge/help cards, and recent support activity. No backend submission. On create, add ticket locally in current browser state or show preview-created state. Ticket categories: Project Delivery, AI Operations, Billing, Documents, Access, Governance, General. UI should feel calm, secure, and operational. Mobile excellent. Run lint and build."
+  },
+  {
+    "id": "89-phase4-client-support-ticket-detail",
+    "title": "Build Client Portal Support ticket detail",
+    "scope": "phase4-client-portal",
+    "target": "support ticket detail",
+    "allowLandingChanges": false,
+    "prompt": "Build support ticket detail experience using /portal/support/[id] if safe, otherwise a detail drawer from support center. Do not touch landing page. Include ticket summary, status, priority, category, linked project, conversation timeline preview, attachments placeholder, internal notes not visible to client, next update placeholder, and reply box frontend-only. Do not send messages. Do not upload files. Add clear preview-only messaging. Design should feel like a premium support workspace. Run lint and build."
+  },
+  {
+    "id": "90-phase4-client-analytics",
+    "title": "Build Client Portal Analytics",
+    "scope": "phase4-client-portal",
+    "target": "/portal/analytics",
+    "allowLandingChanges": false,
+    "prompt": "Build /portal/analytics as a client-facing analytics page. Do not touch landing page. Include delivery analytics, adoption analytics, AI operations analytics, document activity, support analytics, and governance activity using representative preview data only. Do not claim live data. Use CSS/SVG charts or existing chart utilities only, no new heavy dependencies. Include time range selector frontend-only, tabs, metric cards, trend panels, and insight cards. Every analytic should be labelled preview/demo where needed. No backend. Mobile charts must be readable. Run lint and build."
+  },
+  {
+    "id": "91-phase4-client-governance",
+    "title": "Build Client Portal Governance",
+    "scope": "phase4-client-portal",
+    "target": "/portal/governance",
+    "allowLandingChanges": false,
+    "prompt": "Build /portal/governance as a premium governance workspace. Do not touch landing page. Include governance overview, policy items, approvals, risk reviews, human oversight points, AI operation governance checks, document governance, audit-readiness preview, and activity timeline. Do not make legal or compliance guarantees. Use language like designed to support governance workflows. Include filters by project, agent, status, and severity. Add approval cards and local preview actions such as mark reviewed in browser state only. No backend. Run lint and build."
+  },
+  {
+    "id": "92-phase4-client-activity-notifications",
+    "title": "Build Client Portal Activity and notifications",
+    "scope": "phase4-client-portal",
+    "target": "/portal/activity and notifications",
+    "allowLandingChanges": false,
+    "prompt": "Build /portal/activity and shared notification preview system. Do not touch landing page. Activity should include timeline events for projects, documents, invoices, support, AI operations, and governance. Notifications should be visible through the private topbar bell and link to relevant pages. Use local representative data only. Add filters and mark-read local preview behavior if safe. Do not create real push/email notifications. Make the timeline visually premium and readable on mobile. Run lint and build."
+  },
+  {
+    "id": "93-phase4-client-settings",
+    "title": "Build Client Portal Settings",
+    "scope": "phase4-client-portal",
+    "target": "/portal/settings",
+    "allowLandingChanges": false,
+    "prompt": "Build /portal/settings as frontend-only client workspace settings. Do not touch landing page. Include sections: Profile, Organization, Team preview, Notifications, Security preview, Integrations preview, Data preferences, Local workspace reset. Do not implement real security settings, integrations, or auth changes. Role-based settings should show locked states where appropriate. Add clear copy saying real account and security settings will be connected in backend/auth phase. Design should be premium, organized, and mobile friendly. Run lint and build."
+  },
+  {
+    "id": "94-phase4-admin-dashboard",
+    "title": "Build Admin Dashboard",
+    "scope": "phase4-admin",
+    "target": "/admin and /admin/dashboard",
+    "allowLandingChanges": false,
+    "prompt": "Build /admin and /admin/dashboard as the GFF internal admin control center. Do not touch landing page. Use the private app shell with admin navigation. The dashboard should include clients overview, active projects, AI operations overview, pending support tickets, billing status, governance alerts, user/team activity, recent documents, and operational activity feed. Use representative preview data only. No backend. No fake live metrics. The admin dashboard should feel powerful, dense but elegant, and built for internal delivery operations. Use bento layout, command actions, data cards, charts with preview labels, and strong navigation. Mobile must remain usable. Run lint and build."
+  },
+  {
+    "id": "95-phase4-admin-clients-list",
+    "title": "Build Admin Clients management",
+    "scope": "phase4-admin",
+    "target": "/admin/clients",
+    "allowLandingChanges": false,
+    "prompt": "Build /admin/clients as an internal client management page. Do not touch landing page. Include client list/table with search, status filters, region filters, industry filters, account owner, active projects count, AI operations count, billing status preview, and health status. Use representative preview clients only, not real client names unless already approved. Add local detail drawer or route to client detail if safe. Include frontend-only actions: add client preview, assign owner preview, view portal preview. No backend. Make the UI polished and operational. Run lint and build."
+  },
+  {
+    "id": "96-phase4-admin-client-detail",
+    "title": "Build Admin Client detail",
+    "scope": "phase4-admin",
+    "target": "admin client detail",
+    "allowLandingChanges": false,
+    "prompt": "Build admin client detail experience using /admin/clients/[id] if safe, otherwise detail drawer from clients list. Do not touch landing page. Include client overview, contacts preview, projects, AI operations, documents, billing, support tickets, governance items, analytics summary, and activity timeline. Add tabs: Overview, Projects, AI Operations, Documents, Billing, Support, Governance, Activity. Use representative data only. No backend. Design should feel like a rich account command center. Run lint and build."
+  },
+  {
+    "id": "97-phase4-admin-projects",
+    "title": "Build Admin Projects management",
+    "scope": "phase4-admin",
+    "target": "/admin/projects",
+    "allowLandingChanges": false,
+    "prompt": "Build /admin/projects as internal project delivery management. Do not touch landing page. Include project table/cards with client, phase, status, delivery owner, squad, timeline, next milestone, risk status, budget preview if available, and linked AI operations. Add filters by client, phase, status, owner, risk. Add frontend-only actions: create project preview, update status locally, assign squad preview. No backend. Make UI premium and dense but readable. Include mobile card fallback. Run lint and build."
+  },
+  {
+    "id": "98-phase4-admin-project-detail",
+    "title": "Build Admin Project detail",
+    "scope": "phase4-admin",
+    "target": "admin project detail",
+    "allowLandingChanges": false,
+    "prompt": "Build admin project detail experience using /admin/projects/[id] if safe, otherwise detail drawer. Do not touch landing page. Include delivery overview, timeline, milestones, squad, tasks, risks, linked documents, billing, support tickets, AI operations, governance, and internal activity. Admin version should include internal notes preview and local edit controls, clearly frontend-only. Add tabs and timeline. No backend. Run lint and build."
+  },
+  {
+    "id": "99-phase4-admin-users-rbac",
+    "title": "Build Admin Users and RBAC management",
+    "scope": "phase4-admin",
+    "target": "/admin/users",
+    "allowLandingChanges": false,
+    "prompt": "Build /admin/users as frontend-only user and role management preview. Do not touch landing page. Include user list, role filters, client association, status, last activity preview, and permissions summary. Roles: client_admin, client_member, gff_admin, gff_operator, finance_admin, support_agent, viewer. Add local-only actions: invite user preview, change role preview, deactivate preview, reset access preview. Do not send invites. Do not implement real security. Include a clear backend/auth phase notice. UI must be secure-looking and polished. Run lint and build."
+  },
+  {
+    "id": "100-phase4-admin-ai-operations",
+    "title": "Build Admin AI Operations management",
+    "scope": "phase4-admin",
+    "target": "/admin/ai-operations",
+    "allowLandingChanges": false,
+    "prompt": "Build /admin/ai-operations as internal AI operations command center. Do not touch landing page. Include all client agent operations, agent health, incident queue preview, governance alerts, human approval queue, adoption signals, spend preview, project links, and owner assignment. Add filters by client, project, agent type, status, severity, owner. Add local-only actions: assign owner, mark reviewed, escalate preview. Do not claim live runtime or real monitoring. Use premium observability UI with status rails, health cards, tables, and detail drawer. Run lint and build."
+  },
+  {
+    "id": "101-phase4-admin-documents",
+    "title": "Build Admin Documents management",
+    "scope": "phase4-admin",
+    "target": "/admin/documents",
+    "allowLandingChanges": false,
+    "prompt": "Build /admin/documents as internal document management preview. Do not touch landing page. Include all documents across clients/projects with search, filters by client, project, type, status, owner, version. Add local-only upload placeholder, assign document to project, mark shared with client, and version preview. No real upload, no storage, no download. Use document drawer with metadata, activity, related project, and governance status. Premium admin UI, mobile card fallback. Run lint and build."
+  },
+  {
+    "id": "102-phase4-admin-billing",
+    "title": "Build Admin Billing management",
+    "scope": "phase4-admin",
+    "target": "/admin/billing",
+    "allowLandingChanges": false,
+    "prompt": "Build /admin/billing as internal billing and invoice management preview. Do not touch landing page. Include invoice list, client, project, amount preview, due date, status, finance owner, aging preview, and billing activity. Add filters by client, status, month, owner. Add local-only actions: create invoice preview, mark reviewed, contact finance preview. No payment provider, no real invoices, no real PDF generation. Use polished finance dashboard UI with summary cards and table. Run lint and build."
+  },
+  {
+    "id": "103-phase4-admin-support",
+    "title": "Build Admin Support management",
+    "scope": "phase4-admin",
+    "target": "/admin/support",
+    "allowLandingChanges": false,
+    "prompt": "Build /admin/support as internal support operations page. Do not touch landing page. Include support ticket queue, client, priority, category, status, assigned agent, SLA-style preview without guarantees, linked project/document, and latest activity. Add filters and local-only actions: assign, change status, add internal note, reply preview. No backend, no email sending, no uploads. Use premium support queue UI with split view or detail drawer. Run lint and build."
+  },
+  {
+    "id": "104-phase4-admin-analytics",
+    "title": "Build Admin Analytics",
+    "scope": "phase4-admin",
+    "target": "/admin/analytics",
+    "allowLandingChanges": false,
+    "prompt": "Build /admin/analytics as internal analytics overview. Do not touch landing page. Include preview analytics across clients, projects, AI operations, documents, billing, support, and governance. Use representative local data only. No fake live metrics. Use CSS/SVG charts or existing chart utilities only. Include filters for client, date range preview, project phase, and module. Use charts, trend cards, leaderboards or rankings only if clearly preview. Make it premium and operational. Run lint and build."
+  },
+  {
+    "id": "105-phase4-admin-governance",
+    "title": "Build Admin Governance management",
+    "scope": "phase4-admin",
+    "target": "/admin/governance",
+    "allowLandingChanges": false,
+    "prompt": "Build /admin/governance as internal governance management. Do not touch landing page. Include governance items across clients/projects/agents, review queue, approval queue, policy items, risk severity, owner, status, due date, linked documents, and audit activity preview. Do not guarantee compliance. Use local-only actions: assign reviewer, mark reviewed, request info preview. Premium governance console UI with filters, cards, and detail drawer. Run lint and build."
+  },
+  {
+    "id": "106-phase4-admin-settings",
+    "title": "Build Admin Settings",
+    "scope": "phase4-admin",
+    "target": "/admin/settings",
+    "allowLandingChanges": false,
+    "prompt": "Build /admin/settings as frontend-only admin settings. Do not touch landing page. Include sections: Workspace, Roles and Permissions preview, Notifications, Billing settings preview, Document settings preview, Support routing preview, Integrations preview, Security preview, Local preview data reset. Do not implement real security or integrations. Add clear backend phase notes where required. Make the UI organized, premium, and safe. Run lint and build."
+  },
+  {
+    "id": "107-phase4-admin-activity",
+    "title": "Build Admin Activity feed",
+    "scope": "phase4-admin",
+    "target": "/admin/activity",
+    "allowLandingChanges": false,
+    "prompt": "Build /admin/activity as internal operational activity feed. Do not touch landing page. Include events across clients, projects, AI operations, documents, billing, support, governance, users, and settings. Add filters by module, client, actor, severity, and date range preview. Use representative local data only. No real audit logs. Clearly label as preview. Design should feel like a premium audit/activity timeline with detail drawer. Run lint and build."
+  },
+  {
+    "id": "108-phase4-global-private-search",
+    "title": "Build global private workspace search",
+    "scope": "phase4-navigation",
+    "target": "private search",
+    "allowLandingChanges": false,
+    "prompt": "Build a local global search for private workspace pages. Do not touch landing page. The search should be available from the private topbar and/or command center. It must search local preview data across projects, AI operations, documents, invoices, support tickets, governance items, clients, users, and admin pages depending on role. No API calls. Results should show type, title, description, status, and route or action. Include keyboard navigation, empty state, and mobile support. Design must feel like a premium enterprise search palette. Run lint and build."
+  },
+  {
+    "id": "109-phase4-private-command-center",
+    "title": "Enhance command center for client and admin workspaces",
+    "scope": "phase4-navigation",
+    "target": "private command center",
+    "allowLandingChanges": false,
+    "prompt": "Enhance the command center for logged-in preview workspaces. Do not touch landing page. Existing public command center behavior must not break. Add client commands: Open Dashboard, Open Projects, Open AI Operations, Open Documents, Open Billing, Open Support, Open Analytics, Open Governance, Open Settings, Create Support Ticket Preview, Clear Local Session. Add admin commands: Open Admin Dashboard, Clients, Projects, Users, AI Operations, Documents, Billing, Support, Analytics, Governance, Settings, Activity. Commands must be role-aware using local preview session. Keyboard accessible, escape close, focus handling, mobile fallback. No backend. Run lint and build."
+  },
+  {
+    "id": "110-phase4-notifications-system",
+    "title": "Build frontend-only notifications system",
+    "scope": "phase4-component",
+    "target": "notifications",
+    "allowLandingChanges": false,
+    "prompt": "Build a frontend-only notifications system for private workspace. Do not touch landing page. Add notification bell in private topbar if not already present. Notifications should come from local representative data: project update, document shared, invoice status, support reply, AI operation review, governance approval. Support mark-read locally and link to related page. No push notifications, no email, no backend. Design should be polished, with dropdown panel, empty state, mobile support, and accessible keyboard behavior. Run lint and build."
+  },
+  {
+    "id": "111-phase4-approvals-and-tasks-preview",
+    "title": "Build approvals and tasks preview system",
+    "scope": "phase4-component",
+    "target": "approvals and tasks",
+    "allowLandingChanges": false,
+    "prompt": "Build a local approvals and tasks preview system shared across client and admin portals. Do not touch landing page. Approval types: document approval, governance review, project milestone approval, invoice review, AI operation human review. Client users can see their approvals in portal dashboard and governance. Admin users can see all approvals in admin dashboard and governance. Actions such as approve, request changes, mark reviewed must be local preview only and clearly not backend. Add polished approval cards, filters, and detail drawer. Run lint and build."
+  },
+  {
+    "id": "112-phase4-private-empty-states",
+    "title": "Polish private app empty states and locked states",
+    "scope": "phase4-ux-polish",
+    "target": "empty locked states",
+    "allowLandingChanges": false,
+    "prompt": "Polish empty states, locked states, unauthenticated states, no-results states, and preview-only notices across login, client portal, and admin portal. Do not touch landing page. Every empty state should explain what it means and what action is available. Locked states should be role-aware and explain permissions preview. Unauthenticated routes should show a premium sign-in required state with route to /portal/login. No scary errors. No fake backend failure. Use polished graphics and microcopy. Run lint and build."
+  },
+  {
+    "id": "113-phase4-route-guard-ux",
+    "title": "Improve route guard and role access UX",
+    "scope": "phase4-auth-preview",
+    "target": "route guards",
+    "allowLandingChanges": false,
+    "prompt": "Improve frontend-only route guard UX for client and admin pages. Do not touch landing page. If no local preview session exists, private routes should show sign-in required or redirect safely to /portal/login depending on current app pattern. If a user has a client role and opens /admin, show access restricted preview. If an admin role opens /portal pages, allow or show switch workspace depending on chosen preview logic. Add clear role preview switcher and sign out action. Do not implement real security. Do not use backend. Ensure hydration safety. Run lint and build."
+  },
+  {
+    "id": "114-phase4-mobile-private-workspace-pass",
+    "title": "Mobile UX pass for portal and admin",
+    "scope": "phase4-mobile-qa",
+    "target": "private workspace mobile UX",
+    "allowLandingChanges": false,
+    "prompt": "Perform a mobile UX pass for all login, portal, client, and admin routes. Do not touch landing page. Fix only mobile and responsive issues. Check /login, /portal, /portal/login, /portal/dashboard, /portal/projects, /portal/ai-operations, /portal/documents, /portal/billing, /portal/support, /portal/analytics, /portal/governance, /portal/settings, /admin/dashboard, /admin/clients, /admin/projects, /admin/users, /admin/ai-operations, /admin/documents, /admin/billing, /admin/support, /admin/analytics, /admin/governance, /admin/settings. Ensure no horizontal overflow, sidebar works on mobile, topbar is usable, tables become cards, filters collapse, modals/drawers fit, charts are readable, buttons are tappable, and forms are easy to use. Run lint and build."
+  },
+  {
+    "id": "115-phase4-accessibility-private-workspace-pass",
+    "title": "Accessibility pass for login portal and admin",
+    "scope": "phase4-accessibility-qa",
+    "target": "private workspace accessibility",
+    "allowLandingChanges": false,
+    "prompt": "Perform an accessibility pass for login, client portal, and admin portal. Do not touch landing page. Ensure pages have one clear H1, semantic landmarks, accessible sidebar navigation, keyboard accessible menus, focus states, labelled forms, labelled filters, accessible table/card interactions, accessible dialogs/drawers, notification dropdown accessibility, command center accessibility, reduced motion support, sufficient contrast, and correct button/link semantics. Fix only accessibility issues. Run lint and build."
+  },
+  {
+    "id": "116-phase4-motion-polish-private-workspace",
+    "title": "Motion polish for private workspace",
+    "scope": "phase4-visual-polish",
+    "target": "private workspace motion",
+    "allowLandingChanges": false,
+    "prompt": "Perform motion and interaction polish for login, portal, and admin pages. Do not touch landing page. Use Framer Motion or motion/react only if already installed. Add subtle page transitions, sidebar active motion, card reveal, table row hover, drawer transitions, notification dropdown animation, command palette transitions, chart reveal, status card micro-interactions, and form state transitions where appropriate. Respect prefers-reduced-motion. Keep motion expensive and calm, not noisy. Do not add dependencies. Run lint and build."
+  },
+  {
+    "id": "117-phase4-premium-visual-polish-private-workspace",
+    "title": "Premium visual polish for private workspace",
+    "scope": "phase4-visual-polish",
+    "target": "login portal admin UI",
+    "allowLandingChanges": false,
+    "prompt": "Perform final premium visual polish for login, client portal, and admin portal. Do not touch landing page. Improve any UI that feels generic, unfinished, repetitive, too boxy, too badge-heavy, or like a basic admin template. Make the private workspace feel like a custom 2026 enterprise AI operations product built by a senior design team. Use refined spacing, typography, bento dashboards, high-quality tables, elegant filters, strong empty states, premium charts, SVG/CSS visual panels, subtle gradients, and purposeful motion. Do not add fake data. Do not add dependencies. Preserve public site theme. Run lint and build."
+  },
+  {
+    "id": "118-phase4-frontend-only-safety-audit",
+    "title": "Frontend-only safety audit for Phase 4",
+    "scope": "phase4-safety",
+    "target": "auth portal admin safety",
+    "allowLandingChanges": false,
+    "prompt": "Audit and fix frontend-only safety for Phase 4. Do not touch landing page. Search for fetch, axios, app/api usage, localhost API calls, auth providers, JWT verification, Cognito, Firebase, Supabase, Clerk, AWS, S3, SES, payment providers, upload APIs, email sending, OTP sending, database imports, real file downloads, real invoice generation, and server actions. Remove or disable any accidental real integration in login, portal, admin, documents, billing, support, and analytics. All auth/session/data must be local preview only. If legacy app/api/contact exists, do not use it from Phase 4 UI. Run lint and build."
+  },
+  {
+    "id": "119-phase4-linking-navigation-audit",
+    "title": "Private workspace linking and navigation audit",
+    "scope": "phase4-routing-qa",
+    "target": "portal admin links",
+    "allowLandingChanges": false,
+    "prompt": "Audit and fix all links in login, client portal, admin portal, private sidebar, topbar, command center, notifications, tables, cards, CTAs, breadcrumbs, and detail drawers. Do not touch landing page. Verify all links resolve to explicit routes. No slug route references. /portal must be the Client Login landing. /portal/login and /login must work. Client portal modules must include Dashboard, Projects, AI Operations, Documents, Billing or Invoices, Support, Analytics, Governance. Admin modules must include Dashboard, Clients, Projects, Users, AI Operations, Documents, Billing, Support, Analytics, Governance, Settings. Fix broken links only. Run lint and build."
+  },
+  {
+    "id": "120-phase4-documentation",
+    "title": "Document Phase 4 portal admin frontend",
+    "scope": "phase4-docs",
+    "target": "Phase 4 documentation",
+    "allowLandingChanges": false,
+    "prompt": "Create or update documentation for Phase 4 frontend implementation. Do not build backend. Create docs/PHASE_4_LOGIN_ADMIN_CLIENT_PORTAL.md or update existing docs. Document routes built, local auth preview behavior, roles, route guard preview, client portal modules, admin modules, local mock data, frontend-only limitations, future backend requirements, future FastAPI endpoints, future database tables, future storage needs, future email/OTP needs, future billing/payment integration, and security considerations. Clearly state that Phase 4 is frontend-only and not production authentication. Include recommended Phase 5 backend build order. Run lint/build if docs affect build."
+  },
+  {
+    "id": "121-phase4-final-qa",
+    "title": "Final Phase 4 QA",
+    "scope": "phase4-final-qa",
+    "target": "login admin client portal frontend",
+    "allowLandingChanges": false,
+    "prompt": "Perform final QA for Phase 4. Do not add new features unless fixing a small clear issue. Verify /portal is a Client Login landing and contains module previews for Dashboard, Projects, Invoices or Billing, Support, Documents, AI Operations, Analytics, Governance. Verify /login and /portal/login work as frontend-only local preview login. Verify local roles and route guards work as previews. Verify client portal pages: Dashboard, Projects, AI Operations, Documents, Billing, Support, Analytics, Governance, Settings, Activity. Verify admin pages: Dashboard, Clients, Projects, Users, AI Operations, Documents, Billing, Support, Analytics, Governance, Settings, Activity. Verify private shell, sidebar, topbar, notifications, command center, global search, tables, filters, detail drawers, local data, empty states, locked states, mobile, accessibility, and visual polish. Verify no backend, real auth, AWS, OTP, email, database, uploads, payments, or real API calls were added. Verify no landing page files were changed. Run npm run lint, npm run build, npm run typecheck if available, and npm test if available. Final response must include pass/fail checklist, files changed, commands run, remaining warnings, and TODOs for Phase 5 backend."
   }
 ]
