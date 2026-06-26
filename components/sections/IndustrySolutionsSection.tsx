@@ -20,15 +20,20 @@ export default function IndustrySolutionsSection() {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const tick = (now: number) => {
-      if (desktopQuery.matches && !paused && !prefersReducedMotion) {
-        const delta = now - last;
-        container.scrollLeft += delta * 0.03;
-        const halfWidth = container.scrollWidth / 2;
-        if (container.scrollLeft >= halfWidth) container.scrollLeft -= halfWidth;
-      }
-      last = now;
-      raf = window.requestAnimationFrame(tick);
-    };
+  const delta = now - last;
+  last = now;
+
+  if (desktopQuery.matches && !paused && !prefersReducedMotion) {
+    const singleSetWidth = container.scrollWidth / 2;
+    container.scrollLeft += delta * 0.05;
+
+    if (container.scrollLeft >= singleSetWidth) {
+      container.scrollLeft -= singleSetWidth;
+    }
+  }
+
+  raf = window.requestAnimationFrame(tick);
+};
 
     const onEnter = () => { paused = true; };
     const onLeave = () => { paused = false; };
@@ -67,10 +72,10 @@ export default function IndustrySolutionsSection() {
 
         <div
           ref={industryCarouselRef}
-          className="mt-8 overflow-x-auto pb-2 -mx-1 px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory lg:snap-none"
+          className="mt-8 overflow-x-auto py-3 -mx-1 px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory lg:snap-none"
         >
-          <div className="flex w-max gap-4 pr-4">
-            {industryCards.map((item, index) => (
+          <div className="flex w-max gap-4">
+            {[...industryCards, ...industryCards].map((item, index) => (
               <div
                 key={`${item.title}-${index}`}
                 className="group relative w-[86vw] max-w-[330px] sm:w-[320px] lg:w-[330px] shrink-0 overflow-hidden rounded-[24px] border border-[#10162B] bg-[linear-gradient(180deg,rgba(4,7,18,0.96)_0%,rgba(2,4,10,0.98)_100%)] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-white/15 hover:shadow-[0_0_22px_rgba(64,140,255,0.12)] snap-start"

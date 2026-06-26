@@ -70,9 +70,9 @@ export default function LatestResearchSection() {
 <div className="mb-16">
   <SectionHeading
     title={
-      <h2 className="text-[30px] sm:text-[40px] font-bold uppercase tracking-wide text-left whitespace-nowrap">
-        LATEST <span className="text-[#009DFF]">RESEARCH</span> & INTEL
-      </h2>
+      <h2 className="text-[24px] sm:text-[40px] font-bold uppercase tracking-wide text-center sm:text-left">
+  LATEST <span className="text-[#009DFF]">RESEARCH</span> & INTEL
+</h2>
       
     }
     titleClassName="text-left"
@@ -89,8 +89,7 @@ export default function LatestResearchSection() {
           {CATS.map((c) => (
             <div key={c.name} className="relative rounded-[16px] bg-[#070707] p-6 border border-white/5 flex flex-col justify-between min-h-[220px] group">
               <div>
-                <div className="w-3 h-3 rounded-full mb-4 group-hover:scale-110 transition-transform" style={{ backgroundColor: c.color }} />
-                <h3 className="text-[18px] font-bold tracking-tight text-white">{c.name}</h3>
+                <h3 className="text-[18px] font-bold tracking-tight text-white mt-1">{c.name}</h3>
                 <p className="text-[13px] text-white/55 mt-2 font-light leading-relaxed">{c.desc}</p>
               </div>
               <span className="text-[11px] font-mono mt-4 block cursor-pointer" style={{ color: c.color }}>Browse Category →</span>
