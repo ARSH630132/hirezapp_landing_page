@@ -155,6 +155,7 @@ export default function ProposalBuilderPage() {
   const [mounted, setMounted] = useState(false);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [exportToast, setExportToast] = useState<string | null>(null);
+  const [isFlushing, setIsFlushing] = useState(false);
 
   const handleExportClick = (type: string) => {
     setExportToast(`Premium Feature Sandbox: Exporting as ${type} requires a GFF Enterprise Control Center gateway cloud connection. This offline terminal runs in strict zero-retention memory isolation.`);
@@ -239,15 +240,19 @@ export default function ProposalBuilderPage() {
   };
 
   const handleReset = () => {
-    setInputs(INITIAL_INTAKE_INPUTS);
-    setStep("configure");
-    setActiveStepGate(1);
-    setIsSigned(false);
-    setSignName("");
-    setSignTitle("");
-    setValidationErrors({});
-    clearToolState("proposal");
-    setHasSavedDraft(false);
+    setIsFlushing(true);
+    setTimeout(() => {
+      setInputs(INITIAL_INTAKE_INPUTS);
+      setStep("configure");
+      setActiveStepGate(1);
+      setIsSigned(false);
+      setSignName("");
+      setSignTitle("");
+      setValidationErrors({});
+      clearToolState("proposal");
+      setHasSavedDraft(false);
+      setIsFlushing(false);
+    }, 450);
   };
 
   const handlePrint = () => {
@@ -449,8 +454,30 @@ SECTION XI: NEXT STEPS
       />
 
       <AnimatePresence mode="wait">
-        
-        {step === "configure" && (
+        {isFlushing && (
+          <motion.div
+            key="flushing"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="w-full py-24 flex flex-col items-center justify-center text-center space-y-4 rounded-2xl border border-white/5 bg-[#030306]/95"
+          >
+            <div className="relative w-12 h-12 flex items-center justify-center">
+              <div className="absolute inset-0 rounded-full border border-dashed border-red-500/40 animate-spin" />
+              <div className="w-6 h-6 rounded-full bg-red-500/10 flex items-center justify-center">
+                <svg className="w-3.5 h-3.5 text-red-500 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </div>
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-xs font-mono font-bold text-white uppercase tracking-widest">Scrubbing Proposal Studio</h3>
+              <p className="text-[10px] text-red-500 font-mono">PURGING_SECURE_CLIENT_CACHE</p>
+            </div>
+          </motion.div>
+        )}
+
+        {step === "configure" && !isFlushing && (
           <motion.div
             key="configure"
             initial={{ opacity: 0, y: 12 }}
@@ -1337,16 +1364,34 @@ SECTION XI: NEXT STEPS
 
                       <div className="flex justify-between items-center pt-2">
                         {!isSigned ? (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              if (signName.trim() && signTitle.trim()) setIsSigned(true);
-                              else alert("Please enter both Signatory Name and Title.");
-                            }}
-                            className="px-4 py-2 rounded bg-[#00FF9D] text-black text-xs font-mono font-bold uppercase hover:bg-[#00FF9D]/95 transition print:hidden"
-                          >
-                            Sign strategic SOW
-                          </button>
+                          <div className="space-y-3">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (signName.trim() && signTitle.trim()) {
+                                  setIsSigned(true);
+                                  setValidationErrors((prev) => {
+                                    const next = { ...prev };
+                                    delete next.signature;
+                                    return next;
+                                  });
+                                } else {
+                                  setValidationErrors((prev) => ({
+                                    ...prev,
+                                    signature: "Please enter both Signatory Name and Title before applying your digital authorization signature stamp."
+                                  }));
+                                }
+                              }}
+                              className="px-4 py-2 rounded bg-[#00FF9D] text-black text-xs font-mono font-bold uppercase hover:bg-[#00FF9D]/95 transition print:hidden"
+                            >
+                              Sign strategic SOW
+                            </button>
+                            {validationErrors.signature && (
+                              <div className="text-[10px] font-mono text-[#E4000F] font-bold">
+                                ⚠️ {validationErrors.signature}
+                              </div>
+                            )}
+                          </div>
                         ) : (
                           <div className="w-full space-y-2">
                             <div className="p-3.5 border border-dashed border-[#00FF9D]/30 bg-[#00FF9D]/5 rounded flex justify-between items-center font-mono text-[9px] text-[#00FF9D]">

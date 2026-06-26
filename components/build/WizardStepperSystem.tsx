@@ -63,6 +63,7 @@ export function WizardStepperSystem<T = any>({
   const [compilingStep, setCompilingStep] = useState(0);
   const [result, setResult] = useState<any>(null);
   const [showResult, setShowResult] = useState(false);
+  const [isFlushing, setIsFlushing] = useState(false);
 
   const currentStep = steps[currentStepIndex];
 
@@ -109,12 +110,17 @@ export function WizardStepperSystem<T = any>({
   };
 
   const handleReset = () => {
-    setData(initialData);
-    setCurrentStepIndex(0);
-    setError(null);
-    setResult(null);
-    setShowResult(false);
-    setIsCompiling(false);
+    setIsFlushing(true);
+    setTimeout(() => {
+      setData(initialData);
+      setCurrentStepIndex(0);
+      setError(null);
+      setResult(null);
+      setShowResult(true); // wait, should be false
+      setShowResult(false);
+      setIsCompiling(false);
+      setIsFlushing(false);
+    }, 450);
   };
 
   const handleDataChange = (newData: Partial<T>) => {
@@ -193,24 +199,79 @@ export function WizardStepperSystem<T = any>({
   return (
     <div className="w-full space-y-8 animate-fadeIn text-white">
       <AnimatePresence mode="wait">
-        {isCompiling && (
-          <motion.div key="compiling" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full max-w-3xl mx-auto min-h-[350px] rounded-2xl border border-white/5 bg-[#030306]/95 p-8 flex flex-col justify-between">
-            <div className="space-y-6">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full border border-t-[#009DFF] animate-spin" />
-                <div>
-                  <h3 className="text-sm font-bold font-mono">SOVEREIGN SYNTHESIZER CORE</h3>
-                  <p className="text-[10px] text-[#00FF9D] font-mono">STATUS: COMPILING</p>
-                </div>
-              </div>
-              <div className="p-4 rounded-xl bg-black/60 border border-white/5 font-mono text-[11px] text-white/70 min-h-[160px] flex flex-col justify-end">
-                <p className="text-white/30">&gt; GFF COMPILER SESSION INITIALIZED...</p>
-                {compilingMessages.slice(0, compilingStep + 1).map((msg, i) => (
-                  <p key={i} className="text-[#00FF9D]">&gt; ✔ {msg}</p>
-                ))}
+        {isFlushing && (
+          <motion.div
+            key="flushing"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="w-full max-w-3xl mx-auto py-20 flex flex-col items-center justify-center text-center space-y-5 rounded-2xl border border-white/5 bg-[#030306]/95"
+          >
+            <div className="relative w-14 h-14 flex items-center justify-center">
+              <div className="absolute inset-0 rounded-full border border-dashed border-red-500/40 animate-spin" style={{ animationDuration: '8s' }} />
+              <div className="absolute inset-2 rounded-full border border-solid border-red-500/15 animate-ping" />
+              <div className="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center">
+                <svg className="w-4.5 h-4.5 text-red-500 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
               </div>
             </div>
-            <p className="text-[9px] font-mono text-white/35">AIR-GAPPED SHIELD • 0% STORAGE RETENTION ENFORCED</p>
+            <div className="space-y-1">
+              <h3 className="text-xs font-mono font-bold text-white uppercase tracking-widest">Scrubbing Blueprint Workspace</h3>
+              <p className="text-[10px] text-red-500 font-mono">PURGING_SECURE_CLIENT_CACHE</p>
+            </div>
+            
+            {/* Zeroization Telemetry Log */}
+            <div className="font-mono text-[9px] text-red-500/60 max-w-md mx-auto space-y-0.5 mt-2 bg-black/40 p-3.5 rounded-xl border border-red-500/10 w-64 text-left">
+              <p className="flex justify-between"><span>&gt; WIPING VARIABLE BUFFER...</span><span className="text-red-500 font-bold">OK</span></p>
+              <p className="flex justify-between"><span>&gt; ZEROING LOCALSTORE KEYS...</span><span className="text-red-500 font-bold">OK</span></p>
+              <p className="flex justify-between"><span>&gt; DE-ALLOCATING MEMORY...</span><span className="text-red-500 font-bold">OK</span></p>
+              <p className="text-center text-[8px] text-red-500/40 mt-1 border-t border-red-500/10 pt-1 tracking-wider uppercase">SHIELD ENFORCED</p>
+            </div>
+          </motion.div>
+        )}
+
+        {isCompiling && !isFlushing && (
+          <motion.div key="compiling" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full max-w-3xl mx-auto min-h-[350px] rounded-2xl border border-white/5 bg-[#030306]/95 p-8 flex flex-col justify-between">
+            <div className="space-y-6">
+              <div className="flex items-center gap-3.5">
+                <div className="relative w-10 h-10 flex items-center justify-center shrink-0">
+                  <div className="absolute inset-0 rounded-full border border-dashed border-[#009DFF]/40 animate-spin" style={{ animationDuration: '5s' }} />
+                  <div className="absolute inset-1.5 rounded-full border border-solid border-[#00FF9D]/25 animate-ping" />
+                  <div className="w-5.5 h-5.5 rounded-full bg-[#030306] border border-white/10 flex items-center justify-center shadow-md">
+                    <span className="w-2 h-2 rounded-full bg-[#00FF9D] animate-pulse" />
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-xs font-bold font-mono tracking-wider text-white">SOVEREIGN SYNTHESIZER CORE</h3>
+                  <p className="text-[9px] text-[#00FF9D] font-mono uppercase tracking-widest">STATUS: COMPILING TELEMETRY</p>
+                </div>
+              </div>
+              
+              <div className="p-4 rounded-xl bg-black/60 border border-white/5 font-mono text-[10px] text-white/70 min-h-[160px] flex flex-col justify-end space-y-1">
+                <p className="text-white/30 font-light">&gt; GFF COMPILER SESSION INITIALIZED...</p>
+                {compilingMessages.slice(0, compilingStep + 1).map((msg, i) => (
+                  <p key={i} className="text-[#00FF9D] font-light">&gt; ✔ {msg}</p>
+                ))}
+              </div>
+
+              {/* Dynamic Progress Bar */}
+              <div className="space-y-2 mt-2">
+                <div className="flex justify-between items-center text-[9px] font-mono text-white/40">
+                  <span>COMPILATION PROGRESS:</span>
+                  <span className="text-[#00FF9D] font-bold">
+                    {Math.round(((compilingStep + 1) / compilingMessages.length) * 100)}%
+                  </span>
+                </div>
+                <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden relative">
+                  <div
+                    className="h-full bg-gradient-to-r from-[#009DFF] to-[#00FF9D] transition-all duration-300"
+                    style={{ width: `${((compilingStep + 1) / compilingMessages.length) * 100}%` }}
+                  />
+                </div>
+              </div>
+            </div>
+            <p className="text-[9px] font-mono text-white/35 mt-4">AIR-GAPPED SHIELD • 0% STORAGE RETENTION ENFORCED</p>
           </motion.div>
         )}
 
@@ -220,7 +281,7 @@ export function WizardStepperSystem<T = any>({
           </motion.div>
         )}
 
-        {!isCompiling && !showResult && (
+        {!isCompiling && !showResult && !isFlushing && (
           <motion.div key="wizard" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full">
             <ToolStepLayout
               sidebar={

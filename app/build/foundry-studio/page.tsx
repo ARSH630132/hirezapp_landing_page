@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { ToolPageShell, ToolHero } from "@/components/build/components";
 import Link from "next/link";
 import PremiumCTA from "@/components/inner-pages/PremiumCTA";
@@ -383,6 +384,7 @@ export default function FoundryStudioPage() {
   const [simulationProgress, setSimulationProgress] = useState<number>(-1);
   const [logs, setLogs] = useState<ConsoleLog[]>([]);
   const [consoleTab, setConsoleTab] = useState<"terminal" | "json" | "yaml">("terminal");
+  const [toastError, setToastError] = useState<string | null>(null);
 
   const [copied, setCopied] = useState(false);
   const [downloaded, setDownloaded] = useState(false);
@@ -791,7 +793,13 @@ export default function FoundryStudioPage() {
 
   const handleDeleteStage = (id: string, label: string) => {
     if (stages.length <= 1) {
-      alert("Sovereign architectures must retain at least 1 functional pipeline node.");
+      setToastError("Sovereign architectures must retain at least 1 functional pipeline node.");
+      setTimeout(() => setToastError(null), 4000);
+      const timestamp = new Date().toLocaleTimeString();
+      setLogs((prev) => [
+        ...prev,
+        { time: timestamp, type: "warning", text: `[TOPOLOGY RULE CONSTRAINT] Sovereign architectures must retain at least 1 functional pipeline node.` }
+      ]);
       return;
     }
     setStages((prev) => prev.filter((s) => s.id !== id));
@@ -1594,6 +1602,29 @@ ${stages
           secondaryHref="/build/sandbox"
         />
       </div>
+
+      {/* TOAST ERRORS FOR TOPOLOGY CONSTRAINTS */}
+      <AnimatePresence>
+        {toastError && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            className="fixed bottom-6 right-6 z-50 p-4 rounded-xl border border-red-500/25 bg-black/95 backdrop-blur text-xs text-white max-w-sm shadow-[0_0_20px_rgba(228,0,15,0.15)] flex gap-3 items-center"
+          >
+            <svg className="w-5 h-5 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <div>
+              <span className="font-mono font-bold text-red-500 block text-[9px] uppercase tracking-wider mb-0.5">TOPOLOGY COMPLIANCE ERROR</span>
+              <p className="text-white/80 leading-normal">{toastError}</p>
+            </div>
+            <button onClick={() => setToastError(null)} className="text-white/40 hover:text-white ml-auto">
+              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </ToolPageShell>
   );

@@ -269,6 +269,7 @@ export default function BuildMarketplacePage() {
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   const [compareIds, setCompareIds] = useState<string[]>([]);
+  const [toastError, setToastError] = useState<string | null>(null);
 
   const [isHydrated, setIsHydrated] = useState(false);
 
@@ -403,7 +404,8 @@ export default function BuildMarketplacePage() {
       setCompareIds((prev) => prev.filter((item) => item !== id));
     } else {
       if (compareIds.length >= 3) {
-        alert("Maximum comparison limit reached. Please remove an agent before adding another.");
+        setToastError("Maximum comparison limit reached. Please remove an agent before adding another.");
+        setTimeout(() => setToastError(null), 4000);
         return;
       }
       setCompareIds((prev) => [...prev, id]);
@@ -1136,6 +1138,29 @@ export default function BuildMarketplacePage() {
         {/* Premium CTA */}
         <PremiumCTA title="Architect a Bespoke Sovereign Multi-Agent Blueprint" description="Have complex legacy backends, air-gapped security protocols, or custom compliance parameters? Collaborate with GFF lead systems engineers to design, simulate, and lock a custom enterprise blueprint." primaryLabel="Connect with Lead Systems Architects" primaryHref="/build/talk" />
       </div>
+
+      {/* TOAST ERRORS FOR COMPARISON BOUNDARIES */}
+      <AnimatePresence>
+        {toastError && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            className="fixed bottom-6 right-6 z-50 p-4 rounded-xl border border-red-500/25 bg-black/95 backdrop-blur-md text-xs text-white max-w-sm shadow-[0_0_20px_rgba(228,0,15,0.15)] flex gap-3 items-center"
+          >
+            <svg className="w-5 h-5 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <div>
+              <span className="font-mono font-bold text-red-500 block text-[9px] uppercase tracking-wider mb-0.5">COMPARISON ERROR</span>
+              <p className="text-white/80 leading-normal">{toastError}</p>
+            </div>
+            <button onClick={() => setToastError(null)} className="text-white/40 hover:text-white ml-auto">
+              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </InnerPageShell>
   );
 

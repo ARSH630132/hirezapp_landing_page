@@ -31,6 +31,7 @@ export default function ROICalculatorPage() {
   const [priority, setPriority] = useState<Priority>("cost_reduction");
   const [copied, setCopied] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [isFlushing, setIsFlushing] = useState(false);
 
   // Load from Local Workspace on mount
   useEffect(() => {
@@ -360,17 +361,94 @@ Status: MODELLED - ILLUSTRATIVE ONLY
 
   // 6. RESET ACTION
   const handleReset = () => {
-    setIndustry("financial_services");
-    setCompanySize("enterprise");
-    setOpFunction("customer_operations");
-    setAnnualCostBaseline(1500000);
-    setProcessVolume(250000);
-    setAvgHandlingTime(15);
-    setAutomationTarget(65);
-    setManualEffort("high");
-    setProductivityImprovement(50);
-    setImplementationHorizon("6_months");
-    setPriority("cost_reduction");
+    setIsFlushing(true);
+    setTimeout(() => {
+      setIndustry("financial_services");
+      setCompanySize("enterprise");
+      setOpFunction("customer_operations");
+      setAnnualCostBaseline(1500000);
+      setProcessVolume(250000);
+      setAvgHandlingTime(15);
+      setAutomationTarget(65);
+      setManualEffort("high");
+      setProductivityImprovement(50);
+      setImplementationHorizon("6_months");
+      setPriority("cost_reduction");
+      setIsFlushing(false);
+    }, 450);
+  };
+
+  // 6.5 PREFLIGHT ADVISORIES & VALIDATION FOR INPUT FIELDS
+  const getPreflightAdvisories = () => {
+    const list: { type: "info" | "warning" | "optimal"; title: string; message: string }[] = [];
+
+    if (annualCostBaseline === 0) {
+      list.push({
+        type: "warning",
+        title: "Baseline Operational Cost Erased",
+        message: "Please enter a non-zero Annual Cost Baseline to model return-on-investment trajectories."
+      });
+    } else if (annualCostBaseline < 100000) {
+      list.push({
+        type: "info",
+        title: "Localized Prototype Scaling Scale",
+        message: `An operating baseline of ${annualCostBaseline.toLocaleString()} indicates a localized sandbox process. Return multipliers yield peak performance at standard mid-market or corporate scale (> $250,000).`
+      });
+    }
+
+    if (processVolume === 0) {
+      list.push({
+        type: "warning",
+        title: "Annual Process Volume is Zero",
+        message: "Erase-to-zero transaction frequency bypasses cognitive labor-hour reduction modeling. Please set a representative task frequency."
+      });
+    }
+
+    if (avgHandlingTime === "" || avgHandlingTime === 0) {
+      list.push({
+        type: "warning",
+        title: "Handling Time Undefined",
+        message: "Average handling time in minutes must be greater than zero to calibrate multi-agent cognitive velocity returns."
+      });
+    }
+
+    if (initialInvestment === 0) {
+      list.push({
+        type: "warning",
+        title: "CapEx Platform Investment is Zero",
+        message: "Hardware provisioning, secure single-tenant VPC boundaries, and custom multi-agent DAG schemas require a non-zero investment allocation."
+      });
+    } else if (initialInvestment < 50000) {
+      list.push({
+        type: "info",
+        title: "Sandbox Enclave Tier Configured",
+        message: `A CapEx of ${initialInvestment.toLocaleString()} is calibrated for self-service evaluation and sandbox playbooks, not production sovereign hardware nodes.`
+      });
+    }
+
+    if (automationTarget > 90) {
+      list.push({
+        type: "warning",
+        title: "Unsafe Automation Threshold",
+        message: "An automation target exceeding 90% bypasses standard GFF 'Human-in-the-Loop' supervisor approvals, potentially increasing structural risk for edge cases."
+      });
+    } else if (automationTarget > 0 && automationTarget <= 30) {
+      list.push({
+        type: "info",
+        title: "Under-Utilized Multi-Agent Capacity",
+        message: `A target of ${automationTarget}% is highly conservative. GFF multi-agent topologies are engineered to process 60% - 85% of repetitive workloads safely.`
+      });
+    }
+
+    if (list.length === 0) {
+      list.push({
+        type: "optimal",
+        title: "Sovereign Model Parameters: Optimal",
+        message: "All operational variables align with certified GFF AI reference models. Financial return projection parameters are fully optimized."
+      });
+    }
+
+    return list;
   };
 
   // 7. GET STRATEGIC NARRATIVE
@@ -404,7 +482,39 @@ Status: MODELLED - ILLUSTRATIVE ONLY
         metricValue="V2.8-SOVEREIGN"
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      {isFlushing && (
+        <motion.div
+          key="flushing"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="w-full py-32 flex flex-col items-center justify-center text-center space-y-5 rounded-2xl border border-white/5 bg-[#030306]/95 min-h-[400px] mb-8"
+        >
+          <div className="relative w-14 h-14 flex items-center justify-center">
+            <div className="absolute inset-0 rounded-full border border-dashed border-red-500/40 animate-spin" style={{ animationDuration: '8s' }} />
+            <div className="absolute inset-2 rounded-full border border-solid border-red-500/15 animate-ping" />
+            <div className="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center">
+              <svg className="w-4.5 h-4.5 text-red-500 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </div>
+          </div>
+          <div className="space-y-1">
+            <h3 className="text-xs font-mono font-bold text-white uppercase tracking-widest">Re-centering Financial Models</h3>
+            <p className="text-[10px] text-red-500 font-mono">PURGING_SECURE_CLIENT_CACHE</p>
+          </div>
+
+          {/* Zeroization Telemetry Log */}
+          <div className="font-mono text-[9px] text-red-500/60 max-w-md mx-auto space-y-0.5 mt-2 bg-black/40 p-3.5 rounded-xl border border-red-500/10 w-64 text-left">
+            <p className="flex justify-between"><span>&gt; WIPING VARIABLE BUFFER...</span><span className="text-red-500 font-bold">OK</span></p>
+            <p className="flex justify-between"><span>&gt; ZEROING LOCALSTORE KEYS...</span><span className="text-red-500 font-bold">OK</span></p>
+            <p className="flex justify-between"><span>&gt; DE-ALLOCATING MEMORY...</span><span className="text-red-500 font-bold">OK</span></p>
+            <p className="text-center text-[8px] text-red-500/40 mt-1 border-t border-red-500/10 pt-1 tracking-wider uppercase">SHIELD ENFORCED</p>
+          </div>
+        </motion.div>
+      )}
+
+      <div className={`grid grid-cols-1 lg:grid-cols-12 gap-8 items-start ${isFlushing ? "hidden" : ""}`}>
         {/* LEFT COLUMN: Input Control Panel */}
         <div className="lg:col-span-5 space-y-6">
           <div className="p-6 rounded-2xl border border-white/5 bg-[#030306]/95 backdrop-blur-md space-y-6 relative group overflow-hidden">
@@ -809,6 +919,46 @@ Status: MODELLED - ILLUSTRATIVE ONLY
             </div>
           </div>
 
+          {/* Dynamic Sovereign Telemetry Preflight Advisory / Input Validation Panel */}
+          <div className="p-4.5 rounded-xl border border-white/5 bg-[#030306]/80 space-y-3 relative overflow-hidden">
+            <div className="border-b border-white/5 pb-2 flex items-center justify-between">
+              <span className="text-[9px] font-mono text-white/45 block uppercase tracking-wider">PREFLIGHT VALIDATION</span>
+              <span className="text-[8px] font-mono px-1.5 py-0.5 rounded bg-white/5 text-white/50 border border-white/10 uppercase tracking-widest font-semibold">SOVEREIGN ADVISORY</span>
+            </div>
+            
+            <div className="space-y-2.5">
+              {getPreflightAdvisories().map((item, idx) => {
+                const borderColors = {
+                  warning: "border-amber-500/20 bg-amber-500/[0.02]",
+                  info: "border-[#009DFF]/20 bg-[#009DFF]/[0.01]",
+                  optimal: "border-[#00FF9D]/20 bg-[#00FF9D]/[0.02]"
+                }[item.type];
+                
+                const titleColors = {
+                  warning: "text-amber-400",
+                  info: "text-[#009DFF]",
+                  optimal: "text-[#00FF9D]"
+                }[item.type];
+
+                const pills = {
+                  warning: "bg-amber-500 animate-pulse",
+                  info: "bg-[#009DFF]",
+                  optimal: "bg-[#00FF9D]"
+                }[item.type];
+
+                return (
+                  <div key={idx} className={`p-3 rounded-lg border text-xs leading-normal font-light transition-all ${borderColors}`}>
+                    <div className="flex items-center gap-2 mb-1.5 font-semibold font-mono tracking-wide text-[9px] uppercase">
+                      <span className={`w-1.5 h-1.5 rounded-full ${pills}`} />
+                      <span className={titleColors}>{item.title}</span>
+                    </div>
+                    <p className="text-white/60 text-[10px] leading-relaxed font-light">{item.message}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Footnote Compliance Panel */}
           <div className="p-4 rounded-xl border border-white/5 bg-[#030305]/40 text-[10px] text-white/30 space-y-2 leading-relaxed">
             <span className="font-mono text-[#009DFF] font-bold block uppercase tracking-wider">SECURE SHIELD COMPLIANCE</span>
@@ -1119,10 +1269,10 @@ Status: MODELLED - ILLUSTRATIVE ONLY
             </div>
           </div>
 
-          <NextBestAction currentTool="roi" />
+          {!isFlushing && <NextBestAction currentTool="roi" />}
 
           {/* Section F: Action Bar */}
-          <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl border border-white/5 bg-[#030306]/85 font-mono">
+          <div className={`flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl border border-white/5 bg-[#030306]/85 font-mono ${isFlushing ? "hidden" : ""}`}>
             <button
               onClick={handleReset}
               type="button"

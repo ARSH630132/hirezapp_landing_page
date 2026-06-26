@@ -36,6 +36,7 @@ export default function TalkToAgentPage() {
   const [showResults, setShowResults] = useState(false);
   const [activeTab, setActiveTab] = useState<"direction" | "squad" | "timeline">("direction");
   const [isHydrated, setIsHydrated] = useState(false);
+  const [isFlushing, setIsFlushing] = useState(false);
 
   // Load from Workspace on mount
   useEffect(() => {
@@ -272,20 +273,24 @@ export default function TalkToAgentPage() {
   }, [isCompiling, compilerMessages.length]);
 
   const handleReset = () => {
-    setData({
-      desc: "",
-      ind: "Finance",
-      size: "100-1000",
-      geography: "",
-      urgency: "",
-      functionTeam: "",
-      aiStage: "",
-    });
-    setValidationError(null);
-    setShowResults(false);
-    setIsCompiling(false);
-    setCurrentStep(1);
-    setActiveTab("direction");
+    setIsFlushing(true);
+    setTimeout(() => {
+      setData({
+        desc: "",
+        ind: "Finance",
+        size: "100-1000",
+        geography: "",
+        urgency: "",
+        functionTeam: "",
+        aiStage: "",
+      });
+      setValidationError(null);
+      setShowResults(false);
+      setIsCompiling(false);
+      setCurrentStep(1);
+      setActiveTab("direction");
+      setIsFlushing(false);
+    }, 450);
   };
 
   const handlePrefillExample = (fullText: string) => {
@@ -414,7 +419,39 @@ export default function TalkToAgentPage() {
       </div>
 
       <AnimatePresence mode="wait">
-        {!showResults && !isCompiling && (
+        {isFlushing && (
+          <motion.div
+            key="flushing"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="max-w-4xl mx-auto py-24 flex flex-col items-center justify-center text-center space-y-5"
+          >
+            <div className="relative w-14 h-14 flex items-center justify-center">
+              <div className="absolute inset-0 rounded-full border border-dashed border-red-500/40 animate-spin" style={{ animationDuration: '8s' }} />
+              <div className="absolute inset-2 rounded-full border border-solid border-red-500/15 animate-ping" />
+              <div className="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center">
+                <svg className="w-4.5 h-4.5 text-red-500 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </div>
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-xs font-mono font-bold text-white uppercase tracking-widest">Scrubbing Sandbox Buffer</h3>
+              <p className="text-[10px] text-red-500 font-mono">PURGING_SECURE_CLIENT_CACHE</p>
+            </div>
+
+            {/* Zeroization Telemetry Log */}
+            <div className="font-mono text-[9px] text-red-500/60 max-w-md mx-auto space-y-0.5 mt-2 bg-black/40 p-3.5 rounded-xl border border-red-500/10 w-64 text-left">
+              <p className="flex justify-between"><span>&gt; WIPING VARIABLE BUFFER...</span><span className="text-red-500 font-bold">OK</span></p>
+              <p className="flex justify-between"><span>&gt; ZEROING LOCALSTORE KEYS...</span><span className="text-red-500 font-bold">OK</span></p>
+              <p className="flex justify-between"><span>&gt; DE-ALLOCATING MEMORY...</span><span className="text-red-500 font-bold">OK</span></p>
+              <p className="text-center text-[8px] text-red-500/40 mt-1 border-t border-red-500/10 pt-1 tracking-wider uppercase">SHIELD ENFORCED</p>
+            </div>
+          </motion.div>
+        )}
+
+        {!showResults && !isCompiling && !isFlushing && (
           <motion.div
             key="wizard"
             initial={{ opacity: 0, y: 15 }}
@@ -924,7 +961,7 @@ export default function TalkToAgentPage() {
         )}
 
         {/* DETERMINISTIC SMART RESULTS */}
-        {showResults && results && (
+        {showResults && results && !isFlushing && (
           <motion.div
             key="results"
             initial={{ opacity: 0, scale: 0.98 }}

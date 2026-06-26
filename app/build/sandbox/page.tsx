@@ -621,6 +621,7 @@ export default function SandboxPage() {
   const [simulationProgress, setSimulationProgress] = useState(0);
   const [simulatedLogs, setSimulatedLogs] = useState<typeof AGENTS[0]["logs"]>([]);
   const [activeTab, setActiveTab] = useState<"blueprint" | "architecture" | "security">("blueprint");
+  const [isFlushingLogs, setIsFlushingLogs] = useState(false);
 
   // Filter lists based on rules
   const filteredAgents = AGENTS.filter((agent) => {
@@ -1317,7 +1318,19 @@ export default function SandboxPage() {
 
                 {/* Live Output Log Stream */}
                 <div className="flex-1 p-5 overflow-y-auto font-mono text-[11px] space-y-2 bg-[#020202]">
-                  {simulatedLogs.length === 0 ? (
+                  {isFlushingLogs ? (
+                    <div className="h-full flex flex-col items-center justify-center text-white/30 space-y-3 min-h-[120px]">
+                      <div className="relative w-8 h-8 flex items-center justify-center">
+                        <div className="absolute inset-0 rounded-full border border-dashed border-red-500/40 animate-spin" />
+                        <svg className="w-4 h-4 text-red-500 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </div>
+                      <p className="text-center font-mono font-bold text-red-500 text-[9px] uppercase tracking-widest">
+                        Wiping Secure Enclave Cache Registers...
+                      </p>
+                    </div>
+                  ) : simulatedLogs.length === 0 ? (
                     <div className="h-full flex flex-col items-center justify-center text-white/30 space-y-3">
                       <svg className="w-8 h-8 text-white/10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
@@ -1364,8 +1377,12 @@ export default function SandboxPage() {
                   {simulatedLogs.length > 0 && !isSimulating && (
                     <button
                       onClick={() => {
-                        setSimulationProgress(0);
-                        setSimulatedLogs([]);
+                        setIsFlushingLogs(true);
+                        setTimeout(() => {
+                          setSimulationProgress(0);
+                          setSimulatedLogs([]);
+                          setIsFlushingLogs(false);
+                        }, 450);
                       }}
                       className="px-4 py-2.5 rounded-lg text-[10px] font-mono font-bold uppercase tracking-wider border border-white/10 hover:bg-white/5 text-white/80 transition-all"
                     >

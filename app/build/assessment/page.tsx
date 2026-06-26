@@ -85,6 +85,7 @@ export default function AssessmentPage() {
   const [isCompiling, setIsCompiling] = useState<boolean>(false);
   const [compilingStep, setCompilingStep] = useState<number>(0);
   const [showResult, setShowResult] = useState<boolean>(false);
+  const [isFlushing, setIsFlushing] = useState<boolean>(false);
 
   // Hydrate from GFF Local Workspace on mount
   useEffect(() => {
@@ -183,13 +184,17 @@ export default function AssessmentPage() {
   };
 
   const handleReset = () => {
-    setAnswers({});
-    setActiveDimensionIndex(0);
-    setValidationError(null);
-    setIsCompiling(false);
-    setShowResult(false);
-    setCompilingStep(0);
-    clearToolState("assessment");
+    setIsFlushing(true);
+    setTimeout(() => {
+      setAnswers({});
+      setActiveDimensionIndex(0);
+      setValidationError(null);
+      setIsCompiling(false);
+      setShowResult(false);
+      setCompilingStep(0);
+      clearToolState("assessment");
+      setIsFlushing(false);
+    }, 450);
   };
 
   // Generate dynamic results
@@ -486,8 +491,41 @@ CONFIDENTIALITY NOTICE: This report was compiled locally in a zero-retention env
   return (
     <ToolPageShell showContact={!showResult}>
       <AnimatePresence mode="wait">
+        {/* SECURE CACHE PURGING SCREEN */}
+        {isFlushing && (
+          <motion.div
+            key="flushing"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="min-h-[550px] flex flex-col items-center justify-center py-16 text-center space-y-5"
+          >
+            <div className="relative w-14 h-14 flex items-center justify-center">
+              <div className="absolute inset-0 rounded-full border border-dashed border-red-500/40 animate-spin" style={{ animationDuration: '8s' }} />
+              <div className="absolute inset-2 rounded-full border border-solid border-red-500/15 animate-ping" />
+              <div className="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center">
+                <svg className="w-4.5 h-4.5 text-red-500 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </div>
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-xs font-mono font-bold text-white uppercase tracking-widest">Wiping Diagnostic Workspace</h3>
+              <p className="text-[10px] text-red-500 font-mono">PURGING_SECURE_CLIENT_CACHE</p>
+            </div>
+            
+            {/* Zeroization Telemetry Log */}
+            <div className="font-mono text-[9px] text-red-500/60 max-w-md mx-auto space-y-0.5 mt-2 bg-black/40 p-3.5 rounded-xl border border-red-500/10 w-64 text-left">
+              <p className="flex justify-between"><span>&gt; WIPING VARIABLE BUFFER...</span><span className="text-red-500 font-bold">OK</span></p>
+              <p className="flex justify-between"><span>&gt; ZEROING LOCALSTORE KEYS...</span><span className="text-red-500 font-bold">OK</span></p>
+              <p className="flex justify-between"><span>&gt; DE-ALLOCATING MEMORY...</span><span className="text-red-500 font-bold">OK</span></p>
+              <p className="text-center text-[8px] text-red-500/40 mt-1 border-t border-red-500/10 pt-1 tracking-wider uppercase">SHIELD ENFORCED</p>
+            </div>
+          </motion.div>
+        )}
+
         {/* COMPILED LOADING SCREEN */}
-        {isCompiling && (
+        {isCompiling && !isFlushing && (
           <motion.div
             key="compiling"
             initial={{ opacity: 0 }}
@@ -521,7 +559,7 @@ CONFIDENTIALITY NOTICE: This report was compiled locally in a zero-retention env
         )}
 
         {/* ACTIVE DIAGNOSTIC RUNNER */}
-        {!isCompiling && !showResult && (
+        {!isCompiling && !showResult && !isFlushing && (
           <motion.div
             key="diagnostics"
             initial={{ opacity: 0, y: 15 }}
@@ -790,7 +828,7 @@ CONFIDENTIALITY NOTICE: This report was compiled locally in a zero-retention env
         )}
 
         {/* DETAILED RESULTS DASHBOARD */}
-        {showResult && report && (
+        {showResult && report && !isFlushing && (
           <motion.div
             key="results"
             initial={{ opacity: 0, y: 15 }}
