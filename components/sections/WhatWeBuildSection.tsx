@@ -106,7 +106,7 @@ export default function WhatWeBuildSection() {
         </p>
         <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {items.map((c, i) => (
-            <Link key={c.name} href={c.href} className="block group">
+            <div key={c.name} className="group">
               <motion.div 
                 initial={{ scale: 0.95, opacity: 0 }}
                 whileInView={{ scale: 1, opacity: 1 }}
@@ -159,14 +159,22 @@ export default function WhatWeBuildSection() {
                         </span>
                       ))}
                     </div>
-                    <div className="mt-6 pt-4 border-t border-white/[0.04] flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-white/40 group-hover:text-white transition-colors duration-300 relative z-10">
-                      <span>Explore Capability</span>
-                      <span className="text-base transform group-hover:translate-x-1.5 transition-transform duration-300" style={{ color: c.color }}>→</span>
-                    </div>
+                   <Link
+  href={c.href}
+  className="mt-6 pt-4 border-t border-white/[0.04] flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-white/40 hover:text-white transition-colors duration-300 relative z-10 cursor-pointer"
+>
+  <span>Explore Capability</span>
+  <span
+    className="text-base transition-transform duration-300 hover:translate-x-1.5"
+    style={{ color: c.color }}
+  >
+    →
+  </span>
+</Link>
                   </div>
                 </div>
               </motion.div>
-            </Link>
+            </div>
           ))}
         </div>
       </div>
