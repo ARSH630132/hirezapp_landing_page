@@ -68,6 +68,10 @@
     {
       "id": "33-mobile-responsive-pass",
       "reason": "cline implementation failed"
+    },
+    {
+      "id": "34-accessibility-and-motion-pass",
+      "reason": "cline implementation failed"
     }
   ]
 }
