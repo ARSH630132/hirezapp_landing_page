@@ -46,7 +46,8 @@
     "43-phase3-blueprint-wizard-inputs",
     "44-phase3-blueprint-scoring-engine-and-results",
     "46-phase3-ai-readiness-assessment-framework",
-    "47-phase3-ai-readiness-scoring-results"
+    "47-phase3-ai-readiness-scoring-results",
+    "49-phase3-roi-results-and-scenarios"
   ],
   "failed": [
     {
