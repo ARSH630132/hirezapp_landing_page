@@ -186,7 +186,6 @@ export function WizardStepperSystem<T = any>({
         }
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialData, steps.length, onInit]);
 
   const manifest = summaryItems(data);
