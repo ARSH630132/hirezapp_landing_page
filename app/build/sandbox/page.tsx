@@ -40,6 +40,12 @@ interface AgentDemo {
   egressLabel: string;
   steps: AgentStep[];
   logs: AgentLog[];
+  challenge?: string;
+  interpretation?: string;
+  knowledgeNeeded?: string[];
+  humanApproval?: string;
+  governanceCheck?: string;
+  outputPreview?: string;
 }
 
 // Full 8 representative agent demos using local static data only
@@ -84,6 +90,17 @@ const AGENTS: AgentDemo[] = [
         role: "Executive Synthesis Model"
       }
     ],
+    challenge: "An offshore gas platform operator reports a sudden 4.2% pressure anomaly in Pipeline Sector-4. Engineers must instantly cross-reference 25,000 pages of scanned 1998 legacy manuals, physical sensor schematics, and live thermal SCADA telemetry to identify the correct isolation valve.",
+    interpretation: "Translates high-volume unstructured search parameters into ISO-14224 compliant failure modes, maps connectivity graphs, and filters telemetry noise before memory-unlocked aggregation.",
+    knowledgeNeeded: [
+      "Sovereign Knowledge Graph (Sector-4 Topology Map)",
+      "ISO-14224 Equipment taxonomy database",
+      "Historical sensor SCADA telemetry log archives (1998-Present)",
+      "Sector-4 legacy engineering manuals and schematics"
+    ],
+    humanApproval: "Control Room Engineer must manually verify and sign off on the proposed Isolation Valve #12-B closure recommendation before executing the physical safety dispatch.",
+    governanceCheck: "Sovereign GDPR compliance mask filters all proprietary names and locations. Zero-egress sandbox blockages deny raw data transit to unapproved external servers.",
+    outputPreview: "{\n  \"incident_id\": \"INC-2026-098F\",\n  \"recommended_action\": \"Isolate Sector-4 Valve #12-B within 14 minutes.\",\n  \"confidence_score\": \"0.982\",\n  \"matched_documentation\": [\n    \"Sec-4-Pipeline-Specs-1998.pdf (Page 412)\",\n    \"SCADA-Thermal-Log-S4-Active.csv\"\n  ],\n  \"isolation_instructions\": \"Close pneumatic actuator S4-PA-12B, verify downstream pressure drops below 12.4 bar.\"\n}",
     logs: [
       { timeOffset: 0.2, type: "system", text: "Initializing cryptographic secure enclave on node SECURE_ENCLAVE_NODE-09..." },
       { timeOffset: 0.8, type: "info", text: "Mounting unstructured raw file system (containing engineering PDFs, sensor history)..." },
@@ -134,6 +151,17 @@ const AGENTS: AgentDemo[] = [
         role: "ERP Secure Gateway"
       }
     ],
+    challenge: "A global retail operator receives 1,200 raw material invoices daily from 85 international vendors. Contract pricing terms fluctuate daily, leading to invoice-to-contract mismatches, manual ledger errors, and delayed SAP settlement cycles.",
+    interpretation: "Validates received PDF invoices against registered master purchase agreements. Identifies deviation percentages in unit pricing, and queries SAP ERP ledger state.",
+    knowledgeNeeded: [
+      "Vendor Master Service Agreements (MSAs)",
+      "SAP ERP active ledger balances",
+      "Real-time FX currency conversion rates",
+      "Authorized corporate procurement limits directory"
+    ],
+    humanApproval: "Finance Analyst must review and electronically authorize any invoice matching deviation exceeding +/- 2.5% variance before SAP ledger posting.",
+    governanceCheck: "SOC2 boundary checks evaluate vendor banking routing numbers against the authorized OFAC sanctions database before initiating any pending ledger adjusting entry.",
+    outputPreview: "{\n  \"invoice_id\": \"INV-DE-88291\",\n  \"supplier\": \"Krupp Logistics GmbH\",\n  \"validation_status\": \"DISCREPANCY_DETECTED\",\n  \"discrepancy_details\": \"Unit price on Line Item 3 ($142.50) exceeds Master Agreement Contract Rate ($139.00) by 2.51%.\",\n  \"escalation_route\": \"Routed to Procurement Officer (Approver #4)\"\n}",
     logs: [
       { timeOffset: 0.3, type: "system", text: "Connecting to internal SAP gateway mock listener on port 8083..." },
       { timeOffset: 0.9, type: "info", text: "Ingesting invoice-77491.pdf (multimodal parser active on 3 pages)..." },
@@ -184,6 +212,17 @@ const AGENTS: AgentDemo[] = [
         role: "Curriculum Customizer"
       }
     ],
+    challenge: "Enterprise HR departments struggle to parse, screen, and schedule interviews for thousands of high-security cleared candidate profiles across disparate sovereign regions without exposing personally identifiable information (PII) to global networks.",
+    interpretation: "Masks PII elements in PDF resumes. Compiles verified skills matrices against custom job requirement blueprints, and generates secure self-scheduling portals.",
+    knowledgeNeeded: [
+      "Enterprise Role Specifications Blueprint",
+      "Candidate Resume Repositories",
+      "Sovereign PII Redaction Ruleset",
+      "Outlook/GSuite Calendar APIs"
+    ],
+    humanApproval: "Talent Acquisition Lead must manually verify the candidate's cleared credentials and confirm the interview panel schedule.",
+    governanceCheck: "Sovereign localization check ensures candidate CV data never exits physical cloud servers located in Germany (Sovereign Cloud Zone EU-Central-1).",
+    outputPreview: "{\n  \"candidate_ref\": \"ANON-88392-EU\",\n  \"clearance_verified\": \"Level 4 (Sovereign Secure)\",\n  \"skills_alignment\": \"94% Match (Rust, Cryptographic Enclaves, Next.js)\",\n  \"pii_redacted\": \"True\",\n  \"interview_status\": \"Scheduled for Tuesday, 14:00 CET via Secure Room\"\n}",
     logs: [
       { timeOffset: 0.2, type: "system", text: "Onboarding daemon activated for Candidate_88301..." },
       { timeOffset: 1.0, type: "info", text: "Signed contract verified using Adobe Sign secure hash validator." },
@@ -234,6 +273,17 @@ const AGENTS: AgentDemo[] = [
         role: "Remediation Draft Engine"
       }
     ],
+    challenge: "In-house legal teams at multinational enterprises spend hundreds of hours manually comparing legacy supplier master service agreements (MSAs) against updated regional liability laws, missing critical indemnity exposure clauses.",
+    interpretation: "Conducts deep semantic clause analysis. Identifies missing or weak liability caps, cross-references with local court databases, and drafts remedial amendment clauses.",
+    knowledgeNeeded: [
+      "Corporate Legal MSA Templates",
+      "Regional Civil Code liability tables",
+      "Local judicial precedents database",
+      "Active enterprise compliance manuals"
+    ],
+    humanApproval: "General Counsel must approve the suggested replacement indemnity clause wording before sending the formal contract addendum to the counterparty.",
+    governanceCheck: "Zero-retention LLM privacy guard ensures third-party contractual terms are never ingested into global training weights, keeping all legal intellectual property strictly isolated.",
+    outputPreview: "{\n  \"contract_id\": \"MSA-2026-RETAIL\",\n  \"risk_level\": \"ELEVATED\",\n  \"vulnerabilities\": [\n    {\n      \"clause\": \"Section 14.2 (Limitation of Liability)\",\n      \"issue\": \"Liability cap is uncapped for indirect damages under German Civil Code Section 307.\",\n      \"remedy\": \"Insert: 'Liability for indirect damages shall be capped at 150% of annual fees paid under this Agreement.'\"\n    }\n  ]\n}",
     logs: [
       { timeOffset: 0.3, type: "system", text: "Spinning up secure temporary runtime container..." },
       { timeOffset: 0.9, type: "info", text: "Ingested 145-page Master Supplier Agreement (PDF structure decoded)..." },
@@ -284,6 +334,17 @@ const AGENTS: AgentDemo[] = [
         role: "Secure Distribution Node"
       }
     ],
+    challenge: "Chief Financial Officers struggle to reconcile liquidity risk across multiple disparate digital asset vaults, sovereign bank accounts, and active DeFi smart contracts in real-time, leaving them exposed to overnight market volatility.",
+    interpretation: "Fetches real-time multi-vault balances, calculates portfolio value-at-risk (VaR) using Monte Carlo distributions, and models hedging strategies.",
+    knowledgeNeeded: [
+      "Multi-signature vault telemetry status",
+      "Real-time Bloomberg & Chainlink oracle price feeds",
+      "Corporate treasury allocation policy parameters",
+      "Active interest-bearing token yielding curves"
+    ],
+    humanApproval: "CFO or Treasury Director must sign a multi-signature transaction on their physical HSM hardware device to execute any suggested portfolio rebalancing transfers.",
+    governanceCheck: "Anti-Money Laundering (AML) checks evaluate recipient address risks; the smart contract execution path runs inside a FIPS 140-2 Level 4 HSM container.",
+    outputPreview: "{\n  \"portfolio_value_usd\": \"242,501,902.00\",\n  \"24h_value_at_risk_99_confidence\": \"1,420,900.00\",\n  \"alert_status\": \"NOMINAL\",\n  \"hedging_recommendation\": \"Allocate 5% of passive stablecoin treasury to short-duration sovereign bonds to neutralize overnight volatility.\",\n  \"required_signatures\": \"2 of 3 (CFO + Controller)\"\n}",
     logs: [
       { timeOffset: 0.4, type: "system", text: "Gathering telemetry streams across 14 global ledger clusters..." },
       { timeOffset: 1.1, type: "info", text: "Synchronized state records for RetailMesh and OreMesh deployments." },
@@ -334,6 +395,17 @@ const AGENTS: AgentDemo[] = [
         role: "Lockout Protocol Agent"
       }
     ],
+    challenge: "Enterprise data pipelines crossing international borders face immediate fines if they transmit sensitive customer records outside sovereign borders. Compliance officers cannot inspect millions of high-velocity payload streams manually.",
+    interpretation: "Inspects incoming and outgoing streaming data payloads at the API Gateway level. Detects and blocks PII, health information (PHI), or localized data transgressions in real time.",
+    knowledgeNeeded: [
+      "EU GDPR directives handbook",
+      "CCPA regulatory frameworks",
+      "HIPAA Protected Health Information (PHI) identifiers catalog",
+      "Enterprise custom localized data categorization schema"
+    ],
+    humanApproval: "Data Protection Officer (DPO) is alerted to review blocked payloads and decide whether to whitelist specific encrypted tokens.",
+    governanceCheck: "Zero-Trust gateway prevents egress of non-anonymized data; automated audit-trail hash is written to the immutable compliance ledger.",
+    outputPreview: "{\n  \"gateway_session\": \"GW-9921-X\",\n  \"packets_inspected\": \"41,209\",\n  \"violations_detected\": \"1 (PII/Social Security Number detected in Outbound Payload #882)\",\n  \"action_taken\": \"PAYLOAD_MUTED_AND_REDACTED\",\n  \"compliance_status\": \"SECURED\"\n}",
     logs: [
       { timeOffset: 0.2, type: "system", text: "Listening on CI/CD production deployment pipeline webhook..." },
       { timeOffset: 0.8, type: "info", text: "Analyzing pending database migration script (Commit: #10941)." },
@@ -384,14 +456,24 @@ const AGENTS: AgentDemo[] = [
         role: "Transaction Runner Agent"
       }
     ],
+    challenge: "Large-scale customer support centers suffer from slow resolution times and high operational costs, yet generic AI chatbots frustrate high-net-worth customers by giving repetitive, unhelpful, and generic answers.",
+    interpretation: "Analyzes user history and emotional sentiment. Cross-references internal knowledge bases, and formulates precise, highly contextual, empathetic resolutions.",
+    knowledgeNeeded: [
+      "Customer CRM transaction records",
+      "Internal product resolution logs",
+      "Live courier and shipping status APIs",
+      "Tone of Voice & Sentiment Guardrails"
+    ],
+    humanApproval: "Support Supervisor reviews and edits responses for ultra-high-priority VIP clients before sending the final email or message.",
+    governanceCheck: "Safety filter blocks toxic language, and prevents the agent from promising refunds or credits beyond pre-approved thresholds.",
+    outputPreview: "{\n  \"client_tier\": \"VIP_PLATINUM\",\n  \"sentiment\": \"FRUSTRATED\",\n  \"detected_issue\": \"Delayed delivery of custom industrial server rack\",\n  \"proposed_solution\": \"Express courier redirection + $200 service credit\",\n  \"response_draft\": \"Dear Mr. Vance, we sincerely apologize for the delay. We have upgraded your shipping to overnight express...\"\n}",
     logs: [
-      { timeOffset: 0.3, type: "system", text: "Customer chat session established (Session: #CC-8402)." },
-      { timeOffset: 0.9, type: "info", text: "User Token Verified: Tier-1 Platinum Account (ID: 49204)." },
-      { timeOffset: 1.6, type: "agent", text: "[Classifier] Customer complaint: 'Unexplained $450 data roaming surcharge during Swiss travel.'" },
-      { timeOffset: 2.3, type: "agent", text: "[Connector] Querying usage registry: verified 9.2GB Swisscom roaming on Jun-18. Tariff mismatch detected." },
-      { timeOffset: 3.0, type: "agent", text: "[PolicyAgent] Core logic approved: Customer is eligible for retro-credit of $350 under Platinum SLA." },
-      { timeOffset: 3.7, type: "success", text: "[TransactionAgent] Direct credit issued in billing DB. Transaction Ref: TX-903112." },
-      { timeOffset: 4.4, type: "success", text: "Confirmation SMS sent to client mobile. Interactive session resolved." }
+      { timeOffset: 0.1, type: "system", text: "Initializing Customer Support Enclave inside isolated sandbox host..." },
+      { timeOffset: 0.8, type: "info", text: "Successfully linked with Salesforce CRM & DHL Logistics API connectors." },
+      { timeOffset: 1.5, type: "agent", text: "[SentimentClassifier] Ticket ID #9921 analyzed. Customer emotional index: FRUSTRATED." },
+      { timeOffset: 2.3, type: "agent", text: "[CRMIntegrator] Client is marked Platinum. Historical billing total exceeds $420,000." },
+      { timeOffset: 3.2, type: "warning", text: "[ResolutionSynthesizer] Delivery delayed at regional customs. Auto-generating overnight priority courier bypass." },
+      { timeOffset: 4.1, type: "success", text: "Resolution email drafted. Sent to Support Supervisor interface for review. Dry-run complete." }
     ]
   },
   {
@@ -434,14 +516,24 @@ const AGENTS: AgentDemo[] = [
         role: "Maintenance Coordinator"
       }
     ],
+    challenge: "Manufacturing plant operators struggle to predict equipment failure in industrial turbines, leading to catastrophic unscheduled downtime costing up to $500k per hour.",
+    interpretation: "Polls vibrational and thermal sensors. Compiles deviation profiles against physics-based baseline models, and identifies structural wear metrics.",
+    knowledgeNeeded: [
+      "Vibration frequency baselines specifications",
+      "Equipment manufacturing design sheets",
+      "Turbine past maintenance log history",
+      "Weather, ambient humidity, and load telemetry data"
+    ],
+    humanApproval: "Plant Director must manually sign off on the preventive maintenance dispatch order to shut down Turbine-3 for 2 hours.",
+    governanceCheck: "Compliance check validates that all scheduled technicians have active safety certifications for High-Voltage Phase-3 equipment.",
+    outputPreview: "{\n  \"asset_id\": \"TURBINE-03\",\n  \"anomaly_rating\": \"CRITICAL_92%\",\n  \"wear_indicator\": \"Bearing-B radial oscillation is 1.8mm/s above design limits\",\n  \"scheduled_maintenance\": \"Preventive maintenance recommended within 48 hours\",\n  \"required_parts\": \"ISO-Bearing-883-X\"\n}",
     logs: [
-      { timeOffset: 0.2, type: "system", text: "Listening on OreMesh IoT telemetry gateway (Sector 9 Conveyor Systems)..." },
-      { timeOffset: 1.0, type: "info", text: "Processing 10-second FFT window on Sensor_VIB_902..." },
-      { timeOffset: 1.8, type: "agent", text: "[TwinEngine] Harmonic spike identified at 4.2 kHz. Matches bearing degradation pattern." },
-      { timeOffset: 2.5, type: "warning", text: "[TwinEngine] Remaining Useful Life (RUL) estimated: 72 hours. Critical Alert Level 2." },
-      { timeOffset: 3.2, type: "agent", text: "[InventoryAgent] Checked warehouse stock. Part 'SKF-Ball-Bearing-v9' in stock (Qty: 4)." },
-      { timeOffset: 3.9, type: "agent", text: "[Coordinator] Creating SAP Maintenance Ticket OP-9942 and reserving replacement part." },
-      { timeOffset: 4.6, type: "success", text: "Maintenance dispatch instructions transmitted. Field tablet alerts active." }
+      { timeOffset: 0.2, type: "system", text: "Establishing physical communication with turbine IoT gateway buffer..." },
+      { timeOffset: 0.9, type: "info", text: "Successfully connected. Collecting SCADA turbine telemetry stream..." },
+      { timeOffset: 1.6, type: "agent", text: "[TelemetryIngestion] Pulled bearing vibration logs: 42Hz oscillations observed." },
+      { timeOffset: 2.4, type: "agent", text: "[AnomalyDetector] CRITICAL DEVIATION: Bearing radial displacement is 1.8mm over threshold limit." },
+      { timeOffset: 3.2, type: "warning", text: "[ManualRetriever] Retrieved maintenance file ISO-B-883-REPLACEMENT.pdf. Compiling instructions." },
+      { timeOffset: 4.1, type: "success", text: "SAP Work Order drafted. Routed to Plant Director dashboard. Dry-run complete." }
     ]
   }
 ];
@@ -559,6 +651,15 @@ export default function SandboxPage() {
 
     return () => clearInterval(interval);
   }, [isSimulating, activeAgent]);
+
+  const [copiedStatus, setCopiedStatus] = useState(false);
+
+  const handleCopySchema = () => {
+    if (!activeAgent.outputPreview) return;
+    navigator.clipboard.writeText(activeAgent.outputPreview);
+    setCopiedStatus(true);
+    setTimeout(() => setCopiedStatus(false), 2000);
+  };
 
   // Dynamic count generators for UI indicators
   const getIndustryCount = (ind: string) => {
@@ -1012,40 +1113,94 @@ export default function SandboxPage() {
               <div className="flex-grow p-6 bg-[#010101] overflow-y-auto">
                 <AnimatePresence mode="wait">
                   {activeTab === "blueprint" && (
-                    <div className="space-y-6">
-                      <div className="space-y-1">
-                        <span className="text-[10px] font-mono text-[#009DFF] uppercase tracking-wider block font-bold">NARRATIVE SEQUENCE</span>
-                        <h4 className="text-sm font-bold text-white">Continuous Agent Orchestration Steps</h4>
-                        <p className="text-xs text-white/50 font-light">
-                          Follow the exact structural step-sequence this blueprint executes once launched in the enclave environment.
+                    <div className="space-y-5 text-left">
+                      {/* DISCLAIMER */}
+                      <div className="p-3 rounded-lg border border-amber-500/15 bg-amber-500/[0.02] flex items-start gap-2.5">
+                        <span className="text-amber-500 text-xs mt-0.5">⚠️</span>
+                        <p className="text-[10px] font-mono text-amber-400 font-light leading-normal">
+                          <strong className="font-bold">DETERMINISTIC PRESET WORKFLOW SIMULATION:</strong> Safe frontend dry-run (zero-trust, no live API computations, zero active data transmission).
                         </p>
                       </div>
 
-                      {/* STEP CHRONOLOGY NARRATIVE TIMELINE */}
-                      <div className="relative pl-6 space-y-6 before:absolute before:top-2 before:bottom-2 before:left-[11px] before:w-[1px] before:bg-white/10">
-                        {activeAgent.steps.map((step, idx) => (
-                          <div key={idx} className="relative group">
-                            
-                            {/* Step chron node badge */}
-                            <div className="absolute -left-[21px] top-1.5 w-[11px] h-[11px] rounded-full bg-black border-2 border-[#009DFF] flex items-center justify-center z-10">
-                              <div className="w-1.5 h-1.5 rounded-full bg-[#009DFF]/60" />
-                            </div>
+                      {/* NARRATIVE SECTION */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                        <div className="p-3.5 rounded-xl border border-white/5 bg-[#030304]/80 space-y-1.5">
+                          <span className="text-[9px] font-mono text-[#E4000F] font-bold uppercase tracking-wider block">1. User Challenge</span>
+                          <p className="text-xs text-white/80 font-light leading-relaxed">{activeAgent.challenge}</p>
+                        </div>
+                        <div className="p-3.5 rounded-xl border border-white/5 bg-[#030304]/80 space-y-1.5">
+                          <span className="text-[9px] font-mono text-[#009DFF] font-bold uppercase tracking-wider block">2. Agent Interpretation</span>
+                          <p className="text-xs text-white/80 font-light leading-relaxed">{activeAgent.interpretation}</p>
+                        </div>
+                      </div>
 
-                            <div className="space-y-1 pl-4">
-                              <div className="flex items-center gap-2">
-                                <span className="text-[11px] font-bold text-white">
-                                  Step {idx + 1}: {step.title}
-                                </span>
-                                <span className="text-[8px] font-mono px-1.5 py-0.5 rounded bg-white/5 text-white/40 uppercase">
-                                  {step.role}
-                                </span>
-                              </div>
-                              <p className="text-xs text-white/60 font-light leading-relaxed">
-                                {step.description}
-                              </p>
-                            </div>
+                      {/* KNOWLEDGE & GOVERNANCE */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-[10px] font-mono">
+                        <div className="p-3 rounded-xl border border-white/5 bg-[#030304]/80 space-y-1">
+                          <span className="text-purple-400 font-bold uppercase tracking-wider block">3. Ingested Assets</span>
+                          <div className="space-y-1 text-white/60">
+                            {activeAgent.knowledgeNeeded?.slice(0, 3).map((item, idx) => (
+                              <div key={idx} className="truncate">• {item}</div>
+                            ))}
                           </div>
-                        ))}
+                        </div>
+                        <div className="p-3 rounded-xl border border-white/5 bg-[#030304]/80 space-y-1">
+                          <span className="text-blue-400 font-bold uppercase tracking-wider block">5. HITL Gate</span>
+                          <p className="text-[11px] text-white/70 font-light leading-normal truncate" title={activeAgent.humanApproval}>{activeAgent.humanApproval}</p>
+                        </div>
+                        <div className="p-3 rounded-xl border border-white/5 bg-[#030304]/80 space-y-1">
+                          <span className="text-amber-400 font-bold uppercase tracking-wider block">6. Sovereign Control</span>
+                          <p className="text-[11px] text-white/70 font-light leading-normal truncate" title={activeAgent.governanceCheck}>{activeAgent.governanceCheck}</p>
+                        </div>
+                      </div>
+
+                      {/* TIMELINE */}
+                      <div className="space-y-3">
+                        <span className="text-[9px] font-mono text-emerald-400 font-bold uppercase tracking-wider block">4. Step-by-Step Chronology</span>
+                        <div className="relative pl-5 space-y-4 before:absolute before:top-1.5 before:bottom-1.5 before:left-[9px] before:w-[1px] before:bg-white/10">
+                          {activeAgent.steps.map((step, idx) => (
+                            <div key={idx} className="relative pl-3 space-y-0.5">
+                              <div className="absolute -left-[18px] top-1.5 w-2 h-2 rounded-full bg-[#009DFF]" />
+                              <div className="flex items-center gap-2">
+                                <span className="text-[11px] font-bold text-white">Step {idx + 1}: {step.title}</span>
+                                <span className="text-[8px] font-mono px-1 rounded bg-white/5 text-white/40 uppercase">{step.role}</span>
+                              </div>
+                              <p className="text-[11px] text-white/50 font-light leading-relaxed">{step.description}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* OUTPUT PREVIEW */}
+                      <div className="space-y-1.5">
+                        <div className="flex items-center justify-between text-[9px] font-mono text-white/40 uppercase">
+                          <span className="text-[#00FF9D] font-bold">7. Expected Output Preview (JSON Schema)</span>
+                          <button onClick={handleCopySchema} className="text-[#009DFF] hover:underline">
+                            {copiedStatus ? "COPIED" : "COPY SCHEMA"}
+                          </button>
+                        </div>
+                        <pre className="p-3 rounded-xl border border-white/10 bg-[#020203] font-mono text-[10px] text-emerald-400 overflow-x-auto whitespace-pre leading-relaxed max-h-36">
+                          {activeAgent.outputPreview}
+                        </pre>
+                      </div>
+
+                      {/* RELATED CTAs */}
+                      <div className="pt-4 border-t border-white/5 space-y-2">
+                        <span className="text-[9px] font-mono text-white/30 uppercase tracking-wider block font-bold">RELATED COOPERATING SUITES</span>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-left">
+                          <a href="/build/talk" className="p-2.5 rounded-xl border border-white/5 bg-[#030304] hover:border-[#009DFF]/30 transition-all flex flex-col justify-between h-20 group">
+                            <span className="text-[10px] font-bold text-white group-hover:text-[#009DFF] transition-colors">Talk to Agent Architect</span>
+                            <span className="text-[8px] text-white/40 font-mono block leading-relaxed">Book a zero-trust enclave layout design session.</span>
+                          </a>
+                          <a href="/build/blueprint" className="p-2.5 rounded-xl border border-white/5 bg-[#030304] hover:border-[#9D00FF]/30 transition-all flex flex-col justify-between h-20 group">
+                            <span className="text-[10px] font-bold text-white group-hover:text-[#9D00FF] transition-colors">Configure Blueprint</span>
+                            <span className="text-[8px] text-white/40 font-mono block leading-relaxed">Configure customized node data schemas and inputs.</span>
+                          </a>
+                          <a href="/build/foundry-studio" className="p-2.5 rounded-xl border border-white/5 bg-[#030304] hover:border-[#E4000F]/30 transition-all flex flex-col justify-between h-20 group">
+                            <span className="text-[10px] font-bold text-white group-hover:text-[#E4000F] transition-colors">Open Foundry Studio</span>
+                            <span className="text-[8px] text-white/40 font-mono block leading-relaxed">Orchestrate raw secure data flow pipelines.</span>
+                          </a>
+                        </div>
                       </div>
                     </div>
                   )}
