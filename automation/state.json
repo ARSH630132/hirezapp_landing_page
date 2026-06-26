@@ -53,7 +53,8 @@
     "52-phase3-sandbox-agent-demo-catalog",
     "50-phase3-proposal-builder-intake",
     "51-phase3-proposal-builder-preview",
-    "53-phase3-sandbox-simulated-agent-preview"
+    "53-phase3-sandbox-simulated-agent-preview",
+    "54-phase3-agent-marketplace-tool"
   ],
   "failed": [
     {
