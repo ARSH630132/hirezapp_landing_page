@@ -109,6 +109,38 @@ const S_DATA = [
     desc: "Upgrade public administration, citizen service portals, and record intelligence networks.",
     challenges: ["Citizen service backlogs", "Policy search friction", "Process transparency"],
     agents: ["Citizen Service Agent", "Policy Intelligence Agent", "Document Intelligence Agent"]
+  },
+  {
+    id: "audit",
+    title: "Audit",
+    path: "/industries/audit",
+    desc: "Deploy secure, read-only sovereign agents to augment auditing workflows.",
+    challenges: ["Evidence collection", "Documentation review", "Risk assessment"],
+    agents: ["Evidence Review Agent", "Audit Knowledge Assistant", "Risk Review Agent"]
+  },
+  {
+    id: "tax",
+    title: "Tax",
+    path: "/industries/tax",
+    desc: "Integrate high-accuracy document intelligence layers and dynamic compliance search.",
+    challenges: ["Document-heavy workflows", "Compliance tracking", "Client response time"],
+    agents: ["Tax Knowledge Agent", "Compliance Assistant", "Document Intelligence Agent"]
+  },
+  {
+    id: "legal",
+    title: "Legal",
+    path: "/industries/legal",
+    desc: "Deploy corporate memory networks and private legal research workflows.",
+    challenges: ["Contract review", "Matter knowledge", "Research workflows"],
+    agents: ["Contract Intelligence Agent", "Legal Knowledge Search Agent", "Matter Assistant"]
+  },
+  {
+    id: "advisory",
+    title: "Advisory",
+    path: "/industries/advisory",
+    desc: "Accelerate research, streamline delivery operations, and scale proposal pipelines.",
+    challenges: ["Research acceleration", "Proposal development", "Delivery operations"],
+    agents: ["Advisory Copilot", "Advisory Research Agent", "Proposal Copilot"]
   }
 ];
 
