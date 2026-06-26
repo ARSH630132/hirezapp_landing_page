@@ -1,0 +1,166 @@
+## npm run lint
+exit=0
+STDOUT:
+
+> hirezapp_landing_page@0.1.0 lint
+> eslint
+
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/app/build/proposal/page.tsx
+  104:6  warning  React Hook useEffect has a missing dependency: 'compilingMessages.length'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/components/build/WizardStepperSystem.tsx
+  189:5  warning  Unused eslint-disable directive (no problems were reported from 'react-hooks/exhaustive-deps')
+
+✖ 2 problems (0 errors, 2 warnings)
+  0 errors and 1 warning potentially fixable with the `--fix` option.
+
+
+STDERR:
+
+
+## npm run build
+exit=0
+STDOUT:
+
+> hirezapp_landing_page@0.1.0 build
+> next build
+
+▲ Next.js 16.2.9 (Turbopack)
+- Environments: .env
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 8.0s
+  Running TypeScript ...
+  Finished TypeScript in 9.6s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/110) ...
+  Generating static pages using 7 workers (27/110) 
+  Generating static pages using 7 workers (54/110) 
+  Generating static pages using 7 workers (82/110) 
+✓ Generating static pages using 7 workers (110/110) in 4.0s
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /about-us
+├ ƒ /api/contact
+├ ○ /build
+├ ○ /build/assessment
+├ ○ /build/blueprint
+├ ○ /build/foundry-studio
+├ ○ /build/marketplace
+├ ○ /build/proposal
+├ ○ /build/roi
+├ ○ /build/sandbox
+├ ○ /build/talk
+├ ○ /capabilities
+├ ○ /capabilities/agents
+├ ○ /capabilities/data
+├ ○ /capabilities/engineering
+├ ○ /capabilities/governance
+├ ○ /capabilities/knowledge-graph
+├ ○ /capabilities/labs
+├ ○ /capabilities/managed-services
+├ ○ /capabilities/operations
+├ ○ /capabilities/strategy
+├ ○ /capabilities/twins
+├ ○ /capabilities/universities
+├ ○ /careers
+├ ○ /client
+├ ○ /client/control-center
+├ ○ /company
+├ ○ /company/advisors
+├ ○ /company/careers
+├ ○ /company/contact
+├ ○ /company/investors
+├ ○ /company/leadership
+├ ○ /company/locations
+├ ○ /company/media
+├ ○ /company/mission
+├ ○ /company/partners
+├ ○ /contact
+├ ○ /industries
+├ ○ /industries/advisory
+├ ○ /industries/audit
+├ ○ /industries/banking
+├ ○ /industries/education
+├ ○ /industries/energy
+├ ○ /industries/financial-services
+├ ○ /industries/government
+├ ○ /industries/healthcare
+├ ○ /industries/insurance
+├ ○ /industries/legal
+├ ○ /industries/life-sciences
+├ ○ /industries/manufacturing
+├ ○ /industries/mining
+├ ○ /industries/public-sector
+├ ○ /industries/retail
+├ ○ /industries/tax
+├ ○ /industries/telecom
+├ ○ /insights
+├ ○ /insights/patterns-of-intelligence
+├ ○ /investor-relations
+├ ○ /manifest.webmanifest
+├ ○ /nda
+├ ○ /platforms
+├ ○ /platforms/agent-marketplace
+├ ○ /platforms/ai-academy
+├ ○ /platforms/assessment-mesh
+├ ○ /platforms/blueprint
+├ ○ /platforms/control-center
+├ ○ /platforms/developer-platform
+├ ○ /platforms/factory
+├ ○ /platforms/foundry
+├ ○ /platforms/garage
+├ ○ /platforms/marketplace
+├ ○ /platforms/oremesh
+├ ○ /platforms/retailmesh
+├ ○ /platforms/runtime-governance
+├ ○ /platforms/telecomverse
+├ ○ /platforms/university-oneverse
+├ ○ /portal
+├ ○ /portal/control-center
+├ ○ /privacy
+├ ○ /resources
+├ ○ /resources/architecture-library
+├ ○ /resources/blog
+├ ○ /resources/case-studies
+├ ○ /resources/developer-docs
+├ ○ /resources/downloads
+├ ○ /resources/events
+├ ○ /resources/newsroom
+├ ○ /resources/patterns-of-intelligence
+├ ○ /resources/podcasts
+├ ○ /resources/reports
+├ ○ /resources/research
+├ ○ /resources/videos
+├ ○ /resources/webinars
+├ ○ /resources/whitepapers
+├ ○ /robots.txt
+├ ○ /sitemap.xml
+├ ○ /terms
+├ ○ /why-gff-ai
+├ ○ /why-gff-ai/differentiator
+├ ○ /why-gff-ai/garage-foundry-factory
+├ ○ /why-gff-ai/global-model
+├ ○ /why-gff-ai/leadership
+├ ○ /why-gff-ai/mission
+├ ○ /why-gff-ai/operating-model
+├ ○ /why-gff-ai/technology-philosophy
+└ ○ /why-gff-ai/vision
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+
+STDERR:
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /Users/ayushbansal/package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * /Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/package-lock.json
+

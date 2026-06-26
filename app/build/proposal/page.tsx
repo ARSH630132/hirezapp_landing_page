@@ -37,6 +37,12 @@ const PRIORITIES: { id: Priority; label: string; desc: string; icon: string; col
   { id: "decision_automation", label: "Consensus Orchestration", desc: "Remove manual loops.", icon: "🧠", color: "#E5A93C" }
 ];
 
+const BUDGET_RANGES = [
+  { id: "tier-1", label: "Seed Incubator ($50K - $250K)", desc: "Quick-start, validation pilot." },
+  { id: "tier-2", label: "Scale Foundry ($250K - $1M)", desc: "Cross-system, full orchestration." },
+  { id: "tier-3", label: "Enterprise Factory ($1M+)", desc: "Global sovereign custom enclaves." }
+];
+
 const INITIAL_INPUTS: ProposalInputs = {
   companyName: "",
   industry: "banking",
