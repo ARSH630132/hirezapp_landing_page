@@ -40,12 +40,19 @@ export default function PlatformsHubPage() {
 
         <MotionReveal className="space-y-6">
           <h2 className="text-2xl font-bold text-white text-center">Industry Mesh Platforms</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
-            {["Finance Sovereign Mesh", "Healthcare Secure Mesh", "Government Sovereign Mesh", "Energy Mesh"].map((mesh) => (
-              <div key={mesh} className="p-6 rounded-2xl border border-white/5 bg-black/60">
-                <h3 className="font-bold text-white mb-2">{mesh}</h3>
-                <p className="text-xs text-white/50 leading-relaxed">Hardened industry-grade compliance mesh layers for secure on-premise execution.</p>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {[
+              { name: "OREMesh Edge Platform", desc: "Sovereign edge mesh for offline-first extraction and remote mining site dispatches.", path: "/platforms/oremesh" },
+              { name: "RetailMesh Platform", desc: "Omnichannel high-availability register ingestion and retail support networks.", path: "/platforms/retailmesh" },
+              { name: "TelecomVerse Core", desc: "Carrier-grade high-throughput optical signaling and field dispatch automation.", path: "/platforms/telecomverse" }
+            ].map((mesh) => (
+              <Link key={mesh.name} href={mesh.path} className="p-6 rounded-2xl border border-white/5 bg-black/60 hover:border-white/12 hover:bg-white/[0.02] transition-all block">
+                <h3 className="font-bold text-white mb-2 flex items-center justify-between">
+                  <span>{mesh.name}</span>
+                  <span className="text-xs text-[#009DFF] font-mono font-bold">Specs →</span>
+                </h3>
+                <p className="text-xs text-white/50 leading-relaxed">{mesh.desc}</p>
+              </Link>
             ))}
           </div>
         </MotionReveal>
