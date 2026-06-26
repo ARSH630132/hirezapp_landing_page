@@ -22,7 +22,8 @@
     "20-industries-batch3-ops-retail-mining",
     "21-industries-batch4-regulated-public-telecom",
     "22-industries-batch5-professional-services",
-    "23-platforms-hub-garage-foundry-factory"
+    "23-platforms-hub-garage-foundry-factory",
+    "24-platforms-blueprint-marketplace-control-center"
   ],
   "failed": [
     {
