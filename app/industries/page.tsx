@@ -53,6 +53,30 @@ const S_DATA = [
     desc: "Empower academic institutions, automate registrar services, and deploy interactive learning sandboxes.",
     challenges: ["Student Support", "Faculty Enablement", "AI Labs & Learning"],
     agents: ["Student Support Agent", "Faculty Assistant", "Learning Assistant"]
+  },
+  {
+    id: "manufacturing",
+    title: "Manufacturing",
+    path: "/industries/manufacturing",
+    desc: "Unify SCADA, MES, and ERP telemetry to automate maintenance routing and audit quality compliance.",
+    challenges: ["Production visibility", "Maintenance workflows", "Quality management"],
+    agents: ["Maintenance Copilot", "Quality Intelligence Agent", "Procurement Copilot"]
+  },
+  {
+    id: "retail",
+    title: "Retail",
+    path: "/industries/retail",
+    desc: "Streamline customer experience, manage merchandising operations, and enable real-time inventory visibility.",
+    challenges: ["Customer experience", "Merchandising operations", "Inventory visibility"],
+    agents: ["Customer Experience Agent", "Store Operations Copilot", "Merchandising Intelligence Agent"]
+  },
+  {
+    id: "mining",
+    title: "Mining",
+    path: "/industries/mining",
+    desc: "Deploy field operations support, automated hazard checklists, and remote site asset visibility.",
+    challenges: ["Field operations", "Safety workflows", "Asset visibility"],
+    agents: ["Field Operations Agent", "Safety Knowledge Agent", "Executive Dashboard Agent"]
   }
 ];
 
