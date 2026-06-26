@@ -38,7 +38,8 @@
     "36-link-route-content-audit",
     "37-final-full-build-and-qa",
     "09-homepage-client-success",
-    "38-phase3-preflight-interactive-tools-audit"
+    "38-phase3-preflight-interactive-tools-audit",
+    "39-phase3-shared-tool-architecture"
   ],
   "failed": [
     {
