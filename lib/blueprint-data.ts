@@ -13,12 +13,13 @@ export type BlueprintAnswers = {
 };
 
 export const industryOptions = [
-  { value: "Banking", label: "Banking & Financial Services" },
-  { value: "Retail", label: "Retail & E-commerce" },
-  { value: "Healthcare", label: "Healthcare & Life Sciences" },
-  { value: "Manufacturing", label: "Manufacturing & Automotive" },
-  { value: "Tech", label: "Technology & Software" },
-  { value: "Other", label: "Other Services / General" },
+  { value: "Banking", label: "Banking" },
+  { value: "Healthcare", label: "Healthcare" },
+  { value: "Manufacturing", label: "Manufacturing" },
+  { value: "Retail", label: "Retail" },
+  { value: "Education", label: "Education" },
+  { value: "Government", label: "Government" },
+  { value: "Other", label: "Other" },
 ];
 
 export const companySizeOptions = [
@@ -29,22 +30,20 @@ export const companySizeOptions = [
 ];
 
 export const priorityOptions = [
-  { value: "Cost Reduction", label: "Cost Reduction" },
-  { value: "Productivity", label: "Productivity" },
-  { value: "Customer Experience", label: "Customer Experience" },
-  { value: "Revenue Growth", label: "Revenue Growth" },
-  { value: "Compliance", label: "Compliance" },
-  { value: "AI Transformation", label: "AI Transformation" },
+  { value: "Cost Reduction", label: "Reduce Costs" },
+  { value: "Revenue Growth", label: "Increase Revenue" },
+  { value: "Productivity", label: "Improve Productivity" },
+  { value: "Customer Experience", label: "Improve Customer Experience" },
   { value: "Automate Processes", label: "Automate Processes" },
+  { value: "Compliance", label: "Strengthen Compliance" },
+  { value: "AI Transformation", label: "AI Transformation" },
 ];
 
 export const aiJourneyOptions = [
-  { value: "No AI", label: "No AI" },
   { value: "Exploring AI", label: "Exploring AI" },
   { value: "Running Pilots", label: "Running Pilots" },
   { value: "Scaling AI", label: "Scaling AI" },
   { value: "AI-Driven Enterprise", label: "AI-Driven Enterprise" },
-  { value: "AI-Native", label: "AI-Native" },
 ];
 
 export const dataReadinessOptions = [
@@ -86,14 +85,13 @@ export const geographyOptions = [
 
 export function calculateBlueprintScore(answers: BlueprintAnswers) {
   let aiMaturity = 10;
-  if (answers.aiJourney === "No AI") aiMaturity = 10;
-  else if (answers.aiJourney === "Exploring AI") aiMaturity = 30;
+  if (answers.aiJourney === "Exploring AI") aiMaturity = 30;
   else if (answers.aiJourney === "Running Pilots") aiMaturity = 60;
   else if (answers.aiJourney === "Scaling AI") aiMaturity = 85;
-  else if (answers.aiJourney === "AI-Driven Enterprise" || answers.aiJourney === "AI-Native") aiMaturity = 100;
+  else if (answers.aiJourney === "AI-Driven Enterprise") aiMaturity = 100;
 
   let businessNeed = 0;
-  (answers.topPriorities || []).forEach(p => {
+  (answers.topPriorities || []).forEach((p) => {
     if (p === "Cost Reduction") businessNeed += 20;
     else if (p === "Productivity") businessNeed += 20;
     else if (p === "Customer Experience") businessNeed += 15;
@@ -107,7 +105,11 @@ export function calculateBlueprintScore(answers: BlueprintAnswers) {
   let dataReadiness = 20;
   if (answers.dataReadiness === "Highly fragmented") dataReadiness = 20;
   else if (answers.dataReadiness === "Partially connected") dataReadiness = 50;
-  else if (answers.dataReadiness === "Mostly integrated" || answers.dataReadiness === "Mostly Integrated Data") dataReadiness = 75;
+  else if (
+    answers.dataReadiness === "Mostly integrated" ||
+    answers.dataReadiness === "Mostly Integrated Data"
+  )
+    dataReadiness = 75;
   else if (answers.dataReadiness === "Fully integrated") dataReadiness = 100;
 
   let processComplexity = 20;
@@ -117,27 +119,22 @@ export function calculateBlueprintScore(answers: BlueprintAnswers) {
   else if (answers.companySize === "10000+") processComplexity = 100;
 
   let transformationReadiness = 20;
-  if (answers.leadershipCommitment === "Not Discussed") transformationReadiness = 20;
-  else if (answers.leadershipCommitment === "Exploring") transformationReadiness = 50;
-  else if (answers.leadershipCommitment === "Budget Approved") transformationReadiness = 80;
-  else if (answers.leadershipCommitment === "Executive Mandate") transformationReadiness = 100;
+  if (answers.leadershipCommitment === "Not Discussed")
+    transformationReadiness = 20;
+  else if (answers.leadershipCommitment === "Exploring")
+    transformationReadiness = 50;
+  else if (answers.leadershipCommitment === "Budget Approved")
+    transformationReadiness = 80;
+  else if (answers.leadershipCommitment === "Executive Mandate")
+    transformationReadiness = 100;
 
-  const isBanking = answers.industry === "Banking";
-  const isScalingAI = answers.aiJourney === "Scaling AI";
-  const isMostlyIntegrated = answers.dataReadiness === "Mostly integrated" || answers.dataReadiness === "Mostly Integrated Data";
-  const isBudgetApproved = answers.leadershipCommitment === "Budget Approved";
-  const isLargeCompany = answers.companySize === "10000+";
+  const score =
+    0.2 * aiMaturity +
+    0.25 * businessNeed +
+    0.2 * dataReadiness +
+    0.2 * processComplexity +
+    0.15 * transformationReadiness;
 
-  const hasRequiredPriorities =
-    answers.topPriorities.includes("Productivity") &&
-    answers.topPriorities.includes("Cost Reduction") &&
-    answers.topPriorities.includes("Compliance");
-
-  if (isBanking && isLargeCompany && isScalingAI && hasRequiredPriorities && isMostlyIntegrated && isBudgetApproved) {
-    return 87;
-  }
-
-  const score = (0.20 * aiMaturity) + (0.25 * businessNeed) + (0.20 * dataReadiness) + (0.20 * processComplexity) + (0.15 * transformationReadiness);
   return Math.round(score);
 }
 
@@ -149,108 +146,33 @@ export function getScoreCategory(score: number) {
   return "AI-Native Leader";
 }
 
-
 export function getRecommendedOpportunities(industry: string): string[] {
-  if (industry === "Banking") {
-    return [
-      "Sovereign AML & Transactions Ledger Analyst",
-      "Regulatory Compliance Policy & Guardrails Auditing Engine",
-      "Automated Credit Risk & Lending Underwriting Copilot",
-      "Sovereign Search & Cognitive Synthesis Knowledge Graph",
-      "High-Frequency Risk Intelligence & Simulation Agent"
-    ];
-  }
-  if (industry === "Retail") {
-    return [
-      "AI-Driven Hyper-Personalization Recommendation Engine",
-      "Dynamic Inventory & Agentic Supply Chain Optimizing Node",
-      "Sovereign Customer Service & Chatbot Concierge",
-      "Product Demand Forecasting & Market Simulation Engine",
-      "Automated Merchandising Compliance Auditor"
-    ];
-  }
-  if (industry === "Healthcare") {
-    return [
-      "Sovereign Clinical Note Synthesis & Patient Record Parser",
-      "Regulatory FDA Compliance Auditing Guardrail",
-      "Diagnostic Support & Medical Research Knowledge Search",
-      "Patient Care Path Optimization Agent",
-      "AI Billing & Claims Processing Copilot"
-    ];
-  }
-  if (industry === "Manufacturing") {
-    return [
-      "Predictive Asset Maintenance & Downtime Simulator",
-      "Automated Quality Control Image Auditing Mesh",
-      "AI Procurement & Supplier Negotiations Assistant",
-      "Factory Floor Safety Policy Guardrail Agent",
-      "Supply Chain Route Optimization Orchestrator"
-    ];
-  }
-  if (industry === "Tech") {
-    return [
-      "Automated Bug Ingestion & Sovereign Code Fixer",
-      "AI Customer Success Concierge & Support Auto-Resolver",
-      "Sovereign Security & Threat Detection Guardrail Agent",
-      "Product Feature Usage Optimization Insights Engine",
-      "Developer Knowledge Graph & Doc Generator"
-    ];
-  }
   return [
-    "Cognitive Supervisor & Supervisor Agent Mesh",
-    "Dynamic Resource Scheduling & Routing Optimization Agent",
-    "Contract Intelligence & Document Ingestion Node",
-    "Sovereign Knowledge Search & Data Ingestion Pipeline",
-    "Executive Dashboard & Multi-Agent Operations Supervisor"
+    "Procurement Copilot",
+    "HR Assistant",
+    "Contract Intelligence",
+    "Knowledge Search",
+    "Executive Dashboard",
   ];
 }
 
-export function getRecommendedSolution(challenge: string): { title: string; description: string } {
-  if (challenge === "Tech Stack") {
-    return {
-      title: "GFF Enterprise Integration Mesh™",
-      description: "Deploys non-intrusive edge nodes to interface with legacy databases (COBOL, SQL, SAP) and synthesize unstructured schemas into a unified cognitive vector cache."
-    };
-  }
-  if (challenge === "Budget/ROI") {
-    return {
-      title: "GFF AI Agent Factory™ (Starter Edition)",
-      description: "Guarantees production-ready agent deployment in under 30 days. Uses standard pre-built GFF templates to minimize starting costs and deliver a projected 4.2x ROI."
-    };
-  }
-  if (challenge === "Talent Shortage") {
-    return {
-      title: "GFF Fully-Managed Autonomous Operations™",
-      description: "Our enterprise experts build, host, and continuously tune your agent topologies, acting as an outsourced, on-demand AI Core team."
-    };
-  }
-  if (challenge === "Security/Compliance") {
-    return {
-      title: "GFF Sovereign Air-Gapped Guardrails™",
-      description: "Deploy private, single-tenant, or air-gapped sovereign instances. Features compliance policies, zero-retention data pipelines, and real-time security auditing."
-    };
-  }
+export function getRecommendedSolution(
+  challenge: string
+): { title: string; description: string } {
   return {
-    title: "GFF Human-Agent Co-Pilot Mesh™",
-    description: "Features step-by-step human-in-the-loop approvals, auditing dashboards, and interactive user interfaces designed for seamless enterprise workforce adoption."
+    title: "Recommended Solutions",
+    description:
+      "• Agent Factory™️\n• Knowledge Graph™️\n• AI Governance™️\n• Managed AI Operations™️",
   };
 }
 
-export function getExpectedImpact(priorities: string[]): { metric: string; disclaimer: string } {
-  let mainMetric = "Modelled 35% reduction in manual operating costs and 40% workforce efficiency gain.";
-  if (priorities.includes("Productivity")) {
-    mainMetric = "Modelled 55% boost in workforce task execution speed and 4.2x Year 1 ROI.";
-  } else if (priorities.includes("Cost Reduction")) {
-    mainMetric = "Modelled 40% reduction in compliance processing overhead and $2.4M saved in Year 1.";
-  } else if (priorities.includes("Customer Experience")) {
-    mainMetric = "Modelled 4.5x faster customer support resolution cycles and 92% satisfaction rate.";
-  } else if (priorities.includes("Compliance")) {
-    mainMetric = "Modelled 100% real-time automated audit coverage and 0% critical leak rate.";
-  }
-
+export function getExpectedImpact(
+  priorities: string[]
+): { metric: string; disclaimer: string } {
   return {
-    metric: mainMetric,
-    disclaimer: "Disclaimer: All expected and modelled business impact statistics are projections simulated on standard GFF deployment models and historical client baselines. Actual results depend on organizational integration depth and are not guaranteed."
+    metric:
+      "20–30% Productivity Gain • 15–25% Cost Reduction • Faster Decision Making • Improved Employee Experience",
+    disclaimer:
+      "90-Day Roadmap: Garage - Discovery • Foundry - Pilot • Factory - Enterprise Rollout",
   };
 }
-

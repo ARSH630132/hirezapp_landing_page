@@ -95,28 +95,29 @@ export default function BlueprintGenerator() {
   };
 
   // Next Step validation
-  const validateAndNext = () => {
-    setError("");
-    if (step === 1) {
-      if (!answers.industry || !answers.companySize) {
-        setError("Industry and Company Size are required fields.");
-        return;
-      }
-      setStep(2);
-    } else if (step === 2) {
-      if (!answers.aiJourney || !answers.dataReadiness || !answers.leadershipCommitment || !answers.biggestChallenge) {
-        setError("Please complete all strategy and maturity fields.");
-        return;
-      }
-      setStep(3);
-    } else if (step === 3) {
-      if (answers.topPriorities.length === 0) {
-        setError("Please select at least 1 priority (max 3).");
-        return;
-      }
-      setStep(4);
+const validateAndNext = () => {
+  setError("");
+
+  if (step === 1) {
+    if (!answers.industry || !answers.companySize) {
+      setError("Industry and Company Size are required fields.");
+      return;
     }
-  };
+    setStep(2);
+  } else if (step === 2) {
+    if (answers.topPriorities.length === 0) {
+      setError("Please select at least 1 priority (max 3).");
+      return;
+    }
+    setStep(3);
+  } else if (step === 3) {
+    if (!answers.aiJourney || !answers.biggestChallenge.trim()) {
+      setError("AI Journey and Biggest Challenge are required fields.");
+      return;
+    }
+    setStep(4);
+  }
+};
 
   const requestOtp = () => {
     setError("");
@@ -163,10 +164,10 @@ export default function BlueprintGenerator() {
       {step < 5 && (
         <div className="px-6 md:px-8 py-4 bg-black/40 border-b border-white/5 flex gap-2 items-center justify-between text-xs font-semibold text-white/40">
           <div className="flex gap-4">
-            <span className={step === 1 ? "text-[#087DF3]" : step > 1 ? "text-white/80" : ""}>1. Profile</span>
-            <span className={step === 2 ? "text-[#087DF3]" : step > 2 ? "text-white/80" : ""}>2. Strategy</span>
-            <span className={step === 3 ? "text-[#087DF3]" : step > 3 ? "text-white/80" : ""}>3. Priorities</span>
-            <span className={step === 4 ? "text-[#087DF3]" : step > 4 ? "text-white/80" : ""}>4. Verify</span>
+<span className={step === 1 ? "text-[#087DF3]" : step > 1 ? "text-white/80" : ""}>1. Organization</span>
+<span className={step === 2 ? "text-[#087DF3]" : step > 2 ? "text-white/80" : ""}>2. Priorities</span>
+<span className={step === 3 ? "text-[#087DF3]" : step > 3 ? "text-white/80" : ""}>3. AI Journey</span>
+<span className={step === 4 ? "text-[#087DF3]" : step > 4 ? "text-white/80" : ""}>4. Verify</span>
           </div>
           <span className="text-white/60">Step {step} of 4</span>
         </div>
@@ -238,100 +239,84 @@ export default function BlueprintGenerator() {
         )}
 
 
-        {/* Step 2: Strategy & Maturity */}
-        {step === 2 && (
-          <div className="space-y-6 animate-fadeIn">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-white/80 block">AI Journey <span className="text-red-500">*</span></label>
-                <select
-                  value={answers.aiJourney}
-                  onChange={(e) => setAnswers({ ...answers, aiJourney: e.target.value })}
-                  className="w-full h-[46px] rounded-lg border border-white/10 bg-black/50 px-4 text-sm text-white focus:border-[#087DF3] outline-none transition"
-                >
-                  <option value="">-- Select AI Journey Stage --</option>
-                  {aiJourneyOptions.map((o) => (
-                    <option key={o.value} value={o.value}>{o.label}</option>
-                  ))}
-                </select>
-              </div>
+{/* Step 2: Top Priorities (Max 3) */}
+{step === 2 && (
+  <div className="space-y-4 animate-fadeIn">
+    <p className="text-sm font-semibold text-white/80">
+      What Are Your Top Priorities? <span className="text-red-500">*</span>
+    </p>
+    <p className="text-xs text-white/50">(Select up to 3)</p>
 
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-white/80 block">Data Readiness <span className="text-red-500">*</span></label>
-                <select
-                  value={answers.dataReadiness}
-                  onChange={(e) => setAnswers({ ...answers, dataReadiness: e.target.value })}
-                  className="w-full h-[46px] rounded-lg border border-white/10 bg-black/50 px-4 text-sm text-white focus:border-[#087DF3] outline-none transition"
-                >
-                  <option value="">-- Select Data Readiness --</option>
-                  {dataReadinessOptions.map((o) => (
-                    <option key={o.value} value={o.value}>{o.label}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-white/80 block">Leadership Commitment <span className="text-red-500">*</span></label>
-                <select
-                  value={answers.leadershipCommitment}
-                  onChange={(e) => setAnswers({ ...answers, leadershipCommitment: e.target.value })}
-                  className="w-full h-[46px] rounded-lg border border-white/10 bg-black/50 px-4 text-sm text-white focus:border-[#087DF3] outline-none transition"
-                >
-                  <option value="">-- Select Commitment --</option>
-                  {leadershipOptions.map((o) => (
-                    <option key={o.value} value={o.value}>{o.label}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-white/80 block">Biggest Challenge <span className="text-red-500">*</span></label>
-                <select
-                  value={answers.biggestChallenge}
-                  onChange={(e) => setAnswers({ ...answers, biggestChallenge: e.target.value })}
-                  className="w-full h-[46px] rounded-lg border border-white/10 bg-black/50 px-4 text-sm text-white focus:border-[#087DF3] outline-none transition"
-                >
-                  <option value="">-- Select Challenge --</option>
-                  {challengeOptions.map((o) => (
-                    <option key={o.value} value={o.value}>{o.label}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </div>
-        )}
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      {priorityOptions.map((o) => {
+        const isSelected = answers.topPriorities.includes(o.value);
+        return (
+          <button
+            key={o.value}
+            type="button"
+            onClick={() => handlePriorityToggle(o.value)}
+            className={`p-4 rounded-xl border text-left transition duration-200 group flex justify-between items-center ${
+              isSelected
+                ? "border-[#087DF3] bg-[#087DF3]/15 text-white"
+                : "border-white/10 bg-black/40 text-white/70 hover:border-white/20 hover:bg-black/60"
+            }`}
+          >
+            <span className="text-xs md:text-sm font-medium">{o.label}</span>
+            <span
+              className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ml-2 ${
+                isSelected ? "border-[#087DF3] bg-[#087DF3]" : "border-white/30"
+              }`}
+            >
+              {isSelected && <span className="text-[10px] text-white">✓</span>}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  </div>
+)}
 
 
-        {/* Step 3: Top Priorities (Max 3) */}
-        {step === 3 && (
-          <div className="space-y-4 animate-fadeIn">
-            <p className="text-sm font-semibold text-white/80">Select Top Priorities (Max 3) <span className="text-red-500">*</span></p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {priorityOptions.map((o) => {
-                const isSelected = answers.topPriorities.includes(o.value);
-                return (
-                  <button
-                    key={o.value}
-                    type="button"
-                    onClick={() => handlePriorityToggle(o.value)}
-                    className={`p-4 rounded-xl border text-left transition duration-200 group flex justify-between items-center ${
-                      isSelected
-                        ? "border-[#087DF3] bg-[#087DF3]/15 text-white"
-                        : "border-white/10 bg-black/40 text-white/70 hover:border-white/20 hover:bg-black/60"
-                    }`}
-                  >
-                    <span className="text-xs md:text-sm font-medium">{o.label}</span>
-                    <span className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ml-2 ${
-                      isSelected ? "border-[#087DF3] bg-[#087DF3]" : "border-white/30"
-                    }`}>
-                      {isSelected && <span className="text-[10px] text-white">✓</span>}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
+{/* Step 3: AI Journey & Biggest Challenge */}
+{step === 3 && (
+  <div className="space-y-6 animate-fadeIn">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="space-y-2">
+        <label className="text-sm font-semibold text-white/80 block">
+          Where Are You in Your AI Journey? <span className="text-red-500">*</span>
+        </label>
+        <select
+          value={answers.aiJourney}
+          onChange={(e) => setAnswers({ ...answers, aiJourney: e.target.value })}
+          className="w-full h-[46px] rounded-lg border border-white/10 bg-black/50 px-4 text-sm text-white focus:border-[#087DF3] outline-none transition"
+        >
+          <option value="">-- Select AI Journey Stage --</option>
+          {aiJourneyOptions.map((o) => (
+            <option key={o.value} value={o.value}>
+              {o.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-sm font-semibold text-white/80 block">
+          Biggest Challenge? <span className="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          value={answers.biggestChallenge}
+          onChange={(e) => setAnswers({ ...answers, biggestChallenge: e.target.value })}
+          placeholder="Too many manual processes across departments"
+          className="w-full h-[46px] rounded-lg border border-white/10 bg-black/50 px-4 text-sm text-white focus:border-[#087DF3] outline-none transition"
+        />
+        <p className="text-xs text-white/40">
+          Example: Employees spend too much time searching for information
+        </p>
+      </div>
+    </div>
+  </div>
+)}
 
         {/* Step 4: Verification Flow */}
         {step === 4 && (
@@ -417,7 +402,7 @@ export default function BlueprintGenerator() {
                 <button
                   type="button"
                   onClick={() => setStep(step - 1)}
-                  className="px-5 h-[42px] rounded-lg border border-white/15 text-xs font-semibold text-white hover:bg-white/5 transition"
+                  className="w-[190px] h-[56px] rounded-2xl border border-white/15 text-sm font-semibold text-white hover:bg-white/5 transition"
                 >
                   Back
                 </button>
@@ -425,7 +410,7 @@ export default function BlueprintGenerator() {
               <button
                 type="button"
                 onClick={validateAndNext}
-                className="px-8 min-w-[150px] h-[46px] rounded-lg bg-[#087DF3] text-xs font-semibold text-white hover:bg-[#1a88f5] hover:shadow-[0_0_18px_rgba(8,125,243,0.35)] transition-all cursor-pointer"
+                className="w-[190px] h-[56px] rounded-2xl bg-[#087DF3] text-sm font-semibold text-white hover:bg-[#1a88f5] hover:shadow-[0_0_18px_rgba(8,125,243,0.35)] transition-all cursor-pointer"
               >
                 Continue
               </button>
@@ -480,18 +465,26 @@ export default function BlueprintGenerator() {
                   <h4 className="text-lg font-bold text-white flex items-center gap-2">
                     {solution.title}
                   </h4>
-                  <p className="text-xs text-white/70 leading-relaxed">
-                    {solution.description}
-                  </p>
+<div className="mt-5 flex items-center gap-5 overflow-x-auto">
+  {solution.description.split("\n").map((item, index) => (
+    <span
+      key={index}
+className="whitespace-nowrap text-[15px] md:text-[16px] font-semibold text-white tracking-wide"    >
+      {item}
+    </span>
+  ))}
+</div>
                 </div>
 
                 {/* Expected Business Impact */}
                 <div className="rounded-xl border border-white/10 bg-black/40 p-6 space-y-3 relative overflow-hidden">
                   <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-[#087DF3] to-[#E98828]" />
                   <span className="text-[10px] uppercase tracking-widest font-semibold text-[#E98828]">EXPECTED BUSINESS IMPACT (MODELLED)</span>
-                  <p className="text-sm font-bold text-white/90">
-                    {impact.metric}
-                  </p>
+                  <div className="flex flex-wrap items-center gap-x-8 gap-y-2 text-sm font-bold text-white/90">
+  {impact.metric.split("•").map((item, index) => (
+    <span key={index}>{item.trim()}</span>
+  ))}
+</div>
                   <p className="text-[11px] text-white/50 leading-relaxed font-mono italic">
                     {impact.disclaimer}
                   </p>
@@ -516,22 +509,42 @@ export default function BlueprintGenerator() {
               </div>
             </div>
 
-            {/* 90-Day Implementation Roadmap */}
-            <div className="rounded-xl border border-white/10 bg-black/40 p-6 space-y-4">
-              <span className="text-[10px] uppercase tracking-widest font-semibold text-white/40 block">90-Day Sovereign Implementation Roadmap</span>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
-                
-                {/* Roadmap Step 1 */}
-                <div className="space-y-2 relative pl-6 border-l border-[#087DF3]/30">
-                  <div className="absolute -left-[6px] top-1.5 w-3 h-3 rounded-full bg-[#087DF3] shadow-[0_0_10px_rgba(8,125,243,0.8)]" />
-                  <span className="text-[10px] font-bold text-[#087DF3] font-mono">PHASE 1: DAYS 1 - 30</span>
-                  <h4 className="text-sm font-bold text-white">Ingestion & Security Baseline</h4>
-                  <p className="text-xs text-white/60 leading-relaxed">
-                    Deploy GFF secure edge nodes. Map standard data schemas and establish compliance firewalls tailored to {answers.industry} parameters.
-                  </p>
-                </div>
+{/* 90-Day Roadmap */}
+<div className="rounded-xl border border-white/10 bg-black/40 p-6 space-y-6">
+  <span className="text-[10px] uppercase tracking-widest font-semibold text-white/40 block">
+    90-Day Roadmap
+  </span>
 
-                {/* Roadmap Step 2 */}
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+    <div className="p-5 rounded-lg border border-[#087DF3]/20 bg-[#087DF3]/5">
+      <p className="text-[11px] uppercase tracking-widest text-[#087DF3] font-bold mb-2">
+        Garage
+      </p>
+      <h4 className="text-lg font-bold text-white">
+        Discovery
+      </h4>
+    </div>
+
+    <div className="p-5 rounded-lg border border-[#E98828]/20 bg-[#E98828]/5">
+      <p className="text-[11px] uppercase tracking-widest text-[#E98828] font-bold mb-2">
+        Foundry
+      </p>
+      <h4 className="text-lg font-bold text-white">
+        Pilot
+      </h4>
+    </div>
+
+    <div className="p-5 rounded-lg border border-emerald-500/20 bg-emerald-500/5">
+      <p className="text-[11px] uppercase tracking-widest text-emerald-400 font-bold mb-2">
+        Factory
+      </p>
+      <h4 className="text-lg font-bold text-white">
+        Enterprise Rollout
+      </h4>
+    </div>
+
+                {/* Roadmap Step 2
                 <div className="space-y-2 relative pl-6 border-l border-[#E98828]/30">
                   <div className="absolute -left-[6px] top-1.5 w-3 h-3 rounded-full bg-[#E98828] shadow-[0_0_10px_rgba(233,136,40,0.8)]" />
                   <span className="text-[10px] font-bold text-[#E98828] font-mono font-semibold">PHASE 2: DAYS 31 - 60</span>
@@ -542,14 +555,14 @@ export default function BlueprintGenerator() {
                 </div>
 
                 {/* Roadmap Step 3 */}
-                <div className="space-y-2 relative pl-6 border-l border-emerald-500/30">
+                {/* <div className="space-y-2 relative pl-6 border-l border-emerald-500/30">
                   <div className="absolute -left-[6px] top-1.5 w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.8)]" />
                   <span className="text-[10px] font-bold text-emerald-400 font-mono">PHASE 3: DAYS 61 - 90</span>
                   <h4 className="text-sm font-bold text-white">Production Scale & Token Optimization</h4>
                   <p className="text-xs text-white/60 leading-relaxed">
                     Scale agents to address {answers.topPriorities[1] || "additional targets"}. Perform final optimization checks via GFF Operational Dashboard.
                   </p>
-                </div>
+                </div> */}
 
               </div>
             </div>
