@@ -123,6 +123,10 @@
     {
       "id": "48-phase3-roi-calculator-input-model",
       "reason": "cline implementation failed"
+    },
+    {
+      "id": "50-phase3-proposal-builder-intake",
+      "reason": "cline implementation failed"
     }
   ]
 }
