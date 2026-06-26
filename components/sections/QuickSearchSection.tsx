@@ -225,7 +225,7 @@ const exampleSearches = [
   "Insurance AI",
   "Mining AI",
   "Retail AI",
-  "Build AI GCC"
+  "Build AI GCC",
 ];
 
 export default function QuickSearchSection() {
