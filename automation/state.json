@@ -60,6 +60,10 @@
     {
       "id": "31-contact-portal-client-control-center",
       "reason": "cline implementation failed"
+    },
+    {
+      "id": "32-legal-investor-pages",
+      "reason": "cline implementation failed"
     }
   ]
 }
