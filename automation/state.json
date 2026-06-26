@@ -52,6 +52,10 @@
     {
       "id": "29-resources-pages",
       "reason": "cline implementation failed"
+    },
+    {
+      "id": "30-company-pages",
+      "reason": "cline implementation failed"
     }
   ]
 }
