@@ -44,7 +44,8 @@
     "41-phase3-reusable-wizard-and-stepper",
     "42-phase3-talk-to-agent-tool",
     "43-phase3-blueprint-wizard-inputs",
-    "44-phase3-blueprint-scoring-engine-and-results"
+    "44-phase3-blueprint-scoring-engine-and-results",
+    "46-phase3-ai-readiness-assessment-framework"
   ],
   "failed": [
     {
