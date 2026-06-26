@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import {
   BlueprintAnswers,
   companySizeOptions,
@@ -18,7 +19,8 @@ import {
   ToolOptionGrid,
   ToolCTA,
 } from "@/components/build/components";
-import { WizardStepperSystem, WizardStep } from "@/components/build/WizardStepperSystem";
+import { WizardStepperSystem, WizardStep, WizardStepperSystemActions } from "@/components/build/WizardStepperSystem";
+import { SovereignHistoryDrawer, SavedBlueprint } from "./SovereignHistoryDrawer";
 
 // Custom type extending BlueprintAnswers to maintain local UI-only wizard states
 interface WizardData extends BlueprintAnswers {
@@ -188,6 +190,59 @@ const challengeOptions = [
 ];
 
 export default function BlueprintGenerator() {
+  const [savedList, setSavedList] = useState<SavedBlueprint[]>([]);
+  const [isSaved, setIsSaved] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
+  const [isShared, setIsShared] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [historyLoaded, setHistoryLoaded] = useState<string | null>(null);
+
+  // Expose stepper actions to load states back in
+  const [stepperActions, setStepperActions] = useState<WizardStepperSystemActions<WizardData> | null>(null);
+
+  useEffect(() => {
+    // Load initial list from localStorage
+    if (typeof window !== "undefined") {
+      try {
+        const stored = localStorage.getItem("gff_blueprint_history");
+        if (stored) {
+          setSavedList(JSON.parse(stored));
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, []);
+
+  const handleSaveLocally = (currentData: WizardData, currentScore: number, currentCategory: string) => {
+    const newItem: SavedBlueprint = {
+      id: `gff-bp-${Date.now()}`,
+      timestamp: new Date().toLocaleString("en-US", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      }),
+      data: currentData,
+      score: currentScore,
+      category: currentCategory,
+    };
+
+    const updated = [newItem, ...savedList.filter(item => item.data.email !== currentData.email || item.score !== currentScore)];
+    setSavedList(updated);
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem("gff_blueprint_history", JSON.stringify(updated));
+      } catch (e) {
+        console.error("Failed to save to localStorage:", e);
+      }
+    }
+    setIsSaved(true);
+    setTimeout(() => setIsSaved(false), 3000);
+  };
+
   const initialData: WizardData = {
     industry: "",
     companySize: "",
@@ -768,18 +823,43 @@ export default function BlueprintGenerator() {
           </div>
         </div>
 
+        {/* Browser Print Styling Injection */}
+        <style dangerouslySetInnerHTML={{ __html: `
+          @media print {
+            header, footer, nav, aside, .no-print, .print\\:hidden, button, a, [class*="telemetry"], [class*="InnerPageShell_header"], [class*="InnerPageShell_footer"], .animated-grid {
+              display: none !important;
+            }
+            body, html, main, .print-container {
+              background: #ffffff !important;
+              color: #0f172a !important;
+              font-family: ui-sans-serif, system-ui, sans-serif !important;
+            }
+            .print\\:text-slate-900 { color: #0f172a !important; }
+            .print\\:text-slate-700 { color: #334155 !important; }
+            .print\\:text-slate-500 { color: #64748b !important; }
+            .print\\:text-slate-600 { color: #475569 !important; }
+            .print\\:bg-white { background: #ffffff !important; }
+            .print\\:bg-slate-50 { background: #f8fafc !important; }
+            .print\\:bg-slate-100 { background: #f1f5f9 !important; }
+            .print\\:border-slate-200 { border-color: #e2e8f0 !important; }
+            .print\\:border-slate-300 { border-color: #cbd5e1 !important; }
+            .print\\:border { border: 1px solid #cbd5e1 !important; }
+            .print\\:shadow-none { box-shadow: none !important; }
+          }
+        `}} />
+
         {/* Opportunities Nodes */}
-        <div className="rounded-2xl border border-white/10 bg-[#030712]/45 p-6 space-y-4">
-          <span className="text-[10px] uppercase tracking-widest font-extrabold text-white/40 block tracking-wider">Synthesized Top 5 Recommended AI Opportunity Nodes</span>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="rounded-2xl border border-white/10 bg-[#030712]/45 p-6 space-y-4 print:bg-white print:border-slate-300 print:shadow-none">
+          <span className="text-[10px] uppercase tracking-widest font-extrabold text-white/40 block tracking-wider print:text-slate-500">Synthesized Top 5 Recommended AI Opportunity Nodes</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             {result.opportunities.map((opp: string, idx: number) => (
-              <div key={idx} className="p-4 rounded-xl border border-white/5 bg-white/[0.01] hover:border-white/10 hover:bg-white/[0.03] transition duration-200 flex flex-col justify-between min-h-[145px]">
+              <div key={idx} className="p-4 rounded-xl border border-white/5 bg-white/[0.01] hover:border-white/10 hover:bg-white/[0.03] transition duration-200 flex flex-col justify-between min-h-[145px] print:bg-white print:border-slate-200 print:shadow-none">
                 <div>
-                  <span className="text-xs font-mono font-bold text-[#087DF3] block mb-2">NODE_0{idx + 1}</span>
-                  <h5 className="text-xs font-bold text-white/95 leading-normal">{opp}</h5>
+                  <span className="text-xs font-mono font-bold text-[#087DF3] block mb-2 print:text-slate-600">NODE_0{idx + 1}</span>
+                  <h5 className="text-xs font-bold text-white/95 leading-normal print:text-slate-900">{opp}</h5>
                 </div>
-                <span className="text-[9px] font-mono text-emerald-400 uppercase tracking-widest font-bold mt-4 flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-[9px] font-mono text-emerald-400 uppercase tracking-widest font-bold mt-4 flex items-center gap-1 print:text-slate-500">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse print:hidden" />
                   ACTIVE
                 </span>
               </div>
@@ -831,15 +911,139 @@ export default function BlueprintGenerator() {
         </div>
 
         {/* Action buttons or Reset */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-between items-center pt-4 border-t border-white/5">
-          <p className="text-[10px] font-mono text-white/30 uppercase">SECURITY STATUS: DECRYPTED_SANDBOX_VIEW</p>
-          <div className="flex gap-4">
+        <div className="space-y-4 pt-6 border-t border-white/5 print:hidden">
+          {/* Privacy Note */}
+          <div className="p-3.5 rounded-xl bg-emerald-950/20 border border-emerald-500/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-white/70">
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6M12 3v18M12 3a11.959 11.959 0 018.402 3M21 12c0 1.69-.133 3.35-.388 4.97a11.956 11.956 0 01-1.722 3.824M19.5 12c0-1.268-.312-2.46-.864-3.514M16.5 12c0-2.43-.353-4.78-.99-7" />
+              </svg>
+              <span>
+                <strong>Sovereign Privacy Active:</strong> This interactive preview is sandboxed inside your own local browser. No data is stored on external GFF servers.
+              </span>
+            </div>
+            <span className="text-[10px] font-mono text-emerald-400 font-bold tracking-wider bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded uppercase self-start sm:self-center">
+              100% Safe Preview
+            </span>
+          </div>
+
+          {/* Left side actions: Local actions */}
+          <div className="flex flex-wrap gap-2.5">
+            {/* Copy Summary */}
             <button
               type="button"
-              onClick={onReset}
-              className="px-6 h-[46px] rounded-lg border border-white/10 text-xs font-bold uppercase tracking-wider text-white hover:border-white/20 hover:bg-white/5 transition duration-200 font-mono"
+              onClick={() => {
+                const summaryText = `GFF AI SOVEREIGN ENTERPRISE AI BLUEPRINT REPORT
+==================================================
+EMAIL CREDENTIAL: ${data.email}
+INDUSTRY: ${data.industry}
+ORGANIZATION SCALE: ${data.companySize}
+AI READINESS SCORE: ${result.score}/100 (${result.category})
+
+RECOMMENDED SOLUTION:
+${result.solution.title}
+- ${result.solution.description}
+
+EXPECTED BUSINESS IMPACT:
+${result.impact.metric}
+- Disclaimer: ${result.impact.disclaimer}
+
+STRATEGIC PRIORITIES:
+${data.topPriorities.map((p, i) => `${i + 1}. ${p}`).join("\n")}
+
+DIMENSION BREAKDOWN:
+- AI Maturity: ${result.dimensions?.aiMaturity ?? 0}/100
+- Business Need: ${result.dimensions?.businessNeed ?? 0}/100
+- Data Readiness: ${result.dimensions?.dataReadiness ?? 0}/100
+- Process Complexity: ${result.dimensions?.processComplexity ?? 0}/100
+- Transformation Readiness: ${result.dimensions?.transformationReadiness ?? 0}/100
+
+==================================================
+PRIVACY NOTICE: Generated locally on the client edge. No data is stored on server.`;
+                navigator.clipboard.writeText(summaryText);
+                setIsCopied(true);
+                setTimeout(() => setIsCopied(false), 2000);
+              }}
+              className={`px-4 h-[46px] rounded-lg border text-xs font-bold uppercase tracking-wider font-mono flex items-center justify-center gap-2 transition duration-200 cursor-pointer ${
+                isCopied
+                  ? "bg-emerald-500/20 border-emerald-500/30 text-emerald-400"
+                  : "border-white/10 text-white hover:border-white/20 hover:bg-white/5"
+              }`}
             >
-              Reset & Build New Blueprint
+              <svg className="w-4 h-4 text-[#087DF3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5A3.375 3.375 0 006.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0015 2.25h-1.5a2.251 2.251 0 00-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5" />
+              </svg>
+              <span>{isCopied ? "Copied ✔" : "Copy Summary"}</span>
+            </button>
+
+            {/* Save locally in browser localStorage */}
+            <button
+              type="button"
+              onClick={() => handleSaveLocally(data, result.score, result.category)}
+              className={`px-4 h-[46px] rounded-lg border text-xs font-bold uppercase tracking-wider font-mono flex items-center justify-center gap-2 transition duration-200 cursor-pointer ${
+                isSaved
+                  ? "bg-[#087DF3]/20 border-[#087DF3]/40 text-[#087DF3]"
+                  : "border-white/10 text-white hover:border-[#087DF3]/30 hover:bg-white/5"
+              }`}
+            >
+              <svg className="w-4 h-4 text-[#E98828]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
+              </svg>
+              <span>{isSaved ? "Saved ✔" : "Save to Edge"}</span>
+            </button>
+
+            {/* Print Blueprint */}
+            <button
+              type="button"
+              onClick={() => window.print()}
+              className="px-4 h-[46px] rounded-lg border border-white/10 text-xs font-bold uppercase tracking-wider text-white hover:border-white/20 hover:bg-white/5 transition duration-200 font-mono flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6.72 13.82l-.24-2.13A3 3 0 003.53 9H3m12.9-.26c.312-.273.685-.414 1.1-.414H18a3 3 0 012.916 2.316l.24 2.13c.121.574-.1 1.156-.563 1.5l-.364.273a3.483 3.483 0 01-1.896.616H5.66c-.69 0-1.35-.224-1.897-.616l-.363-.273a2.006 2.006 0 01-.563-1.5L2.616 11A3 3 0 015.532 9h.45m12 0c0-1.657-1.343-3-3-3h-6c-1.657 0-3 1.343-3 3m12 0H6m3 4v3a1 1 0 001 1h4a1 1 0 001-1v-3" />
+              </svg>
+              <span>Print Report</span>
+            </button>
+
+            {/* Copy Shareable Link */}
+            <button
+              type="button"
+              onClick={() => {
+                if (typeof window !== "undefined") {
+                  try {
+                    const serialized = btoa(encodeURIComponent(JSON.stringify(data)));
+                    const shareUrl = `${window.location.origin}${window.location.pathname}?blueprint=${serialized}`;
+                    navigator.clipboard.writeText(shareUrl);
+                    setIsShared(true);
+                    setTimeout(() => setIsShared(false), 2000);
+                  } catch (e) {
+                    console.error("Failed to generate share link:", e);
+                  }
+                }
+              }}
+              className={`px-4 h-[46px] rounded-lg border text-xs font-bold uppercase tracking-wider font-mono flex items-center justify-center gap-2 transition duration-200 cursor-pointer ${
+                isShared
+                  ? "bg-purple-500/20 border-purple-500/30 text-purple-400"
+                  : "border-white/10 text-white hover:border-purple-500/30 hover:bg-white/5"
+              }`}
+            >
+              <svg className="w-4 h-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
+              </svg>
+              <span>{isShared ? "Link Copied ✔" : "Copy Share Link"}</span>
+            </button>
+          </div>
+
+          {/* Right side actions: Reset and Next actions */}
+          <div className="flex flex-wrap gap-2.5">
+            <button
+              type="button"
+              onClick={() => {
+                setHistoryLoaded(null);
+                onReset();
+              }}
+              className="px-6 h-[46px] rounded-lg border border-white/10 text-xs font-bold uppercase tracking-wider text-white hover:border-white/20 hover:bg-white/5 transition duration-200 font-mono cursor-pointer"
+            >
+              Reset Assessment
             </button>
             <a
               href="/contact"
@@ -853,11 +1057,33 @@ export default function BlueprintGenerator() {
     );
   };
 
+  useEffect(() => {
+    if (!stepperActions) return;
+
+    if (typeof window !== "undefined") {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const encoded = params.get("blueprint");
+        if (encoded) {
+          const decodedString = atob(decodeURIComponent(encoded));
+          const decodedData = JSON.parse(decodedString);
+          if (decodedData && decodedData.industry) {
+            // Recompile results on-the-fly
+            const compiledResult = onCompile(decodedData);
+            stepperActions.loadState(decodedData, compiledResult);
+          }
+        }
+      } catch (e) {
+        console.error("Failed to parse blueprint from URL params:", e);
+      }
+    }
+  }, [stepperActions]);
+
 
   return (
     <div className="w-full space-y-6">
       {/* Top Title Section */}
-      <div className="border-b border-white/5 pb-8 mb-4 flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div className="border-b border-white/5 pb-8 mb-4 flex flex-col md:flex-row md:items-end justify-between gap-6 print:hidden">
         <div className="space-y-3 max-w-4xl">
           <span className="text-[10px] font-mono text-[#087DF3] font-bold uppercase tracking-widest block">
             Sovereign Self-Assessment Engine
@@ -871,6 +1097,20 @@ export default function BlueprintGenerator() {
           <p className="text-white/60 text-xs lg:text-sm font-light max-w-2xl leading-relaxed">
             Formulate your tailored operating model, target multi-agent DAG architectures, and synthesized 90-day execution roadmap built on standard GFF AI baselines.
           </p>
+        </div>
+
+        {/* Local History Vault Button */}
+        <div className="shrink-0 flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setIsDrawerOpen(true)}
+            className="px-4 py-2.5 rounded-xl border border-white/10 bg-white/[0.02] text-xs font-bold font-mono uppercase tracking-wider text-white hover:border-[#087DF3]/40 hover:bg-[#087DF3]/10 transition-all duration-300 flex items-center gap-2 group cursor-pointer"
+          >
+            <svg className="w-4 h-4 text-[#087DF3] group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+            </svg>
+            <span>Sovereign Edge Vault ({savedList.length})</span>
+          </button>
         </div>
       </div>
 
@@ -892,16 +1132,48 @@ export default function BlueprintGenerator() {
         onCompile={onCompile}
         renderResult={renderResult}
         compilingMessages={compilingMessages}
+        onInit={setStepperActions}
       />
 
       {/* Premium CTA at bottom */}
-      <div className="pt-12">
+      <div className="pt-12 print:hidden">
         <ToolCTA 
           title="Elevate Your Simulated AI Blueprint to Enterprise Scale"
           description="Work with GFF's core architecture engineers to deploy your synthesized DAG topologies inside private, single-tenant secure VPC enclaves."
           buttonText="Initiate Private Architecture Sync"
         />
       </div>
+
+      {/* Sovereign History Vault Drawer */}
+      <SovereignHistoryDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        savedList={savedList}
+        onPurge={() => {
+          if (confirm("Are you sure you want to delete all cached assessments? This cannot be undone.")) {
+            setSavedList([]);
+            localStorage.removeItem("gff_blueprint_history");
+            setHistoryLoaded(null);
+          }
+        }}
+        onDeleteSingle={(id) => {
+          const updated = savedList.filter(x => x.id !== id);
+          setSavedList(updated);
+          localStorage.setItem("gff_blueprint_history", JSON.stringify(updated));
+          if (historyLoaded === id) {
+            setHistoryLoaded(null);
+          }
+        }}
+        onLoadItem={(item) => {
+          if (stepperActions) {
+            const savedResult = onCompile(item.data);
+            stepperActions.loadState(item.data, savedResult);
+            setHistoryLoaded(item.id);
+            setIsDrawerOpen(false);
+          }
+        }}
+        historyLoadedId={historyLoaded}
+      />
     </div>
   );
 }

@@ -17,6 +17,11 @@ export interface WizardStep<T = any> {
   }) => React.ReactNode;
 }
 
+export interface WizardStepperSystemActions<T = any> {
+  loadState: (data: T, result: any) => void;
+  reset: () => void;
+}
+
 interface WizardStepperSystemProps<T = any> {
   toolName: string;
   category: string;
@@ -29,6 +34,7 @@ interface WizardStepperSystemProps<T = any> {
   compilingMessages?: string[];
   metricLabel?: string;
   metricValue?: string;
+  onInit?: (actions: WizardStepperSystemActions<T>) => void;
 }
 
 export function WizardStepperSystem<T = any>({
@@ -47,7 +53,8 @@ export function WizardStepperSystem<T = any>({
     "Synthesizing dynamic specifications..."
   ],
   metricLabel,
-  metricValue
+  metricValue,
+  onInit
 }: WizardStepperSystemProps<T>) {
   const [data, setData] = useState<T>(initialData);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
@@ -158,6 +165,29 @@ export function WizardStepperSystem<T = any>({
     return () => window.removeEventListener("keydown", handleKeyDown);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStepIndex, data]);
+
+  useEffect(() => {
+    if (onInit) {
+      onInit({
+        loadState: (savedData: T, savedResult: any) => {
+          setData(savedData);
+          setResult(savedResult);
+          setShowResult(true);
+          setIsCompiling(false);
+          setCurrentStepIndex(steps.length - 1);
+        },
+        reset: () => {
+          setData(initialData);
+          setCurrentStepIndex(0);
+          setError(null);
+          setResult(null);
+          setShowResult(false);
+          setIsCompiling(false);
+        }
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialData, steps.length, onInit]);
 
   const manifest = summaryItems(data);
 
