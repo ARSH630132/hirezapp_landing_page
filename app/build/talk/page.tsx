@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ToolPageShell } from "@/components/build/components";
 import Link from "next/link";
+import { getToolState, saveToolState } from "@/components/build/workspaceUtility";
 
 interface IntakeInputs {
   desc: string;
@@ -32,6 +33,29 @@ export default function TalkToAgentPage() {
   const [compilerProgress, setCompilerProgress] = useState(0);
   const [showResults, setShowResults] = useState(false);
   const [activeTab, setActiveTab] = useState<"direction" | "squad" | "timeline">("direction");
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Load from Workspace on mount
+  useEffect(() => {
+    const saved = getToolState("talk");
+    if (saved) {
+      if (typeof saved.currentStep === "number") setCurrentStep(saved.currentStep as 1 | 2 | 3);
+      if (saved.data) setData(saved.data);
+      if (typeof saved.showResults === "boolean") setShowResults(saved.showResults);
+    }
+    setIsHydrated(true);
+  }, []);
+
+  // Save to Workspace on changes
+  useEffect(() => {
+    if (isHydrated) {
+      saveToolState("talk", {
+        currentStep,
+        data,
+        showResults
+      });
+    }
+  }, [isHydrated, currentStep, data, showResults]);
 
   // References for accessibility focus management
   const stepHeaderRef = useRef<HTMLHeadingElement>(null);

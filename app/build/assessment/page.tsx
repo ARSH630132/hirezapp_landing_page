@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { ToolPageShell, ToolCTA } from "@/components/build/components";
 import Link from "next/link";
 import { DIMENSIONS, Dimension } from "./data";
+import { getToolState, saveToolState, clearToolState } from "@/components/build/workspaceUtility";
 
 // SVG Icon mapper for 8 dimensions
 const getDimensionIcon = (id: string) => {
@@ -82,6 +83,27 @@ export default function AssessmentPage() {
   const [isCompiling, setIsCompiling] = useState<boolean>(false);
   const [compilingStep, setCompilingStep] = useState<number>(0);
   const [showResult, setShowResult] = useState<boolean>(false);
+
+  // Hydrate from GFF Local Workspace on mount
+  useEffect(() => {
+    const savedState = getToolState("assessment");
+    if (savedState) {
+      if (savedState.answers) setAnswers(savedState.answers);
+      if (typeof savedState.activeDimensionIndex === "number") {
+        setActiveDimensionIndex(savedState.activeDimensionIndex);
+      }
+      if (typeof savedState.showResult === "boolean") {
+        setShowResult(savedState.showResult);
+      }
+    }
+  }, []);
+
+  // Save changes to GFF Local Workspace
+  useEffect(() => {
+    if (Object.keys(answers).length > 0) {
+      saveToolState("assessment", { answers, activeDimensionIndex, showResult });
+    }
+  }, [answers, activeDimensionIndex, showResult]);
 
   // Local interaction states for results
   const [copied, setCopied] = useState<boolean>(false);
@@ -165,6 +187,7 @@ export default function AssessmentPage() {
     setIsCompiling(false);
     setShowResult(false);
     setCompilingStep(0);
+    clearToolState("assessment");
   };
 
   // Generate dynamic results

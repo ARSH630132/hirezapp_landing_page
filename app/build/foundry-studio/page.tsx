@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { ToolPageShell, ToolHero } from "@/components/build/components";
 import Link from "next/link";
 import PremiumCTA from "@/components/inner-pages/PremiumCTA";
+import { getToolState, saveToolState } from "@/components/build/workspaceUtility";
 
 // ==========================================
 // 1. Type Definitions & Static Presets
@@ -342,6 +343,32 @@ export default function FoundryStudioPage() {
   const [selectedPattern, setSelectedPattern] = useState<string>("hierarchical");
   const [stages, setStages] = useState<WorkflowStage[]>([]);
   const [knowledgeSources, setKnowledgeSources] = useState<string[]>([]);
+
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Load from GFF Workspace on mount
+  useEffect(() => {
+    const saved = getToolState("foundryStudio");
+    if (saved) {
+      if (saved.selectedPresetId) setSelectedPresetId(saved.selectedPresetId);
+      if (saved.selectedPattern) setSelectedPattern(saved.selectedPattern);
+      if (Array.isArray(saved.stages)) setStages(saved.stages);
+      if (Array.isArray(saved.knowledgeSources)) setKnowledgeSources(saved.knowledgeSources);
+    }
+    setIsHydrated(true);
+  }, []);
+
+  // Save to GFF Workspace on changes
+  useEffect(() => {
+    if (isHydrated) {
+      saveToolState("foundryStudio", {
+        selectedPresetId,
+        selectedPattern,
+        stages,
+        knowledgeSources
+      });
+    }
+  }, [isHydrated, selectedPresetId, selectedPattern, stages, knowledgeSources]);
   const [newSourceInput, setNewSourceInput] = useState<string>("");
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [nodeCounter, setNodeCounter] = useState<number>(10);

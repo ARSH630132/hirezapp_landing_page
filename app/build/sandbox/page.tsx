@@ -6,6 +6,7 @@ import InnerPageShell from "@/components/inner-pages/InnerPageShell";
 import InnerPageHero from "@/components/inner-pages/InnerPageHero";
 import PremiumCTA from "@/components/inner-pages/PremiumCTA";
 import MotionReveal from "@/components/inner-pages/MotionReveal";
+import { getToolState, saveToolState } from "@/components/build/workspaceUtility";
 
 // Define TypeScript interfaces for static agent data
 interface AgentStep {
@@ -584,6 +585,34 @@ export default function SandboxPage() {
 
   // Catalog Active Agent Selection
   const [activeAgentId, setActiveAgentId] = useState(AGENTS[0].id);
+
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Load from GFF Workspace on mount
+  useEffect(() => {
+    const saved = getToolState("sandbox");
+    if (saved) {
+      if (saved.selectedIndustry) setSelectedIndustry(saved.selectedIndustry);
+      if (saved.selectedFunction) setSelectedFunction(saved.selectedFunction);
+      if (saved.selectedAgentType) setSelectedAgentType(saved.selectedAgentType);
+      if (typeof saved.searchQuery === "string") setSearchQuery(saved.searchQuery);
+      if (saved.activeAgentId) setActiveAgentId(saved.activeAgentId);
+    }
+    setIsHydrated(true);
+  }, []);
+
+  // Save to GFF Workspace on changes
+  useEffect(() => {
+    if (isHydrated) {
+      saveToolState("sandbox", {
+        selectedIndustry,
+        selectedFunction,
+        selectedAgentType,
+        searchQuery,
+        activeAgentId
+      });
+    }
+  }, [isHydrated, selectedIndustry, selectedFunction, selectedAgentType, searchQuery, activeAgentId]);
 
   // Simulation Telemetry States
   const [isSimulating, setIsSimulating] = useState(false);

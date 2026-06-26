@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
 import { ToolPageShell, ToolHero } from "@/components/build/components";
+import { getToolState, saveToolState } from "@/components/build/workspaceUtility";
 
 type Priority =
   | "cost_reduction"
@@ -27,6 +28,61 @@ export default function ROICalculatorPage() {
   const [initialInvestment, setInitialInvestment] = useState<number>(350000);
   const [priority, setPriority] = useState<Priority>("cost_reduction");
   const [copied, setCopied] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Load from Local Workspace on mount
+  useEffect(() => {
+    const saved = getToolState("roi");
+    if (saved) {
+      if (saved.industry) setIndustry(saved.industry);
+      if (saved.companySize) setCompanySize(saved.companySize);
+      if (saved.opFunction) setOpFunction(saved.opFunction);
+      if (typeof saved.annualCostBaseline === "number") setAnnualCostBaseline(saved.annualCostBaseline);
+      if (typeof saved.processVolume === "number") setProcessVolume(saved.processVolume);
+      if (typeof saved.avgHandlingTime === "number" || saved.avgHandlingTime === "") setAvgHandlingTime(saved.avgHandlingTime);
+      if (typeof saved.automationTarget === "number") setAutomationTarget(saved.automationTarget);
+      if (saved.manualEffort) setManualEffort(saved.manualEffort);
+      if (typeof saved.productivityImprovement === "number") setProductivityImprovement(saved.productivityImprovement);
+      if (saved.implementationHorizon) setImplementationHorizon(saved.implementationHorizon);
+      if (typeof saved.initialInvestment === "number") setInitialInvestment(saved.initialInvestment);
+      if (saved.priority) setPriority(saved.priority as Priority);
+    }
+    setIsHydrated(true);
+  }, []);
+
+  // Save to Local Workspace on changes
+  useEffect(() => {
+    if (isHydrated) {
+      saveToolState("roi", {
+        industry,
+        companySize,
+        opFunction,
+        annualCostBaseline,
+        processVolume,
+        avgHandlingTime,
+        automationTarget,
+        manualEffort,
+        productivityImprovement,
+        implementationHorizon,
+        initialInvestment,
+        priority
+      });
+    }
+  }, [
+    isHydrated,
+    industry,
+    companySize,
+    opFunction,
+    annualCostBaseline,
+    processVolume,
+    avgHandlingTime,
+    automationTarget,
+    manualEffort,
+    productivityImprovement,
+    implementationHorizon,
+    initialInvestment,
+    priority
+  ]);
 
   // Synchronize derived platform setup CapEx whenever scale or horizon shifts
   useEffect(() => {

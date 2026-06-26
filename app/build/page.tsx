@@ -5,6 +5,13 @@ import Link from "next/link";
 import InnerPageShell from "@/components/inner-pages/InnerPageShell";
 import InnerPageHero from "@/components/inner-pages/InnerPageHero";
 import PremiumCTA from "@/components/inner-pages/PremiumCTA";
+import WorkspaceContinuityPanel from "@/components/build/WorkspaceContinuityPanel";
+import {
+  getFullWorkspace,
+  purgeAllWorkspace,
+  getBlueprintHistory,
+  hasAnyWorkspace
+} from "@/components/build/workspaceUtility";
 
 interface Stage {
   n: number;
@@ -208,69 +215,107 @@ export default function BuildHubPage() {
   const [activeStage, setActiveStage] = useState<Stage>(JOURNEY[1]); // Focus on AI Assessment initially
   const [activeScenarioIdx, setActiveScenarioIdx] = useState<number>(0);
 
-  // Local storage state checking
-  const [hasProposalDraft, setHasProposalDraft] = useState(false);
-  const [blueprintCount, setBlueprintCount] = useState(0);
-  const [latestBlueprint, setLatestBlueprint] = useState<any>(null);
-  const [latestProposal, setLatestProposal] = useState<any>(null);
+  // Local Workspace state checking
+  const [workspace, setWorkspace] = useState<any>({});
+  const [blueprintHistory, setBlueprintHistory] = useState<any[]>([]);
+  const [hasAny, setHasAny] = useState(false);
   const [isClient, setIsClient] = useState(false);
 
-  const refreshLocalSessionStates = () => {
-    if (typeof window !== "undefined") {
-      try {
-        const propDraft = localStorage.getItem("gff_proposal_draft_intake");
-        if (propDraft) {
-          const parsed = JSON.parse(propDraft);
-          setHasProposalDraft(true);
-          setLatestProposal(parsed);
-        } else {
-          setHasProposalDraft(false);
-          setLatestProposal(null);
-        }
-
-        const blueHistory = localStorage.getItem("gff_blueprint_history");
-        if (blueHistory) {
-          const parsed = JSON.parse(blueHistory);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            setBlueprintCount(parsed.length);
-            setLatestBlueprint(parsed[0]);
-          } else {
-            setBlueprintCount(0);
-            setLatestBlueprint(null);
-          }
-        } else {
-          setBlueprintCount(0);
-          setLatestBlueprint(null);
-        }
-      } catch (e) {
-        console.error("Error reading localStorage keys", e);
-      }
-    }
+  const refreshWorkspace = () => {
+    setWorkspace(getFullWorkspace());
+    setBlueprintHistory(getBlueprintHistory());
+    setHasAny(hasAnyWorkspace());
   };
 
   useEffect(() => {
     setIsClient(true);
-    refreshLocalSessionStates();
+    refreshWorkspace();
   }, []);
 
   const handleCreateMockSession = () => {
     if (typeof window !== "undefined") {
-      const mockProposal = {
-        clientName: "Enterprise Vanguard Corp",
-        industry: "financial-services",
-        challenge: "Legacy core banking orchestration with autonomous risk compliance nodes",
-        budget: "Tier-3 Enterprise Sovereign Dedicated Enclave",
-        timeline: "Immediate 60-day strategic sprint",
-        step: 2,
-        updatedAt: new Date().toISOString()
+      const mockWorkspace = {
+        assessment: {
+          answers: { "strategy-q1": 4, "strategy-q2": 3, "data-q1": 5 },
+          activeDimensionIndex: 1,
+          showResult: false
+        },
+        roi: {
+          industry: "financial_services",
+          companySize: "enterprise",
+          opFunction: "customer_operations",
+          annualCostBaseline: 1500000,
+          processVolume: 250000,
+          avgHandlingTime: 15,
+          automationTarget: 65,
+          manualEffort: "high",
+          productivityImprovement: 50,
+          implementationHorizon: "6_months",
+          initialInvestment: 350000,
+          priority: "cost_reduction"
+        },
+        proposal: {
+          companyName: "Enterprise Vanguard Corp",
+          industry: "banking",
+          companySize: "enterprise",
+          primaryChallenge: "compliance-risk",
+          customChallenge: "",
+          priorityOutcomes: ["zero-retention", "sub-150ms-latency"],
+          targetTimeline: "90-days",
+          preferredEngagementPath: "foundry",
+          budgetRange: "tier-2",
+          geography: "NA",
+          stakeholders: "CIO"
+        },
+        talk: {
+          currentStep: 2,
+          data: {
+            desc: "Legacy core banking orchestration with autonomous risk compliance nodes",
+            ind: "Finance",
+            size: "100-1000",
+            geography: "North America",
+            urgency: "immediate",
+            functionTeam: "Compliance Auditing",
+            aiStage: "Exploring"
+          },
+          showResults: false
+        },
+        sandbox: {
+          selectedIndustry: "Banking",
+          selectedFunction: "Knowledge Search",
+          selectedAgentType: "Deep Reasoning / DAG",
+          searchQuery: "reconciliation",
+          activeAgentId: "knowledge-search"
+        },
+        marketplace: {
+          activeTab: "All Patterns",
+          industryFilter: "All Industries",
+          functionFilter: "All Functions",
+          maturityFilter: "All Stages",
+          platformFilter: "All Fits",
+          searchQuery: "Watchdog",
+          compareIds: ["agent-01", "agent-02"]
+        },
+        foundryStudio: {
+          selectedPresetId: "banking",
+          selectedPattern: "hierarchical",
+          stages: [
+            { id: "node-0", type: "trigger", label: "Consensus Ledger Hook", role: "Sovereign Ingress", latency: "2ms", isGated: false },
+            { id: "node-1", type: "reasoning", label: "Audit Verification Agent", role: "Verification Node", latency: "45ms", isGated: false }
+          ],
+          knowledgeSources: ["ledger_rules.pdf", "compliance_framework.txt"]
+        }
       };
-      localStorage.setItem("gff_proposal_draft_intake", JSON.stringify(mockProposal));
 
-      const mockBlueprint = [
+      localStorage.setItem("gff_local_workspace_continuity", JSON.stringify(mockWorkspace));
+      localStorage.setItem("gff_proposal_draft_intake", JSON.stringify(mockWorkspace.proposal));
+
+      const mockBlueprintHistory = [
         {
           id: "bp-mock-2026",
           score: 84,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toLocaleTimeString(),
+          category: "Maturity Level III: Strategic Federated Mesh",
           data: {
             email: "architect@vanguard.io",
             company: "Enterprise Vanguard Corp",
@@ -280,18 +325,15 @@ export default function BuildHubPage() {
           }
         }
       ];
-      localStorage.setItem("gff_blueprint_history", JSON.stringify(mockBlueprint));
+      localStorage.setItem("gff_blueprint_history", JSON.stringify(mockBlueprintHistory));
 
-      refreshLocalSessionStates();
+      refreshWorkspace();
     }
   };
 
   const handleClearSessions = () => {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("gff_proposal_draft_intake");
-      localStorage.removeItem("gff_blueprint_history");
-      refreshLocalSessionStates();
-    }
+    purgeAllWorkspace();
+    refreshWorkspace();
   };
 
 
@@ -307,84 +349,8 @@ export default function BuildHubPage() {
 
       <div className="max-w-[1795px] mx-auto px-6 lg:px-16 pb-24 space-y-16">
         
-        {/* Continue where you left off panel (Active session states) */}
-        {isClient && (
-          <section className="p-6 lg:p-8 rounded-[24px] border border-white/5 bg-gradient-to-br from-[#04060b] to-[#020305] relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-[40%] h-[40%] bg-[#009DFF]/5 blur-3xl pointer-events-none" />
-            <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#00FF9D] animate-ping" />
-                  <span className="text-xs font-mono text-white/40 uppercase tracking-widest">ACTIVE SESSION TRACKER</span>
-                </div>
-                <h2 className="text-xl lg:text-2xl font-bold text-white tracking-tight">
-                  Continue Where You Left Off
-                </h2>
-                <p className="text-white/60 text-xs font-light max-w-[650px] leading-relaxed">
-                  We automatically preserve active diagnostics, blueprint layouts, and draft commercial proposals in your browser's private local workspace.
-                </p>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-4">
-                {(!hasProposalDraft && blueprintCount === 0) ? (
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                    <span className="text-xs font-mono text-white/40 italic">
-                      No active local workspace drafts detected.
-                    </span>
-                    <button
-                      onClick={handleCreateMockSession}
-                      className="px-4 py-2 text-xs font-semibold text-white bg-gradient-to-r from-[#009DFF]/20 to-[#E4000F]/20 hover:from-[#009DFF]/35 hover:to-[#E4000F]/35 border border-white/10 rounded-lg transition-all shadow-[0_0_15px_rgba(0,157,255,0.1)] active:scale-95"
-                    >
-                      Initialize Mock Draft Workspace
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                    {hasProposalDraft && (
-                      <Link
-                        href="/build/proposal"
-                        className="p-3.5 rounded-xl border border-[#3B82F6]/30 bg-[#3B82F6]/5 hover:bg-[#3B82F6]/10 transition group text-left max-w-[280px]"
-                      >
-                        <div className="text-[10px] font-mono text-[#3B82F6] font-bold">PROPOSAL DRAFT DETECTED</div>
-                        <div className="text-xs text-white/90 font-medium truncate mt-1">
-                          {latestProposal?.clientName || "Proposal Intake"}
-                        </div>
-                        <div className="text-[9px] font-mono text-white/40 mt-1 flex items-center gap-1">
-                          <span>Resume Draft</span>
-                          <span className="group-hover:translate-x-1 transition-transform">→</span>
-                        </div>
-                      </Link>
-                    )}
-
-                    {blueprintCount > 0 && (
-                      <Link
-                        href="/build/blueprint"
-                        className="p-3.5 rounded-xl border border-[#9D00FF]/30 bg-[#9D00FF]/5 hover:bg-[#9D00FF]/10 transition group text-left max-w-[280px]"
-                      >
-                        <div className="text-[10px] font-mono text-[#9D00FF] font-bold">BLUEPRINT DETECTED</div>
-                        <div className="text-xs text-white/90 font-medium truncate mt-1">
-                          {latestBlueprint?.data?.company || "Blueprint State"} ({latestBlueprint?.score || 0}%)
-                        </div>
-                        <div className="text-[9px] font-mono text-white/40 mt-1 flex items-center gap-1">
-                          <span>Resume Architect</span>
-                          <span className="group-hover:translate-x-1 transition-transform">→</span>
-                        </div>
-                      </Link>
-                    )}
-
-                    <button
-                      onClick={handleClearSessions}
-                      className="px-3.5 py-3 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 hover:border-red-500/30 text-white/60 hover:text-red-400 text-xs font-mono transition"
-                      title="Clear session variables"
-                    >
-                      Clear State
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          </section>
-        )}
+        {/* Sovereign Workspace Continuity Control Panel */}
+        <WorkspaceContinuityPanel />
 
         {/* SECTION 1: Sovereign Journey Timeline */}
         <section className="p-6 lg:p-10 rounded-[24px] border border-white/5 bg-[#04060b] relative overflow-hidden">

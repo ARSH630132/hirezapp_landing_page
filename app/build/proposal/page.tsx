@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ToolPageShell, ToolHero } from "@/components/build/components";
 import { Industry, CompanySize } from "@/components/build/types";
+import { getToolState, saveToolState, clearToolState } from "@/components/build/workspaceUtility";
 
 // ==========================================
 // 1. Metadata & Definitions for Intake Flow
@@ -162,11 +163,18 @@ export default function ProposalBuilderPage() {
 
   useEffect(() => {
     setMounted(true);
-    if (typeof window !== "undefined") {
-      const draft = localStorage.getItem("gff_proposal_draft_intake");
-      if (draft) setHasSavedDraft(true);
+    const draft = getToolState("proposal");
+    if (draft) {
+      setHasSavedDraft(true);
     }
   }, []);
+
+  // Auto-save on input changes
+  useEffect(() => {
+    if (mounted) {
+      saveToolState("proposal", inputs);
+    }
+  }, [inputs, mounted]);
 
   const validateStep = (gate: 1 | 2 | 3): boolean => {
     const errors: Record<string, string> = {};
@@ -216,21 +224,17 @@ export default function ProposalBuilderPage() {
   }, [step]);
 
   const handleSaveDraft = () => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("gff_proposal_draft_intake", JSON.stringify(inputs));
-      setSaved(true);
-      setHasSavedDraft(true);
-      setTimeout(() => setSaved(false), 2000);
-    }
+    saveToolState("proposal", inputs);
+    setSaved(true);
+    setHasSavedDraft(false); // No need to prompt to restore if we just explicitly saved/synced
+    setTimeout(() => setSaved(false), 2000);
   };
 
   const handleRestoreDraft = () => {
-    if (typeof window !== "undefined") {
-      const draft = localStorage.getItem("gff_proposal_draft_intake");
-      if (draft) {
-        setInputs(JSON.parse(draft));
-        setHasSavedDraft(false);
-      }
+    const draft = getToolState("proposal");
+    if (draft) {
+      setInputs(draft as any);
+      setHasSavedDraft(false);
     }
   };
 
@@ -242,10 +246,8 @@ export default function ProposalBuilderPage() {
     setSignName("");
     setSignTitle("");
     setValidationErrors({});
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("gff_proposal_draft_intake");
-      setHasSavedDraft(false);
-    }
+    clearToolState("proposal");
+    setHasSavedDraft(false);
   };
 
   const handlePrint = () => {

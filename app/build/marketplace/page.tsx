@@ -13,6 +13,7 @@ import InnerPageHero from "@/components/inner-pages/InnerPageHero";
 import MotionReveal from "@/components/inner-pages/MotionReveal";
 import { BentoGrid, BentoCard } from "@/components/inner-pages/BentoGrid";
 import PremiumCTA from "@/components/inner-pages/PremiumCTA";
+import { getToolState, saveToolState } from "@/components/build/workspaceUtility";
 
 interface SandboxQA {
   prompt: string;
@@ -266,6 +267,47 @@ export default function BuildMarketplacePage() {
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   const [compareIds, setCompareIds] = useState<string[]>([]);
+
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Load from GFF Workspace on mount
+  useEffect(() => {
+    const saved = getToolState("marketplace");
+    if (saved) {
+      if (saved.activeTab) setActiveTab(saved.activeTab);
+      if (saved.industryFilter) setIndustryFilter(saved.industryFilter);
+      if (saved.functionFilter) setFunctionFilter(saved.functionFilter);
+      if (saved.maturityFilter) setMaturityFilter(saved.maturityFilter);
+      if (saved.platformFilter) setPlatformFilter(saved.platformFilter);
+      if (typeof saved.searchQuery === "string") setSearchQuery(saved.searchQuery);
+      if (Array.isArray(saved.compareIds)) setCompareIds(saved.compareIds);
+    }
+    setIsHydrated(true);
+  }, []);
+
+  // Save to GFF Workspace on changes
+  useEffect(() => {
+    if (isHydrated) {
+      saveToolState("marketplace", {
+        activeTab,
+        industryFilter,
+        functionFilter,
+        maturityFilter,
+        platformFilter,
+        searchQuery,
+        compareIds
+      });
+    }
+  }, [
+    isHydrated,
+    activeTab,
+    industryFilter,
+    functionFilter,
+    maturityFilter,
+    platformFilter,
+    searchQuery,
+    compareIds
+  ]);
   const [isCompareOpen, setIsCompareOpen] = useState<boolean>(false);
 
   const [sandboxId, setSandboxId] = useState<string | null>(null);
