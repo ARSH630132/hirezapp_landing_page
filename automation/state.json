@@ -40,6 +40,10 @@
     {
       "id": "26-platforms-industry-meshes",
       "reason": "cline implementation failed"
+    },
+    {
+      "id": "27-platforms-agent-runtime-developer",
+      "reason": "cline implementation failed"
     }
   ]
 }
