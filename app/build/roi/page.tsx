@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
 import { ToolPageShell, ToolHero } from "@/components/build/components";
@@ -14,51 +14,118 @@ type Priority =
 
 export default function ROICalculatorPage() {
   // 1. STATE & PARAMETERS
-  const [teamSize, setTeamSize] = useState<number>(120);
-  const [avgHourlyRate, setAvgHourlyRate] = useState<number>(85);
-  const [inefficientHoursPerWeek, setInefficientHoursPerWeek] = useState<number>(8);
-  const [initialInvestment, setInitialInvestment] = useState<number>(250000);
+  const [industry, setIndustry] = useState<string>("financial_services");
+  const [companySize, setCompanySize] = useState<string>("enterprise");
+  const [opFunction, setOpFunction] = useState<string>("customer_operations");
+  const [annualCostBaseline, setAnnualCostBaseline] = useState<number>(1500000);
+  const [processVolume, setProcessVolume] = useState<number>(250000);
+  const [avgHandlingTime, setAvgHandlingTime] = useState<number | "">(15);
+  const [automationTarget, setAutomationTarget] = useState<number>(65);
+  const [manualEffort, setManualEffort] = useState<string>("high");
+  const [productivityImprovement, setProductivityImprovement] = useState<number>(50);
+  const [implementationHorizon, setImplementationHorizon] = useState<string>("6_months");
+  const [initialInvestment, setInitialInvestment] = useState<number>(350000);
   const [priority, setPriority] = useState<Priority>("cost_reduction");
   const [copied, setCopied] = useState(false);
 
-  // 2. FORMULAS & DETERMINISTIC CALCULATIONS
-  const totalWastedHoursPerYear = teamSize * inefficientHoursPerWeek * 52;
-  const totalWastedCostPerYear = totalWastedHoursPerYear * avgHourlyRate;
+  // Synchronize derived platform setup CapEx whenever scale or horizon shifts
+  useEffect(() => {
+    let base = 350000;
+    if (companySize === "smb") base = 75000;
+    else if (companySize === "mid") base = 150000;
+    else if (companySize === "enterprise") base = 350000;
+    else if (companySize === "large_enterprise") base = 750000;
+    else if (companySize === "global_corp") base = 1500000;
 
-  // Expected GFF Case (85% efficiency recovery)
-  const expectedAdoptionFactor = 0.85;
-  const expectedHoursSaved = Math.round(totalWastedHoursPerYear * expectedAdoptionFactor);
-  const expectedGrossSavings = expectedHoursSaved * avgHourlyRate;
+    let multiplier = 1.0;
+    if (implementationHorizon === "3_months") multiplier = 1.1;
+    else if (implementationHorizon === "6_months") multiplier = 1.0;
+    else if (implementationHorizon === "12_months") multiplier = 0.9;
+    else if (implementationHorizon === "18_months") multiplier = 0.8;
+
+    setInitialInvestment(Math.round(base * multiplier));
+  }, [companySize, implementationHorizon]);
+
+  // 2. MATHEMATICAL MODEL FOR SOVEREIGN ROI CALCULATION
+  const industryBaseRate: Record<string, number> = {
+    financial_services: 95,
+    healthcare: 90,
+    energy_utilities: 85,
+    telecommunications: 75,
+    public_sector: 65,
+    retail_logistics: 55,
+    technology_media: 100
+  };
+
+  const functionMultiplier: Record<string, number> = {
+    customer_operations: 0.7,
+    legal_compliance: 1.4,
+    supply_chain: 0.9,
+    finance_accounting: 1.2,
+    it_engineering: 1.3,
+    hr_admin: 0.8
+  };
+
+  const loadedHourlyRate = Math.round(
+    (industryBaseRate[industry] || 80) * (functionMultiplier[opFunction] || 1.0)
+  );
+
+  const manualEffortFactor = {
+    low: 0.20,
+    medium: 0.40,
+    high: 0.65,
+    critical: 0.85
+  }[manualEffort] || 0.65;
+
+  const addressableCostBaseline = Math.round(annualCostBaseline * manualEffortFactor);
+
+  const manualHoursSpent = avgHandlingTime !== "" && avgHandlingTime > 0
+    ? Math.round(processVolume * (avgHandlingTime / 60))
+    : Math.round(addressableCostBaseline / loadedHourlyRate);
+
+  // EXPECTED GFF STANDARD CASE
+  const expectedAdoptionFactor = automationTarget / 100;
+  const expectedProductivityFactor = productivityImprovement / 100;
+  const expectedSavingsFactor = expectedAdoptionFactor * expectedProductivityFactor;
+
+  const expectedGrossSavings = Math.round(addressableCostBaseline * expectedSavingsFactor);
+  const expectedHoursSaved = Math.round(manualHoursSpent * expectedSavingsFactor);
   const expectedNetSavings = Math.max(0, expectedGrossSavings - initialInvestment);
   const expectedRoi = initialInvestment > 0 ? Math.round((expectedNetSavings / initialInvestment) * 100) : 0;
-  
+
   const expectedMonthlySavings = expectedGrossSavings / 12;
-  const expectedPaybackMonths = expectedMonthlySavings > 0 
-    ? Math.max(0.1, Math.round((initialInvestment / expectedMonthlySavings) * 10) / 10) 
+  const expectedPaybackMonths = expectedMonthlySavings > 0
+    ? Math.max(0.1, Math.round((initialInvestment / expectedMonthlySavings) * 10) / 10)
     : 0;
 
-  // Conservative Case (50% efficiency recovery)
-  const conservativeAdoptionFactor = 0.50;
-  const conservativeHoursSaved = Math.round(totalWastedHoursPerYear * conservativeAdoptionFactor);
-  const conservativeGrossSavings = conservativeHoursSaved * avgHourlyRate;
+  // CONSERVATIVE GFF CASE (Risk-Adjusted Setup)
+  const conservativeAdoptionFactor = (automationTarget * 0.75) / 100;
+  const conservativeProductivityFactor = Math.max(10, productivityImprovement - 15) / 100;
+  const conservativeSavingsFactor = conservativeAdoptionFactor * conservativeProductivityFactor;
+
+  const conservativeGrossSavings = Math.round(addressableCostBaseline * conservativeSavingsFactor);
+  const conservativeHoursSaved = Math.round(manualHoursSpent * conservativeSavingsFactor);
   const conservativeNetSavings = Math.max(0, conservativeGrossSavings - initialInvestment);
   const conservativeRoi = initialInvestment > 0 ? Math.round((conservativeNetSavings / initialInvestment) * 100) : 0;
-  
+
   const conservativeMonthlySavings = conservativeGrossSavings / 12;
-  const conservativePaybackMonths = conservativeMonthlySavings > 0 
-    ? Math.max(0.1, Math.round((initialInvestment / conservativeMonthlySavings) * 10) / 10) 
+  const conservativePaybackMonths = conservativeMonthlySavings > 0
+    ? Math.max(0.1, Math.round((initialInvestment / conservativeMonthlySavings) * 10) / 10)
     : 0;
 
-  // Aggressive Case (120% efficiency recovery due to synergistic agent multipliers)
-  const aggressiveAdoptionFactor = 1.20;
-  const aggressiveHoursSaved = Math.round(totalWastedHoursPerYear * aggressiveAdoptionFactor);
-  const aggressiveGrossSavings = aggressiveHoursSaved * avgHourlyRate;
+  // AGGRESSIVE GFF CASE (Synergy & Cognitive Multipliers)
+  const aggressiveAdoptionFactor = Math.min(98, automationTarget * 1.15) / 100;
+  const aggressiveProductivityFactor = Math.min(95, productivityImprovement + 15) / 100;
+  const aggressiveSavingsFactor = aggressiveAdoptionFactor * aggressiveProductivityFactor;
+
+  const aggressiveGrossSavings = Math.round(addressableCostBaseline * aggressiveSavingsFactor);
+  const aggressiveHoursSaved = Math.round(manualHoursSpent * aggressiveSavingsFactor);
   const aggressiveNetSavings = Math.max(0, aggressiveGrossSavings - initialInvestment);
   const aggressiveRoi = initialInvestment > 0 ? Math.round((aggressiveNetSavings / initialInvestment) * 100) : 0;
-  
+
   const aggressiveMonthlySavings = aggressiveGrossSavings / 12;
-  const aggressivePaybackMonths = aggressiveMonthlySavings > 0 
-    ? Math.max(0.1, Math.round((initialInvestment / aggressiveMonthlySavings) * 10) / 10) 
+  const aggressivePaybackMonths = aggressiveMonthlySavings > 0
+    ? Math.max(0.1, Math.round((initialInvestment / aggressiveMonthlySavings) * 10) / 10)
     : 0;
 
   // 3. PRIORITIES METADATA
@@ -73,88 +140,160 @@ export default function ROICalculatorPage() {
     {
       id: "compliance_security" as Priority,
       title: "Sovereign Compliance",
-      desc: "Deploy zero-retention audits & policy guards.",
-      color: "#00FF9D",
-      bgHex: "rgba(0, 255, 157, 0.08)"
+      desc: "Deploy zero-retention private enclaves to remove legal friction.",
+      color: "#9D00FF",
+      bgHex: "rgba(157, 0, 255, 0.08)"
     },
     {
       id: "operational_speed" as Priority,
-      title: "Operational Velocity",
-      desc: "Shrink multi-day approvals into sub-second cycles.",
+      title: "Latency Optimization",
+      desc: "Accelerate task completion times from days to milliseconds.",
       color: "#009DFF",
       bgHex: "rgba(0, 157, 255, 0.08)"
     },
     {
       id: "customer_experience" as Priority,
-      title: "Client Intimacy",
-      desc: "Scale tailored conversational context air-gapped.",
-      color: "#9D00FF",
-      bgHex: "rgba(157, 0, 255, 0.08)"
+      title: "Experience Transformation",
+      desc: "Establish instantaneous, context-aware customer resolution pipelines.",
+      color: "#00FF9D",
+      bgHex: "rgba(0, 255, 157, 0.08)"
     },
     {
       id: "decision_automation" as Priority,
-      title: "Cognitive Autonomy",
-      desc: "Delegate continuous ledger audit to multi-agent DAGs.",
-      color: "#F59E0B",
-      bgHex: "rgba(245, 158, 11, 0.08)"
+      title: "Cognitive Multiplier",
+      desc: "Delegate complex analytical operations directly to secure agent networks.",
+      color: "#FFBD00",
+      bgHex: "rgba(255, 189, 0, 0.08)"
     }
   ];
 
   const currentPriorityObj = priorities.find(p => p.id === priority) || priorities[0];
 
-  // 4. HELPERS
+  // 4. HELPERS FOR INPUT SAFE VALIDATION & FORMATTING
+  const handleBaselineChange = (val: string) => {
+    const cleaned = val.replace(/[^0-9]/g, "");
+    const parsed = parseInt(cleaned) || 0;
+    setAnnualCostBaseline(parsed);
+  };
+
+  const handleVolumeChange = (val: string) => {
+    const cleaned = val.replace(/[^0-9]/g, "");
+    const parsed = parseInt(cleaned) || 0;
+    setProcessVolume(parsed);
+  };
+
+  const handleHandlingTimeChange = (val: string) => {
+    if (val === "") {
+      setAvgHandlingTime("");
+      return;
+    }
+    const cleaned = val.replace(/[^0-9]/g, "");
+    const parsed = parseInt(cleaned) || 0;
+    setAvgHandlingTime(parsed);
+  };
+
+  const handleInvestmentChange = (val: string) => {
+    const cleaned = val.replace(/[^0-9]/g, "");
+    const parsed = parseInt(cleaned) || 0;
+    setInitialInvestment(parsed);
+  };
+
   const formatCompactCurrency = (num: number) => {
-    if (num >= 1000000) return `${(num / 1000000).toFixed(2)}M`;
-    if (num >= 1000) return `${(num / 1000).toFixed(0)}K`;
-    return `${num}`;
+    if (num >= 1000000) return `$${(num / 1000000).toFixed(2)}M`;
+    if (num >= 1000) return `$${(num / 1000).toFixed(0)}K`;
+    return `$${num}`;
   };
 
   const formatPayback = (months: number) => {
-    if (months <= 0) return "Instant";
+    if (months <= 0) return "Instant Amortization";
     if (months < 1) return "Within 1 Month";
     return `${months} Months`;
   };
 
   // 5. COPY TO CLIPBOARD ACTION
   const handleCopyReport = () => {
-    const reportMd = `# GFF AI // SOVEREIGN ROI SIMULATION REPORT
+    const indName = {
+      financial_services: "Financial Services",
+      healthcare: "Healthcare & Life Sciences",
+      energy_utilities: "Energy & Utilities",
+      telecommunications: "Telecommunications",
+      public_sector: "Public Sector & Government",
+      retail_logistics: "Retail & Logistics",
+      technology_media: "Technology & Media"
+    }[industry] || "Enterprise";
+
+    const sizeName = {
+      smb: "< 100 FTE",
+      mid: "100 - 500 FTE",
+      enterprise: "500 - 2,000 FTE",
+      large_enterprise: "2,000 - 10,000 FTE",
+      global_corp: "10,000+ FTE"
+    }[companySize] || "Enterprise Scale";
+
+    const funcName = {
+      customer_operations: "Customer Support & Operations",
+      legal_compliance: "Legal, Risk & Compliance",
+      supply_chain: "Supply Chain & Logistics",
+      finance_accounting: "Finance, Audit & Accounting",
+      it_engineering: "IT Service & Infrastructure",
+      hr_admin: "People & Administrative Services"
+    }[opFunction] || "Operations";
+
+    const reportMd = `# GFF AI // ENTERPRISE SOVEREIGN ROI SIMULATION REPORT
 Generated: ${new Date().toLocaleDateString()}
 Status: MODELLED - ILLUSTRATIVE ONLY
 
-## I. SIMULATION PARAMETERS (INPUTS)
-- Target Workforce Size: ${teamSize} Analysts/Workers
-- Average Hourly Labor Rate: ${avgHourlyRate}/hr
-- Inefficient Hours Per Week: ${inefficientHoursPerWeek} hrs
-- Initial CapEx Allocation: ${initialInvestment.toLocaleString()}
-- Strategic Priority: ${currentPriorityObj.title} (${priority.toUpperCase()})
+## I. ORGANIZATIONAL CONTEXT & PROFILE
+- Industry Sector: ${indName}
+- Enterprise Scale: ${sizeName}
+- Operational Function: ${funcName}
+- Implementation Horizon: ${implementationHorizon.replace("_", " ")}
 
-## II. KEY RECOVERY METRICS (EXPECTED EXPECTED CASE)
-- Illustrative Annual Efficiency Opportunity: ${expectedGrossSavings.toLocaleString()}
-- Estimated Annual Labor Hours Saved: ${expectedHoursSaved.toLocaleString()} hours
+## II. FINANCIAL & OPERATIONAL BASELINE (INPUTS)
+- Annual Operational Cost Baseline: $${annualCostBaseline.toLocaleString()}
+- Current Manual Friction Index: ${manualEffort.toUpperCase()}
+- Modelled Addressable Manual Overhead: $${addressableCostBaseline.toLocaleString()}
+- Annual Process Volume: ${processVolume.toLocaleString()} units
+- Average Handling Time: ${avgHandlingTime ? avgHandlingTime + " Minutes" : "Not Specified (estimated based on sector average)"}
+- Estimated Loaded Hourly Rate: $${loadedHourlyRate}/hr
+- Estimated Current Manual Effort: ${manualHoursSpent.toLocaleString()} hours/year
+
+## III. TARGET SOVEREIGN PARAMETERS
+- Automation Target Rate: ${automationTarget}%
+- Expected Productivity Boost: ${productivityImprovement}%
+- Enclave Platform Investment CapEx: $${initialInvestment.toLocaleString()}
+- Strategic Priority Lens: ${currentPriorityObj.title} (${priority.toUpperCase()})
+
+## IV. KEY RECOVERY METRICS (EXPECTED CASE)
+- Illustrative Annual Reclaimed Value: $${expectedGrossSavings.toLocaleString()}
+- Estimated Annual Productive Hours Saved: ${expectedHoursSaved.toLocaleString()} hours
 - Amortization / Payback Period: ${formatPayback(expectedPaybackMonths)}
-- Net Sovereign Return on Investment: ${expectedRoi}%
+- Net Sovereign Return on Investment (ROI): ${expectedRoi}%
 
-## III. SCENARIO COMPARISON MATRIX
-- CONSERVATIVE CASE (50% Adoption):
+## V. SCENARIO COMPARISON MATRIX
+- CONSERVATIVE CASE (Risk-Adjusted Execution):
   * Annual Saved Hours: ${conservativeHoursSaved.toLocaleString()} hrs
-  * Annual Recouped Value: ${conservativeGrossSavings.toLocaleString()}
+  * Annual Recouped Value: $${conservativeGrossSavings.toLocaleString()}
   * Amortization Payback: ${formatPayback(conservativePaybackMonths)}
-- EXPECTED CASE (85% Adoption - GFF Target):
+  * Sovereign ROI: ${conservativeRoi}%
+- EXPECTED CASE (Standard GFF Execution):
   * Annual Saved Hours: ${expectedHoursSaved.toLocaleString()} hrs
-  * Annual Recouped Value: ${expectedGrossSavings.toLocaleString()}
+  * Annual Recouped Value: $${expectedGrossSavings.toLocaleString()}
   * Amortization Payback: ${formatPayback(expectedPaybackMonths)}
-- AGGRESSIVE CASE (120% Adoption - Synergy Multiplier):
+  * Sovereign ROI: ${expectedRoi}%
+- AGGRESSIVE CASE (Synergistic Multiplier Execution):
   * Annual Saved Hours: ${aggressiveHoursSaved.toLocaleString()} hrs
-  * Annual Recouped Value: ${aggressiveGrossSavings.toLocaleString()}
+  * Annual Recouped Value: $${aggressiveGrossSavings.toLocaleString()}
   * Amortization Payback: ${formatPayback(aggressivePaybackMonths)}
+  * Sovereign ROI: ${aggressiveRoi}%
 
-## IV. WATERFALL ALLOCATION & VALUE DRIFT
-- Initial Operational Friction Loss: ${totalWastedCostPerYear.toLocaleString()}/yr
-- GFF Sovereign Reclaimed Value (Expected): -${expectedGrossSavings.toLocaleString()}/yr
-- Initial CapEx Enclave Allocation: +${initialInvestment.toLocaleString()}
-- Net Annual Sovereign Dividend: ${expectedNetSavings.toLocaleString()}/yr
+## VI. FINANCIAL WATERFALL SUMMARY
+- Addressable Manual Friction Loss: $${addressableCostBaseline.toLocaleString()}/yr
+- GFF Sovereign Reclaimed Value (Expected): -$${expectedGrossSavings.toLocaleString()}/yr
+- Enclave CapEx Investment Allocation: +$${initialInvestment.toLocaleString()}
+- Net Annual Sovereign Dividend: $${expectedNetSavings.toLocaleString()}/yr
 
-* DISCLAIMER: All figures are generated for strategic modeling purposes based on software formulas and illustrative assumptions. They do not constitute binding financial, commercial, or operational guarantees.`;
+* DISCLAIMER: All figures are generated for strategic modeling and simulation purposes based on mathematical formulas and illustrative enterprise assumptions. They do not constitute binding financial, commercial, or operational guarantees.`;
 
     navigator.clipboard.writeText(reportMd);
     setCopied(true);
@@ -163,12 +302,38 @@ Status: MODELLED - ILLUSTRATIVE ONLY
 
   // 6. RESET ACTION
   const handleReset = () => {
-    setTeamSize(120);
-    setAvgHourlyRate(85);
-    setInefficientHoursPerWeek(8);
-    setInitialInvestment(250000);
+    setIndustry("financial_services");
+    setCompanySize("enterprise");
+    setOpFunction("customer_operations");
+    setAnnualCostBaseline(1500000);
+    setProcessVolume(250000);
+    setAvgHandlingTime(15);
+    setAutomationTarget(65);
+    setManualEffort("high");
+    setProductivityImprovement(50);
+    setImplementationHorizon("6_months");
     setPriority("cost_reduction");
   };
+
+  // 7. GET STRATEGIC NARRATIVE
+  const indName = {
+    financial_services: "Financial Services",
+    healthcare: "Healthcare & Life Sciences",
+    energy_utilities: "Energy & Utilities",
+    telecommunications: "Telecommunications",
+    public_sector: "Public Sector & Government",
+    retail_logistics: "Retail & Logistics",
+    technology_media: "Technology & Media"
+  }[industry] || "Enterprise";
+
+  const funcName = {
+    customer_operations: "Customer Support & Operations",
+    legal_compliance: "Legal, Risk & Compliance",
+    supply_chain: "Supply Chain & Logistics",
+    finance_accounting: "Finance, Audit & Accounting",
+    it_engineering: "IT Service & Infrastructure",
+    hr_admin: "People & Administrative Services"
+  }[opFunction] || "Operations";
 
   return (
     <ToolPageShell showContact={true}>
@@ -178,158 +343,375 @@ Status: MODELLED - ILLUSTRATIVE ONLY
         highlightedWord="ROI"
         description="Quantify the fiscal impact, cognitive hours reclaimed, and capital amortization curves achieved by shifting legacy operational friction to GFF secure multi-agent systems."
         metricLabel="MODEL VERSION"
-        metricValue="V2.6-SOVEREIGN"
+        metricValue="V2.8-SOVEREIGN"
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* LEFT COLUMN: Input Control Panel */}
-        <div className="lg:col-span-4 space-y-6">
+        <div className="lg:col-span-5 space-y-6">
           <div className="p-6 rounded-2xl border border-white/5 bg-[#030306]/95 backdrop-blur-md space-y-6 relative group overflow-hidden">
             {/* Top accent line */}
             <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#009DFF]/40 to-transparent pointer-events-none" />
             
             <div className="border-b border-white/5 pb-3">
               <span className="text-[10px] font-mono text-white/40 block uppercase tracking-wider">VARIABLE CONTEXT PANEL</span>
-              <h2 className="text-sm font-bold text-white mt-1">Configure Local Inputs</h2>
+              <h2 className="text-sm font-bold text-white mt-1">Configure Model Inputs</h2>
             </div>
 
-            {/* Variable 1: Team Size */}
-            <div className="space-y-2">
-              <div className="flex justify-between items-center text-xs">
-                <label htmlFor="teamSize-input" className="text-white/60 font-mono text-[10px] uppercase cursor-pointer">
-                  Workforce Size
-                </label>
-                <div className="flex items-center gap-2">
-                  <input
-                    id="teamSize-input"
-                    type="number"
-                    value={teamSize}
-                    onChange={(e) => setTeamSize(Math.max(1, parseInt(e.target.value) || 0))}
-                    className="w-16 h-7 bg-white/5 border border-white/10 rounded px-1.5 text-right font-mono font-bold text-xs text-white focus:outline-none focus:border-[#009DFF]/50"
-                  />
-                  <span className="text-white/40 font-mono text-[9px]">FTE</span>
+            {/* SECTION 1: CORPORATE FOOTPRINT */}
+            <div className="space-y-4 border-b border-white/5 pb-5">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-mono bg-white/5 border border-white/10 text-[#009DFF] px-1.5 py-0.5 rounded">01</span>
+                <span className="text-[10px] font-mono text-white/50 uppercase tracking-widest font-semibold">Corporate Profile</span>
+              </div>
+
+              {/* Industry Dropdown */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center">
+                  <label htmlFor="industry-select" className="text-white/60 font-mono text-[9px] uppercase tracking-wider cursor-pointer">
+                    Industry Sector
+                  </label>
+                  <span className="text-[8px] font-mono text-white/30 uppercase tracking-widest">Base Rate Calibration</span>
+                </div>
+                <select
+                  id="industry-select"
+                  value={industry}
+                  onChange={(e) => setIndustry(e.target.value)}
+                  className="w-full h-9 bg-white/5 border border-white/10 rounded-lg px-2.5 text-xs text-white focus:outline-none focus:border-[#009DFF]/50 transition-colors cursor-pointer"
+                >
+                  <option value="financial_services">Financial Services</option>
+                  <option value="healthcare">Healthcare & Life Sciences</option>
+                  <option value="energy_utilities">Energy & Utilities</option>
+                  <option value="telecommunications">Telecommunications</option>
+                  <option value="public_sector">Public Sector & Government</option>
+                  <option value="retail_logistics">Retail & Logistics</option>
+                  <option value="technology_media">Technology & Media</option>
+                </select>
+              </div>
+
+              {/* Enterprise Scale (Company Size) */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center">
+                  <span className="text-white/60 font-mono text-[9px] uppercase tracking-wider">
+                    Enterprise Scale
+                  </span>
+                  <span className="text-[8px] font-mono text-white/30 uppercase tracking-widest">Determines Setup CapEx</span>
+                </div>
+                <div className="grid grid-cols-5 gap-1" role="group" aria-label="Enterprise Scale">
+                  {[
+                    { id: "smb", label: "<100", title: "SMB (<100 FTE)" },
+                    { id: "mid", label: "100-500", title: "Mid-Market (100-500 FTE)" },
+                    { id: "enterprise", label: "500-2K", title: "Enterprise (500-2,000 FTE)" },
+                    { id: "large_enterprise", label: "2K-10K", title: "Large Enterprise (2,000-10,000 FTE)" },
+                    { id: "global_corp", label: "10K+", title: "Global Corporation (10,000+ FTE)" }
+                  ].map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setCompanySize(item.id)}
+                      className={`h-8 rounded text-[9px] font-semibold transition-all border ${
+                        companySize === item.id
+                          ? "bg-[#009DFF]/10 border-[#009DFF]/40 text-white"
+                          : "bg-white/5 border-white/5 text-white/50 hover:bg-white/[0.08] hover:text-white/80"
+                      }`}
+                      title={item.title}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
                 </div>
               </div>
-              <p className="text-[10px] text-white/40 font-light leading-relaxed">
-                The number of analysts, operations agents, or specialists engaged in manual workflows.
-              </p>
-              <input
-                id="teamSize-slider"
-                aria-label="Workforce Size range slider"
-                type="range"
-                min="5"
-                max="5000"
-                step="5"
-                value={teamSize}
-                onChange={(e) => setTeamSize(parseInt(e.target.value))}
-                className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#009DFF] hover:accent-[#009DFF]"
-              />
+
+              {/* Operational Function */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center">
+                  <label htmlFor="function-select" className="text-white/60 font-mono text-[9px] uppercase tracking-wider cursor-pointer">
+                    Operational Function
+                  </label>
+                  <span className="text-[8px] font-mono text-white/30 uppercase tracking-widest">Labor Complexity Factor</span>
+                </div>
+                <select
+                  id="function-select"
+                  value={opFunction}
+                  onChange={(e) => setOpFunction(e.target.value)}
+                  className="w-full h-9 bg-white/5 border border-white/10 rounded-lg px-2.5 text-xs text-white focus:outline-none focus:border-[#009DFF]/50 transition-colors cursor-pointer"
+                >
+                  <option value="customer_operations">Customer Support & Operations</option>
+                  <option value="legal_compliance">Legal, Risk & Compliance</option>
+                  <option value="supply_chain">Supply Chain & Logistics</option>
+                  <option value="finance_accounting">Finance, Audit & Accounting</option>
+                  <option value="it_engineering">IT Service & Infrastructure</option>
+                  <option value="hr_admin">People & Administrative Services</option>
+                </select>
+              </div>
             </div>
 
-            {/* Variable 2: Hourly Rate */}
-            <div className="space-y-2">
-              <div className="flex justify-between items-center text-xs">
-                <label htmlFor="avgHourlyRate-input" className="text-white/60 font-mono text-[10px] uppercase cursor-pointer">
-                  Avg Hourly Labor Rate
-                </label>
-                <div className="flex items-center gap-1">
-                  <span className="text-white/40 font-mono text-[10px]">$</span>
-                  <input
-                    id="avgHourlyRate-input"
-                    type="number"
-                    value={avgHourlyRate}
-                    onChange={(e) => setAvgHourlyRate(Math.max(1, parseInt(e.target.value) || 0))}
-                    className="w-16 h-7 bg-white/5 border border-white/10 rounded px-1.5 text-right font-mono font-bold text-xs text-white focus:outline-none focus:border-[#009DFF]/50"
-                  />
-                  <span className="text-white/40 font-mono text-[9px]">/ HR</span>
+            {/* SECTION 2: CURRENT WORKLOAD & COSTS */}
+            <div className="space-y-4 border-b border-white/5 pb-5">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-mono bg-white/5 border border-white/10 text-[#009DFF] px-1.5 py-0.5 rounded">02</span>
+                <span className="text-[10px] font-mono text-white/50 uppercase tracking-widest font-semibold">Friction & Baseline</span>
+              </div>
+
+              {/* Annual Cost Baseline */}
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <label htmlFor="cost-input" className="text-white/60 font-mono text-[9px] uppercase tracking-wider cursor-pointer">
+                    Annual Cost Baseline
+                  </label>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-white/40 font-mono text-[10px]">$</span>
+                    <input
+                      id="cost-input"
+                      type="text"
+                      value={annualCostBaseline === 0 ? "" : annualCostBaseline.toLocaleString()}
+                      onChange={(e) => handleBaselineChange(e.target.value)}
+                      className="w-24 h-7 bg-white/5 border border-white/10 rounded px-1.5 text-right font-mono font-bold text-xs text-white focus:outline-none focus:border-[#009DFF]/50"
+                    />
+                  </div>
+                </div>
+                <p className="text-[9px] text-white/30 leading-normal">
+                  Annual expenses of targeted operational unit (labor + software tools).
+                </p>
+                <input
+                  id="cost-slider"
+                  aria-label="Annual Cost Baseline range slider"
+                  type="range"
+                  min="50000"
+                  max="25000000"
+                  step="50000"
+                  value={annualCostBaseline}
+                  onChange={(e) => setAnnualCostBaseline(parseInt(e.target.value))}
+                  className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#009DFF] hover:accent-[#009DFF]"
+                />
+              </div>
+
+              {/* Process Volume */}
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <label htmlFor="volume-input" className="text-white/60 font-mono text-[9px] uppercase tracking-wider cursor-pointer">
+                    Annual Process Volume
+                  </label>
+                  <div className="flex items-center gap-1.5">
+                    <input
+                      id="volume-input"
+                      type="text"
+                      value={processVolume === 0 ? "" : processVolume.toLocaleString()}
+                      onChange={(e) => handleVolumeChange(e.target.value)}
+                      className="w-24 h-7 bg-white/5 border border-white/10 rounded px-1.5 text-right font-mono font-bold text-xs text-white focus:outline-none focus:border-[#009DFF]/50"
+                    />
+                  </div>
+                </div>
+                <p className="text-[9px] text-white/30 leading-normal">
+                  Annual requests, transactions, or tasks processed in this department.
+                </p>
+                <input
+                  id="volume-slider"
+                  aria-label="Annual Process Volume range slider"
+                  type="range"
+                  min="1000"
+                  max="5000000"
+                  step="1000"
+                  value={processVolume}
+                  onChange={(e) => setProcessVolume(parseInt(e.target.value))}
+                  className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#009DFF] hover:accent-[#009DFF]"
+                />
+              </div>
+
+              {/* Average Handling Time */}
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <label htmlFor="aht-input" className="text-white/60 font-mono text-[9px] uppercase tracking-wider cursor-pointer">
+                    Avg Handling Time (Mins)
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      id="aht-input"
+                      type="text"
+                      placeholder="Sector Avg"
+                      value={avgHandlingTime}
+                      onChange={(e) => handleHandlingTimeChange(e.target.value)}
+                      className="w-24 h-7 bg-white/5 border border-white/10 rounded px-1.5 text-right font-mono font-bold text-xs text-white focus:outline-none focus:border-[#009DFF]/50 placeholder:text-white/20"
+                    />
+                    <span className="text-[8px] font-mono text-white/30">MIN</span>
+                  </div>
+                </div>
+                <p className="text-[9px] text-white/30 leading-normal">
+                  Optional. Left blank, GFF models friction hours based on industry standards.
+                </p>
+                <input
+                  id="aht-slider"
+                  aria-label="Avg Handling Time range slider"
+                  type="range"
+                  min="0"
+                  max="180"
+                  step="1"
+                  value={avgHandlingTime === "" ? 0 : avgHandlingTime}
+                  onChange={(e) => setAvgHandlingTime(parseInt(e.target.value) || "")}
+                  className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#009DFF] hover:accent-[#009DFF]"
+                />
+              </div>
+
+              {/* Manual Friction Index (Current Manual Effort Level) */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center">
+                  <span className="text-white/60 font-mono text-[9px] uppercase tracking-wider">
+                    Manual Friction Index
+                  </span>
+                  <span className="text-[8px] font-mono text-white/30 uppercase tracking-widest">Wasted Effort Level</span>
+                </div>
+                <div className="grid grid-cols-4 gap-1" role="group" aria-label="Manual Friction Index">
+                  {[
+                    { id: "low", label: "Low", desc: "Highly standardized, minimal cognitive friction" },
+                    { id: "medium", label: "Medium", desc: "Rule-based processing, minor exceptions" },
+                    { id: "high", label: "High", desc: "Complex workflow, significant administrative drag" },
+                    { id: "critical", label: "Critical", desc: "Severe operational bottleneck, data-heavy" }
+                  ].map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setManualEffort(item.id)}
+                      className={`py-1.5 rounded text-[10px] font-medium transition-all border flex flex-col items-center justify-center ${
+                        manualEffort === item.id
+                          ? "bg-[#009DFF]/10 border-[#009DFF]/40 text-white"
+                          : "bg-white/5 border-white/5 text-white/50 hover:bg-white/[0.08] hover:text-white/80"
+                      }`}
+                      title={item.desc}
+                    >
+                      <span>{item.label}</span>
+                    </button>
+                  ))}
                 </div>
               </div>
-              <p className="text-[10px] text-white/40 font-light leading-relaxed">
-                Fully loaded wage of targeted workforce, including operations, benefits, and tools.
-              </p>
-              <input
-                id="avgHourlyRate-slider"
-                aria-label="Avg Hourly Labor Rate range slider"
-                type="range"
-                min="15"
-                max="350"
-                step="5"
-                value={avgHourlyRate}
-                onChange={(e) => setAvgHourlyRate(parseInt(e.target.value))}
-                className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#009DFF] hover:accent-[#009DFF]"
-              />
             </div>
 
-            {/* Variable 3: Inefficient Hours */}
-            <div className="space-y-2">
-              <div className="flex justify-between items-center text-xs">
-                <label htmlFor="inefficientHours-input" className="text-white/60 font-mono text-[10px] uppercase cursor-pointer">
-                  Wasted Hours per FTE / Wk
-                </label>
-                <div className="flex items-center gap-1">
-                  <input
-                    id="inefficientHours-input"
-                    type="number"
-                    value={inefficientHoursPerWeek}
-                    onChange={(e) => setInefficientHoursPerWeek(Math.max(0, parseInt(e.target.value) || 0))}
-                    className="w-16 h-7 bg-white/5 border border-white/10 rounded px-1.5 text-right font-mono font-bold text-xs text-white focus:outline-none focus:border-[#009DFF]/50"
-                  />
-                  <span className="text-white/40 font-mono text-[9px]">HRS</span>
-                </div>
+            {/* SECTION 3: SOVEREIGN AMBITION */}
+            <div className="space-y-4 pb-2">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-mono bg-white/5 border border-white/10 text-[#009DFF] px-1.5 py-0.5 rounded">03</span>
+                <span className="text-[10px] font-mono text-white/50 uppercase tracking-widest font-semibold">Sovereign Automation Targets</span>
               </div>
-              <p className="text-[10px] text-white/40 font-light leading-relaxed">
-                Average hours wasted per week per analyst on compliance paperwork, manual audit, or waiting.
-              </p>
-              <input
-                id="inefficientHours-slider"
-                aria-label="Wasted Hours per FTE / Wk range slider"
-                type="range"
-                min="1"
-                max="40"
-                step="1"
-                value={inefficientHoursPerWeek}
-                onChange={(e) => setInefficientHoursPerWeek(parseInt(e.target.value))}
-                className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#009DFF] hover:accent-[#009DFF]"
-              />
-            </div>
 
-            {/* Variable 4: Initial CapEx */}
-            <div className="space-y-2">
-              <div className="flex justify-between items-center text-xs">
-                <label htmlFor="initialInvestment-input" className="text-white/60 font-mono text-[10px] uppercase cursor-pointer">
-                  Initial CapEx Allocation
-                </label>
-                <div className="flex items-center gap-1">
-                  <span className="text-white/40 font-mono text-[10px]">$</span>
-                  <input
-                    id="initialInvestment-input"
-                    type="number"
-                    value={initialInvestment}
-                    onChange={(e) => setInitialInvestment(Math.max(0, parseInt(e.target.value) || 0))}
-                    className="w-24 h-7 bg-white/5 border border-white/10 rounded px-1.5 text-right font-mono font-bold text-xs text-white focus:outline-none focus:border-[#009DFF]/50"
-                  />
+              {/* Automation Target Rate */}
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <label htmlFor="automation-slider" className="text-white/60 font-mono text-[9px] uppercase tracking-wider cursor-pointer">
+                    Automation Target Rate
+                  </label>
+                  <span className="text-[#00FF9D] font-mono font-bold text-xs">{automationTarget}%</span>
+                </div>
+                <p className="text-[9px] text-white/30 leading-normal">
+                  Target volume percentage delegated to secure multi-agent chains.
+                </p>
+                <input
+                  id="automation-slider"
+                  aria-label="Automation Target Rate range slider"
+                  type="range"
+                  min="10"
+                  max="95"
+                  step="5"
+                  value={automationTarget}
+                  onChange={(e) => setAutomationTarget(parseInt(e.target.value))}
+                  className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#00FF9D] hover:accent-[#00FF9D]"
+                />
+              </div>
+
+              {/* Target Productivity Boost */}
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <label htmlFor="productivity-slider" className="text-white/60 font-mono text-[9px] uppercase tracking-wider cursor-pointer">
+                    Target Productivity Boost
+                  </label>
+                  <span className="text-white font-mono font-bold text-xs">
+                    {productivityImprovement}% <span className="text-white/30 text-[9px] font-light">({Math.max(10, productivityImprovement - 15)}% - {Math.min(95, productivityImprovement + 15)}% model)</span>
+                  </span>
+                </div>
+                <p className="text-[9px] text-white/30 leading-normal">
+                  Modelled efficiency multiplier of automated tasks. Bounds denote safety ranges.
+                </p>
+                <input
+                  id="productivity-slider"
+                  aria-label="Target Productivity Boost range slider"
+                  type="range"
+                  min="10"
+                  max="90"
+                  step="5"
+                  value={productivityImprovement}
+                  onChange={(e) => setProductivityImprovement(parseInt(e.target.value))}
+                  className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#009DFF] hover:accent-[#009DFF]"
+                />
+              </div>
+
+              {/* Deployment Horizon */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center">
+                  <span className="text-white/60 font-mono text-[9px] uppercase tracking-wider">
+                    Deployment Horizon
+                  </span>
+                  <span className="text-[8px] font-mono text-white/30 uppercase tracking-widest">Phased System Integration</span>
+                </div>
+                <div className="grid grid-cols-4 gap-1" role="group" aria-label="Deployment Horizon">
+                  {[
+                    { id: "3_months", label: "3M", title: "3 Months (Fast Track Setup)" },
+                    { id: "6_months", label: "6M", title: "6 Months (Standard Setup)" },
+                    { id: "12_months", label: "12M", title: "12 Months (Phased Enterprise Setup)" },
+                    { id: "18_months", label: "18M", title: "18 Months (Global Core Implementation)" }
+                  ].map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setImplementationHorizon(item.id)}
+                      className={`py-1.5 rounded text-[10px] font-medium transition-all border ${
+                        implementationHorizon === item.id
+                          ? "bg-[#009DFF]/10 border-[#009DFF]/40 text-white"
+                          : "bg-white/5 border-white/5 text-white/50 hover:bg-white/[0.08] hover:text-white/80"
+                      }`}
+                      title={item.title}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
                 </div>
               </div>
-              <p className="text-[10px] text-white/40 font-light leading-relaxed">
-                Anticipated infrastructure setup cost, licensing fee, and engineering resource alignment for GFF enclaves.
-              </p>
-              <input
-                id="initialInvestment-slider"
-                aria-label="Initial CapEx Allocation range slider"
-                type="range"
-                min="5000"
-                max="1500000"
-                step="5000"
-                value={initialInvestment}
-                onChange={(e) => setInitialInvestment(parseInt(e.target.value))}
-                className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#009DFF] hover:accent-[#009DFF]"
-              />
+
+              {/* Enclave Platform Investment (CapEx) */}
+              <div className="space-y-2 pt-1">
+                <div className="flex justify-between items-center">
+                  <label htmlFor="investment-input" className="text-white/60 font-mono text-[9px] uppercase tracking-wider cursor-pointer">
+                    Enclave Platform CapEx
+                  </label>
+                  <div className="flex items-center gap-1">
+                    <span className="text-white/40 font-mono text-[10px]">$</span>
+                    <input
+                      id="investment-input"
+                      type="text"
+                      value={initialInvestment === 0 ? "" : initialInvestment.toLocaleString()}
+                      onChange={(e) => handleInvestmentChange(e.target.value)}
+                      className="w-20 h-7 bg-white/5 border border-white/10 rounded px-1.5 text-right font-mono font-bold text-xs text-white focus:outline-none focus:border-[#009DFF]/50"
+                    />
+                  </div>
+                </div>
+                <p className="text-[9px] text-white/30 leading-normal">
+                  Platform deployment, hardware sandboxing, secure compliance setup, and integration.
+                </p>
+                <input
+                  id="investment-slider"
+                  aria-label="Enclave Platform CapEx range slider"
+                  type="range"
+                  min="10000"
+                  max="2500000"
+                  step="10000"
+                  value={initialInvestment}
+                  onChange={(e) => setInitialInvestment(parseInt(e.target.value))}
+                  className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#009DFF] hover:accent-[#009DFF]"
+                />
+              </div>
             </div>
 
             {/* Strategic Priorities Selection Grid */}
-            <div className="space-y-3 pt-2">
-              <span className="text-white/60 font-mono text-[10px] uppercase block">Strategic Core Objective</span>
-              <div className="grid grid-cols-1 gap-2">
+            <div className="space-y-3 pt-3 border-t border-white/5">
+              <span className="text-white/60 font-mono text-[9px] uppercase tracking-wider block">Strategic Focus Lens</span>
+              <div className="grid grid-cols-1 gap-2" role="group" aria-label="Strategic Focus Lens">
                 {priorities.map((item) => {
                   const isActive = item.id === priority;
                   return (
@@ -373,20 +755,20 @@ Status: MODELLED - ILLUSTRATIVE ONLY
           <div className="p-4 rounded-xl border border-white/5 bg-[#030305]/40 text-[10px] text-white/30 space-y-2 leading-relaxed">
             <span className="font-mono text-[#009DFF] font-bold block uppercase tracking-wider">SECURE SHIELD COMPLIANCE</span>
             <p>
-              This simulator processes data points purely inside local volatile browser memory. It adheres to the GFF AI zero-retention mandate. No telemetry is logged outside your sandboxed session.
+              This simulator processes data points purely inside local volatile browser memory, aligning with the GFF AI zero-retention mandate. No telemetry is logged outside your sandboxed session.
             </p>
           </div>
         </div>
 
         {/* RIGHT COLUMN: Results Console */}
-        <div className="lg:col-span-8 space-y-8 text-white">
+        <div className="lg:col-span-7 space-y-8 text-white">
           {/* Section A: Main Telemetry Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="p-5 rounded-2xl border border-white/5 bg-[#030306]/95 flex flex-col justify-between relative overflow-hidden group">
               <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#00FF9D]/30 to-transparent" />
               <div>
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[9px] font-mono text-white/40 uppercase tracking-wider block">ANNUAL EFFICIENCY GAP</span>
+                  <span className="text-[9px] font-mono text-white/40 uppercase tracking-wider block">RECLAIMED ANNUAL VALUE</span>
                   <span className="text-[8px] font-mono font-bold bg-[#00FF9D]/10 text-[#00FF9D] px-1 rounded uppercase tracking-widest">MODELLED</span>
                 </div>
                 <span className="text-2xl lg:text-3xl font-extrabold text-[#00FF9D] block mt-2 font-mono tracking-tight">
@@ -394,7 +776,7 @@ Status: MODELLED - ILLUSTRATIVE ONLY
                 </span>
               </div>
               <p className="text-[10px] text-white/40 font-light mt-4 border-t border-white/5 pt-2">
-                Illustrative recouped cost based on expected 85% workforce velocity optimization.
+                Illustrative annual budget returned from manual operations to executive reserves.
               </p>
             </div>
 
@@ -402,7 +784,7 @@ Status: MODELLED - ILLUSTRATIVE ONLY
               <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#009DFF]/30 to-transparent" />
               <div>
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[9px] font-mono text-white/40 uppercase tracking-wider block">RECLAIMED ANNUAL CAPACITY</span>
+                  <span className="text-[9px] font-mono text-white/40 uppercase tracking-wider block">PRODUCTIVE HOURS RECLAIMED</span>
                   <span className="text-[8px] font-mono font-bold bg-[#009DFF]/10 text-[#009DFF] px-1 rounded uppercase tracking-widest">MODELLED</span>
                 </div>
                 <span className="text-2xl lg:text-3xl font-extrabold text-[#009DFF] block mt-2 font-mono tracking-tight">
@@ -410,7 +792,7 @@ Status: MODELLED - ILLUSTRATIVE ONLY
                 </span>
               </div>
               <p className="text-[10px] text-white/40 font-light mt-4 border-t border-white/5 pt-2">
-                Equivalent full-time hours returned to strategic initiatives rather than administrative friction.
+                Equivalent labor hours returned to strategic initiatives rather than manual loops.
               </p>
             </div>
 
@@ -433,13 +815,17 @@ Status: MODELLED - ILLUSTRATIVE ONLY
 
           {/* Section B: Payback-Style Strategic Narrative */}
           <div className="p-6 rounded-2xl border border-white/5 bg-[#030306]/80 backdrop-blur-sm space-y-4">
-            <span className="text-[9px] font-mono text-white/40 uppercase tracking-widest block">EXECUTIVE EVALUATION SUMMARY // {currentPriorityObj.title.toUpperCase()} TARGET</span>
-            <div className="space-y-3">
-              <p className="text-sm lg:text-base text-white/80 font-light leading-relaxed">
-                By deploying the GFF sovereign agent network across your <span className="font-semibold text-white">{teamSize} FTE</span> workforce footprint, the organization is projected to achieve an illustrative Net Sovereign Return of <span className="text-[#00FF9D] font-mono font-bold">{expectedRoi}%</span>. The model indicates full amortization completes <span className="text-white font-semibold">{formatPayback(expectedPaybackMonths).toLowerCase()}</span>, establishing an air-gapped margin optimization boundary.
+            <span className="text-[9px] font-mono text-white/40 uppercase tracking-widest block">EXECUTIVE SIMULATION DIALOGUE // {currentPriorityObj.title.toUpperCase()}</span>
+            
+            <div className="space-y-4 text-xs md:text-sm font-light leading-relaxed text-white/80">
+              <p>
+                For an enterprise operating in <span className="text-white font-medium">{indName}</span>, manual bottlenecks inside <span className="text-white font-medium">{funcName}</span> represent a significant drain on organizational momentum. With an annual baseline of <span className="text-white font-mono font-medium">${annualCostBaseline.toLocaleString()}</span> and a manual friction index of <span className="text-white font-medium">{manualEffort.toUpperCase()}</span>, approximately <span className="text-amber-400 font-mono font-medium">${addressableCostBaseline.toLocaleString()}</span> is consumed by repetitive manual workflows.
               </p>
-              <p className="text-xs text-white/50 font-light leading-relaxed">
-                Under the strategic lens of <span className="font-semibold text-[#009DFF]">{currentPriorityObj.title}</span>, GFF's multi-agent hierarchies eliminate repetitive operational loops to reclaim <span className="text-white font-semibold font-mono">{expectedHoursSaved.toLocaleString()} hours</span> of analytical runway per year. Telemetry is securely validated on single-tenant enclaves, reducing audit and speed friction to zero.
+              <p>
+                Deploying the GFF secure sovereign agent network over a <span className="text-white font-medium">{implementationHorizon.replace("_", " ")}</span> horizon is modelled to automate up to <span className="text-[#00FF9D] font-mono font-bold">{automationTarget}%</span> of standardized tasks. Achieving a target productivity boost of <span className="text-white font-mono font-medium">{productivityImprovement}%</span> is projected to unlock an illustrative annual reclaimed value of <span className="text-[#00FF9D] font-mono font-bold">${expectedGrossSavings.toLocaleString()}</span>, returning <span className="text-white font-mono font-semibold">{expectedHoursSaved.toLocaleString()} productive hours</span> to high-leverage strategic initiatives.
+              </p>
+              <p className="text-white/50 text-[11px] leading-relaxed border-t border-white/5 pt-3">
+                Under single-tenant private enclaves with a CapEx allocation of <span className="text-white font-mono">${initialInvestment.toLocaleString()}</span>, the model indicates the system completes its capital amortization within <span className="text-[#009DFF] font-semibold">{formatPayback(expectedPaybackMonths).toLowerCase()}</span>, yielding an estimated net sovereign return (ROI) of <span className="text-[#00FF9D] font-mono font-bold">{expectedRoi}%</span> over the initial operational cycle.
               </p>
             </div>
           </div>
@@ -462,10 +848,10 @@ Status: MODELLED - ILLUSTRATIVE ONLY
                 <line x1="30" y1="170" x2="690" y2="170" stroke="rgba(255,255,255,0.03)" strokeWidth="1" strokeDasharray="3,3" />
                 <line x1="30" y1="200" x2="690" y2="200" stroke="rgba(255,255,255,0.08)" strokeWidth="1.5" />
                 {(() => {
-                  const maxAmt = Math.max(totalWastedCostPerYear, expectedGrossSavings, initialInvestment, expectedNetSavings, 1);
+                  const maxAmt = Math.max(addressableCostBaseline, expectedGrossSavings, initialInvestment, expectedNetSavings, 1);
                   const getY = (v: number) => 200 - (v / maxAmt) * 160;
                   const getH = (v: number) => (v / maxAmt) * 160;
-                  const b1Y = getY(totalWastedCostPerYear), b1H = getH(totalWastedCostPerYear);
+                  const b1Y = getY(addressableCostBaseline), b1H = getH(addressableCostBaseline);
                   const b2H = getH(expectedGrossSavings), b2Y = b1Y;
                   const b3H = getH(initialInvestment), b3Y = b2Y + b2H - b3H;
                   const b4Y = getY(expectedNetSavings), b4H = getH(expectedNetSavings);
@@ -476,7 +862,7 @@ Status: MODELLED - ILLUSTRATIVE ONLY
                       <line x1="460" y1={b3Y} x2="550" y2={b4Y} stroke="rgba(255,255,255,0.2)" strokeWidth="1" strokeDasharray="3,3" />
                       <g>
                         <rect x="50" y={b1Y} width="70" height={b1H} rx="3" fill="url(#fG)" stroke="rgba(255,255,255,0.05)" />
-                        <text x="85" y={Math.max(b1Y-8,15)} textAnchor="middle" className="fill-white/80 font-mono text-[10px] font-bold">{formatCompactCurrency(totalWastedCostPerYear)}</text>
+                        <text x="85" y={Math.max(b1Y-8,15)} textAnchor="middle" className="fill-white/80 font-mono text-[10px] font-bold">{formatCompactCurrency(addressableCostBaseline)}</text>
                       </g>
                       <g>
                         <rect x="220" y={b2Y} width="70" height={b2H} rx="3" fill="url(#rG)" stroke="rgba(0,255,157,0.15)" />
@@ -488,162 +874,158 @@ Status: MODELLED - ILLUSTRATIVE ONLY
                       </g>
                       <g>
                         <rect x="560" y={b4Y} width="70" height={b4H} rx="3" fill="url(#nG)" stroke="rgba(0,255,157,0.3)" />
-                        <text x="595" y={Math.max(b4Y-8,15)} textAnchor="middle" className="fill-white font-mono text-[11px] font-extrabold">{formatCompactCurrency(expectedNetSavings)}</text>
+                        <text x="595" y={Math.max(b4Y-8,15)} textAnchor="middle" className="fill-[#00FF9D] font-mono text-[10px] font-bold">{formatCompactCurrency(expectedNetSavings)}</text>
                       </g>
                     </>
                   );
                 })()}
+                <text x="85" y="220" textAnchor="middle" className="fill-white/30 font-mono text-[8px] uppercase tracking-wider">Manual Loss</text>
+                <text x="255" y="220" textAnchor="middle" className="fill-white/30 font-mono text-[8px] uppercase tracking-wider">GFF Reclaimed</text>
+                <text x="425" y="220" textAnchor="middle" className="fill-white/30 font-mono text-[8px] uppercase tracking-wider">CapEx Enclave</text>
+                <text x="595" y="220" textAnchor="middle" className="fill-white/30 font-mono text-[8px] uppercase tracking-wider">Net Dividend</text>
                 <defs>
-                  <linearGradient id="fG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#fff" stopOpacity="0.2"/><stop offset="100%" stopColor="#fff" stopOpacity="0.03"/></linearGradient>
-                  <linearGradient id="rG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#00FF9D" stopOpacity="0.3"/><stop offset="100%" stopColor="#00FF9D" stopOpacity="0.05"/></linearGradient>
-                  <linearGradient id="cG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#E4000F" stopOpacity="0.3"/><stop offset="100%" stopColor="#E4000F" stopOpacity="0.05"/></linearGradient>
-                  <linearGradient id="nG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#00FF9D" stopOpacity="0.55"/><stop offset="50%" stopColor="#009DFF" stopOpacity="0.3"/><stop offset="100%" stopColor="#000" stopOpacity="0"/></linearGradient>
+                  <linearGradient id="fG" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="rgba(255,255,255,0.15)" />
+                    <stop offset="100%" stopColor="rgba(255,255,255,0.01)" />
+                  </linearGradient>
+                  <linearGradient id="rG" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="rgba(0,255,157,0.25)" />
+                    <stop offset="100%" stopColor="rgba(0,255,157,0.02)" />
+                  </linearGradient>
+                  <linearGradient id="cG" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="rgba(228,0,15,0.25)" />
+                    <stop offset="100%" stopColor="rgba(228,0,15,0.02)" />
+                  </linearGradient>
+                  <linearGradient id="nG" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="rgba(0,255,157,0.45)" />
+                    <stop offset="100%" stopColor="rgba(0,255,157,0.05)" />
+                  </linearGradient>
                 </defs>
               </svg>
-              <div className="grid grid-cols-4 gap-2 pt-3 font-mono text-[9px] uppercase tracking-wider text-white/50 text-center border-t border-white/[0.03] mt-2">
-                <div>01. Operational Friction</div>
-                <div>02. GFF Reclaim</div>
-                <div>03. Setup Expense</div>
-                <div className="text-white font-bold">04. Sovereign Dividend</div>
-              </div>
             </div>
-            <p className="text-[9px] text-white/30 font-light italic mt-3 text-center">* All metrics are illustrative based on mathematical models and not performance guarantees.</p>
-          </div>
-
-          {/* Section D: Three Scenario Comparisons (Conservative, Expected, Aggressive) */}
-          <div className="space-y-4">
-            <span className="text-[9px] font-mono text-white/40 uppercase tracking-widest block">DEVIANCE RUNWAY // SCENARIO SIMULATION</span>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              
-              {/* Conservative Scenario Card */}
-              <div className="p-5 rounded-2xl border border-white/5 bg-[#030306]/95 hover:border-white/10 transition flex flex-col justify-between h-full relative group">
-                <div className="space-y-3">
-                  <div className="flex justify-between items-start">
-                    <span className="text-[9px] font-mono text-white/35 uppercase">CONSERVATIVE CASE</span>
-                    <span className="text-[8px] font-mono text-white/40 px-1.5 py-0.5 rounded bg-white/5 border border-white/5">50% ADOPTION</span>
-                  </div>
-                  <div>
-                    <span className="text-xl font-bold text-white/80 block font-mono">{formatCompactCurrency(conservativeGrossSavings)}</span>
-                    <span className="text-[9px] text-white/40 block mt-0.5">Annual Illustrative Opportunity</span>
-                  </div>
-                  <div className="space-y-1 text-xs pt-2 border-t border-white/[0.03]">
-                    <div className="flex justify-between text-[11px]">
-                      <span className="text-white/40">Saved Hours:</span>
-                      <span className="font-mono text-white/70">{conservativeHoursSaved.toLocaleString()}</span>
-                    </div>
-                    <div className="flex justify-between text-[11px]">
-                      <span className="text-white/40">Payback:</span>
-                      <span className="font-mono text-white/70">{formatPayback(conservativePaybackMonths)}</span>
-                    </div>
-                    <div className="flex justify-between text-[11px]">
-                      <span className="text-white/40">ROI Net:</span>
-                      <span className="font-mono text-white/70">{conservativeRoi}%</span>
-                    </div>
-                  </div>
-                </div>
-                <p className="text-[10px] text-white/40 font-light leading-relaxed mt-4 pt-2 border-t border-white/5">
-                  Models restricted rollout. Limited to basic air-gapped automation nodes with manual approvals.
-                </p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-4 border-t border-white/5 font-mono text-[10px] text-white/50">
+              <div>
+                <span className="block text-white/30 text-[8px] uppercase">Loaded Labor Rate</span>
+                <span className="text-white font-bold">${loadedHourlyRate}/hr</span>
               </div>
-
-              {/* Expected GFF Target Card - Highlighted */}
-              <div className="p-5 rounded-2xl border border-[#00FF9D]/20 bg-[#04090b] shadow-[0_0_20px_rgba(0,255,157,0.03)] transition flex flex-col justify-between h-full relative group">
-                <div className="absolute top-0 inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#00FF9D] to-transparent" />
-                <div className="space-y-3">
-                  <div className="flex justify-between items-start">
-                    <span className="text-[9px] font-mono text-[#00FF9D] font-bold uppercase tracking-wider">EXPECTED COGNITIVE</span>
-                    <span className="text-[8px] font-mono text-[#00FF9D] font-bold px-1.5 py-0.5 rounded bg-[#00FF9D]/10 border border-[#00FF9D]/20">85% ADOPTION</span>
-                  </div>
-                  <div>
-                    <span className="text-2xl font-extrabold text-[#00FF9D] block font-mono tracking-tight">{formatCompactCurrency(expectedGrossSavings)}</span>
-                    <span className="text-[9px] text-white/50 block mt-0.5">Annual Illustrative Opportunity</span>
-                  </div>
-                  <div className="space-y-1 text-xs pt-2 border-t border-[#00FF9D]/10">
-                    <div className="flex justify-between text-[11px]">
-                      <span className="text-white/40">Saved Hours:</span>
-                      <span className="font-mono text-white font-bold">{expectedHoursSaved.toLocaleString()}</span>
-                    </div>
-                    <div className="flex justify-between text-[11px]">
-                      <span className="text-white/40">Payback:</span>
-                      <span className="font-mono text-[#00FF9D] font-bold">{formatPayback(expectedPaybackMonths)}</span>
-                    </div>
-                    <div className="flex justify-between text-[11px]">
-                      <span className="text-white/40">ROI Net:</span>
-                      <span className="font-mono text-white font-bold">{expectedRoi}%</span>
-                    </div>
-                  </div>
-                </div>
-                <p className="text-[10px] text-white/60 font-light leading-relaxed mt-4 pt-2 border-t border-white/5">
-                  GFF Standard. Complete single-tenant VPC deployment with autonomous policy watchdogs.
-                </p>
+              <div>
+                <span className="block text-white/30 text-[8px] uppercase">Friction Factor</span>
+                <span className="text-white font-bold">{Math.round(manualEffortFactor * 100)}%</span>
               </div>
-
-              {/* Aggressive Scenario Card */}
-              <div className="p-5 rounded-2xl border border-white/5 bg-[#030306]/95 hover:border-white/10 transition flex flex-col justify-between h-full relative group">
-                <div className="space-y-3">
-                  <div className="flex justify-between items-start">
-                    <span className="text-[9px] font-mono text-white/35 uppercase">AGGRESSIVE FLEET</span>
-                    <span className="text-[8px] font-mono text-white/40 px-1.5 py-0.5 rounded bg-white/5 border border-white/5">120% SPEED</span>
-                  </div>
-                  <div>
-                    <span className="text-xl font-bold text-white/80 block font-mono">{formatCompactCurrency(aggressiveGrossSavings)}</span>
-                    <span className="text-[9px] text-white/40 block mt-0.5">Annual Illustrative Opportunity</span>
-                  </div>
-                  <div className="space-y-1 text-xs pt-2 border-t border-white/[0.03]">
-                    <div className="flex justify-between text-[11px]">
-                      <span className="text-white/40">Saved Hours:</span>
-                      <span className="font-mono text-white/70">{aggressiveHoursSaved.toLocaleString()}</span>
-                    </div>
-                    <div className="flex justify-between text-[11px]">
-                      <span className="text-white/40">Payback:</span>
-                      <span className="font-mono text-white/70">{formatPayback(aggressivePaybackMonths)}</span>
-                    </div>
-                    <div className="flex justify-between text-[11px]">
-                      <span className="text-white/40">ROI Net:</span>
-                      <span className="font-mono text-white/70">{aggressiveRoi}%</span>
-                    </div>
-                  </div>
-                </div>
-                <p className="text-[10px] text-white/40 font-light leading-relaxed mt-4 pt-2 border-t border-white/5">
-                  Full cross-department multi-agent hierarchy with automated scaling and zero-latency pipelines.
-                </p>
+              <div>
+                <span className="block text-white/30 text-[8px] uppercase">Automation Rate</span>
+                <span className="text-white font-bold">{automationTarget}%</span>
+              </div>
+              <div>
+                <span className="block text-white/30 text-[8px] uppercase">Modelled Efficiency</span>
+                <span className="text-white font-bold">+{productivityImprovement}%</span>
               </div>
             </div>
           </div>
 
-          {/* Section E: Interconnected Strategic Elevation Pipeline */}
-          <div className="space-y-4 pt-4">
-            <span className="text-[9px] font-mono text-white/40 uppercase tracking-widest block">SOVEREIGN PIPELINE ELEVATION</span>
+          {/* Section D: Comparative Scenario Matrices */}
+          <div className="p-6 rounded-2xl border border-white/5 bg-[#030306]/95 space-y-4">
+            <div className="border-b border-white/5 pb-3">
+              <span className="text-[9px] font-mono text-white/40 block uppercase tracking-wider">AMORTIZATION MATRIX</span>
+              <h3 className="text-sm font-bold text-white mt-1">Multi-Scenario Sovereign Performance Matrix</h3>
+            </div>
+            
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              
-              <Link href="/build/assessment" className="p-5 rounded-2xl border border-white/5 bg-[#030305] hover:border-[#009DFF]/30 hover:bg-white/[0.01] transition-all flex flex-col justify-between min-h-[170px] group text-left">
+              {/* Scenario 1: Conservative */}
+              <div className="p-4 rounded-xl border border-white/5 bg-white/[0.01] flex flex-col justify-between space-y-3 relative group">
+                <div className="space-y-1">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] font-bold text-white/70">Conservative</span>
+                    <span className="text-[8px] font-mono bg-white/5 text-white/40 px-1 rounded uppercase tracking-wider">Risk-Adjusted</span>
+                  </div>
+                  <span className="text-[9px] font-mono text-white/30 block">75% of Adoption Target</span>
+                </div>
                 <div className="space-y-2">
-                  <div className="w-7 h-7 rounded bg-[#009DFF]/5 border border-[#009DFF]/15 flex items-center justify-center text-[#009DFF]">
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-white/40">Value:</span>
+                    <span className="font-mono text-white/80 font-bold">{formatCompactCurrency(conservativeGrossSavings)}</span>
                   </div>
-                  <h4 className="text-xs font-bold text-white group-hover:text-[#009DFF] transition-colors">Launch Diagnostic Assessor</h4>
-                  <p className="text-[10px] text-white/40 font-light leading-relaxed">
-                    Evaluate operational legacy bottlenecks, VPC setup, and compliance telemetry scores.
-                  </p>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-white/40">Payback:</span>
+                    <span className="font-mono text-white/80">{formatPayback(conservativePaybackMonths).replace(" Amortization", "")}</span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-white/40">Net ROI:</span>
+                    <span className="font-mono text-[#00FF9D] font-bold">+{conservativeRoi}%</span>
+                  </div>
                 </div>
-                <div className="text-[9px] font-mono text-white/30 pt-3 border-t border-white/5 flex items-center gap-1 group-hover:text-white transition-colors">
-                  <span>DEPLOY DIAGNOSTIC GATE</span>
-                  <svg className="w-2.5 h-2.5 group-hover:translate-x-0.5 transition-transform text-[#009DFF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                  </svg>
-                </div>
-              </Link>
+              </div>
 
+              {/* Scenario 2: Expected */}
+              <div className="p-4 rounded-xl border border-white/10 bg-[#009DFF]/5 flex flex-col justify-between space-y-3 relative group">
+                <div className="space-y-1">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] font-bold text-[#009DFF]">Expected Case</span>
+                    <span className="text-[8px] font-mono bg-[#009DFF]/10 text-[#009DFF] px-1 rounded uppercase tracking-wider">Standard</span>
+                  </div>
+                  <span className="text-[9px] font-mono text-white/30 block">Calculated Target</span>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-white/40">Value:</span>
+                    <span className="font-mono text-white font-bold">{formatCompactCurrency(expectedGrossSavings)}</span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-white/40">Payback:</span>
+                    <span className="font-mono text-white font-bold">{formatPayback(expectedPaybackMonths).replace(" Amortization", "")}</span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-white/40">Net ROI:</span>
+                    <span className="font-mono text-[#00FF9D] font-bold">+{expectedRoi}%</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Scenario 3: Aggressive */}
+              <div className="p-4 rounded-xl border border-white/5 bg-white/[0.01] flex flex-col justify-between space-y-3 relative group">
+                <div className="space-y-1">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] font-bold text-white/70">Aggressive</span>
+                    <span className="text-[8px] font-mono bg-[#00FF9D]/10 text-[#00FF9D] px-1 rounded uppercase tracking-wider">Synergistic</span>
+                  </div>
+                  <span className="text-[9px] font-mono text-white/30 block">115% Adoption / Multipliers</span>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-white/40">Value:</span>
+                    <span className="font-mono text-white/80 font-bold">{formatCompactCurrency(aggressiveGrossSavings)}</span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-white/40">Payback:</span>
+                    <span className="font-mono text-white/80">{formatPayback(aggressivePaybackMonths).replace(" Amortization", "")}</span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-white/40">Net ROI:</span>
+                    <span className="font-mono text-[#00FF9D] font-bold">+{aggressiveRoi}%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <p className="text-[9px] text-white/30 font-light leading-relaxed">
+              * Note: The comparative matrix contrasts the baseline scenario against standard administrative resistance (Conservative) and high-adoption network multipliers (Aggressive). Estimates are projections based on the software formulas and do not serve as commercial guarantees.
+            </p>
+          </div>
+
+          {/* Section E: Inter-Tool Ecosystem Routing */}
+          <div className="p-6 rounded-2xl border border-white/5 bg-[#030306]/95 space-y-4">
+            <span className="text-[9px] font-mono text-white/40 uppercase tracking-widest block">INTER-CONNECTED PLATFORM MODULES</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              
               <Link href="/build/blueprint" className="p-5 rounded-2xl border border-white/5 bg-[#030305] hover:border-[#9D00FF]/30 hover:bg-white/[0.01] transition-all flex flex-col justify-between min-h-[170px] group text-left">
                 <div className="space-y-2">
                   <div className="w-7 h-7 rounded bg-[#9D00FF]/5 border border-[#9D00FF]/15 flex items-center justify-center text-[#9D00FF]">
                     <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M11 3.055A9.003 9.003 0 1020.945 13H11V3.055z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
                     </svg>
                   </div>
-                  <h4 className="text-xs font-bold text-white group-hover:text-[#9D00FF] transition-colors">Launch Blueprint Architect</h4>
+                  <h4 className="text-xs font-bold text-white group-hover:text-[#9D00FF] transition-colors">Launch Sovereign Agent Architect</h4>
                   <p className="text-[10px] text-white/40 font-light leading-relaxed">
                     Graph custom agent topologies and map reclaimed workforce hours directly to multi-agent execution steps.
                   </p>
