@@ -7,6 +7,7 @@ import {
   budgetOptions,
   geographyOptions,
   calculateBlueprintScore,
+  calculateBlueprintDimensions,
   getScoreCategory,
   getRecommendedOpportunities,
   getRecommendedSolution,
@@ -565,13 +566,15 @@ export default function BlueprintGenerator() {
     const opportunities = getRecommendedOpportunities(data.industry);
     const solution = getRecommendedSolution(data.biggestChallenge);
     const impact = getExpectedImpact(data.topPriorities);
+    const dimensions = calculateBlueprintDimensions(data);
 
     return {
       score,
       category,
       opportunities,
       solution,
-      impact
+      impact,
+      dimensions
     };
   };
 
@@ -648,6 +651,123 @@ export default function BlueprintGenerator() {
           </div>
         )}
 
+        {/* Dimension Breakdown Section */}
+        <div className="space-y-4">
+          <span className="text-[10px] uppercase tracking-widest font-extrabold text-[#087DF3] block tracking-wider font-mono">Enterprise AI Readiness Dimension Breakdown</span>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            {/* Card 1: AI Maturity Index */}
+            <div className="p-5 rounded-2xl border border-white/5 bg-[#030712]/30 hover:border-[#087DF3]/30 hover:bg-[#030712]/50 transition-all duration-300 flex flex-col justify-between relative overflow-hidden group">
+              <div className="absolute top-0 left-0 w-[2px] h-full bg-[#087DF3] opacity-50 group-hover:opacity-100 transition-opacity" />
+              <div className="space-y-3">
+                <div className="flex justify-between items-start">
+                  <span className="text-[10px] font-mono text-white/40 uppercase font-bold">DIM_01 / MATURITY</span>
+                  <span className="text-xs font-mono font-bold text-[#087DF3] bg-[#087DF3]/15 px-2 py-0.5 rounded">20% WT.</span>
+                </div>
+                <h4 className="text-sm font-bold text-white tracking-tight">AI Maturity Index</h4>
+                <p className="text-[11px] text-white/50 leading-relaxed font-light">Strategic execution capability and architectural depth.</p>
+              </div>
+              <div className="mt-5 space-y-2">
+                <div className="flex justify-between items-baseline">
+                  <span className="text-xl font-black font-mono text-white">{result.dimensions?.aiMaturity ?? 0}<span className="text-xs text-white/45">/100</span></span>
+                  <span className="text-[10px] font-mono text-white/50">+{((result.dimensions?.aiMaturity ?? 0) * 0.20).toFixed(1)} pts</span>
+                </div>
+                <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                  <div className="h-full bg-[#087DF3] rounded-full transition-all duration-1000 ease-out" style={{ width: `${result.dimensions?.aiMaturity ?? 0}%` }} />
+                </div>
+              </div>
+            </div>
+
+            {/* Card 2: Business Need */}
+            <div className="p-5 rounded-2xl border border-white/5 bg-[#030712]/30 hover:border-[#E98828]/30 hover:bg-[#030712]/50 transition-all duration-300 flex flex-col justify-between relative overflow-hidden group">
+              <div className="absolute top-0 left-0 w-[2px] h-full bg-[#E98828] opacity-50 group-hover:opacity-100 transition-opacity" />
+              <div className="space-y-3">
+                <div className="flex justify-between items-start">
+                  <span className="text-[10px] font-mono text-white/40 uppercase font-bold">DIM_02 / NEED</span>
+                  <span className="text-xs font-mono font-bold text-[#E98828] bg-[#E98828]/15 px-2 py-0.5 rounded">25% WT.</span>
+                </div>
+                <h4 className="text-sm font-bold text-white tracking-tight">Business Need Alignment</h4>
+                <p className="text-[11px] text-white/50 leading-relaxed font-light">Urgency of productivity, cost, and compliance targets.</p>
+              </div>
+              <div className="mt-5 space-y-2">
+                <div className="flex justify-between items-baseline">
+                  <span className="text-xl font-black font-mono text-white">{result.dimensions?.businessNeed ?? 0}<span className="text-xs text-white/45">/100</span></span>
+                  <span className="text-[10px] font-mono text-white/50">+{((result.dimensions?.businessNeed ?? 0) * 0.25).toFixed(1)} pts</span>
+                </div>
+                <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                  <div className="h-full bg-[#E98828] rounded-full transition-all duration-1000 ease-out" style={{ width: `${result.dimensions?.businessNeed ?? 0}%` }} />
+                </div>
+              </div>
+            </div>
+
+            {/* Card 3: Data Readiness */}
+            <div className="p-5 rounded-2xl border border-white/5 bg-[#030712]/30 hover:border-emerald-500/30 hover:bg-[#030712]/50 transition-all duration-300 flex flex-col justify-between relative overflow-hidden group">
+              <div className="absolute top-0 left-0 w-[2px] h-full bg-[#10B981] opacity-50 group-hover:opacity-100 transition-opacity" />
+              <div className="space-y-3">
+                <div className="flex justify-between items-start">
+                  <span className="text-[10px] font-mono text-white/40 uppercase font-bold">DIM_03 / DATA</span>
+                  <span className="text-xs font-mono font-bold text-[#10B981] bg-[#10B981]/15 px-2 py-0.5 rounded">20% WT.</span>
+                </div>
+                <h4 className="text-sm font-bold text-white tracking-tight">Enterprise Data Readiness</h4>
+                <p className="text-[11px] text-white/50 leading-relaxed font-light">Integration status of schemas, silos, and vector caching.</p>
+              </div>
+              <div className="mt-5 space-y-2">
+                <div className="flex justify-between items-baseline">
+                  <span className="text-xl font-black font-mono text-white">{result.dimensions?.dataReadiness ?? 0}<span className="text-xs text-white/45">/100</span></span>
+                  <span className="text-[10px] font-mono text-white/50">+{((result.dimensions?.dataReadiness ?? 0) * 0.20).toFixed(1)} pts</span>
+                </div>
+                <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                  <div className="h-full bg-[#10B981] rounded-full transition-all duration-1000 ease-out" style={{ width: `${result.dimensions?.dataReadiness ?? 0}%` }} />
+                </div>
+              </div>
+            </div>
+
+            {/* Card 4: Process Complexity */}
+            <div className="p-5 rounded-2xl border border-white/5 bg-[#030712]/30 hover:border-[#A855F7]/30 hover:bg-[#030712]/50 transition-all duration-300 flex flex-col justify-between relative overflow-hidden group">
+              <div className="absolute top-0 left-0 w-[2px] h-full bg-[#A855F7] opacity-50 group-hover:opacity-100 transition-opacity" />
+              <div className="space-y-3">
+                <div className="flex justify-between items-start">
+                  <span className="text-[10px] font-mono text-white/40 uppercase font-bold">DIM_04 / COMPLEXITY</span>
+                  <span className="text-xs font-mono font-bold text-[#A855F7] bg-[#A855F7]/15 px-2 py-0.5 rounded">20% WT.</span>
+                </div>
+                <h4 className="text-sm font-bold text-white tracking-tight">Process Complexity</h4>
+                <p className="text-[11px] text-white/50 leading-relaxed font-light">Organizational scale, headcount, and friction points.</p>
+              </div>
+              <div className="mt-5 space-y-2">
+                <div className="flex justify-between items-baseline">
+                  <span className="text-xl font-black font-mono text-white">{result.dimensions?.processComplexity ?? 0}<span className="text-xs text-white/45">/100</span></span>
+                  <span className="text-[10px] font-mono text-white/50">+{((result.dimensions?.processComplexity ?? 0) * 0.20).toFixed(1)} pts</span>
+                </div>
+                <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                  <div className="h-full bg-[#A855F7] rounded-full transition-all duration-1000 ease-out" style={{ width: `${result.dimensions?.processComplexity ?? 0}%` }} />
+                </div>
+              </div>
+            </div>
+
+            {/* Card 5: Transformation Readiness */}
+            <div className="p-5 rounded-2xl border border-white/5 bg-[#030712]/30 hover:border-pink-500/30 hover:bg-[#030712]/50 transition-all duration-300 flex flex-col justify-between relative overflow-hidden group">
+              <div className="absolute top-0 left-0 w-[2px] h-full bg-[#EC4899] opacity-50 group-hover:opacity-100 transition-opacity" />
+              <div className="space-y-3">
+                <div className="flex justify-between items-start">
+                  <span className="text-[10px] font-mono text-white/40 uppercase font-bold">DIM_05 / TRANSFORMATION</span>
+                  <span className="text-xs font-mono font-bold text-[#EC4899] bg-[#EC4899]/15 px-2 py-0.5 rounded">15% WT.</span>
+                </div>
+                <h4 className="text-sm font-bold text-white tracking-tight">Transformation Readiness</h4>
+                <p className="text-[11px] text-white/50 leading-relaxed font-light">Executive sponsors, budget status, and mandate enforcement.</p>
+              </div>
+              <div className="mt-5 space-y-2">
+                <div className="flex justify-between items-baseline">
+                  <span className="text-xl font-black font-mono text-white">{result.dimensions?.transformationReadiness ?? 0}<span className="text-xs text-white/45">/100</span></span>
+                  <span className="text-[10px] font-mono text-white/50">+{((result.dimensions?.transformationReadiness ?? 0) * 0.15).toFixed(1)} pts</span>
+                </div>
+                <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                  <div className="h-full bg-[#EC4899] rounded-full transition-all duration-1000 ease-out" style={{ width: `${result.dimensions?.transformationReadiness ?? 0}%` }} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Opportunities Nodes */}
         <div className="rounded-2xl border border-white/10 bg-[#030712]/45 p-6 space-y-4">
           <span className="text-[10px] uppercase tracking-widest font-extrabold text-white/40 block tracking-wider">Synthesized Top 5 Recommended AI Opportunity Nodes</span>
@@ -671,31 +791,40 @@ export default function BlueprintGenerator() {
         {/* Timeline roadmap */}
         <div className="rounded-2xl border border-white/10 bg-[#030712]/45 p-6 space-y-4 relative overflow-hidden">
           <span className="text-[10px] uppercase tracking-widest font-extrabold text-white/40 block tracking-wider font-mono">90-Day Sovereign Implementation Roadmap</span>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
             <div className="space-y-2 relative pl-6 border-l border-[#087DF3]/30">
               <div className="absolute -left-[6px] top-1.5 w-3 h-3 rounded-full bg-[#087DF3] shadow-[0_0_10px_rgba(8,125,243,0.8)] animate-pulse" />
-              <span className="text-[10px] font-bold text-[#087DF3] font-mono tracking-wider">PHASE 1: DAYS 1 - 30</span>
-              <h4 className="text-sm font-bold text-white">Ingestion & Security Baseline</h4>
+              <span className="text-[10px] font-bold text-[#087DF3] font-mono tracking-wider">STAGE 01 / DAYS 1 - 15</span>
+              <h4 className="text-sm font-bold text-white">Garage Discovery</h4>
               <p className="text-xs text-white/60 leading-relaxed font-light">
-                Deploy GFF secure edge nodes. Map standard data schemas and establish compliance firewalls tailored to {data.industry} parameters.
+                Deploy private GFF secure edge nodes. Run deep-dive discovery workshops with core engineering teams to map high-priority legacy processes and compliance schemas.
               </p>
             </div>
 
             <div className="space-y-2 relative pl-6 border-l border-[#E98828]/30">
               <div className="absolute -left-[6px] top-1.5 w-3 h-3 rounded-full bg-[#E98828] shadow-[0_0_10px_rgba(233,136,40,0.8)]" />
-              <span className="text-[10px] font-bold text-[#E98828] font-mono tracking-wider">PHASE 2: DAYS 31 - 60</span>
-              <h4 className="text-sm font-bold text-white">Agent Integration & Multi-Agent DAGs</h4>
+              <span className="text-[10px] font-bold text-[#E98828] font-mono tracking-wider">STAGE 02 / DAYS 16 - 45</span>
+              <h4 className="text-sm font-bold text-white">Foundry Pilot</h4>
               <p className="text-xs text-white/60 leading-relaxed font-light">
-                Synthesize the first 2 high-priority agentic topologies to automate {data.topPriorities[0] || "operations"}. Configure human-in-the-loop checkpoints.
+                Synthesize initial production-grade {data.topPriorities[0] || 'operations'} agent topologies. Run secure, sandboxed DAG dry-runs to validate compliance boundaries.
               </p>
             </div>
 
             <div className="space-y-2 relative pl-6 border-l border-emerald-500/30">
               <div className="absolute -left-[6px] top-1.5 w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.8)]" />
-              <span className="text-[10px] font-bold text-emerald-400 font-mono tracking-wider">PHASE 3: DAYS 61 - 90</span>
-              <h4 className="text-sm font-bold text-white">Production Scale & Token Optimization</h4>
+              <span className="text-[10px] font-bold text-emerald-400 font-mono tracking-wider">STAGE 03 / DAYS 46 - 75</span>
+              <h4 className="text-sm font-bold text-white">Factory Enterprise Rollout</h4>
               <p className="text-xs text-white/60 leading-relaxed font-light">
-                Scale agents to address {data.topPriorities[1] || "additional targets"}. Perform final optimization checks via GFF Operational Dashboard.
+                Deploy validated agents into secure VPC enclaves. Scale operations to automate {data.topPriorities[1] || 'process optimization'} workflows with human-in-the-loop audit checkpoints.
+              </p>
+            </div>
+
+            <div className="space-y-2 relative pl-6 border-l border-pink-500/30">
+              <div className="absolute -left-[6px] top-1.5 w-3 h-3 rounded-full bg-pink-500 shadow-[0_0_10px_rgba(236,72,153,0.8)]" />
+              <span className="text-[10px] font-bold text-pink-400 font-mono tracking-wider">STAGE 04 / DAYS 76 - 90+</span>
+              <h4 className="text-sm font-bold text-white">Operate Managed AI Operations</h4>
+              <p className="text-xs text-white/60 leading-relaxed font-light">
+                Continuous optimization, token allocation governance, and weights performance tuning. Supported by GFF's fully-managed on-demand enterprise AI core team.
               </p>
             </div>
           </div>
