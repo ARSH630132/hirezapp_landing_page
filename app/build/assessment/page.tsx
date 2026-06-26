@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ToolPageShell, ToolCTA } from "@/components/build/components";
+import NextBestAction from "@/components/build/NextBestAction";
+
 import Link from "next/link";
 import { DIMENSIONS, Dimension } from "./data";
 import { getToolState, saveToolState, clearToolState } from "@/components/build/workspaceUtility";
@@ -1352,6 +1354,7 @@ CONFIDENTIALITY NOTICE: This report was compiled locally in a zero-retention env
               </div>
             </div>
 
+            <NextBestAction currentTool="assessment" />
             <ToolCTA />
           </motion.div>
         )}

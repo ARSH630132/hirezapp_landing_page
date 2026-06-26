@@ -21,6 +21,8 @@ import {
 } from "@/components/build/components";
 import { WizardStepperSystem, WizardStep, WizardStepperSystemActions } from "@/components/build/WizardStepperSystem";
 import { SovereignHistoryDrawer, SavedBlueprint } from "./SovereignHistoryDrawer";
+import NextBestAction from "@/components/build/NextBestAction";
+
 
 // Custom type extending BlueprintAnswers to maintain local UI-only wizard states
 interface WizardData extends BlueprintAnswers {
@@ -909,6 +911,8 @@ export default function BlueprintGenerator() {
             </div>
           </div>
         </div>
+
+        <NextBestAction currentTool="blueprint" completed={true} />
 
         {/* Action buttons or Reset */}
         <div className="space-y-4 pt-6 border-t border-white/5 print:hidden">

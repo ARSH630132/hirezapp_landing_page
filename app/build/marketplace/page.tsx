@@ -13,6 +13,8 @@ import InnerPageHero from "@/components/inner-pages/InnerPageHero";
 import MotionReveal from "@/components/inner-pages/MotionReveal";
 import { BentoGrid, BentoCard } from "@/components/inner-pages/BentoGrid";
 import PremiumCTA from "@/components/inner-pages/PremiumCTA";
+import NextBestAction from "@/components/build/NextBestAction";
+
 import { getToolState, saveToolState } from "@/components/build/workspaceUtility";
 
 interface SandboxQA {
@@ -1107,6 +1109,8 @@ export default function BuildMarketplacePage() {
             </div>
           </Link>
         </MotionReveal>
+
+        <NextBestAction currentTool="marketplace" />
 
         {/* Premium CTA */}
         <PremiumCTA title="Architect a Bespoke Sovereign Multi-Agent Blueprint" description="Have complex legacy backends, air-gapped security protocols, or custom compliance parameters? Collaborate with GFF lead systems engineers to design, simulate, and lock a custom enterprise blueprint." primaryLabel="Connect with Lead Systems Architects" primaryHref="/build/talk" />

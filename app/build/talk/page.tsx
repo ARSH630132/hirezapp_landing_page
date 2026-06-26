@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "motion/react";
 import { ToolPageShell } from "@/components/build/components";
 import Link from "next/link";
 import { getToolState, saveToolState } from "@/components/build/workspaceUtility";
+import NextBestAction from "@/components/build/NextBestAction";
+
 
 interface IntakeInputs {
   desc: string;
@@ -1183,6 +1185,8 @@ export default function TalkToAgentPage() {
                 </div>
               </aside>
             </div>
+
+            <NextBestAction currentTool="talk" />
 
             {/* Premium CTA Elevation Section */}
             <section className="relative p-8 lg:p-10 rounded-2xl border border-white/5 bg-[#030305] flex flex-col md:flex-row items-center justify-between gap-8 group overflow-hidden mt-12">

@@ -7,6 +7,8 @@ import InnerPageHero from "@/components/inner-pages/InnerPageHero";
 import PremiumCTA from "@/components/inner-pages/PremiumCTA";
 import MotionReveal from "@/components/inner-pages/MotionReveal";
 import { getToolState, saveToolState } from "@/components/build/workspaceUtility";
+import NextBestAction from "@/components/build/NextBestAction";
+
 
 // Define TypeScript interfaces for static agent data
 interface AgentStep {
@@ -1390,6 +1392,8 @@ export default function SandboxPage() {
           </div>
 
         </div>
+
+        <NextBestAction currentTool="sandbox" />
 
         {/* PREMIUM SECURE ENCLAVE CTA */}
         <PremiumCTA

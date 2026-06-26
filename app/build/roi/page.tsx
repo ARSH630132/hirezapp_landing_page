@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
 import { ToolPageShell, ToolHero } from "@/components/build/components";
 import { getToolState, saveToolState } from "@/components/build/workspaceUtility";
+import NextBestAction from "@/components/build/NextBestAction";
+
 
 type Priority =
   | "cost_reduction"
@@ -1116,6 +1118,8 @@ Status: MODELLED - ILLUSTRATIVE ONLY
 
             </div>
           </div>
+
+          <NextBestAction currentTool="roi" />
 
           {/* Section F: Action Bar */}
           <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl border border-white/5 bg-[#030306]/85 font-mono">
