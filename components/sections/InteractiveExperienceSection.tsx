@@ -16,7 +16,7 @@ export default function InteractiveExperienceSection() {
 
   const tools = [
     { name: "Talk to Agent", link: "/build/talk" },
-    { name: "Blueprint Generator", link: "/build/blueprint" },
+    // { name: "Blueprint Generator", link: "/build/blueprint" },
     { name: "AI Readiness", link: "/build/assessment" },
     { name: "ROI Calculator", link: "/build/roi" },
     { name: "Marketplace", link: "/platforms/marketplace" },
@@ -85,7 +85,7 @@ export default function InteractiveExperienceSection() {
                       </div>
                       <div className="flex gap-2">
                         <input type="text" value={inVal} onChange={(e) => setInVal(e.target.value)} placeholder="Type cloud spend..." aria-label="Cloud spend query text" className="flex-grow h-[32px] rounded border border-white/10 bg-[#010101]/60 px-3 text-xs text-white focus:outline-none" />
-                        <button type="button" onClick={() => handleSend(inVal)} className="px-4 rounded bg-[#009DFF] text-xs font-semibold text-white">Send</button>
+                        <button type="button" onClick={() => handleSend(inVal)} className="px-4 rounded bg-[#009DFF] text-xs font-semibold text-white cursor-pointer">Send</button>
                       </div>
                     </div>
                   )}
@@ -93,7 +93,7 @@ export default function InteractiveExperienceSection() {
                   {tab === 1 && (
                     <div className="space-y-4">
                       <p className="text-xs text-white/60">Simulate structural DAG mapping. Choose a target VPC architecture.</p>
-                      <button type="button" onClick={() => setBp(true)} className="h-[36px] px-4 rounded bg-[#E98828] text-xs font-semibold text-white">Generate Preview</button>
+                      <button type="button" onClick={() => setBp(true)} className="h-[36px] px-4 rounded bg-[#E98828] text-xs font-semibold text-white cursor-pointer">Generate Preview</button>
                       {bp && <p className="text-xs text-[#E98828] font-bold">Blueprint Generated. Scroll down to full generator &darr;</p>}
                     </div>
                   )}
@@ -118,11 +118,11 @@ export default function InteractiveExperienceSection() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="p-3 rounded border border-white/5 bg-white/[0.01]">
                         <h4 className="text-xs font-bold">Compliance Auditor</h4>
-                        <button type="button" onClick={() => setInst(p => ({ ...p, c: true }))} className={`mt-2 w-full h-[26px] rounded text-xs ${inst.c ? "bg-[#00FF9D]/10 text-[#00FF9D]" : "bg-[#0186E4] text-white"}`}>{inst.c ? "✓ Sandbox Active" : "Activate"}</button>
+                        <button type="button" onClick={() => setInst(p => ({ ...p, c: true }))} className={`mt-2 w-full h-[26px] rounded text-xs cursor-pointer ${inst.c ? "bg-[#00FF9D]/10 text-[#00FF9D]" : "bg-[#0186E4] text-white"}`}>{inst.c ? "✓ Sandbox Active" : "Activate"}</button>
                       </div>
                       <div className="p-3 rounded border border-white/5 bg-white/[0.01]">
                         <h4 className="text-xs font-bold">Supply Chain Sync</h4>
-                        <button type="button" onClick={() => setInst(p => ({ ...p, s: true }))} className={`mt-2 w-full h-[26px] rounded text-xs ${inst.s ? "bg-[#00FF9D]/10 text-[#00FF9D]" : "bg-[#0186E4] text-white"}`}>{inst.s ? "✓ Sandbox Active" : "Activate"}</button>
+                        <button type="button" onClick={() => setInst(p => ({ ...p, s: true }))} className={`mt-2 w-full h-[26px] rounded text-xs cursor-pointer ${inst.s ? "bg-[#00FF9D]/10 text-[#00FF9D]" : "bg-[#0186E4] text-white"}`}>{inst.s ? "✓ Sandbox Active" : "Activate"}</button>
                       </div>
                     </div>
                   )}
@@ -134,7 +134,7 @@ export default function InteractiveExperienceSection() {
                       </div>
                       <div className="flex justify-between items-center bg-white/[0.02] p-2 rounded border border-white/5">
                         <span className="text-xs text-white/50 font-mono">{flow}</span>
-                        <button type="button" onClick={() => { setFlow("Processing..."); setTimeout(() => setFlow("Done (420ms)"), 600); }} className="px-3 py-1 bg-white/5 rounded text-xs text-white hover:bg-white/10">Run Test</button>
+                        <button type="button" onClick={() => { setFlow("Processing..."); setTimeout(() => setFlow("Done (420ms)"), 600); }} className="px-3 py-1 bg-white/5 rounded text-xs text-white hover:bg-white/10 cursor-pointer">Run Test</button>
                       </div>
                     </div>
                   )}
