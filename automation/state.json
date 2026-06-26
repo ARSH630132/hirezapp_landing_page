@@ -57,7 +57,8 @@
     "54-phase3-agent-marketplace-tool",
     "55-phase3-foundry-studio-workflow-builder",
     "56-phase3-build-hub-unified-experience",
-    "57-phase3-local-workspace-continuity"
+    "57-phase3-local-workspace-continuity",
+    "58-phase3-cross-tool-recommendations"
   ],
   "failed": [
     {
