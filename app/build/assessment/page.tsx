@@ -3,105 +3,98 @@
 import { useState } from "react";
 import InnerPageShell from "@/components/inner-pages/InnerPageShell";
 import InnerPageHero from "@/components/inner-pages/InnerPageHero";
+import PremiumCTA from "@/components/inner-pages/PremiumCTA";
 
 export default function AssessmentPage() {
   const [data, setData] = useState(3);
   const [sec, setSec] = useState(2);
-  const [governance, setGovernance] = useState(3);
-  const [agents, setAgents] = useState(2);
+  const [gov, setGov] = useState(3);
+  const [agent, setAgent] = useState(2);
   const [downloading, setDownloading] = useState(false);
-  const [downloadMsg, setDownloadMsg] = useState("");
+  const [previewReport, setPreviewReport] = useState(false);
 
-  const totalScore = Math.round(((data + sec + governance + agents) / 20) * 100);
+  const totalScore = Math.round(((data + sec + gov + agent) / 20) * 100);
 
-  const getReport = (score: number) => {
-    if (score >= 80) return { name: "Optimized Enterprise Fleet Ready", color: "#00FF9D", r: "Your data ingestion nodes and compliance policies are fully prepared for highly autonomous multi-agent systems." };
-    if (score >= 50) return { name: "Scale Phase Strategic Incubation", color: "#E98828", r: "Your infrastructure possesses solid base layers, but lacks active compliance telemetry and secure model shielding." };
-    return { name: "Discovery Phase Advisory Sandbox", color: "#E4000F", r: "Your data is currently siloed and compliance scanning is manual. Sandbox validation in GFF Labs is highly recommended." };
+  const getAdvisory = (score: number) => {
+    if (score >= 80) {
+      return {
+        level: "Sovereign Production Ready",
+        color: "#00FF9D",
+        desc: "Your network edge nodes and unified vector cash stores are fully optimized for autonomous agent deployment in hardened private subnets."
+      };
+    }
+    if (score >= 50) {
+      return {
+        level: "Strategic Incubation Required",
+        color: "#3B82F6",
+        desc: "Solid infrastructural foundations exist, but real-time audit logs and single-tenant hardware isolation policies require further alignment."
+      };
+    }
+    return {
+      level: "Discovery Sandbox Phase",
+      color: "#E4000F",
+      desc: "Your data resides in disconnected legacy clusters. Running an isolated sandbox trace in GFF Labs is highly recommended to design security schemas."
+    };
   };
 
-  const report = getReport(totalScore);
+  const advice = getAdvisory(totalScore);
 
   const handleDownload = () => {
     setDownloading(true);
-    setDownloadMsg("Connecting to sandbox...");
     setTimeout(() => {
-      setDownloadMsg("FastAPI PDF generator integration will come later.");
       setDownloading(false);
-    }, 1500);
+      setPreviewReport(true);
+    }, 1000);
   };
 
   return (
     <InnerPageShell>
-      <InnerPageHero
-        category="Interactive Tool"
-        title="AI Readiness Assessor"
-        description="Verify your organization's data, security, auditing, and execution layers against best-in-class multi-agent frameworks."
-      />
-      <div className="max-w-[1795px] mx-auto px-6 lg:px-16 pb-24 grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Levers */}
-        <div className="lg:col-span-7 space-y-6 p-6 rounded-2xl border border-white/10 bg-[#04060b]">
-          <h3 className="text-sm font-bold text-white/40 uppercase tracking-wider">Evaluation Levers</h3>
-          <div className="space-y-2">
-            <div className="flex justify-between text-xs">
-              <span className="text-white/80">Data Pipelines Integration</span>
-              <span className="text-[#9D00FF] font-bold">Level {data} / 5</span>
+      <InnerPageHero category="Interactive Diagnostic" title="AI Readiness Assessor" description="Benchmark database structures, VPC networks, and compliance schemas against autonomous standards." />
+      <div className="max-w-[1795px] mx-auto px-6 lg:px-16 pb-24 space-y-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div className="lg:col-span-7 p-6 rounded-2xl border border-white/5 bg-[#04060b] space-y-6">
+            <h3 className="text-sm font-bold text-white uppercase tracking-wider font-mono">Evaluation Levers</h3>
+            <div className="space-y-4">
+              <div className="space-y-1">
+                <div className="flex justify-between text-xs text-white/80"><span>Data Pipelines Integration</span><span className="text-[#009DFF] font-bold">Level {data}</span></div>
+                <input type="range" min="1" max="5" value={data} onChange={(e) => { setData(Number(e.target.value)); setPreviewReport(false); }} className="w-full accent-[#009DFF]" />
+              </div>
+              <div className="space-y-1">
+                <div className="flex justify-between text-xs text-white/80"><span>VPC Network Isolation</span><span className="text-[#9D00FF] font-bold">Level {sec}</span></div>
+                <input type="range" min="1" max="5" value={sec} onChange={(e) => { setSec(Number(e.target.value)); setPreviewReport(false); }} className="w-full accent-[#9D00FF]" />
+              </div>
+              <div className="space-y-1">
+                <div className="flex justify-between text-xs text-white/80"><span>Compliance Telemetry</span><span className="text-[#3B82F6] font-bold">Level {gov}</span></div>
+                <input type="range" min="1" max="5" value={gov} onChange={(e) => { setGov(Number(e.target.value)); setPreviewReport(false); }} className="w-full accent-[#3B82F6]" />
+              </div>
+              <div className="space-y-1">
+                <div className="flex justify-between text-xs text-white/80"><span>Multi-Agent Fleet Strategy</span><span className="text-[#00FF9D] font-bold">Level {agent}</span></div>
+                <input type="range" min="1" max="5" value={agent} onChange={(e) => { setAgent(Number(e.target.value)); setPreviewReport(false); }} className="w-full accent-[#00FF9D]" />
+              </div>
             </div>
-            <input type="range" min="1" max="5" value={data} onChange={(e) => setData(Number(e.target.value))} className="w-full accent-[#9D00FF]" />
-            <div className="flex justify-between text-[10px] text-white/30"><span>Siloed databases</span><span>Unified vector cache</span></div>
           </div>
-          <div className="space-y-2">
-            <div className="flex justify-between text-xs">
-              <span className="text-white/80">Security & Isolation Subnet</span>
-              <span className="text-[#9D00FF] font-bold">Level {sec} / 5</span>
-            </div>
-            <input type="range" min="1" max="5" value={sec} onChange={(e) => setSec(Number(e.target.value))} className="w-full accent-[#9D00FF]" />
-            <div className="flex justify-between text-[10px] text-white/30"><span>Ad-hoc cloud services</span><span>Hardened private VPC</span></div>
-          </div>
-          <div className="space-y-2">
-            <div className="flex justify-between text-xs">
-              <span className="text-white/80">Compliance & Auditing telemetry</span>
-              <span className="text-[#9D00FF] font-bold">Level {governance} / 5</span>
-            </div>
-            <input type="range" min="1" max="5" value={governance} onChange={(e) => setGovernance(Number(e.target.value))} className="w-full accent-[#9D00FF]" />
-            <div className="flex justify-between text-[10px] text-white/30"><span>Manual audits</span><span>Real-time agent logging</span></div>
-          </div>
-          <div className="space-y-2">
-            <div className="flex justify-between text-xs">
-              <span className="text-white/80">Agent Deployments Strategy</span>
-              <span className="text-[#9D00FF] font-bold">Level {agents} / 5</span>
-            </div>
-            <input type="range" min="1" max="5" value={agents} onChange={(e) => setAgents(Number(e.target.value))} className="w-full accent-[#9D00FF]" />
-            <div className="flex justify-between text-[10px] text-white/30"><span>Isolated scripts</span><span>Autonomous fleet graphs</span></div>
-          </div>
-        </div>
 
-        {/* Report Card */}
-        <div className="lg:col-span-5 p-6 rounded-2xl border border-white/10 bg-[#04060b] flex flex-col justify-between">
-          <div>
-            <h3 className="text-sm font-bold text-white/40 uppercase tracking-wider mb-6">Maturity Report</h3>
-            <div className="text-center py-6 border-b border-white/5">
-              <span className="text-[10px] text-white/40 uppercase tracking-wider block">Estimated Readiness Score</span>
-              <span className="text-4xl sm:text-5xl font-extrabold text-[#9D00FF] block mt-2">{totalScore}%</span>
+          <div className="lg:col-span-5 p-6 rounded-2xl border border-white/5 bg-[#04060b] flex flex-col justify-between min-h-[400px]">
+            <div className="space-y-5">
+              <h3 className="text-xs font-bold text-white uppercase tracking-wider font-mono">Maturity Analysis</h3>
+              <div className="text-center py-4 bg-white/[0.01] border border-white/5 rounded-xl">
+                <span className="text-[10px] text-white/40 block font-mono">Index Score</span>
+                <span className="text-3xl font-extrabold text-[#009DFF] block mt-1">{totalScore}%</span>
+              </div>
+              <div className="space-y-1">
+                <span className="text-xs font-mono font-bold uppercase tracking-wider" style={{ color: advice.color }}>{advice.level}</span>
+                <p className="text-xs text-white/60 leading-relaxed font-light">{advice.desc}</p>
+              </div>
+              {previewReport && (
+                <p className="text-xs text-[#00FF9D] bg-emerald-500/5 p-3 rounded-lg border border-emerald-500/10">Simulated PDF report compiled in memory. Schedule a Technical Consultation to retrieve.</p>
+              )}
             </div>
-            <div className="mt-6 space-y-3">
-              <span className="text-xs font-bold block" style={{ color: report.color }}>{report.name}</span>
-              <p className="text-xs text-white/60 leading-relaxed">{report.r}</p>
+            <div className="mt-6 pt-4 border-t border-white/5 space-y-2">
+              <button onClick={handleDownload} disabled={downloading} className="w-full h-10 rounded-lg text-xs font-bold text-white bg-white/5 border border-white/10 hover:bg-white/10 transition uppercase tracking-wider">{downloading ? "Compiling PDF..." : "Simulate Advisory PDF"}</button>
             </div>
-          </div>
-          <div className="mt-6 space-y-2">
-            <button
-              onClick={handleDownload}
-              disabled={downloading}
-              className="w-full h-[42px] rounded-lg bg-white/5 border border-white/10 text-xs font-semibold text-white hover:bg-white/10 disabled:opacity-50"
-            >
-              {downloading ? "Generating PDF..." : "Download Custom Advisory PDF"}
-            </button>
-            {downloadMsg && (
-              <p className="text-[11px] text-[#E98828] text-center font-mono">{downloadMsg}</p>
-            )}
           </div>
         </div>
+        <PremiumCTA />
       </div>
     </InnerPageShell>
   );
