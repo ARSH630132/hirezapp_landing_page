@@ -1455,12 +1455,12 @@ ${stages
           <div className="rounded-3xl border border-white/5 bg-[#030305] shadow-2xl overflow-hidden flex flex-col h-[320px]">
             
             {/* Terminal Tab Bar Headers */}
-            <div className="border-b border-white/5 px-6 py-2.5 flex items-center justify-between gap-4 bg-[#05070c]/50 text-xs font-mono">
-              <div className="flex gap-2">
+            <div className="border-b border-white/5 px-6 py-2.5 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-[#05070c]/50 text-xs font-mono">
+              <div className="flex gap-2 overflow-x-auto max-w-full pb-2 md:pb-0 scrollbar-none">
                 <button
                   type="button"
                   onClick={() => setConsoleTab("terminal")}
-                  className={`px-4 py-2 rounded-lg font-bold transition-all cursor-pointer ${
+                  className={`px-4 py-2 rounded-lg font-bold transition-all cursor-pointer shrink-0 ${
                     consoleTab === "terminal" ? "text-white bg-white/5 border border-white/10" : "text-white/40 hover:text-white"
                   }`}
                 >
@@ -1469,7 +1469,7 @@ ${stages
                 <button
                   type="button"
                   onClick={() => setConsoleTab("json")}
-                  className={`px-4 py-2 rounded-lg font-bold transition-all cursor-pointer ${
+                  className={`px-4 py-2 rounded-lg font-bold transition-all cursor-pointer shrink-0 ${
                     consoleTab === "json" ? "text-white bg-white/5 border border-white/10" : "text-white/40 hover:text-white"
                   }`}
                 >
@@ -1478,7 +1478,7 @@ ${stages
                 <button
                   type="button"
                   onClick={() => setConsoleTab("yaml")}
-                  className={`px-4 py-2 rounded-lg font-bold transition-all cursor-pointer ${
+                  className={`px-4 py-2 rounded-lg font-bold transition-all cursor-pointer shrink-0 ${
                     consoleTab === "yaml" ? "text-white bg-white/5 border border-white/10" : "text-white/40 hover:text-white"
                   }`}
                 >
@@ -1488,7 +1488,7 @@ ${stages
 
               {/* Utility actions on code */}
               {consoleTab !== "terminal" && (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center justify-end gap-2">
                   <button
                     type="button"
                     onClick={handleCopyToClipboard}

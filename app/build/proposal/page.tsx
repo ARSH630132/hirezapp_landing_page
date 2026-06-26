@@ -509,7 +509,8 @@ SECTION XI: NEXT STEPS
                     className={`flex-1 py-2 rounded transition font-semibold uppercase ${activeStepGate === g ? "bg-white/5 text-[#009DFF] border border-white/10" : "text-white/40 hover:text-white"}`}
                     disabled={g > activeStepGate && !validateStep(activeStepGate)}
                   >
-                    0{g} {"//"} {g === 1 ? "Baseline Profile" : g === 2 ? "Strategy & Outcomes" : "Deployment Pathway"}
+                    <span>0{g}</span>
+                    <span className="hidden sm:inline"> {"//"} {g === 1 ? "Baseline Profile" : g === 2 ? "Strategy & Outcomes" : "Deployment Pathway"}</span>
                   </button>
                 ))}
               </div>

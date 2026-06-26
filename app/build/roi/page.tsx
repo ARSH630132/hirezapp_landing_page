@@ -1048,8 +1048,8 @@ Status: MODELLED - ILLUSTRATIVE ONLY
               </div>
               <span className="text-[9px] font-mono text-white/30 hidden md:inline">UNIT: USD ($) // ANNUALIZED MODEL</span>
             </div>
-            <div className="w-full">
-              <svg viewBox="0 0 720 230" className="w-full h-auto overflow-visible select-none" fill="none">
+            <div className="w-full overflow-x-auto scrollbar-none">
+              <svg viewBox="0 0 720 230" className="w-full min-w-[580px] h-auto overflow-visible select-none" fill="none">
                 <line x1="30" y1="20" x2="690" y2="20" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
                 <line x1="30" y1="70" x2="690" y2="70" stroke="rgba(255,255,255,0.03)" strokeWidth="1" strokeDasharray="3,3" />
                 <line x1="30" y1="120" x2="690" y2="120" stroke="rgba(255,255,255,0.03)" strokeWidth="1" strokeDasharray="3,3" />

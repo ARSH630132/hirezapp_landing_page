@@ -594,7 +594,7 @@ CONFIDENTIALITY NOTICE: This report was compiled locally in a zero-retention env
             {/* Main panel layout */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
               {/* Left Column: Nav list of dimensions */}
-              <div className="lg:col-span-3 space-y-4">
+              <div className="lg:col-span-3 space-y-4 order-2 lg:order-1">
                 <div className="p-4 rounded-xl border border-white/5 bg-[#030306]/90 space-y-3">
                   <div className="border-b border-white/5 pb-2">
                     <span className="text-[9px] font-mono text-white/40 uppercase tracking-wider block">SEGMENT GATEWAYS</span>
@@ -658,7 +658,7 @@ CONFIDENTIALITY NOTICE: This report was compiled locally in a zero-retention env
               </div>
 
               {/* Center Column: Questions form */}
-              <div className="lg:col-span-6 space-y-6">
+              <div className="lg:col-span-6 space-y-6 order-1 lg:order-2">
                 <div className="p-6 rounded-2xl border border-white/5 bg-[#030306]/95 space-y-6">
                   <div className="border-b border-white/5 pb-4">
                     <div className="flex items-center gap-2">
@@ -784,7 +784,7 @@ CONFIDENTIALITY NOTICE: This report was compiled locally in a zero-retention env
               </div>
 
               {/* Right Column: Live summaries (Desktop only) */}
-              <div className="lg:col-span-3 space-y-4">
+              <div className="lg:col-span-3 space-y-4 order-3 lg:order-3">
                 <div className="p-4 rounded-xl border border-white/5 bg-[#030306]/90 relative overflow-hidden space-y-3">
                   <div className="border-b border-white/5 pb-2">
                     <span className="text-[9px] font-mono text-[#00FF9D] font-bold block uppercase tracking-wider">LIVE TELEMETRY PANEL</span>

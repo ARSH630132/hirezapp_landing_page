@@ -117,10 +117,10 @@ interface ToolStepLayoutProps {
 export function ToolStepLayout({ sidebar, content }: ToolStepLayoutProps) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-      <div className="lg:col-span-4 space-y-6">
+      <div className="lg:col-span-4 space-y-6 order-2 lg:order-1">
         {sidebar}
       </div>
-      <div className="lg:col-span-8">
+      <div className="lg:col-span-8 order-1 lg:order-2">
         {content}
       </div>
     </div>

@@ -839,8 +839,8 @@ export default function BuildMarketplacePage() {
               transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
               className="fixed bottom-6 left-1/2 z-50 w-full max-w-2xl px-4"
             >
-              <div className="bg-[#050508]/95 backdrop-blur-xl border border-white/15 rounded-2xl p-4 shadow-2xl flex items-center justify-between gap-4">
-                <div className="flex items-center gap-4 overflow-x-auto max-w-[65%] scrollbar-none">
+              <div className="bg-[#050508]/95 backdrop-blur-xl border border-white/15 rounded-2xl p-4 shadow-2xl flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-4 overflow-x-auto max-w-full sm:max-w-[65%] scrollbar-none">
                   <div className="flex flex-col">
                     <span className="text-[9px] font-mono text-white/40 uppercase tracking-widest">COMPARISON</span>
                     <span className="text-xs font-bold text-white font-mono">{compareIds.length}/3 Blueprints</span>
@@ -866,7 +866,7 @@ export default function BuildMarketplacePage() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-white/5">
                   <button
                     onClick={clearComparison}
                     className="text-[11px] font-mono text-white/40 hover:text-white cursor-pointer"
