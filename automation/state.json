@@ -35,7 +35,8 @@
     "33-mobile-responsive-pass",
     "34-accessibility-and-motion-pass",
     "35-visual-premium-polish-pass",
-    "36-link-route-content-audit"
+    "36-link-route-content-audit",
+    "37-final-full-build-and-qa"
   ],
   "failed": [
     {
