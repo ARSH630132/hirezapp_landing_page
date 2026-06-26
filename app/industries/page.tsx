@@ -29,6 +29,30 @@ const S_DATA = [
     desc: "Accelerate claim lifecycle velocity and automate risk assessment.",
     challenges: ["Claims overhead", "Unstructured policy search", "Document workflows"],
     agents: ["Claims Triage Agent", "Policy Intelligence Agent", "Underwriting Copilot"]
+  },
+  {
+    id: "healthcare",
+    title: "Healthcare",
+    path: "/industries/healthcare",
+    desc: "Deploy HIPAA-aligned cognitive routing layers to automate complex care workflows.",
+    challenges: ["Operational Complexity", "Patient Communications", "Staff Knowledge Access"],
+    agents: ["Care Operations Copilot", "Knowledge Search Agent", "Document Intelligence Agent"]
+  },
+  {
+    id: "life-sciences",
+    title: "Life Sciences",
+    path: "/industries/life-sciences",
+    desc: "Accelerate regulatory compilation, secure compound search, and trial operations.",
+    challenges: ["Research Documentation", "Regulatory Workflows", "Trial Operations Support"],
+    agents: ["Research Knowledge Agent", "Regulatory Document Assistant", "Trial Operations Copilot"]
+  },
+  {
+    id: "education",
+    title: "Education",
+    path: "/industries/education",
+    desc: "Empower academic institutions, automate registrar services, and deploy interactive learning sandboxes.",
+    challenges: ["Student Support", "Faculty Enablement", "AI Labs & Learning"],
+    agents: ["Student Support Agent", "Faculty Assistant", "Learning Assistant"]
   }
 ];
 
