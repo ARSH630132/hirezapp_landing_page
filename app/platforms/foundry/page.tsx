@@ -3,6 +3,8 @@
 import { useState } from "react";
 import InnerPageShell from "@/components/inner-pages/InnerPageShell";
 import InnerPageHero from "@/components/inner-pages/InnerPageHero";
+import MotionReveal from "@/components/inner-pages/MotionReveal";
+import PremiumCTA from "@/components/inner-pages/PremiumCTA";
 
 export default function FoundryPage() {
   const [selected, setSelected] = useState("core");
@@ -11,68 +13,87 @@ export default function FoundryPage() {
 
   const triggerFlow = () => {
     setRunning(true);
-    setLog("Compiling multi-agent DAG structure...");
+    setLog("Compiling...");
     setTimeout(() => {
-      setLog("[Node 1] Ingesting telemetry logs from postgresql database...");
-      setTimeout(() => {
-        setLog("[Node 2] Cognitive core processing reasoning loop (ReAct loop)...");
-        setTimeout(() => {
-          setLog("[Node 3] Security guardrail scanning active profiles. Remediated 1 threat.");
-          setTimeout(() => {
-            setLog("Flow Execution complete. Latency: 420ms. Total token cost: $0.0034.");
-            setRunning(false);
-          }, 600);
-        }, 600);
-      }, 600);
-    }, 600);
+      setLog("[Node] Ingesting database stream...\n[Engine] Cognitive loops.\n[Status] Complete.");
+      setRunning(false);
+    }, 400);
   };
 
   return (
     <InnerPageShell>
       <InnerPageHero
-        category="Interactive Tool"
-        title="Foundry Visual Studio"
-        description="Connect data structures, cognitive reasoning supervisors, and compliance guardrails in an integrated visual DAG workspace."
+        category="Co-Creation Layer"
+        title="Foundry Studio"
+        highlightedWord="Foundry"
+        description="Design deterministic multi-agent architectures with visual DAG orchestration."
       />
-      <div className="max-w-[1795px] mx-auto px-6 lg:px-16 pb-24 grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Visualizer Canvas */}
-        <div className="lg:col-span-8 h-[360px] rounded-2xl border border-white/10 bg-black/60 relative flex items-center justify-around overflow-hidden">
-          <svg className="absolute inset-0 w-full h-full pointer-events-none">
-            <line x1="10%" y1="50%" x2="50%" y2="50%" stroke="rgba(255,255,255,0.15)" strokeWidth="2" strokeDasharray="4 4" />
-            <line x1="50%" y1="50%" x2="90%" y2="50%" stroke="rgba(255,255,255,0.15)" strokeWidth="2" strokeDasharray="4 4" />
-          </svg>
-          <button onClick={() => setSelected("db")} className={`z-10 w-16 h-16 rounded-xl border flex flex-col items-center justify-center transition-all ${selected === "db" ? "border-[#00FF9D] bg-[#00FF9D]/5" : "border-white/10 bg-white/[0.02]"}`}>
-            <span className="text-xl">📥</span>
-            <span className="text-[9px] font-bold mt-1">DB INGEST</span>
-          </button>
-          <button onClick={() => setSelected("core")} className={`z-10 w-16 h-16 rounded-xl border flex flex-col items-center justify-center transition-all ${selected === "core" ? "border-[#00FF9D] bg-[#00FF9D]/5" : "border-white/10 bg-white/[0.02]"}`}>
-            <span className="text-xl">🧠</span>
-            <span className="text-[9px] font-bold mt-1">COGNITIVE</span>
-          </button>
-          <button onClick={() => setSelected("out")} className={`z-10 w-16 h-16 rounded-xl border flex flex-col items-center justify-center transition-all ${selected === "out" ? "border-[#00FF9D] bg-[#00FF9D]/5" : "border-white/10 bg-white/[0.02]"}`}>
-            <span className="text-xl">📤</span>
-            <span className="text-[9px] font-bold mt-1">DISPATCHER</span>
-          </button>
-        </div>
-
-        {/* Configuration Pane & Logs */}
-        <div className="lg:col-span-4 flex flex-col justify-between p-6 rounded-2xl border border-white/10 bg-[#04060b] min-h-[360px]">
-          <div>
-            <h3 className="text-xs font-bold text-white/40 uppercase tracking-wider mb-4">Node Configuration</h3>
-            {selected === "db" && <p className="text-xs text-white/70">Source: PostgreSQL Database. Dynamic interval fetching enabled.</p>}
-            {selected === "core" && <p className="text-xs text-white/70">Orchestrator: GFF Cognitive Core. Reasoning pattern: ReAct feedback loop.</p>}
-            {selected === "out" && <p className="text-xs text-white/70">Action Target: REST Webhook API Dispatcher with active logging.</p>}
+      <div className="max-w-[1795px] mx-auto px-6 lg:px-16 pb-24 space-y-16">
+        <MotionReveal className="grid grid-cols-1 lg:grid-cols-12 gap-8 py-10 border-y border-white/5">
+          <div className="lg:col-span-5">
+            <span className="text-xs font-mono text-[#009DFF] uppercase tracking-widest font-bold">Systems Co-Creation</span>
+            <h2 className="text-3xl font-bold text-white mt-2">The Co-Creation Layer</h2>
           </div>
+          <div className="lg:col-span-7">
+            <p className="text-white/70 font-light text-sm">
+              The Foundry represents Tier 2 of GFF's Operating Model. Developers build real-world cognitive agents using visual DAG pipelines, connect datasets, and execute.
+            </p>
+          </div>
+        </MotionReveal>
 
-          <div className="mt-6 space-y-4">
-            <div className="p-3 rounded-lg border border-white/5 bg-black/40 text-[11px] font-mono text-white/60 min-h-[60px]">
-              {log}
+        <MotionReveal className="space-y-6">
+          <h2 className="text-2xl font-bold text-white text-center">Interactive Workspace</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-4xl mx-auto items-stretch">
+            <div className="lg:col-span-7 h-[200px] rounded-2xl border border-white/10 bg-black/60 relative flex items-center justify-around overflow-hidden p-4">
+              <svg className="absolute inset-0 w-full h-full pointer-events-none">
+                <line x1="15%" y1="50%" x2="85%" y2="50%" stroke="rgba(255,255,255,0.15)" strokeWidth="2" strokeDasharray="4 4" />
+              </svg>
+              {["db", "core", "out"].map((node) => (
+                <button key={node} onClick={() => setSelected(node)} className={`z-10 w-20 h-20 rounded-xl border flex flex-col items-center justify-center capitalize transition-all ${selected === node ? "border-[#009DFF] bg-[#009DFF]/5 text-[#009DFF]" : "border-white/10 bg-white/[0.02]"}`}>
+                  <span className="text-xl">{node === "db" ? "📥" : node === "core" ? "🧠" : "📤"}</span>
+                  <span className="text-[9px] font-bold mt-1 text-white">{node}</span>
+                </button>
+              ))}
             </div>
-            <button onClick={triggerFlow} disabled={running} className="w-full h-[40px] rounded-lg bg-[#00FF9D]/15 border border-[#00FF9D]/30 text-xs font-bold text-[#00FF9D] hover:bg-[#00FF9D]/25 transition-all">
-              {running ? "Executing..." : "Execute Flow Test"}
-            </button>
+
+            <div className="lg:col-span-5 flex flex-col justify-between p-6 rounded-2xl border border-white/10 bg-[#04060b] min-h-[200px]">
+              <h3 className="text-xs font-bold text-[#009DFF] uppercase tracking-wider">Node Configurator</h3>
+              <p className="text-xs text-white/70 font-light leading-relaxed my-1">
+                {selected === "db" && "Source: Relational Database Fabric delta-stream indexing."}
+                {selected === "core" && "Engine: GFF Cognitive Supervisor reasoning loop."}
+                {selected === "out" && "Dispatcher: Webhook Secure Relay blockchain audit."}
+              </p>
+              <pre className="p-3 rounded-lg border border-white/5 bg-black/40 text-[11px] font-mono text-white/60 whitespace-pre-wrap">{log}</pre>
+              <button onClick={triggerFlow} disabled={running} className="w-full py-2 rounded bg-[#009DFF]/15 border border-[#009DFF]/30 text-xs font-bold text-[#009DFF] hover:bg-[#009DFF]/25 transition-all">
+                {running ? "Compiling..." : "Compile & Run DAG"}
+              </button>
+            </div>
           </div>
-        </div>
+        </MotionReveal>
+
+        <MotionReveal className="space-y-6">
+          <h2 className="text-2xl font-bold text-white text-center">Foundry Capabilities</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { title: "Build Agents", desc: "Build rich cognitive supervisors with deterministic branching policies." },
+              { title: "Secure Runtime", desc: "Run high-throughput agent nodes inside locally sandboxed container environments." },
+              { title: "Data Fabric Ingest", desc: "Ingest structured relational streams and orchestrate vector index updates." },
+              { title: "AI Engineering", desc: "Enterprise evaluation loops, regression checks, and performance metrics." }
+            ].map((c) => (
+              <div key={c.title} className="p-6 rounded-xl border border-white/5 bg-black/40 hover:border-[#009DFF]/20 transition-all">
+                <h3 className="font-bold text-white text-sm mb-2">{c.title}</h3>
+                <p className="text-xs text-white/50 leading-relaxed font-light">{c.desc}</p>
+              </div>
+            ))}
+          </div>
+        </MotionReveal>
+
+        <PremiumCTA
+          title="Scale Your Engineered DAG to Production"
+          description="Ready to elevate your validated agent pipelines? Transition seamlessly to the industrialization layer with Factory."
+          primaryLabel="Explore Scaling Factory"
+          primaryHref="/platforms/factory"
+        />
       </div>
     </InnerPageShell>
   );
