@@ -143,9 +143,22 @@ export default function ControlCenterWorkspace() {
                     ].map(n => {
                       const active = selectedNode === n.id;
                       return (
-                        <g key={n.id} className="cursor-pointer" onClick={() => setSelectedNode(n.id)}>
+                        <g 
+                          key={n.id} 
+                          className="cursor-pointer focus:outline-none group" 
+                          tabIndex={0}
+                          role="button"
+                          aria-pressed={active}
+                          onClick={() => setSelectedNode(n.id)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              setSelectedNode(n.id);
+                            }
+                          }}
+                        >
                           {active && <circle cx={n.cx} cy={n.cy} r="12" fill={n.color} fillOpacity="0.1" className="animate-pulse" />}
-                          <circle cx={n.cx} cy={n.cy} r={active ? "8" : "5"} fill="#000" stroke={active ? n.color : "rgba(255,255,255,0.2)"} strokeWidth="1.5" />
+                          <circle cx={n.cx} cy={n.cy} r={active ? "8" : "5"} fill="#000" stroke={active ? n.color : "rgba(255,255,255,0.2)"} strokeWidth="1.5" className="transition-all group-focus-visible:stroke-white group-focus-visible:stroke-[2px]" />
                           <circle cx={n.cx} cy={n.cy} r="2.5" fill={n.color} />
                           <text x={n.cx} y={n.cy - 11} textAnchor="middle" fill={active ? "white" : "rgba(255,255,255,0.4)"} className="text-[7px] font-mono font-bold tracking-wider">{n.label}</text>
                         </g>

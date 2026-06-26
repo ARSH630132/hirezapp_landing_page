@@ -195,10 +195,11 @@ export default function ContactSection() {
 
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-x-8 gap-y-6">
             <div>
-              <label className="block text-white font-[var(--font-montserrat)] font-medium text-[15px] sm:text-[16px] lg:text-[18px] leading-[100%] tracking-[0.02em]">
+              <label htmlFor="fullName" className="block text-white font-[var(--font-montserrat)] font-medium text-[15px] sm:text-[16px] lg:text-[18px] leading-[100%] tracking-[0.02em]">
                 Full Name
               </label>
               <input
+                id="fullName"
                 name="fullName"
                 required
                 value={contactForm.fullName}
@@ -209,7 +210,7 @@ export default function ContactSection() {
                   })
                 }
                 placeholder="Enter"
-                className="mt-3 w-full h-[50px] rounded-[18px] border border-[#1A2145] bg-[#16060680] px-4 text-white outline-none font-[var(--font-montserrat)] font-medium text-[18px] leading-[100%] tracking-[0.02em] placeholder:text-[#C1C1C1]"
+                className="mt-3 w-full h-[50px] rounded-[18px] border border-[#1A2145] bg-[#16060680] px-4 text-white outline-none font-[var(--font-montserrat)] font-medium text-[18px] leading-[100%] tracking-[0.02em] placeholder:text-[#C1C1C1] focus-visible:border-[#009DFF] focus-visible:ring-2 focus-visible:ring-[#009DFF]/40"
                 style={{
                   boxShadow: "inset 0 0 0 1px rgba(120,167,255,0.08)",
                 }}
@@ -217,10 +218,11 @@ export default function ContactSection() {
             </div>
 
             <div>
-              <label className="block text-white font-[var(--font-montserrat)] font-medium text-[15px] sm:text-[16px] lg:text-[18px] leading-[100%] tracking-[0.02em]">
+              <label htmlFor="fullNameDetail" className="block text-white font-[var(--font-montserrat)] font-medium text-[15px] sm:text-[16px] lg:text-[18px] leading-[100%] tracking-[0.02em]">
                 Enter your full name
               </label>
               <input
+                id="fullNameDetail"
                 name="fullNameDetail"
                 required
                 value={contactForm.fullNameDetail}
@@ -231,7 +233,7 @@ export default function ContactSection() {
                   })
                 }
                 placeholder="Enter"
-                className="mt-3 w-full h-[50px] rounded-[18px] border border-[#1A2145] bg-[#16060680] px-4 text-white outline-none font-[var(--font-montserrat)] font-medium text-[18px] leading-[100%] tracking-[0.02em] placeholder:text-[#C1C1C1]"
+                className="mt-3 w-full h-[50px] rounded-[18px] border border-[#1A2145] bg-[#16060680] px-4 text-white outline-none font-[var(--font-montserrat)] font-medium text-[18px] leading-[100%] tracking-[0.02em] placeholder:text-[#C1C1C1] focus-visible:border-[#009DFF] focus-visible:ring-2 focus-visible:ring-[#009DFF]/40"
                 style={{
                   boxShadow: "inset 0 0 0 1px rgba(120,167,255,0.08)",
                 }}
@@ -239,10 +241,11 @@ export default function ContactSection() {
             </div>
 
             <div>
-              <label className="block text-white font-[var(--font-montserrat)] font-medium text-[15px] sm:text-[16px] lg:text-[18px] leading-[100%] tracking-[0.02em]">
+              <label htmlFor="company" className="block text-white font-[var(--font-montserrat)] font-medium text-[15px] sm:text-[16px] lg:text-[18px] leading-[100%] tracking-[0.02em]">
                 Company / Organization
               </label>
               <input
+                id="company"
                 name="company"
                 required
                 value={contactForm.company}
@@ -253,7 +256,7 @@ export default function ContactSection() {
                   })
                 }
                 placeholder="Enter"
-                className="mt-3 w-full h-[50px] rounded-[18px] border border-[#1A2145] bg-[#16060680] px-4 text-white outline-none font-[var(--font-montserrat)] font-medium text-[18px] leading-[100%] tracking-[0.02em] placeholder:text-[#C1C1C1]"
+                className="mt-3 w-full h-[50px] rounded-[18px] border border-[#1A2145] bg-[#16060680] px-4 text-white outline-none font-[var(--font-montserrat)] font-medium text-[18px] leading-[100%] tracking-[0.02em] placeholder:text-[#C1C1C1] focus-visible:border-[#009DFF] focus-visible:ring-2 focus-visible:ring-[#009DFF]/40"
                 style={{
                   boxShadow: "inset 0 0 0 1px rgba(120,167,255,0.08)",
                 }}
@@ -261,10 +264,11 @@ export default function ContactSection() {
             </div>
 
             <div>
-              <label className="block whitespace-nowrap text-white font-[var(--font-montserrat)] font-medium text-[15px] sm:text-[16px] lg:text-[18px] leading-[100%] tracking-[0.02em]">
+              <label htmlFor="companyDetail" className="block whitespace-nowrap text-white font-[var(--font-montserrat)] font-medium text-[15px] sm:text-[16px] lg:text-[18px] leading-[100%] tracking-[0.02em]">
                 Enter company name
               </label>
               <input
+                id="companyDetail"
                 name="companyDetail"
                 required
                 value={contactForm.companyDetail}
@@ -275,7 +279,7 @@ export default function ContactSection() {
                   })
                 }
                 placeholder="Enter"
-                className="mt-3 w-full h-[50px] rounded-[18px] border border-[#1A2145] bg-[#16060680] px-4 text-white outline-none font-[var(--font-montserrat)] font-medium text-[18px] leading-[100%] tracking-[0.02em] placeholder:text-[#C1C1C1]"
+                className="mt-3 w-full h-[50px] rounded-[18px] border border-[#1A2145] bg-[#16060680] px-4 text-white outline-none font-[var(--font-montserrat)] font-medium text-[18px] leading-[100%] tracking-[0.02em] placeholder:text-[#C1C1C1] focus-visible:border-[#009DFF] focus-visible:ring-2 focus-visible:ring-[#009DFF]/40"
                 style={{
                   boxShadow: "inset 0 0 0 1px rgba(120,167,255,0.08)",
                 }}
@@ -283,10 +287,11 @@ export default function ContactSection() {
             </div>
 
             <div>
-              <label className="block text-white font-[var(--font-montserrat)] font-medium text-[15px] sm:text-[16px] lg:text-[18px] leading-[100%] tracking-[0.02em]">
+              <label htmlFor="businessEmail" className="block text-white font-[var(--font-montserrat)] font-medium text-[15px] sm:text-[16px] lg:text-[18px] leading-[100%] tracking-[0.02em]">
                 Business Email
               </label>
               <input
+                id="businessEmail"
                 name="businessEmail"
                 type="email"
                 required
@@ -298,7 +303,7 @@ export default function ContactSection() {
                   })
                 }
                 placeholder="Enter"
-                className="mt-3 w-full h-[50px] rounded-[18px] border border-[#1A2145] bg-[#16060680] px-4 text-white outline-none font-[var(--font-montserrat)] font-medium text-[18px] leading-[100%] tracking-[0.02em] placeholder:text-[#C1C1C1]"
+                className="mt-3 w-full h-[50px] rounded-[18px] border border-[#1A2145] bg-[#16060680] px-4 text-white outline-none font-[var(--font-montserrat)] font-medium text-[18px] leading-[100%] tracking-[0.02em] placeholder:text-[#C1C1C1] focus-visible:border-[#009DFF] focus-visible:ring-2 focus-visible:ring-[#009DFF]/40"
                 style={{
                   boxShadow: "inset 0 0 0 1px rgba(120,167,255,0.08)",
                 }}
@@ -306,10 +311,11 @@ export default function ContactSection() {
             </div>
 
             <div>
-              <label className="block text-white font-[var(--font-montserrat)] font-medium text-[18px] sm:text-[18px] lg:text-[18px] leading-[100%] tracking-[0.02em]">
+              <label htmlFor="businessEmailDetail" className="block text-white font-[var(--font-montserrat)] font-medium text-[18px] sm:text-[18px] lg:text-[18px] leading-[100%] tracking-[0.02em]">
                 Enter official email address
               </label>
               <input
+                id="businessEmailDetail"
                 name="businessEmailDetail"
                 type="email"
                 required
@@ -321,7 +327,7 @@ export default function ContactSection() {
                   })
                 }
                 placeholder="Enter"
-                className="mt-3 w-full h-[50px] rounded-[18px] border border-[#1A2145] bg-[#16060680] px-4 text-white outline-none font-[var(--font-montserrat)] font-medium text-[18px] leading-[100%] tracking-[0.02em] placeholder:text-[#C1C1C1]"
+                className="mt-3 w-full h-[50px] rounded-[18px] border border-[#1A2145] bg-[#16060680] px-4 text-white outline-none font-[var(--font-montserrat)] font-medium text-[18px] leading-[100%] tracking-[0.02em] placeholder:text-[#C1C1C1] focus-visible:border-[#009DFF] focus-visible:ring-2 focus-visible:ring-[#009DFF]/40"
                 style={{
                   boxShadow: "inset 0 0 0 1px rgba(120,167,255,0.08)",
                 }}
@@ -333,7 +339,7 @@ export default function ContactSection() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full h-[42px] rounded-full text-white text-[13px] font-semibold backdrop-blur-[40px] bg-[linear-gradient(90deg,rgba(85,6,7,0.213)_0%,rgba(7,78,156,0.24)_100%)] cursor-pointer"
+              className="w-full h-[42px] rounded-full text-white text-[13px] font-semibold backdrop-blur-[40px] bg-[linear-gradient(90deg,rgba(85,6,7,0.213)_0%,rgba(7,78,156,0.24)_100%)] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
             >
               {isSubmitting ? "Sending..." : "Send Message"}
             </button>

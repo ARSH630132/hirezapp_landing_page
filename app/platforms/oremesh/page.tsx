@@ -193,22 +193,58 @@ export default function OREMeshPlatformPage() {
                   <path d="M380 220 L250 180" stroke="#009DFF" strokeWidth="1.5" strokeDasharray="3 3" />
 
                   {/* Satellite Uplink Point */}
-                  <g onClick={() => setSelectedArchNode("satellite")} className="cursor-pointer group">
-                    <circle cx="250" cy="60" r="30" fill={selectedArchNode === "satellite" ? "url(#satelliteG)" : "#0A0A0C"} stroke={selectedArchNode === "satellite" ? "#009DFF" : "rgba(255,255,255,0.15)"} strokeWidth="2" className="transition-all duration-300" />
+                  <g 
+                    onClick={() => setSelectedArchNode("satellite")} 
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setSelectedArchNode("satellite");
+                      }
+                    }}
+                    tabIndex={0}
+                    role="button"
+                    aria-pressed={selectedArchNode === "satellite"}
+                    className="cursor-pointer group focus:outline-none"
+                  >
+                    <circle cx="250" cy="60" r="30" fill={selectedArchNode === "satellite" ? "url(#satelliteG)" : "#0A0A0C"} stroke={selectedArchNode === "satellite" ? "#009DFF" : "rgba(255,255,255,0.15)"} strokeWidth="2" className="transition-all duration-300 group-focus-visible:stroke-white group-focus-visible:stroke-[3px]" />
                     <path d="M242 52 L258 52 M250 44 L250 60 M245 68 L255 68" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
                     <text x="250" y="105" fill="white" fontSize="10" fontWeight="600" textAnchor="middle" className="tracking-wider">LEO GATEWAY</text>
                   </g>
 
                   {/* Heavy Fleet Node */}
-                  <g onClick={() => setSelectedArchNode("fleet")} className="cursor-pointer group">
-                    <rect x="70" y="200" width="100" height="50" rx="10" fill={selectedArchNode === "fleet" ? "#E4000F" : "#0A0A0C"} stroke={selectedArchNode === "fleet" ? "white" : "rgba(255,255,255,0.1)"} strokeWidth="1.5" className="transition-all duration-300" />
+                  <g 
+                    onClick={() => setSelectedArchNode("fleet")} 
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setSelectedArchNode("fleet");
+                      }
+                    }}
+                    tabIndex={0}
+                    role="button"
+                    aria-pressed={selectedArchNode === "fleet"}
+                    className="cursor-pointer group focus:outline-none"
+                  >
+                    <rect x="70" y="200" width="100" height="50" rx="10" fill={selectedArchNode === "fleet" ? "#E4000F" : "#0A0A0C"} stroke={selectedArchNode === "fleet" ? "white" : "rgba(255,255,255,0.1)"} strokeWidth="1.5" className="transition-all duration-300 group-focus-visible:stroke-white group-focus-visible:stroke-[2px]" />
                     <text x="120" y="225" fill="white" fontSize="9" fontWeight="bold" textAnchor="middle" className="tracking-wider">FLEET #9</text>
                     <text x="120" y="238" fill="white" fontSize="7" opacity="0.6" textAnchor="middle">MOBILE MESH</text>
                   </g>
 
                   {/* Mine Shaft Node */}
-                  <g onClick={() => setSelectedArchNode("shaft")} className="cursor-pointer group">
-                    <rect x="330" y="200" width="100" height="50" rx="10" fill={selectedArchNode === "shaft" ? "#009DFF" : "#0A0A0C"} stroke={selectedArchNode === "shaft" ? "white" : "rgba(255,255,255,0.1)"} strokeWidth="1.5" className="transition-all duration-300" />
+                  <g 
+                    onClick={() => setSelectedArchNode("shaft")} 
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setSelectedArchNode("shaft");
+                      }
+                    }}
+                    tabIndex={0}
+                    role="button"
+                    aria-pressed={selectedArchNode === "shaft"}
+                    className="cursor-pointer group focus:outline-none"
+                  >
+                    <rect x="330" y="200" width="100" height="50" rx="10" fill={selectedArchNode === "shaft" ? "#009DFF" : "#0A0A0C"} stroke={selectedArchNode === "shaft" ? "white" : "rgba(255,255,255,0.1)"} strokeWidth="1.5" className="transition-all duration-300 group-focus-visible:stroke-white group-focus-visible:stroke-[2px]" />
                     <text x="380" y="225" fill="white" fontSize="9" fontWeight="bold" textAnchor="middle" className="tracking-wider">SHAFT FACE #4</text>
                     <text x="380" y="238" fill="white" fontSize="7" opacity="0.6" textAnchor="middle">DEEP SENSOR RING</text>
                   </g>

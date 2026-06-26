@@ -55,12 +55,25 @@ export default function ArchitectureDiagram() {
               { id: "memory", y: 180, num: "3", txt: "Enterprise Knowledge & Memory", color: "#009DFF" },
               { id: "action", y: 260, num: "4", txt: "Action Gateways & Outbound", color: "#E4000F" }
             ].map((layer) => (
-              <g key={layer.id} onClick={() => setActive(layer.id)} className="cursor-pointer group">
+              <g 
+                key={layer.id} 
+                onClick={() => setActive(layer.id)} 
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setActive(layer.id);
+                  }
+                }}
+                tabIndex={0}
+                role="button"
+                aria-pressed={active === layer.id}
+                className="cursor-pointer group focus:outline-none"
+              >
                 <rect 
                   x={layer.xX || 100} y={layer.y} width={layer.xW || 300} height="40" rx="10" 
                   fill={active === layer.id ? layer.color : "#0A0A0C"} 
                   stroke={active === layer.id ? "white" : "rgba(255,255,255,0.08)"} 
-                  strokeWidth="1.5" className="transition-all duration-300" 
+                  strokeWidth="1.5" className="transition-all duration-300 group-focus-visible:stroke-white group-focus-visible:stroke-[2px]" 
                 />
                 <text x="250" y={layer.y + 24} fill="white" fontSize="11" fontWeight="600" textAnchor="middle" className="pointer-events-none uppercase tracking-[0.05em]">
                   {layer.num}. {layer.txt}

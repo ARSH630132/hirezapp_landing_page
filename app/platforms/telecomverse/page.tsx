@@ -208,22 +208,58 @@ export default function TelecomVersePlatformPage() {
                   />
 
                   {/* Node 1: Sector 4 Cell Tower */}
-                  <g onClick={() => setSelectedArchNode("alpha")} className="cursor-pointer group">
-                    <circle cx="100" cy="160" r="30" fill={selectedArchNode === "alpha" ? "#009DFF" : "#0A0A0C"} stroke={selectedArchNode === "alpha" ? "white" : "rgba(255,255,255,0.15)"} strokeWidth="2" className="transition-all duration-300" />
+                  <g 
+                    onClick={() => setSelectedArchNode("alpha")} 
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setSelectedArchNode("alpha");
+                      }
+                    }}
+                    tabIndex={0}
+                    role="button"
+                    aria-pressed={selectedArchNode === "alpha"}
+                    className="cursor-pointer group focus:outline-none"
+                  >
+                    <circle cx="100" cy="160" r="30" fill={selectedArchNode === "alpha" ? "#009DFF" : "#0A0A0C"} stroke={selectedArchNode === "alpha" ? "white" : "rgba(255,255,255,0.15)"} strokeWidth="2" className="transition-all duration-300 group-focus-visible:stroke-white group-focus-visible:stroke-[3px]" />
                     <path d="M100 145 L100 175 M90 155 L110 155 M95 165 L105 165" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
                     <text x="100" y="210" fill="white" fontSize="10" fontWeight="600" textAnchor="middle" className="tracking-wider">SECTOR 4 TOWER</text>
                   </g>
 
                   {/* Node 2: UHF Microwave base */}
-                  <g onClick={() => setSelectedArchNode("beta")} className="cursor-pointer group">
-                    <circle cx="250" cy="80" r="30" fill={selectedArchNode === "beta" ? "#22C55E" : "#0A0A0C"} stroke={selectedArchNode === "beta" ? "white" : "rgba(255,255,255,0.15)"} strokeWidth="2" className="transition-all duration-300" />
+                  <g 
+                    onClick={() => setSelectedArchNode("beta")} 
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setSelectedArchNode("beta");
+                      }
+                    }}
+                    tabIndex={0}
+                    role="button"
+                    aria-pressed={selectedArchNode === "beta"}
+                    className="cursor-pointer group focus:outline-none"
+                  >
+                    <circle cx="250" cy="80" r="30" fill={selectedArchNode === "beta" ? "#22C55E" : "#0A0A0C"} stroke={selectedArchNode === "beta" ? "white" : "rgba(255,255,255,0.15)"} strokeWidth="2" className="transition-all duration-300 group-focus-visible:stroke-white group-focus-visible:stroke-[3px]" />
                     <path d="M242 72 Q250 64 258 72 M245 80 Q250 74 255 80 M248 88 L252 88" stroke="white" strokeWidth="1.5" strokeLinecap="round" fill="none" />
                     <text x="250" y="130" fill="white" fontSize="10" fontWeight="600" textAnchor="middle" className="tracking-wider">UHF MICROWAVE</text>
                   </g>
 
                   {/* Node 3: Optical exchange */}
-                  <g onClick={() => setSelectedArchNode("gamma")} className="cursor-pointer group">
-                    <circle cx="400" cy="160" r="30" fill={selectedArchNode === "gamma" ? "url(#brandG)" : "#0A0A0C"} stroke={selectedArchNode === "gamma" ? "white" : "rgba(255,255,255,0.15)"} strokeWidth="2" className="transition-all duration-300" />
+                  <g 
+                    onClick={() => setSelectedArchNode("gamma")} 
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setSelectedArchNode("gamma");
+                      }
+                    }}
+                    tabIndex={0}
+                    role="button"
+                    aria-pressed={selectedArchNode === "gamma"}
+                    className="cursor-pointer group focus:outline-none"
+                  >
+                    <circle cx="400" cy="160" r="30" fill={selectedArchNode === "gamma" ? "url(#brandG)" : "#0A0A0C"} stroke={selectedArchNode === "gamma" ? "white" : "rgba(255,255,255,0.15)"} strokeWidth="2" className="transition-all duration-300 group-focus-visible:stroke-white group-focus-visible:stroke-[3px]" />
                     <rect x="385" y="150" width="30" height="20" rx="4" fill="none" stroke="white" strokeWidth="1.5" />
                     <circle cx="392" cy="160" r="1.5" fill="white" />
                     <circle cx="400" cy="160" r="1.5" fill="white" />

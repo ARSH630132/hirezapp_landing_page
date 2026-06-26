@@ -171,16 +171,40 @@ export default function RetailMeshPlatformPage() {
                   <path d="M250 160 L400 160" stroke={selectedArchNode === "cloud" ? "#E4000F" : "rgba(255,255,255,0.08)"} strokeWidth="1.5" strokeDasharray="5 5" className="transition-all duration-500" />
 
                   {/* Node 1: Registers */}
-                  <g onClick={() => setSelectedArchNode("registers")} className="cursor-pointer group">
-                    <circle cx="100" cy="160" r="30" fill={selectedArchNode === "registers" ? "#009DFF" : "#0A0A0C"} stroke={selectedArchNode === "registers" ? "white" : "rgba(255,255,255,0.15)"} strokeWidth="2" className="transition-all duration-300" />
+                  <g 
+                    onClick={() => setSelectedArchNode("registers")} 
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setSelectedArchNode("registers");
+                      }
+                    }}
+                    tabIndex={0}
+                    role="button"
+                    aria-pressed={selectedArchNode === "registers"}
+                    className="cursor-pointer group focus:outline-none"
+                  >
+                    <circle cx="100" cy="160" r="30" fill={selectedArchNode === "registers" ? "#009DFF" : "#0A0A0C"} stroke={selectedArchNode === "registers" ? "white" : "rgba(255,255,255,0.15)"} strokeWidth="2" className="transition-all duration-300 group-focus-visible:stroke-white group-focus-visible:stroke-[3px]" />
                     <rect x="85" y="150" width="30" height="20" rx="3" fill="none" stroke="white" strokeWidth="1.5" />
                     <line x1="85" y1="170" x2="115" y2="170" stroke="white" strokeWidth="1.5" />
                     <text x="100" y="210" fill="white" fontSize="10" fontWeight="600" textAnchor="middle" className="tracking-wider">POS REGISTERS</text>
                   </g>
 
                   {/* Node 2: Local Store Server */}
-                  <g onClick={() => setSelectedArchNode("storeserver")} className="cursor-pointer group">
-                    <circle cx="250" cy="160" r="30" fill={selectedArchNode === "storeserver" ? "url(#brandG)" : "#0A0A0C"} stroke={selectedArchNode === "storeserver" ? "white" : "rgba(255,255,255,0.15)"} strokeWidth="2" className="transition-all duration-300" />
+                  <g 
+                    onClick={() => setSelectedArchNode("storeserver")} 
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setSelectedArchNode("storeserver");
+                      }
+                    }}
+                    tabIndex={0}
+                    role="button"
+                    aria-pressed={selectedArchNode === "storeserver"}
+                    className="cursor-pointer group focus:outline-none"
+                  >
+                    <circle cx="250" cy="160" r="30" fill={selectedArchNode === "storeserver" ? "url(#brandG)" : "#0A0A0C"} stroke={selectedArchNode === "storeserver" ? "white" : "rgba(255,255,255,0.15)"} strokeWidth="2" className="transition-all duration-300 group-focus-visible:stroke-white group-focus-visible:stroke-[3px]" />
                     <rect x="238" y="145" width="24" height="30" rx="4" fill="none" stroke="white" strokeWidth="1.5" />
                     <line x1="238" y1="155" x2="262" y2="155" stroke="white" strokeWidth="1" />
                     <line x1="238" y1="165" x2="262" y2="165" stroke="white" strokeWidth="1" />
@@ -191,8 +215,20 @@ export default function RetailMeshPlatformPage() {
                   </g>
 
                   {/* Node 3: Cloud Agentic Cluster */}
-                  <g onClick={() => setSelectedArchNode("cloud")} className="cursor-pointer group">
-                    <circle cx="400" cy="160" r="30" fill={selectedArchNode === "cloud" ? "#E4000F" : "#0A0A0C"} stroke={selectedArchNode === "cloud" ? "white" : "rgba(255,255,255,0.15)"} strokeWidth="2" className="transition-all duration-300" />
+                  <g 
+                    onClick={() => setSelectedArchNode("cloud")} 
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setSelectedArchNode("cloud");
+                      }
+                    }}
+                    tabIndex={0}
+                    role="button"
+                    aria-pressed={selectedArchNode === "cloud"}
+                    className="cursor-pointer group focus:outline-none"
+                  >
+                    <circle cx="400" cy="160" r="30" fill={selectedArchNode === "cloud" ? "#E4000F" : "#0A0A0C"} stroke={selectedArchNode === "cloud" ? "white" : "rgba(255,255,255,0.15)"} strokeWidth="2" className="transition-all duration-300 group-focus-visible:stroke-white group-focus-visible:stroke-[3px]" />
                     <path d="M388 152 A6 6 0 0 1 400 148 A8 8 0 0 1 412 152 A6 6 0 0 1 408 164 L392 164 A6 6 0 0 1 388 152 Z" fill="none" stroke="white" strokeWidth="1.5" />
                     <text x="400" y="210" fill="white" fontSize="10" fontWeight="600" textAnchor="middle" className="tracking-wider">SOVEREIGN CLOUD</text>
                   </g>

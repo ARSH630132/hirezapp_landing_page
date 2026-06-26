@@ -53,7 +53,7 @@ export default function CommandCenter({ isOpen, onClose }: { isOpen: boolean; on
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[99999] bg-black/75 backdrop-blur-md flex items-start justify-center pt-24 px-4" onClick={onClose}>
+    <div className="fixed inset-0 z-[99999] bg-black/75 backdrop-blur-md flex items-start justify-center pt-24 px-4" onClick={onClose} role="dialog" aria-modal="true" aria-label="Command Center">
       <div onClick={e => e.stopPropagation()} className="w-full max-w-2xl bg-[#09090b]/95 border border-white/10 rounded-2xl overflow-hidden shadow-2xl flex flex-col">
         <div className="flex items-center px-4 py-4 border-b border-white/5 gap-3 bg-white/[0.02]">
           <span className="text-white/30 shrink-0">🔍</span>
@@ -63,19 +63,27 @@ export default function CommandCenter({ isOpen, onClose }: { isOpen: boolean; on
             placeholder="Search command center..."
             value={q}
             onChange={e => { setQ(e.target.value); setSel(0); }}
+            role="combobox"
+            aria-expanded={isOpen ? "true" : "false"}
+            aria-autocomplete="list"
+            aria-controls="command-center-list"
+            aria-activedescendant={filtered[sel] ? `cmd-${filtered[sel].id}` : undefined}
             className="flex-grow bg-transparent text-white text-[15px] outline-none placeholder-white/30 border-none ring-0 focus:ring-0"
           />
-          <button onClick={onClose} className="text-white/40 text-[11px] font-mono border border-white/10 px-2 py-0.5 rounded-md bg-white/[0.02]">ESC</button>
+          <button onClick={onClose} aria-label="Close Command Center" className="text-white/40 text-[11px] font-mono border border-white/10 px-2 py-0.5 rounded-md bg-white/[0.02]">ESC</button>
         </div>
         {filtered.length === 0 ? (
           <div className="p-8 text-center text-white/30 text-xs font-mono">No commands matched &ldquo;{q}&rdquo;</div>
         ) : (
-          <div className="max-h-[360px] overflow-y-auto p-2.5 space-y-1 bg-black/40">
+          <div id="command-center-list" role="listbox" aria-label="Search results" className="max-h-[360px] overflow-y-auto p-2.5 space-y-1 bg-black/40">
             {filtered.map((cmd, idx) => {
               const active = idx === sel;
               return (
                 <button
                   key={cmd.id}
+                  id={`cmd-${cmd.id}`}
+                  role="option"
+                  aria-selected={active ? "true" : "false"}
                   onClick={() => { router.push(cmd.h); onClose(); }}
                   onMouseEnter={() => setSel(idx)}
                   className={`w-full text-left px-4 py-3 rounded-xl flex items-center justify-between transition-all border ${

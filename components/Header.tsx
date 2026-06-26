@@ -47,42 +47,48 @@ export default function Header({ contactHref = "/#contact" }: HeaderProps) {
         </Link>
 
         <div className="hidden lg:flex items-center gap-6 xl:gap-[40px] text-white absolute left-1/2 -translate-x-1/2">
-          <Link href="/" className="text-white text-[14px] xl:text-[16px] leading-[24px] font-medium hover:text-red-400 transition-colors whitespace-nowrap">HOME</Link>
+          <Link href="/" className="text-white text-[14px] xl:text-[16px] leading-[24px] font-medium hover:text-red-400 transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#009DFF] focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded-md px-1 py-0.5">HOME</Link>
           
           <div className="group relative">
-            <button className="flex items-center gap-1 text-white text-[14px] xl:text-[16px] leading-[24px] font-medium hover:text-red-400 transition-colors whitespace-nowrap py-4">
+            <button 
+              aria-haspopup="true"
+              className="flex items-center gap-1 text-white text-[14px] xl:text-[16px] leading-[24px] font-medium hover:text-red-400 transition-colors whitespace-nowrap py-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#009DFF] focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded-md px-1"
+            >
               SOLUTIONS
               <svg className="w-4 h-4 opacity-70 group-hover:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
             </button>
-            <div className="absolute top-full left-0 hidden group-hover:flex flex-col bg-[#050505] border border-white/10 rounded-[12px] p-3 shadow-xl min-w-[200px]">
-              <Link href="/capabilities" className="text-white/80 hover:text-white hover:bg-white/5 px-4 py-2 rounded-md text-[14px] transition-colors">CAPABILITIES</Link>
-              <Link href="/platforms" className="text-white/80 hover:text-white hover:bg-white/5 px-4 py-2 rounded-md text-[14px] transition-colors">PLATFORMS</Link>
-              <Link href="/build" className="text-white/80 hover:text-white hover:bg-white/5 px-4 py-2 rounded-md text-[14px] transition-colors">BUILD WITH GFF</Link>
+            <div className="absolute top-full left-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible flex flex-col bg-[#050505] border border-white/10 rounded-[12px] p-3 shadow-xl min-w-[200px] transition-all duration-200">
+              <Link href="/capabilities" className="text-white/80 hover:text-white hover:bg-white/5 px-4 py-2 rounded-md text-[14px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#009DFF] focus-visible:ring-offset-1 focus-visible:ring-offset-black">CAPABILITIES</Link>
+              <Link href="/platforms" className="text-white/80 hover:text-white hover:bg-white/5 px-4 py-2 rounded-md text-[14px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#009DFF] focus-visible:ring-offset-1 focus-visible:ring-offset-black">PLATFORMS</Link>
+              <Link href="/build" className="text-white/80 hover:text-white hover:bg-white/5 px-4 py-2 rounded-md text-[14px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#009DFF] focus-visible:ring-offset-1 focus-visible:ring-offset-black">BUILD WITH GFF</Link>
             </div>
           </div>
 
-          <Link href="/industries" className="text-white text-[14px] xl:text-[16px] leading-[24px] font-medium hover:text-red-400 transition-colors whitespace-nowrap">INDUSTRIES</Link>
+          <Link href="/industries" className="text-white text-[14px] xl:text-[16px] leading-[24px] font-medium hover:text-red-400 transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#009DFF] focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded-md px-1 py-0.5">INDUSTRIES</Link>
           
           <div className="group relative">
-            <button className="flex items-center gap-1 text-white text-[14px] xl:text-[16px] leading-[24px] font-medium hover:text-red-400 transition-colors whitespace-nowrap py-4">
+            <button 
+              aria-haspopup="true"
+              className="flex items-center gap-1 text-white text-[14px] xl:text-[16px] leading-[24px] font-medium hover:text-red-400 transition-colors whitespace-nowrap py-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#009DFF] focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded-md px-1"
+            >
               ABOUT
               <svg className="w-4 h-4 opacity-70 group-hover:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
             </button>
-            <div className="absolute top-full left-0 hidden group-hover:flex flex-col bg-[#050505] border border-white/10 rounded-[12px] p-3 shadow-xl min-w-[200px]">
-              <Link href="/why-gff-ai" className="text-white/80 hover:text-white hover:bg-white/5 px-4 py-2 rounded-md text-[14px] transition-colors">WHY GFF AI</Link>
-              <Link href="/company" className="text-white/80 hover:text-white hover:bg-white/5 px-4 py-2 rounded-md text-[14px] transition-colors">COMPANY</Link>
-              <Link href="/resources" className="text-white/80 hover:text-white hover:bg-white/5 px-4 py-2 rounded-md text-[14px] transition-colors">RESOURCES</Link>
+            <div className="absolute top-full left-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible flex flex-col bg-[#050505] border border-white/10 rounded-[12px] p-3 shadow-xl min-w-[200px] transition-all duration-200">
+              <Link href="/why-gff-ai" className="text-white/80 hover:text-white hover:bg-white/5 px-4 py-2 rounded-md text-[14px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#009DFF] focus-visible:ring-offset-1 focus-visible:ring-offset-black">WHY GFF AI</Link>
+              <Link href="/company" className="text-white/80 hover:text-white hover:bg-white/5 px-4 py-2 rounded-md text-[14px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#009DFF] focus-visible:ring-offset-1 focus-visible:ring-offset-black">COMPANY</Link>
+              <Link href="/resources" className="text-white/80 hover:text-white hover:bg-white/5 px-4 py-2 rounded-md text-[14px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#009DFF] focus-visible:ring-offset-1 focus-visible:ring-offset-black">RESOURCES</Link>
             </div>
           </div>
 
-          <Link href="/contact" className="text-white text-[14px] xl:text-[16px] leading-[24px] font-medium hover:text-red-400 transition-colors whitespace-nowrap">CONTACT</Link>
-          <Link href="/portal" className="text-white text-[14px] xl:text-[16px] leading-[24px] font-medium text-[#009DFF] hover:text-white transition-colors whitespace-nowrap">CLIENT LOGIN</Link>
+          <Link href="/contact" className="text-white text-[14px] xl:text-[16px] leading-[24px] font-medium hover:text-red-400 transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#009DFF] focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded-md px-1 py-0.5">CONTACT</Link>
+          <Link href="/portal" className="text-white text-[14px] xl:text-[16px] leading-[24px] font-medium text-[#009DFF] hover:text-white transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#009DFF] focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded-md px-1 py-0.5">CLIENT LOGIN</Link>
         </div>
 
         <div className="hidden md:flex items-center gap-3 shrink-0">
           <button
             onClick={() => setIsCommandCenterOpen(true)}
-            className="flex items-center gap-2 px-3.5 h-[44px] rounded-lg bg-white/[0.03] border border-white/10 hover:bg-white/[0.08] hover:border-white/20 transition-all text-white/60 hover:text-white cursor-pointer select-none"
+            className="flex items-center gap-2 px-3.5 h-[44px] rounded-lg bg-white/[0.03] border border-white/10 hover:bg-white/[0.08] hover:border-white/20 transition-all text-white/60 hover:text-white cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#009DFF] focus-visible:ring-offset-2 focus-visible:ring-offset-black"
           >
             <span className="text-sm">🔍</span>
             <span className="text-[13px] font-medium font-sans">Cmd Center</span>
@@ -94,7 +100,7 @@ export default function Header({ contactHref = "/#contact" }: HeaderProps) {
 
           <Link
             href={contactHref}
-            className="w-[185px] h-[44px] flex items-center justify-center rounded-[98px] text-white text-[14px] leading-[20px] font-semibold hover:opacity-90 transition-all duration-300 shrink-0"
+            className="w-[185px] h-[44px] flex items-center justify-center rounded-[98px] text-white text-[14px] leading-[20px] font-semibold hover:opacity-90 transition-all duration-300 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
             style={{ background: "linear-gradient(90deg, #E4000F 0%, #009DFF 100%)" }}
           >
             Book Consultation
