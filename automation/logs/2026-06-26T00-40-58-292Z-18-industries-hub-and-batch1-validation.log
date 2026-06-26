@@ -1,0 +1,21 @@
+## npm run lint
+exit=1
+STDOUT:
+
+> hirezapp_landing_page@0.1.0 lint
+> eslint
+
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/app/industries/banking/page.tsx
+  59:83  error  Comments inside children section of tag should be placed inside braces  react/jsx-no-comment-textnodes
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/app/industries/financial-services/page.tsx
+  55:83  error  Comments inside children section of tag should be placed inside braces  react/jsx-no-comment-textnodes
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/app/industries/insurance/page.tsx
+  54:83  error  Comments inside children section of tag should be placed inside braces  react/jsx-no-comment-textnodes
+
+✖ 3 problems (3 errors, 0 warnings)
+
+
+STDERR:

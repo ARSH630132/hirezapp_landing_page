@@ -1,72 +1,99 @@
 "use client";
 
+import { useState } from "react";
 import InnerPageShell from "@/components/inner-pages/InnerPageShell";
 import InnerPageHero from "@/components/inner-pages/InnerPageHero";
-import IndustrySolutionMap from "@/components/inner-pages/IndustrySolutionMap";
+import PremiumCTA from "@/components/inner-pages/PremiumCTA";
+
+const S_DATA = [
+  {
+    id: "financial-services",
+    title: "Financial Services",
+    path: "/industries/financial-services",
+    desc: "Deploy multi-asset auditing, compliance checks, and transaction risk surveillance.",
+    challenges: ["Legacy system isolation", "Compliance pressure", "Manual document gaps"],
+    agents: ["Compliance Assistant", "Risk Review Agent", "Customer Intelligence Agent"]
+  },
+  {
+    id: "banking",
+    title: "Banking",
+    path: "/industries/banking",
+    desc: "Unify mainframes with AI interfaces and copilots.",
+    challenges: ["Inquiry bottlenecks", "Fragmented archives", "Manual validation tasks"],
+    agents: ["Banking Knowledge Agent", "Relationship Manager Copilot", "Contract Intelligence Agent"]
+  },
+  {
+    id: "insurance",
+    title: "Insurance",
+    path: "/industries/insurance",
+    desc: "Accelerate claim lifecycle velocity and automate risk assessment.",
+    challenges: ["Claims overhead", "Unstructured policy search", "Document workflows"],
+    agents: ["Claims Triage Agent", "Policy Intelligence Agent", "Underwriting Copilot"]
+  }
+];
 
 export default function IndustriesPage() {
-  const industries = [
-    {
-      id: "finance",
-      title: "Financial Services",
-      desc: "Deploy liquidity rebalancing, compliance auditing, and automated anti-money laundering agents across high-frequency ledgers."
-    },
-    {
-      id: "manufacturing",
-      title: "Advanced Manufacturing",
-      desc: "Real-time predictive maintenance, factory floor computer-vision inspection, and automated supply-demand coordinating systems."
-    },
-    {
-      id: "logistics",
-      title: "Supply Chain & Logistics",
-      desc: "Optimized autonomous vehicle routing, real-time inventory velocity calculations, and automatic document parsers for global freight."
-    },
-    {
-      id: "healthcare",
-      title: "Healthcare & Life Sciences",
-      desc: "Privacy-compliant clinical trials coordination, medical documentation parsing, and diagnostic assistance pipelines."
-    },
-    {
-      id: "insurance",
-      title: "Insurance",
-      desc: "Automated underwriting heuristics, claims scanning pipelines, and customer support agent routing for immediate processing."
-    },
-    {
-      id: "telecom",
-      title: "Telecom & Networks",
-      desc: "Autonomous edge routing, predictive signal analysis, and real-time support chatbots configured with cognitive memory."
-    }
-  ];
+  const [tab, setTab] = useState("financial-services");
+  const active = S_DATA.find((x) => x.id === tab) || S_DATA[0];
+  const [arch, setArch] = useState("cognitive");
 
   return (
     <InnerPageShell>
-      <InnerPageHero
-        category="Vertical Solutions"
-        title="Industries We Transform"
-        highlightedWord="Industries"
-        description="GFF AI engineers custom cognitive architectures calibrated for the specific security, compliance, and velocity needs of your sector."
-      />
-
-      <div className="max-w-[1795px] mx-auto px-6 lg:px-16 pb-16">
-        <h2 className="text-[26px] sm:text-[34px] font-bold text-white tracking-tight mb-8">
-          Interactive Industry Automation Hotspots
-        </h2>
-        <IndustrySolutionMap />
-      </div>
-
-      <div className="max-w-[1795px] mx-auto px-6 lg:px-16 pb-24">
-        <h2 className="text-[26px] sm:text-[34px] font-bold text-white tracking-tight mb-8">
-          Industry Solutions Directory
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {industries.map((ind) => (
-            <div key={ind.id} id={ind.id} className="p-6 rounded-[20px] border border-white/5 bg-[#050505]/60 backdrop-blur-[12px] hover:border-[#009DFF]/20 transition-all group">
-              <span className="text-[10px] uppercase font-mono text-[#009DFF] tracking-wider font-semibold">SECTOR</span>
-              <h3 className="text-[18px] font-semibold text-white tracking-tight mt-2 group-hover:text-[#009DFF] transition-colors">{ind.title}</h3>
-              <p className="mt-3 text-[13.5px] leading-[1.6] text-white/60 font-light">{ind.desc}</p>
-            </div>
+      <InnerPageHero category="Enterprise Verticals" title="AI Engineered for Your Industry" highlightedWord="Industry" description="GFF AI engineers custom cognitive frameworks calibrated for strict security and compliance." />
+      <div className="max-w-[1795px] mx-auto px-6 pb-12">
+        <div className="flex flex-wrap justify-center gap-2 mb-8">
+          {S_DATA.map((ind) => (
+            <button key={ind.id} onClick={() => setTab(ind.id)} className={`px-4 py-2 rounded-full text-xs font-semibold border transition-all ${tab === ind.id ? "bg-white text-black border-white" : "bg-white/5 text-white/70 border-white/5 hover:text-white"}`}>{ind.title}</button>
           ))}
         </div>
+        <div className="rounded-2xl border border-white/5 bg-[#050507]/80 p-6 max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-5 flex flex-col justify-between min-h-[140px]">
+            <div>
+              <h3 className="text-xl font-bold text-white">{active.title}</h3>
+              <p className="mt-2 text-xs text-white/60 leading-relaxed">{active.desc}</p>
+            </div>
+            <div className="mt-4">
+              <a href={active.path} className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs text-white bg-white/5 border border-white/10 hover:bg-white/10 font-medium">Explore Strategy →</a>
+            </div>
+          </div>
+          <div className="lg:col-span-4 border-t lg:border-t-0 lg:border-l border-white/5 pt-6 lg:pt-0 lg:pl-6">
+            <h4 className="text-[10px] font-mono text-white/40 uppercase tracking-wider mb-2 font-bold">Challenges</h4>
+            <ul className="space-y-1">
+              {active.challenges.map((c, i) => (
+                <li key={i} className="flex gap-2 text-xs text-white/80 font-light"><span className="text-[#E4000F] font-bold">•</span> {c}</li>
+              ))}
+            </ul>
+          </div>
+          <div className="lg:col-span-3 border-t lg:border-t-0 lg:border-l border-white/5 pt-6 lg:pt-0 lg:pl-6">
+            <h4 className="text-[10px] font-mono text-white/40 uppercase tracking-wider mb-2 font-bold">Agents</h4>
+            <div className="space-y-1">
+              {active.agents.map((a, i) => (
+                <div key={i} className="p-2 rounded bg-white/[0.01] border border-white/5 text-xs text-white">{a}</div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="max-w-[1795px] mx-auto px-6 pb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div className="lg:col-span-5">
+            <h2 className="text-2xl font-bold text-white">Reference Architecture</h2>
+            <div className="mt-4 space-y-1">
+              {["ingest", "cognitive", "action"].map((k) => (
+                <button key={k} onClick={() => setArch(k)} className={`w-full p-2 rounded-xl text-left border text-xs font-semibold transition-all ${arch === k ? "bg-white/5 border-white/10 text-white" : "border-transparent text-white/50 hover:text-white"}`}>{k === "ingest" ? "Data Ingestion" : k === "cognitive" ? "Cognitive Core" : "Action Dispatch"}</button>
+              ))}
+            </div>
+          </div>
+          <div className="lg:col-span-7 p-6 rounded-2xl border border-white/5 bg-[#050506]/60">
+            <h4 className="text-sm font-bold text-white uppercase">{arch === "ingest" ? "Data Ingestion" : arch === "cognitive" ? "Sovereign Cognitive Core" : "Secure Outbound Dispatch"}</h4>
+            <p className="mt-2 text-xs text-white/60 leading-relaxed">
+              {arch === "ingest" ? "Ingest data from systems, transactional records, and document queues securely." : arch === "cognitive" ? "Assess query intent, isolate tool logic execution, and route workloads." : "Dispatch action payloads to legacy systems with human validation trails."}
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="max-w-[1795px] mx-auto px-6 pb-12">
+        <PremiumCTA title="Build AI for Your Industry" description="Speak with our systems engineers to map your operational boundaries and custom sandbox deployments." primaryLabel="Connect with GFF AI" primaryHref="/contact" />
       </div>
     </InnerPageShell>
   );
