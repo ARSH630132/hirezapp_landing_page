@@ -394,7 +394,9 @@ export default function QuickSearchSection() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-5xl mx-auto"
+                className={`grid grid-cols-1 gap-5 mx-auto ${
+  filteredResults.length === 1 ? "max-w-2xl" : "md:grid-cols-2 max-w-5xl"
+}`}
               >
                 {filteredResults.map((result, idx) => {
                   const color = categoryColors[result.category] || "#009DFF";
