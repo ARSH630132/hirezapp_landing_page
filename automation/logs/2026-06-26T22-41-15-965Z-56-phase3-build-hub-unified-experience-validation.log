@@ -1,0 +1,44 @@
+## npm run lint
+exit=1
+STDOUT:
+
+> hirezapp_landing_page@0.1.0 lint
+> eslint
+
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/app/build/page.tsx
+  220:5  error  Error: Cannot access variable before it is declared
+
+`refreshLocalSessionStates` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/app/build/page.tsx:220:5
+  218 |   useEffect(() => {
+  219 |     setIsClient(true);
+> 220 |     refreshLocalSessionStates();
+      |     ^^^^^^^^^^^^^^^^^^^^^^^^^ `refreshLocalSessionStates` accessed before it is declared
+  221 |   }, []);
+  222 |
+  223 |   const refreshLocalSessionStates = () => {
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/app/build/page.tsx:223:3
+  221 |   }, []);
+  222 |
+> 223 |   const refreshLocalSessionStates = () => {
+      |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 224 |     if (typeof window !== "undefined") {
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 225 |       try {
+      …
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 253 |     }
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 254 |   };
+      | ^^^^^ `refreshLocalSessionStates` is declared here
+  255 |
+  256 |   const handleCreateMockSession = () => {
+  257 |     if (typeof window !== "undefined") {  react-hooks/immutability
+
+✖ 1 problem (1 error, 0 warnings)
+
+
+STDERR:
