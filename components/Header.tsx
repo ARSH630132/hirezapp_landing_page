@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { navItems } from "@/lib/nav-data";
+import CommandCenter from "@/components/CommandCenter";
 
 type HeaderProps = {
   contactHref?: string;
@@ -10,6 +11,23 @@ type HeaderProps = {
 
 export default function Header({ contactHref = "/#contact" }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isCommandCenterOpen, setIsCommandCenterOpen] = useState(false);
+  const [isMac, setIsMac] = useState(false);
+
+  useEffect(() => {
+    setIsMac(typeof navigator !== "undefined" && navigator.userAgent.toLowerCase().includes("mac"));
+  }, []);
+
+  useEffect(() => {
+    const handleGlobalKD = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setIsCommandCenterOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleGlobalKD);
+    return () => window.removeEventListener("keydown", handleGlobalKD);
+  }, []);
 
   return (
     <>
@@ -61,19 +79,42 @@ export default function Header({ contactHref = "/#contact" }: HeaderProps) {
           <Link href="/portal" className="text-white text-[14px] xl:text-[16px] leading-[24px] font-medium text-[#009DFF] hover:text-white transition-colors whitespace-nowrap">CLIENT LOGIN</Link>
         </div>
 
-        <Link
-          href={contactHref}
-          className="hidden md:flex w-[207px] h-[48px] items-center justify-center rounded-[98px] text-white text-[16px] leading-[24px] font-semibold hover:opacity-90 transition-all duration-300 shrink-0"
-          style={{ background: "linear-gradient(90deg, #E4000F 0%, #009DFF 100%)" }}
-        >
-          Book a Consultation
-        </Link>
+        <div className="hidden md:flex items-center gap-3 shrink-0">
+          <button
+            onClick={() => setIsCommandCenterOpen(true)}
+            className="flex items-center gap-2 px-3.5 h-[44px] rounded-lg bg-white/[0.03] border border-white/10 hover:bg-white/[0.08] hover:border-white/20 transition-all text-white/60 hover:text-white cursor-pointer select-none"
+          >
+            <span className="text-sm">🔍</span>
+            <span className="text-[13px] font-medium font-sans">Cmd Center</span>
+            <kbd className="text-[9px] font-sans bg-white/10 px-1.5 py-0.5 rounded text-white/40 border border-white/5 flex items-center gap-0.5 font-mono">
+              <span>{isMac ? "⌘" : "Ctrl"}</span>
+              <span>K</span>
+            </kbd>
+          </button>
 
-        <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden flex flex-col gap-[6px]" aria-label="Toggle Menu">
-          <span className="w-[34px] h-[4px] bg-white rounded-full" />
-          <span className="w-[34px] h-[4px] bg-white rounded-full" />
-          <span className="w-[34px] h-[4px] bg-white rounded-full" />
-        </button>
+          <Link
+            href={contactHref}
+            className="w-[185px] h-[44px] flex items-center justify-center rounded-[98px] text-white text-[14px] leading-[20px] font-semibold hover:opacity-90 transition-all duration-300 shrink-0"
+            style={{ background: "linear-gradient(90deg, #E4000F 0%, #009DFF 100%)" }}
+          >
+            Book Consultation
+          </Link>
+        </div>
+
+        <div className="flex items-center gap-3 md:hidden shrink-0">
+          <button
+            onClick={() => setIsCommandCenterOpen(true)}
+            className="flex items-center justify-center w-9 h-9 rounded-full bg-white/[0.05] border border-white/10 text-white cursor-pointer"
+            aria-label="Open Command Center"
+          >
+            <span className="text-xs">🔍</span>
+          </button>
+          <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="flex flex-col gap-[5px]" aria-label="Toggle Menu">
+            <span className="w-[28px] h-[3px] bg-white rounded-full" />
+            <span className="w-[28px] h-[3px] bg-white rounded-full" />
+            <span className="w-[28px] h-[3px] bg-white rounded-full" />
+          </button>
+        </div>
       </header>
 
       {isMenuOpen && (
@@ -104,6 +145,8 @@ export default function Header({ contactHref = "/#contact" }: HeaderProps) {
           </div>
         </div>
       )}
+
+      <CommandCenter isOpen={isCommandCenterOpen} onClose={() => setIsCommandCenterOpen(false)} />
     </>
   );
 }
