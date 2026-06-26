@@ -310,7 +310,28 @@ export default function BuildMarketplacePage() {
     searchQuery,
     compareIds
   ]);
+
   const [isCompareOpen, setIsCompareOpen] = useState<boolean>(false);
+
+  // Handle ?compare=true URL deep-action
+  useEffect(() => {
+    if (isHydrated && typeof window !== "undefined") {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get("compare") === "true") {
+          setIsCompareOpen(true);
+          setCompareIds(prev => {
+            if (prev.length === 0) {
+              return ["sovereign-research-synth", "supply-chain-optimizer"];
+            }
+            return prev;
+          });
+        }
+      } catch (e) {
+        console.error("Failed to parse compare param from URL:", e);
+      }
+    }
+  }, [isHydrated]);
 
   const [sandboxId, setSandboxId] = useState<string | null>(null);
   const [sandboxLogs, setSandboxLogs] = useState<string[]>([]);

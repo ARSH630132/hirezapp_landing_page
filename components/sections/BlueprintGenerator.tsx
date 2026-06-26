@@ -1076,6 +1076,17 @@ PRIVACY NOTICE: Generated locally on the client edge. No data is stored on serve
             const compiledResult = onCompile(decodedData);
             stepperActions.loadState(decodedData, compiledResult);
           }
+        } else if (params.get("continue") === "true") {
+          const stored = localStorage.getItem("gff_blueprint_history");
+          if (stored) {
+            const list = JSON.parse(stored);
+            if (list && list.length > 0) {
+              const latestItem = list[0];
+              const savedResult = onCompile(latestItem.data);
+              stepperActions.loadState(latestItem.data, savedResult);
+              setHistoryLoaded(latestItem.id);
+            }
+          }
         }
       } catch (e) {
         console.error("Failed to parse blueprint from URL params:", e);
