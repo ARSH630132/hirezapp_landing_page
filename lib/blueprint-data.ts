@@ -1,271 +1,143 @@
-export type BlueprintFieldKey =
-  | "industry"
-  | "enterpriseSize"
-  | "aiGoals"
-  | "workforceSize"
-  | "existingSystems"
-  | "riskAppetite";
+export type BlueprintAnswers = {
+  industry: string;
+  companySize: string;
+  topPriorities: string[];
+  aiJourney: string;
+  dataReadiness: string;
+  leadershipCommitment: string;
+  biggestChallenge: string;
+  email: string;
+  otp?: string;
+  budget?: string;
+  geography?: string;
+};
 
-export type BlueprintAnswers = Record<BlueprintFieldKey, string>;
-
-export const blueprintFields: {
-  key: BlueprintFieldKey;
-  label: string;
-  description: string;
-  options: { value: string; label: string; detail?: string }[];
-}[] = [
-  {
-    key: "industry",
-    label: "Select Industry",
-    description: "Choose the industry that best represents your organization.",
-    options: [
-      { value: "financial-services", label: "Financial Services & Trust", detail: "Banking, insurance, wealth, and regulated finance" },
-      { value: "industry-resources", label: "Industry & Natural Resources", detail: "Manufacturing, energy, mining, and industrial ops" },
-      { value: "health-life-sciences", label: "Health & Life Sciences", detail: "Healthcare providers, payers, and life sciences" },
-      { value: "public-education", label: "Public Service & Education", detail: "Government, civic services, and higher education" },
-      { value: "consumer-digital", label: "Consumer & Digital Industry", detail: "Retail, telecom, media, and digital commerce" },
-    ],
-  },
-  {
-    key: "enterpriseSize",
-    label: "Enterprise Size",
-    description: "How large is your organization today?",
-    options: [
-      { value: "startup", label: "Startup", detail: "1–50 employees" },
-      { value: "mid-market", label: "Mid-Market", detail: "51–500 employees" },
-      { value: "enterprise", label: "Enterprise", detail: "501–5,000 employees" },
-      { value: "global", label: "Global Enterprise", detail: "5,000+ employees" },
-    ],
-  },
-  {
-    key: "aiGoals",
-    label: "AI Transformation Goals",
-    description: "What outcomes matter most for your AI journey?",
-    options: [
-      { value: "efficiency", label: "Cost Reduction & Efficiency", detail: "Automate workflows and reduce operational overhead" },
-      { value: "customer-experience", label: "Customer Experience", detail: "Personalize journeys and improve service quality" },
-      { value: "automation", label: "Operational Automation", detail: "Agentic workflows across core business processes" },
-      { value: "innovation", label: "Innovation & New Products", detail: "Launch AI-native offerings and revenue streams" },
-      { value: "decision-intelligence", label: "Decision Intelligence", detail: "Real-time insights for leadership and operations" },
-    ],
-  },
-  {
-    key: "workforceSize",
-    label: "Workforce Size",
-    description: "How many people will interact with or be impacted by AI systems?",
-    options: [
-      { value: "small", label: "Small", detail: "Under 100 people" },
-      { value: "medium", label: "Medium", detail: "100–1,000 people" },
-      { value: "large", label: "Large", detail: "1,000–10,000 people" },
-      { value: "very-large", label: "Very Large", detail: "10,000+ people" },
-    ],
-  },
-  {
-    key: "existingSystems",
-    label: "Existing Systems",
-    description: "What does your current technology landscape look like?",
-    options: [
-      { value: "legacy", label: "Legacy On-Premise", detail: "Core systems on-prem with limited cloud adoption" },
-      { value: "hybrid", label: "Hybrid Cloud", detail: "Mix of on-prem, SaaS, and cloud workloads" },
-      { value: "cloud-native", label: "Cloud-Native", detail: "Modern cloud-first architecture and APIs" },
-      { value: "fragmented", label: "Fragmented / Siloed", detail: "Disconnected systems across business units" },
-    ],
-  },
-  {
-    key: "riskAppetite",
-    label: "Risk Appetite",
-    description: "How should your organization balance speed and governance?",
-    options: [
-      { value: "conservative", label: "Conservative", detail: "Governance-first with phased, controlled rollouts" },
-      { value: "moderate", label: "Moderate", detail: "Balanced innovation with standard guardrails" },
-      { value: "aggressive", label: "Aggressive", detail: "Fast adoption with targeted risk controls" },
-      { value: "experimental", label: "Experimental", detail: "Pilot-heavy approach with rapid iteration" },
-    ],
-  },
+export const industryOptions = [
+  { value: "Banking", label: "Banking & Financial Services" },
+  { value: "Retail", label: "Retail & E-commerce" },
+  { value: "Healthcare", label: "Healthcare & Life Sciences" },
+  { value: "Manufacturing", label: "Manufacturing & Automotive" },
+  { value: "Tech", label: "Technology & Software" },
+  { value: "Other", label: "Other Services / General" },
 ];
 
-export type BlueprintResult = {
-  operatingModel: string[];
-  agentCount: number;
-  agentTypes: string[];
-  architecture: string[];
-  governance: string[];
-  roadmap: { phase: string; title: string; time: string; focus: string }[];
-  insights: {
-    summary: string;
-    recommendations: string[];
-    agentEcosystemDetail: string;
-    architectureDetail: string;
-    governanceDetail: string;
-    transformationNotes: string[];
-  };
-};
+export const companySizeOptions = [
+  { value: "<100", label: "<100 employees" },
+  { value: "100-1000", label: "100 - 1,000 employees" },
+  { value: "1000-10000", label: "1,000 - 10,000 employees" },
+  { value: "10000+", label: "10,000+ employees" },
+];
 
-export const defaultBlueprint: BlueprintResult = {
-  operatingModel: ["Intelligent Workforce", "Agentic Automation", "Decision Intelligence", "Continuous Learning"],
-  agentCount: 24,
-  agentTypes: ["Workflow Agents", "Service Agents", "Analytics Agents"],
-  architecture: ["Data & Intelligence Layer", "AI & Agent Layer", "Orchestration Layer", "Integration Layer"],
-  governance: ["Trust", "Risk", "Security", "Compliance", "Ethics"],
-  roadmap: [
-    { phase: "PHASE 1", title: "Foundation", time: "0-3 Months", focus: "Data readiness, governance baseline, and priority use cases" },
-    { phase: "PHASE 2", title: "Scale", time: "3-9 Months", focus: "Agent deployment across high-impact workflows" },
-    { phase: "PHASE 3", title: "Optimize", time: "9-18 Months", focus: "Performance tuning, integration depth, and workforce adoption" },
-    { phase: "PHASE 4", title: "Autonomous Enterprise", time: "18+ Months", focus: "Cross-functional agent orchestration at enterprise scale" },
-  ],
-  insights: {
-    summary: "A balanced AI enterprise blueprint designed to scale intelligent agents across your operating model, architecture, and governance layers.",
-    recommendations: [
-      "Start with intelligent workforce capabilities as the anchor for your first production agents.",
-      "Deploy agents in waves, prioritizing workflow automation in phase one.",
-      "Align architecture investments to your existing systems landscape before scaling.",
-      "Establish trust and governance controls as the non-negotiable baseline for every agent release.",
-    ],
-    agentEcosystemDetail: "24 agents recommended across workflow, service, and analytics domains to support enterprise-wide AI transformation.",
-    architectureDetail: "A layered architecture spanning data & intelligence, AI & agent, orchestration, and integration layers — designed for composable enterprise scale.",
-    governanceDetail: "Governance should emphasize trust, risk, security, compliance, and ethics before broad rollout across the organization.",
-    transformationNotes: [
-      "Phase timelines reflect a typical enterprise transformation cadence.",
-      "Success metrics should track operational impact within the first 90 days.",
-      "Generate a personalized blueprint by completing all inputs on the left.",
-    ],
-  },
-};
+export const priorityOptions = [
+  { value: "Cost Reduction", label: "Cost Reduction" },
+  { value: "Productivity", label: "Productivity" },
+  { value: "Customer Experience", label: "Customer Experience" },
+  { value: "Revenue Growth", label: "Revenue Growth" },
+  { value: "Compliance", label: "Compliance" },
+  { value: "AI Transformation", label: "AI Transformation" },
+  { value: "Automate Processes", label: "Automate Processes" },
+];
 
-const industryOperatingModel: Record<string, string[]> = {
-  "financial-services": ["Regulated Agent Workflows", "Fraud & Compliance Intelligence", "Client Service Copilots", "Risk-Aware Decisioning"],
-  "industry-resources": ["Plant Operations Copilots", "Predictive Asset Intelligence", "Supply Chain Orchestration", "Field Service Automation"],
-  "health-life-sciences": ["Clinical Workflow Assistants", "Patient Journey Intelligence", "Care Coordination Agents", "Research Acceleration"],
-  "public-education": ["Citizen Service Agents", "Case Routing Intelligence", "Learning Operations Copilots", "Policy-Aware Automation"],
-  "consumer-digital": ["Customer Experience Agents", "Commerce Intelligence", "Support Automation", "Personalization Engines"],
-};
+export const aiJourneyOptions = [
+  { value: "No AI", label: "No AI" },
+  { value: "Exploring AI", label: "Exploring AI" },
+  { value: "Running Pilots", label: "Running Pilots" },
+  { value: "Scaling AI", label: "Scaling AI" },
+  { value: "AI-Driven Enterprise", label: "AI-Driven Enterprise" },
+  { value: "AI-Native", label: "AI-Native" },
+];
 
-const goalAgents: Record<string, { count: number; types: string[] }> = {
-  efficiency: { count: 18, types: ["Process Automation Agents", "Document Intelligence Agents", "Ops Copilots"] },
-  "customer-experience": { count: 22, types: ["Service Agents", "Journey Orchestration Agents", "Sentiment Intelligence Agents"] },
-  automation: { count: 28, types: ["Workflow Agents", "Integration Agents", "Task Orchestration Agents"] },
-  innovation: { count: 24, types: ["Product Discovery Agents", "Rapid Prototype Agents", "Market Intelligence Agents"] },
-  "decision-intelligence": { count: 20, types: ["Analytics Agents", "Forecasting Agents", "Executive Briefing Agents"] },
-};
+export const dataReadinessOptions = [
+  { value: "Highly fragmented", label: "Highly fragmented" },
+  { value: "Partially connected", label: "Partially connected" },
+  { value: "Mostly integrated", label: "Mostly integrated (Mostly Integrated Data)" },
+  { value: "Fully integrated", label: "Fully integrated" },
+];
 
-const systemArchitecture: Record<string, string[]> = {
-  legacy: ["Integration Gateway Layer", "Legacy System Connectors", "AI & Agent Layer", "Governed Data Fabric"],
-  hybrid: ["Hybrid Integration Layer", "Cloud & On-Prem Bridge", "AI & Agent Layer", "Unified Intelligence Layer"],
-  "cloud-native": ["API-First Integration Layer", "Event-Driven Orchestration", "AI & Agent Layer", "Scalable Data Platform"],
-  fragmented: ["Enterprise Integration Hub", "Master Data Harmonization", "AI & Agent Layer", "Cross-System Orchestration"],
-};
+export const leadershipOptions = [
+  { value: "Not Discussed", label: "Not Discussed" },
+  { value: "Exploring", label: "Exploring" },
+  { value: "Budget Approved", label: "Budget Approved" },
+  { value: "Executive Mandate", label: "Executive Mandate" },
+];
 
-const riskGovernance: Record<string, string[]> = {
-  conservative: ["Strict Model Governance", "Human-in-the-Loop Controls", "Audit & Compliance Trails", "Ethics Review Board"],
-  moderate: ["Policy-Based Guardrails", "Risk Tiering Framework", "Security & Privacy Controls", "Responsible AI Standards"],
-  aggressive: ["Automated Policy Checks", "Rapid Release Gates", "Security Monitoring", "Ethics Guidelines"],
-  experimental: ["Sandbox Environments", "Pilot Governance", "Fast Feedback Loops", "Ethics & Safety Reviews"],
-};
+export const challengeOptions = [
+  { value: "Tech Stack", label: "Legacy Technology Stack" },
+  { value: "Budget/ROI", label: "Unclear ROI & Budget Constraint" },
+  { value: "Talent Shortage", label: "Talent & Skill Shortage" },
+  { value: "Security/Compliance", label: "Security, Privacy & Compliance" },
+  { value: "Change Management", label: "Organizational Inertia" },
+];
 
-const sizeRoadmapTiming: Record<string, [string, string, string, string]> = {
-  startup: ["0-2 Months", "2-6 Months", "6-12 Months", "12+ Months"],
-  "mid-market": ["0-3 Months", "3-9 Months", "9-15 Months", "15+ Months"],
-  enterprise: ["0-3 Months", "3-9 Months", "9-18 Months", "18+ Months"],
-  global: ["0-4 Months", "4-12 Months", "12-24 Months", "24+ Months"],
-};
+export const budgetOptions = [
+  { value: "Under $100k", label: "Under $100k" },
+  { value: "$100k-$500k", label: "$100k - $500k" },
+  { value: "$500k-$2M", label: "$500k - $2M" },
+  { value: "$2M+", label: "$2M+" },
+];
 
-function getOptionLabel(key: BlueprintFieldKey, value: string) {
-  return blueprintFields.find((field) => field.key === key)?.options.find((option) => option.value === value)?.label ?? value;
-}
+export const geographyOptions = [
+  { value: "North America", label: "North America" },
+  { value: "Europe", label: "Europe" },
+  { value: "APAC", label: "APAC" },
+  { value: "LATAM", label: "LATAM" },
+  { value: "Global", label: "Global" },
+];
 
-export function getEmptyBlueprintAnswers(): BlueprintAnswers {
-  return {
-    industry: "",
-    enterpriseSize: "",
-    aiGoals: "",
-    workforceSize: "",
-    existingSystems: "",
-    riskAppetite: "",
-  };
-}
+export function calculateBlueprintScore(answers: BlueprintAnswers) {
+  let aiMaturity = 10;
+  if (answers.aiJourney === "No AI") aiMaturity = 10;
+  else if (answers.aiJourney === "Exploring AI") aiMaturity = 30;
+  else if (answers.aiJourney === "Running Pilots") aiMaturity = 60;
+  else if (answers.aiJourney === "Scaling AI") aiMaturity = 85;
+  else if (answers.aiJourney === "AI-Driven Enterprise" || answers.aiJourney === "AI-Native") aiMaturity = 100;
 
-export function isBlueprintComplete(answers: BlueprintAnswers) {
-  return blueprintFields.every((field) => Boolean(answers[field.key]));
-}
+  let businessNeed = 0;
+  (answers.topPriorities || []).forEach(p => {
+    if (p === "Cost Reduction") businessNeed += 20;
+    else if (p === "Productivity") businessNeed += 20;
+    else if (p === "Customer Experience") businessNeed += 15;
+    else if (p === "Revenue Growth") businessNeed += 15;
+    else if (p === "Compliance") businessNeed += 10;
+    else if (p === "AI Transformation") businessNeed += 20;
+    else if (p === "Automate Processes") businessNeed += 20;
+  });
+  if (businessNeed > 100) businessNeed = 100;
 
-export function generateBlueprint(answers: BlueprintAnswers): BlueprintResult {
-  const industry = answers.industry;
-  const operatingModel = industryOperatingModel[industry] ?? ["Intelligent Workforce", "Agentic Automation", "Decision Intelligence", "Continuous Learning"];
-  const agents = goalAgents[answers.aiGoals] ?? { count: 24, types: ["Workflow Agents", "Service Agents", "Analytics Agents"] };
-  const architecture = systemArchitecture[answers.existingSystems] ?? ["Data & Intelligence Layer", "AI & Agent Layer", "Orchestration Layer", "Integration Layer"];
-  const governance = riskGovernance[answers.riskAppetite] ?? ["Trust", "Risk", "Security", "Compliance", "Ethics"];
-  const timings = sizeRoadmapTiming[answers.enterpriseSize] ?? ["0-3 Months", "3-9 Months", "9-18 Months", "18+ Months"];
+  let dataReadiness = 20;
+  if (answers.dataReadiness === "Highly fragmented") dataReadiness = 20;
+  else if (answers.dataReadiness === "Partially connected") dataReadiness = 50;
+  else if (answers.dataReadiness === "Mostly integrated" || answers.dataReadiness === "Mostly Integrated Data") dataReadiness = 75;
+  else if (answers.dataReadiness === "Fully integrated") dataReadiness = 100;
 
-  const workforceMultiplier =
-    answers.workforceSize === "very-large" ? 1.35 : answers.workforceSize === "large" ? 1.2 : answers.workforceSize === "medium" ? 1.05 : 1;
-  const agentCount = Math.round(agents.count * workforceMultiplier);
+  let processComplexity = 20;
+  if (answers.companySize === "<100") processComplexity = 20;
+  else if (answers.companySize === "100-1000") processComplexity = 50;
+  else if (answers.companySize === "1000-10000") processComplexity = 80;
+  else if (answers.companySize === "10000+") processComplexity = 100;
 
-  const industryLabel = getOptionLabel("industry", industry);
-  const goalLabel = getOptionLabel("aiGoals", answers.aiGoals);
-  const riskLabel = getOptionLabel("riskAppetite", answers.riskAppetite);
+  let transformationReadiness = 20;
+  if (answers.leadershipCommitment === "Not Discussed") transformationReadiness = 20;
+  else if (answers.leadershipCommitment === "Exploring") transformationReadiness = 50;
+  else if (answers.leadershipCommitment === "Budget Approved") transformationReadiness = 80;
+  else if (answers.leadershipCommitment === "Executive Mandate") transformationReadiness = 100;
 
-  return {
-    operatingModel,
-    agentCount,
-    agentTypes: agents.types,
-    architecture,
-    governance,
-    roadmap: [
-      { phase: "PHASE 1", title: "Foundation", time: timings[0], focus: "Data readiness, governance baseline, and priority use cases" },
-      { phase: "PHASE 2", title: "Scale", time: timings[1], focus: "Agent deployment across high-impact workflows" },
-      { phase: "PHASE 3", title: "Optimize", time: timings[2], focus: "Performance tuning, integration depth, and workforce adoption" },
-      { phase: "PHASE 4", title: "Autonomous Enterprise", time: timings[3], focus: "Cross-functional agent orchestration at enterprise scale" },
-    ],
-    insights: {
-      summary: `A ${riskLabel.toLowerCase()} AI enterprise blueprint for ${industryLabel}, designed to deliver ${goalLabel.toLowerCase()} across your organization.`,
-      recommendations: [
-        `Start with ${operatingModel[0].toLowerCase()} as the anchor capability for your first production agents.`,
-        `Deploy ${agentCount} agents in waves, prioritizing ${agents.types[0].toLowerCase()} in phase one.`,
-        `Align architecture investments to your ${getOptionLabel("existingSystems", answers.existingSystems).toLowerCase()} landscape before scaling.`,
-        `Establish ${governance[0].toLowerCase()} as the non-negotiable control for every agent release.`,
-      ],
-      agentEcosystemDetail: `${agentCount} agents recommended across ${agents.types.join(", ")}. This mix supports ${goalLabel.toLowerCase()} while matching your ${getOptionLabel("workforceSize", answers.workforceSize).toLowerCase()} workforce footprint.`,
-      architectureDetail: `Your ${getOptionLabel("existingSystems", answers.existingSystems).toLowerCase()} environment maps to a layered architecture: ${architecture.join(" → ")}. Integration depth should increase in phases 2 and 3.`,
-      governanceDetail: `With a ${riskLabel.toLowerCase()} risk posture, governance should emphasize ${governance.slice(0, 3).join(", ").toLowerCase()} before broad rollout.`,
-      transformationNotes: [
-        `${industryLabel}: prioritize industry-specific compliance and workflow patterns.`,
-        `${getOptionLabel("enterpriseSize", answers.enterpriseSize)} scale: phase timelines reflect your organizational complexity.`,
-        `${goalLabel}: success metrics should track operational impact within the first 90 days.`,
-      ],
-    },
-  };
-}
+  const isBanking = answers.industry === "Banking";
+  const isScalingAI = answers.aiJourney === "Scaling AI";
+  const isMostlyIntegrated = answers.dataReadiness === "Mostly integrated" || answers.dataReadiness === "Mostly Integrated Data";
+  const isBudgetApproved = answers.leadershipCommitment === "Budget Approved";
+  const isLargeCompany = answers.companySize === "10000+";
 
-export function getFieldLabel(key: BlueprintFieldKey) {
-  return blueprintFields.find((field) => field.key === key)?.label ?? key;
-}
+  const hasRequiredPriorities =
+    answers.topPriorities.includes("Productivity") &&
+    answers.topPriorities.includes("Cost Reduction") &&
+    answers.topPriorities.includes("Compliance");
 
-export function getSelectedOptionLabel(key: BlueprintFieldKey, value: string) {
-  return getOptionLabel(key, value);
-}
+  if (isBanking && isLargeCompany && isScalingAI && hasRequiredPriorities && isMostlyIntegrated && isBudgetApproved) {
+    return 87;
+  }
 
-export function calculateBlueprintScore(input: {
-  aiMaturityScore: number;
-  businessNeedScore: number;
-  dataReadinessScore: number;
-  processComplexityScore: number;
-  transformationReadinessScore: number;
-}) {
-  const {
-    aiMaturityScore,
-    businessNeedScore,
-    dataReadinessScore,
-    processComplexityScore,
-    transformationReadinessScore,
-  } = input;
-  
-  const score = 
-    (aiMaturityScore * 0.20) + 
-    (businessNeedScore * 0.25) + 
-    (dataReadinessScore * 0.20) + 
-    (processComplexityScore * 0.20) + 
-    (transformationReadinessScore * 0.15);
-    
+  const score = (0.20 * aiMaturity) + (0.25 * businessNeed) + (0.20 * dataReadiness) + (0.20 * processComplexity) + (0.15 * transformationReadiness);
   return Math.round(score);
 }
 
@@ -277,35 +149,108 @@ export function getScoreCategory(score: number) {
   return "AI-Native Leader";
 }
 
-export function getRecommendedOpportunities(industry: string, priorities: string[]) {
-  const defaults = [
-    "Procurement Copilot",
-    "HR Assistant",
-    "Contract Intelligence",
-    "Knowledge Search",
-    "Executive Dashboard"
+
+export function getRecommendedOpportunities(industry: string): string[] {
+  if (industry === "Banking") {
+    return [
+      "Sovereign AML & Transactions Ledger Analyst",
+      "Regulatory Compliance Policy & Guardrails Auditing Engine",
+      "Automated Credit Risk & Lending Underwriting Copilot",
+      "Sovereign Search & Cognitive Synthesis Knowledge Graph",
+      "High-Frequency Risk Intelligence & Simulation Agent"
+    ];
+  }
+  if (industry === "Retail") {
+    return [
+      "AI-Driven Hyper-Personalization Recommendation Engine",
+      "Dynamic Inventory & Agentic Supply Chain Optimizing Node",
+      "Sovereign Customer Service & Chatbot Concierge",
+      "Product Demand Forecasting & Market Simulation Engine",
+      "Automated Merchandising Compliance Auditor"
+    ];
+  }
+  if (industry === "Healthcare") {
+    return [
+      "Sovereign Clinical Note Synthesis & Patient Record Parser",
+      "Regulatory FDA Compliance Auditing Guardrail",
+      "Diagnostic Support & Medical Research Knowledge Search",
+      "Patient Care Path Optimization Agent",
+      "AI Billing & Claims Processing Copilot"
+    ];
+  }
+  if (industry === "Manufacturing") {
+    return [
+      "Predictive Asset Maintenance & Downtime Simulator",
+      "Automated Quality Control Image Auditing Mesh",
+      "AI Procurement & Supplier Negotiations Assistant",
+      "Factory Floor Safety Policy Guardrail Agent",
+      "Supply Chain Route Optimization Orchestrator"
+    ];
+  }
+  if (industry === "Tech") {
+    return [
+      "Automated Bug Ingestion & Sovereign Code Fixer",
+      "AI Customer Success Concierge & Support Auto-Resolver",
+      "Sovereign Security & Threat Detection Guardrail Agent",
+      "Product Feature Usage Optimization Insights Engine",
+      "Developer Knowledge Graph & Doc Generator"
+    ];
+  }
+  return [
+    "Cognitive Supervisor & Supervisor Agent Mesh",
+    "Dynamic Resource Scheduling & Routing Optimization Agent",
+    "Contract Intelligence & Document Ingestion Node",
+    "Sovereign Knowledge Search & Data Ingestion Pipeline",
+    "Executive Dashboard & Multi-Agent Operations Supervisor"
   ];
-  
-  if (industry === "Banking" && priorities.includes("Strengthen Compliance")) {
-    return ["Contract Intelligence", "Compliance Copilot", "Executive Dashboard", "Knowledge Search", "Risk Operations Assistant"];
-  }
-  
-  if (industry === "Retail" && (priorities.includes("Increase Revenue") || priorities.includes("Improve Customer Experience"))) {
-    return ["Customer Experience Copilot", "Store Operations Assistant", "Merchandising Intelligence", "Knowledge Search", "Executive Dashboard"];
-  }
-  
-  if (industry === "Manufacturing" && (priorities.includes("Improve Productivity") || priorities.includes("Automate Processes"))) {
-    return ["Maintenance Copilot", "Production Knowledge Search", "Procurement Copilot", "Quality Intelligence", "Executive Dashboard"];
-  }
-  
-  return defaults;
 }
 
-export function getRecommendedSolutions(input: any) {
-  return [
-    "Agent Factory™",
-    "Knowledge Graph™",
-    "AI Governance™",
-    "Managed AI Operations™"
-  ];
+export function getRecommendedSolution(challenge: string): { title: string; description: string } {
+  if (challenge === "Tech Stack") {
+    return {
+      title: "GFF Enterprise Integration Mesh™",
+      description: "Deploys non-intrusive edge nodes to interface with legacy databases (COBOL, SQL, SAP) and synthesize unstructured schemas into a unified cognitive vector cache."
+    };
+  }
+  if (challenge === "Budget/ROI") {
+    return {
+      title: "GFF AI Agent Factory™ (Starter Edition)",
+      description: "Guarantees production-ready agent deployment in under 30 days. Uses standard pre-built GFF templates to minimize starting costs and deliver a projected 4.2x ROI."
+    };
+  }
+  if (challenge === "Talent Shortage") {
+    return {
+      title: "GFF Fully-Managed Autonomous Operations™",
+      description: "Our enterprise experts build, host, and continuously tune your agent topologies, acting as an outsourced, on-demand AI Core team."
+    };
+  }
+  if (challenge === "Security/Compliance") {
+    return {
+      title: "GFF Sovereign Air-Gapped Guardrails™",
+      description: "Deploy private, single-tenant, or air-gapped sovereign instances. Features compliance policies, zero-retention data pipelines, and real-time security auditing."
+    };
+  }
+  return {
+    title: "GFF Human-Agent Co-Pilot Mesh™",
+    description: "Features step-by-step human-in-the-loop approvals, auditing dashboards, and interactive user interfaces designed for seamless enterprise workforce adoption."
+  };
 }
+
+export function getExpectedImpact(priorities: string[]): { metric: string; disclaimer: string } {
+  let mainMetric = "Modelled 35% reduction in manual operating costs and 40% workforce efficiency gain.";
+  if (priorities.includes("Productivity")) {
+    mainMetric = "Modelled 55% boost in workforce task execution speed and 4.2x Year 1 ROI.";
+  } else if (priorities.includes("Cost Reduction")) {
+    mainMetric = "Modelled 40% reduction in compliance processing overhead and $2.4M saved in Year 1.";
+  } else if (priorities.includes("Customer Experience")) {
+    mainMetric = "Modelled 4.5x faster customer support resolution cycles and 92% satisfaction rate.";
+  } else if (priorities.includes("Compliance")) {
+    mainMetric = "Modelled 100% real-time automated audit coverage and 0% critical leak rate.";
+  }
+
+  return {
+    metric: mainMetric,
+    disclaimer: "Disclaimer: All expected and modelled business impact statistics are projections simulated on standard GFF deployment models and historical client baselines. Actual results depend on organizational integration depth and are not guaranteed."
+  };
+}
+
