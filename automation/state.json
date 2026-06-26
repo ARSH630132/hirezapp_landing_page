@@ -49,7 +49,8 @@
     "47-phase3-ai-readiness-scoring-results",
     "49-phase3-roi-results-and-scenarios",
     "45-phase3-blueprint-local-save-share-copy",
-    "48-phase3-roi-calculator-input-model"
+    "48-phase3-roi-calculator-input-model",
+    "52-phase3-sandbox-agent-demo-catalog"
   ],
   "failed": [
     {
