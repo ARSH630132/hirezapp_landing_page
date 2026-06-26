@@ -1,0 +1,97 @@
+## npm run lint
+exit=0
+STDOUT:
+
+> hirezapp_landing_page@0.1.0 lint
+> eslint
+
+
+STDERR:
+
+
+## npm run build
+exit=0
+STDOUT:
+
+> hirezapp_landing_page@0.1.0 build
+> next build
+
+▲ Next.js 16.2.9 (Turbopack)
+- Environments: .env
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 13.6s
+  Running TypeScript ...
+  Finished TypeScript in 5.4s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/51) ...
+  Generating static pages using 7 workers (12/51) 
+  Generating static pages using 7 workers (25/51) 
+  Generating static pages using 7 workers (38/51) 
+✓ Generating static pages using 7 workers (51/51) in 3.0s
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /about-us
+├ ƒ /api/contact
+├ ○ /build
+├ ○ /build/assessment
+├ ○ /build/blueprint
+├ ○ /build/foundry-studio
+├ ○ /build/marketplace
+├ ○ /build/roi
+├ ○ /build/sandbox
+├ ○ /build/talk
+├ ○ /capabilities
+├ ○ /capabilities/agents
+├ ○ /capabilities/data
+├ ○ /capabilities/engineering
+├ ○ /capabilities/governance
+├ ○ /capabilities/knowledge-graph
+├ ○ /capabilities/labs
+├ ○ /capabilities/managed-services
+├ ○ /capabilities/operations
+├ ○ /capabilities/strategy
+├ ○ /capabilities/twins
+├ ○ /capabilities/universities
+├ ○ /careers
+├ ○ /company
+├ ○ /contact
+├ ○ /industries
+├ ○ /investor-relations
+├ ○ /manifest.webmanifest
+├ ○ /nda
+├ ○ /platforms
+├ ○ /platforms/foundry
+├ ○ /platforms/marketplace
+├ ○ /portal
+├ ○ /privacy
+├ ○ /resources
+├ ○ /robots.txt
+├ ○ /sitemap.xml
+├ ○ /terms
+├ ○ /why-gff-ai
+├ ○ /why-gff-ai/differentiator
+├ ○ /why-gff-ai/garage-foundry-factory
+├ ○ /why-gff-ai/global-model
+├ ○ /why-gff-ai/leadership
+├ ○ /why-gff-ai/mission
+├ ○ /why-gff-ai/operating-model
+├ ○ /why-gff-ai/technology-philosophy
+└ ○ /why-gff-ai/vision
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+
+STDERR:
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /Users/ayushbansal/package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * /Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/package-lock.json
+
