@@ -60,7 +60,8 @@
     "57-phase3-local-workspace-continuity",
     "58-phase3-cross-tool-recommendations",
     "59-phase3-command-center-deep-actions",
-    "60-phase3-tool-empty-loading-error-states"
+    "60-phase3-tool-empty-loading-error-states",
+    "61-phase3-mobile-pass-build-tools"
   ],
   "failed": [
     {
