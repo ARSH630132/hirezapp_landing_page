@@ -67,20 +67,22 @@ export default function LatestResearchSection() {
       <div className="max-w-[1795px] mx-auto relative z-10">
         
         {/* Header Block */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
-          <SectionHeading 
-            title={
-              <h2 className="text-[30px] sm:text-[40px] font-bold uppercase tracking-wider text-left">
-                LATEST <span className="text-[#009DFF]">RESEARCH</span> & INTEL
-              </h2>
-            } 
-            titleClassName="text-left" 
-            dividerWidthClassName="w-[180px]" 
-          />
-          <p className="text-[#A0A0A0] text-[14px] max-w-md font-light leading-relaxed">
-            Access GFF's verified design paradigms, structural blueprints, and operational safety standards for enterprise execution.
-          </p>
-        </div>
+<div className="mb-16">
+  <SectionHeading
+    title={
+      <h2 className="text-[30px] sm:text-[40px] font-bold uppercase tracking-wide text-left whitespace-nowrap">
+        LATEST <span className="text-[#009DFF]">RESEARCH</span> & INTEL
+      </h2>
+      
+    }
+    titleClassName="text-left"
+    dividerWidthClassName="w-[180px]"
+  />
+  <p className="mt-5 text-center text-[#A0A0A0] text-[14px] sm:text-[16px] leading-relaxed max-w-[900px] mx-auto font-light">
+  Access GFF's verified design paradigms, structural blueprints,
+  and operational safety standards for enterprise execution.
+</p>
+</div>
 
         {/* 1. Core Categories Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">

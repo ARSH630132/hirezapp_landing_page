@@ -243,30 +243,35 @@ export default function ClientSuccessSection() {
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 1 }}
-className="w-full bg-[#020202] px-6 lg:px-16 -mt-16 lg:pt-0 lg:pb-24 py-10 relative overflow-hidden">      <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "radial-gradient(circle at 100% 50%, #E9882805 0%, transparent 40%)" }} />
+className="w-full bg-[#020202] px-6 lg:px-16 mt-25 lg:pt-0 lg:pb-24 py-10 relative overflow-hidden">      <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "radial-gradient(circle at 100% 50%, #E9882805 0%, transparent 40%)" }} />
       
       <div className="max-w-[1795px] mx-auto relative z-10">
         
         {/* Section Heading */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-0">
-          <SectionHeading
-            title={
-              <h2 className="text-[32px] sm:text-[44px] leading-none font-bold text-left uppercase text-white tracking-widest whitespace-nowrap">
-  CLIENT <span className="text-[#E98828]">SUCCESS</span>
-</h2>
-            }
-            titleClassName="text-left"
-            dividerWidthClassName="w-[300px]"
-          />
-          <div className="max-w-xl lg:translate-y-20">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-[#E98828] border border-[#E98828]/20 px-2 py-0.5 rounded bg-[#E98828]/5 mb-3 inline-block">
-              REPRESENTATIVE BLUEPRINTS
-            </span>
-            <p className="text-[#A0A0A0] text-[14px] font-light leading-relaxed">
-              To safeguard client confidentiality, we publish exclusively anonymized representative architecture blueprints actively deployed in sovereign enterprise operations. No fictional client entities, no inflated marketing stats.
-            </p>
-          </div>
-        </div>
+        <div className="mb-10">
+  <SectionHeading
+    title={
+      <h2 className="text-[32px] sm:text-[44px] leading-none font-bold text-center uppercase text-white tracking-widest whitespace-nowrap">
+        CLIENT <span className="text-[#E98828]">SUCCESS</span>
+      </h2>
+    }
+    titleClassName="text-center"
+    dividerWidthClassName="w-[300px]"
+  />
+
+  <div className="mt-5 max-w-[900px] mx-auto text-center">
+    {/* <span className="text-[10px] font-mono uppercase tracking-widest text-[#E98828] border border-[#E98828]/20 px-2 py-0.5 rounded bg-[#E98828]/5 inline-block">
+      REPRESENTATIVE BLUEPRINTS
+    </span> */}
+
+    <p className="mt-4 text-[#A0A0A0] text-[14px] sm:text-[16px] font-light leading-relaxed">
+      To safeguard client confidentiality, we publish exclusively anonymized
+      representative architecture blueprints actively deployed in sovereign
+      enterprise operations. No fictional client entities, no inflated marketing
+      stats.
+    </p>
+  </div>
+</div>
 
         {/* Categories Tab Selector */}
         <div className="border-b border-white/5 mb-12 overflow-x-auto scrollbar-none flex gap-2 md:gap-4 pb-2">
