@@ -32,6 +32,10 @@
     {
       "id": "24-platforms-blueprint-marketplace-control-center",
       "reason": "cline implementation failed"
+    },
+    {
+      "id": "25-platforms-academy-university-assessment",
+      "reason": "cline implementation failed"
     }
   ]
 }
