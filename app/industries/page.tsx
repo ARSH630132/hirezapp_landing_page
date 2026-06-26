@@ -77,6 +77,38 @@ const S_DATA = [
     desc: "Deploy field operations support, automated hazard checklists, and remote site asset visibility.",
     challenges: ["Field operations", "Safety workflows", "Asset visibility"],
     agents: ["Field Operations Agent", "Safety Knowledge Agent", "Executive Dashboard Agent"]
+  },
+  {
+    id: "energy",
+    title: "Energy",
+    path: "/industries/energy",
+    desc: "Deploy field service support, automated asset maintenance ticketing, and regulatory documentation search.",
+    challenges: ["Asset operations latency", "Field service coordinating", "Grid & plant fragmentation"],
+    agents: ["Asset Operations Agent", "Field Service Copilot", "Document Intelligence Agent"]
+  },
+  {
+    id: "telecom",
+    title: "Telecom",
+    path: "/industries/telecom",
+    desc: "Streamline network operations, automate customer query routing, and enable real-time service delivery visibility.",
+    challenges: ["Network downtime response", "Customer inquiry bottlenecks", "Service delivery visibility"],
+    agents: ["Network Operations Copilot", "Customer Experience Agent", "Field Service Copilot"]
+  },
+  {
+    id: "government",
+    title: "Government",
+    path: "/industries/government",
+    desc: "Enable digital policy search, streamlined case intake triage, and high-transparency governance logs.",
+    challenges: ["Policy search latencies", "Case processing backlogs", "Documentation opacity"],
+    agents: ["Citizen Service Agent", "Policy Intelligence Agent", "Case Triage Agent"]
+  },
+  {
+    id: "public-sector",
+    title: "Public Sector",
+    path: "/industries/public-sector",
+    desc: "Upgrade public administration, citizen service portals, and record intelligence networks.",
+    challenges: ["Citizen service backlogs", "Policy search friction", "Process transparency"],
+    agents: ["Citizen Service Agent", "Policy Intelligence Agent", "Document Intelligence Agent"]
   }
 ];
 
