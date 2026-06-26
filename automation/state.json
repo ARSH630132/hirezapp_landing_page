@@ -40,7 +40,8 @@
     "09-homepage-client-success",
     "38-phase3-preflight-interactive-tools-audit",
     "39-phase3-shared-tool-architecture",
-    "40-phase3-shared-data-models-and-validation"
+    "40-phase3-shared-data-models-and-validation",
+    "41-phase3-reusable-wizard-and-stepper"
   ],
   "failed": [
     {
