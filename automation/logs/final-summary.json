@@ -22,7 +22,21 @@
     "20-industries-batch3-ops-retail-mining",
     "21-industries-batch4-regulated-public-telecom",
     "22-industries-batch5-professional-services",
-    "23-platforms-hub-garage-foundry-factory"
+    "23-platforms-hub-garage-foundry-factory",
+    "24-platforms-blueprint-marketplace-control-center",
+    "25-platforms-academy-university-assessment",
+    "26-platforms-industry-meshes",
+    "27-platforms-agent-runtime-developer",
+    "28-build-with-gff-pages",
+    "29-resources-pages",
+    "30-company-pages",
+    "31-contact-portal-client-control-center",
+    "32-legal-investor-pages",
+    "33-mobile-responsive-pass",
+    "34-accessibility-and-motion-pass",
+    "35-visual-premium-polish-pass",
+    "36-link-route-content-audit",
+    "37-final-full-build-and-qa"
   ],
   "failed": [
     {
@@ -84,9 +98,13 @@
     {
       "id": "37-final-full-build-and-qa",
       "reason": "cline implementation failed"
+    },
+    {
+      "id": "09-homepage-client-success",
+      "reason": "cline implementation failed"
     }
   ],
-  "finalStatus": "M automation/state.json\n?? automation/logs/2026-06-26T01-17-19-788Z-37-final-full-build-and-qa-implement.log",
+  "finalStatus": "",
   "finalValidationOk": true,
-  "finishedAt": "2026-06-26T01:17:44.104Z"
+  "finishedAt": "2026-06-26T09:10:10.679Z"
 }
