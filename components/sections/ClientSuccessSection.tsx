@@ -2,6 +2,7 @@
 
 import { motion } from "motion/react";
 import SectionHeading from "@/components/SectionHeading";
+import Link from "next/link";
 
 export default function ClientSuccessSection() {
   const items = [
@@ -62,47 +63,48 @@ export default function ClientSuccessSection() {
 
         <div className="mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {items.map((c, i) => (
-            <motion.div 
-              key={c.name}
-              initial={{ y: 30, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
-              className="group relative rounded-[20px] p-[1px] bg-white/10 hover:bg-white/20 transition-all cursor-pointer hover:-translate-y-3"
-            >
-              <div className="relative h-full rounded-[19px] bg-[#050505] p-8 flex flex-col justify-between min-h-[340px] overflow-hidden shadow-xl">
-                
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500 pointer-events-none" style={{ background: `radial-gradient(circle at bottom right, ${c.color} 0%, transparent 70%)` }} />
-                
-                <div className="relative z-10 flex flex-wrap gap-2 mb-6">
-                  {c.tags.map(t => (
-                    <span key={t} className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded bg-white/5 text-white/80 border border-white/10">
-                      {t}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="relative z-10 mb-6">
-                  <h3 className="text-[22px] font-bold text-white leading-tight group-hover:text-transparent group-hover:bg-clip-text transition-all" style={{ backgroundImage: `linear-gradient(90deg, #fff 0%, ${c.color} 150%)` }}>
-                    {c.name}
-                  </h3>
-                  <p className="text-[14px] text-[#A0A0A0] mt-3 leading-relaxed">
-                    {c.desc}
-                  </p>
-                </div>
-
-                <div className="relative z-10 mt-auto border-t border-white/10 pt-4 flex items-center justify-between">
-                  <div className="flex flex-col">
-                    <span className="text-[10px] text-white/50 uppercase tracking-widest font-bold">Key Outcome</span>
-                    <span className="text-[16px] font-bold text-white tracking-wide">{c.metric}</span>
+            <Link key={c.name} href="/resources/case-studies" className="group block h-full">
+              <motion.div 
+                initial={{ y: 30, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: i * 0.1 }}
+                className="relative rounded-[20px] p-[1px] bg-gradient-to-b from-white/10 to-transparent group-hover:from-[#E4000F]/40 group-hover:to-[#009DFF]/40 transition-all duration-500 h-full hover:-translate-y-3"
+              >
+                <div className="relative h-full rounded-[19px] bg-[#050505] p-8 flex flex-col justify-between min-h-[340px] overflow-hidden shadow-xl">
+                  
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500 pointer-events-none" style={{ background: `radial-gradient(circle at bottom right, ${c.color} 0%, transparent 70%)` }} />
+                  
+                  <div className="relative z-10 flex flex-wrap gap-2 mb-6">
+                    {c.tags.map(t => (
+                      <span key={t} className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded bg-white/5 text-white/80 border border-white/10">
+                        {t}
+                      </span>
+                    ))}
                   </div>
-                  <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center group-hover:border-white/50 transition-colors" style={{ color: c.color }}>
-                    →
-                  </div>
-                </div>
 
-              </div>
-            </motion.div>
+                  <div className="relative z-10 mb-6">
+                    <h3 className="text-[22px] font-bold text-white leading-tight group-hover:text-transparent group-hover:bg-clip-text transition-all" style={{ backgroundImage: `linear-gradient(90deg, #fff 0%, ${c.color} 150%)` }}>
+                      {c.name}
+                    </h3>
+                    <p className="text-[14px] text-[#A0A0A0] mt-3 leading-relaxed">
+                      {c.desc}
+                    </p>
+                  </div>
+
+                  <div className="relative z-10 mt-auto border-t border-white/10 pt-4 flex items-center justify-between">
+                    <div className="flex flex-col">
+                      <span className="text-[10px] text-white/50 uppercase tracking-widest font-bold">Key Outcome</span>
+                      <span className="text-[16px] font-bold text-white tracking-wide">{c.metric}</span>
+                    </div>
+                    <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center group-hover:border-white/50 transition-colors" style={{ color: c.color }}>
+                      →
+                    </div>
+                  </div>
+
+                </div>
+              </motion.div>
+            </Link>
           ))}
         </div>
       </div>

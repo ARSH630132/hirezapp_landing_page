@@ -60,13 +60,19 @@ export function BentoCard({
     };
   };
 
+  const hoverBorderColors = {
+    red: "hover:border-[#E4000F]/30",
+    blue: "hover:border-[#009DFF]/30",
+    purple: "hover:border-purple-500/30",
+  };
+
   return (
     <div
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`relative overflow-hidden rounded-[24px] border border-white/5 bg-[#050505]/80 backdrop-blur-[12px] p-6 lg:p-8 flex flex-col justify-between group transition-all duration-300 hover:border-white/12 hover:shadow-[0_0_30px_rgba(0,0,0,0.5)] ${className}`}
+      className={`relative overflow-hidden rounded-[24px] border border-white/5 bg-[#050505]/80 backdrop-blur-[12px] p-6 lg:p-8 flex flex-col justify-between group transition-all duration-300 ${hoverBorderColors[glowColor]} hover:shadow-[0_0_30px_rgba(0,0,0,0.5)] ${className}`}
     >
       {/* Dynamic Cursor Spotlight Overlay */}
       <div

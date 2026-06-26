@@ -123,7 +123,7 @@ export default function JourneySection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.15 }}
-                className="relative rounded-[24px] p-[1px] bg-gradient-to-b from-white/10 to-transparent hover:from-white/30 transition-all duration-500 h-full cursor-pointer hover:-translate-y-3"
+                className="relative rounded-[24px] p-[1px] bg-gradient-to-b from-white/10 to-transparent group-hover:from-[#E4000F]/40 group-hover:to-[#009DFF]/40 transition-all duration-500 h-full cursor-pointer group-hover:-translate-y-3"
               >
                 <div className="relative h-full rounded-[23px] bg-[#050505] p-6 lg:p-8 flex flex-col justify-between overflow-hidden shadow-2xl">
                   

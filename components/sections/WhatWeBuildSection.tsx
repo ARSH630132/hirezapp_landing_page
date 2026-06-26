@@ -103,7 +103,7 @@ export default function WhatWeBuildSection() {
                 whileInView={{ scale: 1, opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.05 }}
-                className="relative rounded-[24px] p-[1px] bg-gradient-to-b from-white/10 to-transparent hover:from-white/20 transition-all duration-500 h-full hover:-translate-y-2"
+                className="relative rounded-[24px] p-[1px] bg-gradient-to-b from-white/10 to-transparent group-hover:from-[#E4000F]/40 group-hover:to-[#009DFF]/40 transition-all duration-500 h-full group-hover:-translate-y-2"
               >
                 <div className="absolute inset-0 rounded-[24px] opacity-0 group-hover:opacity-5 transition-opacity duration-500 pointer-events-none blur-lg" style={{ backgroundColor: c.color }} />
                 <div className="h-full rounded-[23px] bg-[#050505] p-8 flex flex-col justify-between min-h-[350px] relative overflow-hidden shadow-2xl">
