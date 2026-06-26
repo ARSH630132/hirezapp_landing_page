@@ -35,7 +35,7 @@ const steps = [
   {
     name: "Operate",
     href: "/capabilities/operations",
-    color: "#009DFF",
+    color: "#F74539",
     icon: "/intellegent_enterprise/robot.svg",
     desc: "Supervise system execution, govern model performance, and track token usage.",
     outcome: "Real-time cost optimization and strict SLA compliance.",
@@ -44,7 +44,7 @@ const steps = [
   {
     name: "Optimize",
     href: "/platforms/control-center",
-    color: "#9D00FF",
+    color: "#e23f34",
     icon: "/intellegent_enterprise/blueprint.svg",
     desc: "Refine cognitive workflows, tune weights, and improve agentic behaviors.",
     outcome: "Lowered token spend, maximized accuracy, and strategic alignment.",
@@ -53,7 +53,7 @@ const steps = [
   {
     name: "Scale",
     href: "/platforms/factory",
-    color: "#E4000F",
+    color: "#dd2531",
     icon: "/intellegent_enterprise/industry.svg",
     desc: "Propagate proven templates across departments, geos, and hybrid clouds.",
     outcome: "Global omnipresent agent fleet running at industrial throughput.",
@@ -140,21 +140,22 @@ export default function JourneySection() {
                   </div>
 
                   {/* Node Dot (Visible on Desktop to connect to line) */}
-                  <div className="hidden lg:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-[#050505] border-[3px] z-20 group-hover:scale-150 transition-transform duration-300" style={{ borderColor: step.color }}>
+                  {/* <div className="hidden lg:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-[#050505] border-[3px] z-20 group-hover:scale-150 transition-transform duration-300" style={{ borderColor: step.color }}>
                     <div className="absolute inset-0 rounded-full animate-ping opacity-50" style={{ backgroundColor: step.color }} />
-                  </div>
+                  </div> */}
 
                   {/* Graphic/Icon */}
-                  <div className="relative z-10 flex justify-center py-4 lg:py-6 opacity-80 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-300">
+<div className="relative z-10 flex justify-center py-4 lg:py-6 opacity-80 group-hover:opacity-100 transition-opacity duration-300">
+
                     <img src={step.icon} alt={step.name} className="w-[70px] h-[70px] object-contain drop-shadow-md" />
                   </div>
 
                   {/* Content */}
-                  <div className="relative z-10 mt-auto pt-4 text-center">
+                  <div className="relative z-10 mt-auto pt-6 text-center">
                     <h3 className="text-[20px] font-bold tracking-widest uppercase transition-colors" style={{ color: step.color }}>
                       {step.name}
                     </h3>
-                    <p className="mt-3 text-[14.5px] leading-[1.6] text-[#D1D1D1] min-h-[64px] flex items-center justify-center">
+                    <p className="mt-3 text-[14.5px] leading-[1.6] text-[#D1D1D1] min-h-[64px] lg:h-[104px] flex items-center justify-center">
                       {step.desc}
                     </p>
 
