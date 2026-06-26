@@ -113,7 +113,7 @@ export default function JourneySection() {
               {/* Node Dot (Visible on Mobile to connect to line) */}
               <div 
                 className="lg:hidden absolute top-10 w-4 h-4 rounded-full bg-[#050505] border-[3px] z-20 group-hover:scale-125 transition-transform duration-300" 
-                style={{ borderColor: step.color, left: "-29px" }}
+                style={{ borderColor: step.color, left: "-22px" }}
               >
                 <div className="absolute inset-0 rounded-full animate-ping opacity-40" style={{ backgroundColor: step.color }} />
               </div>

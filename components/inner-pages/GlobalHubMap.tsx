@@ -90,7 +90,7 @@ export default function GlobalHubMap() {
         </div>
 
         {/* Info Column */}
-        <div className="lg:col-span-4 flex flex-col border-l border-white/5 lg:pl-6 min-h-[180px] justify-between">
+        <div className="lg:col-span-4 flex flex-col border-t lg:border-t-0 lg:border-l border-white/5 pt-6 lg:pt-0 lg:pl-6 min-h-[180px] justify-between">
           <div>
             <span className="text-[9px] font-mono tracking-widest text-[#E4000F] uppercase font-bold">Node Cluster Status</span>
             <h4 className="text-[18px] font-semibold text-white mt-1.5">{data.city} Core Hub</h4>

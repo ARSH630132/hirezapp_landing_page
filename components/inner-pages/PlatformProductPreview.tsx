@@ -14,13 +14,13 @@ export default function PlatformProductPreview() {
 
   return (
     <div className="w-full rounded-[24px] border border-white/5 bg-[#050505]/60 backdrop-blur-[12px] overflow-hidden flex flex-col md:flex-row shadow-xl">
-      <div className="w-full md:w-[160px] bg-black/40 border-r border-white/5 p-4 flex flex-col gap-1 shrink-0">
-        <span className="text-[9px] font-bold text-white/40 uppercase font-mono mb-2">GFF Console</span>
+      <div className="w-full md:w-[160px] bg-black/40 border-b md:border-b-0 md:border-r border-white/5 p-4 flex flex-row md:flex-col items-center md:items-start gap-2 shrink-0 overflow-x-auto scrollbar-none">
+        <span className="text-[9px] font-bold text-white/40 uppercase font-mono mb-2 hidden md:block">GFF Console</span>
         {["overview", "logs", "rules"].map((t) => (
           <button
             key={t} onClick={() => setTab(t as any)}
-            className={`w-full text-left px-3 py-1.5 rounded-[6px] text-[11px] capitalize ${
-              tab === t ? "bg-white/5 text-white border-l-2 border-[#009DFF]" : "text-white/50 hover:text-white"
+            className={`w-auto md:w-full text-left px-3 py-1.5 rounded-[6px] text-[11px] capitalize whitespace-nowrap transition-all cursor-pointer ${
+              tab === t ? "bg-white/5 text-white border-b-2 md:border-b-0 md:border-l-2 border-[#009DFF]" : "text-white/50 hover:text-white"
             }`}
           >
             {t}

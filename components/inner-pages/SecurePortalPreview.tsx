@@ -52,7 +52,7 @@ export default function SecurePortalPreview() {
         </div>
 
         {/* Security Parameters Column */}
-        <div className="lg:col-span-6 flex flex-col justify-between border-l border-white/5 lg:pl-8 min-h-[220px]">
+        <div className="lg:col-span-6 flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-white/5 pt-6 lg:pt-0 lg:pl-8 min-h-[220px]">
           <div>
             <span className="px-2 py-0.5 text-[9px] font-bold text-white/50 bg-white/5 rounded-full uppercase tracking-widest">
               Zero-Trust Audit Specs

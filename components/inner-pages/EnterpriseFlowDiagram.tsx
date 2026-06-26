@@ -20,7 +20,7 @@ export default function EnterpriseFlowDiagram() {
         
         <div className="lg:col-span-8 flex flex-col items-center">
           <p className="text-[11px] font-bold tracking-[0.15em] text-[#009DFF] uppercase mb-4 text-center">HOVER NODES TO INSPECT RUNTIME STATE</p>
-          <svg className="w-full max-w-[500px] h-[240px]" viewBox="0 0 550 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg className="w-full max-w-[500px] h-auto aspect-[550/280]" viewBox="0 0 550 280" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M70 140 L160 140 M240 140 L310 140 M390 140 L460 140 M480 120 L480 60 L200 60 L200 110" stroke="rgba(255,255,255,0.08)" strokeWidth="1.5" />
             <path d="M240 140 L310 140" stroke="#009DFF" strokeWidth="1.5" strokeDasharray="4 4" />
             <path d="M480 120 L480 60 L200 60 L200 110" stroke="#E4000F" strokeWidth="1" strokeDasharray="5 5" />
@@ -54,7 +54,7 @@ export default function EnterpriseFlowDiagram() {
           </svg>
         </div>
 
-        <div className="lg:col-span-4 flex flex-col border-l border-white/5 lg:pl-6 min-h-[160px] justify-between">
+        <div className="lg:col-span-4 flex flex-col border-t lg:border-t-0 lg:border-l border-white/5 pt-6 lg:pt-0 lg:pl-6 min-h-[160px] justify-between">
           <div>
             <span className="text-[9px] font-mono tracking-widest text-[#009DFF] uppercase font-bold">{node.role} Node</span>
             <h4 className="text-[16px] font-semibold text-white mt-1">{node.title}</h4>

@@ -243,8 +243,8 @@ export default function ClientWorkspace() {
           <div className="space-y-4">
             <h3 className="text-lg font-bold text-white tracking-tight">Multi-Agent Projects</h3>
             <p className="text-sm text-white/60">Active transformative agent sandboxes and delivery structures.</p>
-            <div className="border border-white/5 rounded-xl overflow-hidden mt-4">
-              <table className="w-full text-left font-mono text-[12px] text-white/70">
+            <div className="border border-white/5 rounded-xl overflow-hidden mt-4 overflow-x-auto scrollbar-thin scrollbar-thumb-white/10">
+              <table className="w-full min-w-[500px] text-left font-mono text-[12px] text-white/70">
                 <thead>
                   <tr className="bg-white/[0.02] border-b border-white/5 text-white/40 text-[10px] uppercase">
                     <th className="p-4">Project ID</th>
@@ -283,12 +283,12 @@ export default function ClientWorkspace() {
                 { phase: "Phase II: Sovereign Lattice Integration", desc: "Bridge Singapore and London cores via runtime compliance guardrails.", date: "In Progress" },
                 { phase: "Phase III: Full Agent Autonomy", desc: "Graduate active multi-agent loops to production scale.", date: "Scheduled" }
               ].map((p, i) => (
-                <div key={i} className="p-4 rounded-lg border border-white/5 bg-white/[0.01] flex justify-between items-center">
+                <div key={i} className="p-4 rounded-lg border border-white/5 bg-white/[0.01] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
                     <h4 className="text-[13px] font-bold text-white">{p.phase}</h4>
                     <p className="text-xs text-white/50 mt-1">{p.desc}</p>
                   </div>
-                  <span className="px-3 py-1 rounded text-[10px] font-mono bg-white/5 border border-white/10 text-white/70">{p.date}</span>
+                  <span className="px-3 py-1 rounded text-[10px] font-mono bg-white/5 border border-white/10 text-white/70 self-start sm:self-auto">{p.date}</span>
                 </div>
               ))}
             </div>
@@ -306,12 +306,12 @@ export default function ClientWorkspace() {
                 { name: "SOC2 Compliance Enclave Certificate", hash: "SHA-256: FF41...390" },
                 { name: "GFF AI Runtime Governance Rules", hash: "SHA-256: 01DE...A88" }
               ].map((doc, i) => (
-                <div key={i} className="p-4 rounded-lg border border-white/5 bg-[#020202]/30 flex justify-between items-center group hover:border-white/10 transition-colors">
+                <div key={i} className="p-4 rounded-lg border border-white/5 bg-[#020202]/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4 group hover:border-white/10 transition-colors">
                   <div>
                     <h4 className="text-[13px] font-bold text-white group-hover:text-[#009DFF] transition-colors">{doc.name}</h4>
                     <span className="text-[10px] font-mono text-white/40 block mt-1">{doc.hash}</span>
                   </div>
-                  <button className="p-2 rounded bg-white/5 hover:bg-white/10 border border-white/10 text-white cursor-pointer"><Download className="w-3.5 h-3.5" /></button>
+                  <button className="p-2 rounded bg-white/5 hover:bg-white/10 border border-white/10 text-white cursor-pointer self-start sm:self-auto"><Download className="w-3.5 h-3.5" /></button>
                 </div>
               ))}
             </div>
@@ -323,8 +323,8 @@ export default function ClientWorkspace() {
           <div className="space-y-4">
             <h3 className="text-lg font-bold text-white tracking-tight">Invoice Ledger</h3>
             <p className="text-sm text-white/60">Verified billing statements and commercial transaction receipts.</p>
-            <div className="border border-white/5 rounded-xl overflow-hidden mt-4">
-              <table className="w-full text-left font-mono text-[12px] text-white/70">
+            <div className="border border-white/5 rounded-xl overflow-hidden mt-4 overflow-x-auto scrollbar-thin scrollbar-thumb-white/10">
+              <table className="w-full min-w-[500px] text-left font-mono text-[12px] text-white/70">
                 <thead>
                   <tr className="bg-white/[0.02] border-b border-white/5 text-white/40 text-[10px] uppercase">
                     <th className="p-4">Invoice ID</th>
@@ -387,12 +387,12 @@ export default function ClientWorkspace() {
                 { rule: "Allow secondary ledger write privileges", agent: "RetailMesh-Agent-02A", time: "Pending approval" },
                 { rule: "Alter maximum sensory memory cache bounds", agent: "Foundry-Agent-11", time: "Pending approval" }
               ].map((app, i) => (
-                <div key={i} className="p-4 rounded-lg border border-white/5 bg-white/[0.01] flex justify-between items-center">
+                <div key={i} className="p-4 rounded-lg border border-white/5 bg-white/[0.01] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
                     <span className="text-[10px] font-mono text-[#009DFF] uppercase tracking-wider">{app.agent}</span>
                     <h4 className="text-[13px] font-bold text-white mt-1">{app.rule}</h4>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 self-start sm:self-auto">
                     <button className="px-3 py-1.5 rounded text-[11px] font-mono bg-green-500/10 border border-green-500/20 text-green-400 cursor-pointer">Approve</button>
                     <button className="px-3 py-1.5 rounded text-[11px] font-mono bg-[#E4000F]/10 border border-[#E4000F]/20 text-[#E4000F] cursor-pointer">Deny</button>
                   </div>
@@ -516,8 +516,8 @@ export default function ClientWorkspace() {
               </div>
             </div>
 
-            <div className="border border-white/5 rounded-xl overflow-hidden">
-              <table className="w-full text-left font-mono text-[12px] text-white/70">
+            <div className="border border-white/5 rounded-xl overflow-hidden overflow-x-auto scrollbar-thin scrollbar-thumb-white/10">
+              <table className="w-full min-w-[500px] text-left font-mono text-[12px] text-white/70">
                 <thead>
                   <tr className="bg-white/[0.02] border-b border-white/5 text-white/40 text-[10px] uppercase">
                     <th className="p-4">Node Hash</th>
@@ -572,8 +572,8 @@ export default function ClientWorkspace() {
           <div className="space-y-4">
             <h3 className="text-lg font-bold text-white tracking-tight">Active Agent Runtimes</h3>
             <p className="text-sm text-white/60">Running instances, multi-agent sensory nodes, and memory parameters.</p>
-            <div className="border border-white/5 rounded-xl overflow-hidden mt-4">
-              <table className="w-full text-left font-mono text-[12px] text-white/70">
+            <div className="border border-white/5 rounded-xl overflow-hidden mt-4 overflow-x-auto scrollbar-thin scrollbar-thumb-white/10">
+              <table className="w-full min-w-[500px] text-left font-mono text-[12px] text-white/70">
                 <thead>
                   <tr className="bg-white/[0.02] border-b border-white/5 text-white/40 text-[10px] uppercase">
                     <th className="p-4">Agent Identifier</th>

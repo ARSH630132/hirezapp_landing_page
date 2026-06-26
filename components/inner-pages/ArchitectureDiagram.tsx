@@ -46,7 +46,7 @@ export default function ArchitectureDiagram() {
             INTERACTIVE SYSTEM BLUEPRINT (CLICK TO INSPECT)
           </p>
 
-          <svg className="w-full max-w-[450px] h-[300px]" viewBox="0 0 500 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg className="w-full max-w-[450px] h-auto aspect-[500/320]" viewBox="0 0 500 320" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M250 50 L250 110 M250 150 L250 190 M250 230 L250 270" stroke="url(#pipeGlow)" strokeWidth="1.5" strokeDasharray="6 4" />
             
             {[
@@ -79,7 +79,7 @@ export default function ArchitectureDiagram() {
           </svg>
         </div>
 
-        <div className="lg:col-span-5 flex flex-col border-l border-white/5 lg:pl-6 min-h-[220px] justify-between">
+        <div className="lg:col-span-5 flex flex-col border-t lg:border-t-0 lg:border-l border-white/5 pt-6 lg:pt-0 lg:pl-6 min-h-[220px] justify-between">
           <div>
             <span className="px-2 py-0.5 text-[9px] font-bold text-white/50 bg-white/5 rounded-full uppercase tracking-widest">Blueprint Inspector</span>
             <h4 className="mt-2 text-[17px] font-semibold text-white tracking-tight">{data.name}</h4>
