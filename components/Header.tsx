@@ -46,7 +46,7 @@ export default function Header({ contactHref = "/#contact" }: HeaderProps) {
           </div>
         </Link>
 
-        <div className="hidden lg:flex items-center gap-6 xl:gap-[40px] text-white absolute left-1/2 -translate-x-1/2">
+        <div className="hidden xl:flex flex-1 items-center justify-center gap-[32px] text-white min-w-0 px-6">
           <Link href="/" className="text-white text-[14px] xl:text-[16px] leading-[24px] font-medium hover:text-red-400 transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#009DFF] focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded-md px-1 py-0.5">HOME</Link>
           
           <div className="group relative">
@@ -82,7 +82,7 @@ export default function Header({ contactHref = "/#contact" }: HeaderProps) {
           </div>
 
           <Link href="/contact" className="text-white text-[14px] xl:text-[16px] leading-[24px] font-medium hover:text-red-400 transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#009DFF] focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded-md px-1 py-0.5">CONTACT</Link>
-          <Link href="/portal" className="text-white text-[14px] xl:text-[16px] leading-[24px] font-medium text-[#009DFF] hover:text-white transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#009DFF] focus-visible:ring-offset-2 focus-visible:ring-offset-black rounded-md px-1 py-0.5">CLIENT LOGIN</Link>
+          <Link href="/portal"   className="text-white text-[14px] xl:text-[16px] leading-[24px] font-medium text-[#009DFF] hover:text-red-400 transition-colors whitespace-nowrap rounded-md px-1 py-0.5 xl:pr-8">CLIENT LOGIN</Link>
         </div>
 
         <div className="hidden md:flex items-center gap-3 shrink-0">
@@ -107,7 +107,7 @@ export default function Header({ contactHref = "/#contact" }: HeaderProps) {
           </Link>
         </div>
 
-        <div className="flex items-center gap-3 lg:hidden shrink-0">
+        <div className="flex items-center gap-3 xl:hidden shrink-0">
           <button
             onClick={() => setIsCommandCenterOpen(true)}
             className="flex items-center justify-center w-9 h-9 rounded-full bg-white/[0.05] border border-white/10 text-white cursor-pointer"
@@ -124,7 +124,7 @@ export default function Header({ contactHref = "/#contact" }: HeaderProps) {
       </header>
 
       {isMenuOpen && (
-        <div className="fixed inset-0 z-[999] lg:hidden bg-black/65" onClick={() => setIsMenuOpen(false)}>
+        <div className="fixed inset-0 z-[999] xl:hidden bg-black/65" onClick={() => setIsMenuOpen(false)}>
           <div className="absolute left-0 right-0 bottom-0 rounded-t-[28px] bg-[#050505] px-6 pt-6 pb-8 max-h-[90vh] overflow-y-auto scrollbar-thin scrollbar-thumb-white/10" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between pb-5 border-b border-white/10">
               <div>
