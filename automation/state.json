@@ -58,7 +58,8 @@
     "55-phase3-foundry-studio-workflow-builder",
     "56-phase3-build-hub-unified-experience",
     "57-phase3-local-workspace-continuity",
-    "58-phase3-cross-tool-recommendations"
+    "58-phase3-cross-tool-recommendations",
+    "59-phase3-command-center-deep-actions"
   ],
   "failed": [
     {
