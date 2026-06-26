@@ -13,7 +13,8 @@
     "11-homepage-latest-research",
     "12-blueprint-generator-compliance",
     "13-nav-footer-and-sitemap-completion",
-    "14-command-center"
+    "14-command-center",
+    "15-frontend-only-placeholder-safety"
   ],
   "failed": [
     {
