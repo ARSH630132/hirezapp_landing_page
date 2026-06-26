@@ -82,7 +82,7 @@ export default function GarageSection() {
               </div>
               <h3 className="relative z-10 text-[18px] leading-none font-semibold text-white">{item.title}</h3>
               <p className="relative z-10 mt-3 text-[#C1C1C1] text-[16px] leading-[1.5] font-medium">{item.desc}</p>
-              <button className="relative z-10 mt-6 text-[#FF2B2B] text-[16px] leading-none font-medium text-left">Learn More →</button>
+              <button className="relative z-10 mt-6 text-[#FF2B2B] text-[16px] leading-none font-medium text-left cursor-pointer">Learn More →</button>
             </div>
           ))}
         </div>

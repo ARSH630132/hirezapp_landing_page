@@ -149,10 +149,9 @@ export default function BlueprintGenerator() {
   const impact = getExpectedImpact(answers.topPriorities);
 
   return (
-    <div className="w-full max-w-[1200px] mx-auto bg-[#040815]/90 border border-white/10 rounded-2xl overflow-hidden shadow-[0_0_50px_rgba(8,125,243,0.15)] backdrop-blur-xl">
-      {/* Top Header & Title */}
-      <div className="p-6 md:p-8 border-b border-white/5 bg-gradient-to-r from-blue-950/20 via-black/40 to-purple-950/20">
-        <h2 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400">
+<div className="w-full max-w-[1400px] mx-auto">   {/* Top Header & Title */}
+      <div className="p-6 md:p-8 border-b border-white/5 bg-gradient-to-r from-[#071426] via-[#050505] to-[#120720]">
+        <h2 className="text-[28px] md:text-[34px] lg:text-[40px] leading-tight font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400">
           Get Your Enterprise AI Blueprint in 60 Seconds
         </h2>
         <p className="mt-2 text-xs md:text-sm text-white/60">
@@ -174,7 +173,7 @@ export default function BlueprintGenerator() {
       )}
 
       {/* Main Wizard Area */}
-      <div className="p-6 md:p-8 min-h-[380px] flex flex-col justify-between">
+      <div className="p-6 md:p-8 min-h-[320px] flex flex-col justify-between">
         {/* Step 1: Enterprise Profile */}
         {step === 1 && (
           <div className="space-y-6 animate-fadeIn">
@@ -426,7 +425,7 @@ export default function BlueprintGenerator() {
               <button
                 type="button"
                 onClick={validateAndNext}
-                className="px-6 h-[42px] rounded-lg bg-[#087DF3] text-xs font-semibold text-white hover:bg-[#087DF3]/80 transition"
+                className="px-8 min-w-[150px] h-[46px] rounded-lg bg-[#087DF3] text-xs font-semibold text-white hover:bg-[#1a88f5] hover:shadow-[0_0_18px_rgba(8,125,243,0.35)] transition-all cursor-pointer"
               >
                 Continue
               </button>

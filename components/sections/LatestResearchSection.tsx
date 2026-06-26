@@ -93,7 +93,7 @@ export default function LatestResearchSection() {
                 <h3 className="text-[18px] font-bold tracking-tight text-white">{c.name}</h3>
                 <p className="text-[13px] text-white/55 mt-2 font-light leading-relaxed">{c.desc}</p>
               </div>
-              <span className="text-[11px] font-mono mt-4 block" style={{ color: c.color }}>Browse Category →</span>
+              <span className="text-[11px] font-mono mt-4 block cursor-pointer" style={{ color: c.color }}>Browse Category →</span>
             </div>
           ))}
         </div>

@@ -26,7 +26,7 @@ export default function InsightsSection() {
             <img src={card.image} alt={card.title} className="w-full h-[190px] object-contain" />
             <h3 className="mt-6 text-[24px] leading-[30px] font-bold text-white">{card.title.toUpperCase()}</h3>
             <p className="mt-5 text-[18px] leading-[29px] font-medium text-[#C1C1C1]">{card.description}</p>
-            <button className="mt-auto pt-6 text-[#449AEB] text-[16px] leading-[24px] font-medium text-left">EXPLORE LAB →</button>
+            <button className="mt-auto pt-6 text-[#449AEB] text-[16px] leading-[24px] font-medium text-left cursor-pointer">EXPLORE LAB →</button>
           </div>
         ))}
       </div>

@@ -38,7 +38,7 @@ export default function TalkToAgentSection() {
               className={`group relative w-full max-w-[339px] rounded-[20px] p-[1px] mx-auto transition-all duration-300 hover:shadow-[0_0_10px_var(--agent-color),0_0_24px_var(--agent-color)] ${activeAgent === agent.name ? "md:scale-[1.04] z-30 shadow-[0_0_10px_var(--agent-color),0_0_24px_var(--agent-color)]" : "scale-100 z-10"}`}
               style={{ background: agent.gradient, "--agent-color": agent.color } as React.CSSProperties}
             >
-              <div className="relative w-full rounded-[19px] bg-[#000102] flex flex-col items-center text-center px-5 pb-7 overflow-hidden">
+              <div className="relative w-full min-h-[390px] rounded-[19px] bg-[#000102] flex flex-col items-center text-center px-5 pb-7 overflow-hidden">
                 <div
                   className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
                   style={{ background: `radial-gradient(circle at center, ${agent.color}18 0%, ${agent.color}10 35%, ${agent.color}08 55%, transparent 80%)` }}
