@@ -243,24 +243,22 @@ export default function ClientSuccessSection() {
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 1 }}
-      className="w-full bg-[#020202] px-6 lg:px-16 lg:py-32 py-20 relative overflow-hidden"
-    >
-      <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "radial-gradient(circle at 100% 50%, #E9882805 0%, transparent 40%)" }} />
+className="w-full bg-[#020202] px-6 lg:px-16 -mt-16 lg:pt-0 lg:pb-24 py-10 relative overflow-hidden">      <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "radial-gradient(circle at 100% 50%, #E9882805 0%, transparent 40%)" }} />
       
       <div className="max-w-[1795px] mx-auto relative z-10">
         
         {/* Section Heading */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-0">
           <SectionHeading
             title={
-              <h2 className="text-[32px] sm:text-[44px] leading-none font-bold text-left uppercase text-white tracking-widest">
-                CLIENT <span className="text-[#E98828]">SUCCESS</span>
-              </h2>
+              <h2 className="text-[32px] sm:text-[44px] leading-none font-bold text-left uppercase text-white tracking-widest whitespace-nowrap">
+  CLIENT <span className="text-[#E98828]">SUCCESS</span>
+</h2>
             }
             titleClassName="text-left"
             dividerWidthClassName="w-[300px]"
           />
-          <div className="max-w-xl">
+          <div className="max-w-xl lg:translate-y-20">
             <span className="text-[10px] font-mono uppercase tracking-widest text-[#E98828] border border-[#E98828]/20 px-2 py-0.5 rounded bg-[#E98828]/5 mb-3 inline-block">
               REPRESENTATIVE BLUEPRINTS
             </span>
