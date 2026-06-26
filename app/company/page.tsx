@@ -1,61 +1,110 @@
 "use client";
 
+import React from "react";
 import InnerPageShell from "@/components/inner-pages/InnerPageShell";
 import InnerPageHero from "@/components/inner-pages/InnerPageHero";
+import CompanyNavigation from "@/components/inner-pages/CompanyNavigation";
+import PremiumCTA from "@/components/inner-pages/PremiumCTA";
+import { Shield, Layers, Cpu, Network, CheckCircle2 } from "lucide-react";
 
-export default function CompanyPage() {
-  const leadership = [
-    { name: "Dr. Elena Vance", role: "Chief Science Officer", bio: "Former Lead AI Architect at DARPA, specializing in distributed agentic reasoning models." },
-    { name: "Marcus Thorne", role: "Head of Infrastructure", bio: "Experienced cloud systems engineer specialized in zero-trust sandboxing and sub-millisecond networks." },
-    { name: "Sarah Lin", role: "VP of Enterprise Delivery", bio: "Steered AI transformation projects for three fortune-50 retail banks before joining GFF AI." }
-  ];
-
-  const values = [
-    { title: "Rigorous Safety", desc: "Every autonomous agent must execute within deterministic sandbox boundaries with SOC2 audit loops." },
-    { title: "Heuristic Efficiency", desc: "No bloated neural networks where light, fast, and structured rule nodes can resolve tasks." },
-    { title: "Absolute Transparency", desc: "Token consumption, execution DAGs, and memory states must remain fully inspectable by clients." }
+export default function CompanyProfilePage() {
+  const divisions = [
+    {
+      title: "Garage Foundry Factory Model",
+      icon: <Layers className="w-5 h-5 text-[#E4000F]" />,
+      desc: "Our standard blueprint transitioning systems from sandbox sandboxing to production scaling.",
+    },
+    {
+      title: "GFF AI Research Division",
+      icon: <Cpu className="w-5 h-5 text-[#009DFF]" />,
+      desc: "Formulating deterministic routing and state isolation standards for the global agent economy.",
+    },
+    {
+      title: "Architects of the Agent Economy",
+      icon: <Network className="w-5 h-5 text-purple-400" />,
+      desc: "Setting standards for secure, compliant, and state-isolated multi-agent enterprise deployments.",
+    },
   ];
 
   return (
     <InnerPageShell>
+      <CompanyNavigation />
       <InnerPageHero
         category="Corporate Profile"
-        title="Our Company and Vision"
-        highlightedWord="Company"
-        description="GFF AI was founded to turn abstract cognitive intelligence models into concrete high-throughput enterprise infrastructure."
+        title="Architects of the Agent Economy"
+        highlightedWord="Agent Economy"
+        description="GFF AI PTE. LTD. (UEN 202621347N) is a premier global AI strategy and deployment firm. We build and scale high-throughput, secure, and compliant agentic systems to run complex workflows for global enterprises."
       />
 
-      <div id="mission" className="max-w-[1795px] mx-auto px-6 lg:px-16 pb-16">
-        <h2 className="text-[26px] sm:text-[34px] font-bold text-white tracking-tight mb-6">Mission & Values</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {values.map((val) => (
-            <div key={val.title} className="p-6 rounded-[20px] border border-white/5 bg-[#050505]/60 backdrop-blur-[12px] hover:border-[#009DFF]/20 transition-all">
-              <h3 className="text-[18px] font-semibold text-white tracking-tight">{val.title}</h3>
-              <p className="mt-3 text-[13.5px] leading-[1.6] text-white/60 font-light">{val.desc}</p>
-            </div>
-          ))}
-        </div>
-      </div>
+      <section className="relative w-full px-6 lg:px-16 pb-16">
+        <div className="max-w-[1795px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div className="lg:col-span-7 space-y-4">
+            <span className="text-[10px] font-mono tracking-[0.2em] text-[#E4000F] uppercase font-bold">Institutional Mandate</span>
+            <h2 className="text-[28px] sm:text-[34px] font-bold text-white tracking-tight">Industrializing Cognitive Intelligence</h2>
+            <p className="text-[14px] leading-[1.6] text-white/70 font-light font-sans">
+              Founded under the leadership of CEO Dr. Ashish Chandra, GFF AI stands as a specialized institution dedicated to bridging the gap between cutting-edge LLM reasoning and hard-nosed deterministic operational metrics.
+            </p>
+            <p className="text-[14px] leading-[1.6] text-white/70 font-light font-sans">
+              Through our trademarked Garage, Foundry, and Factory operating model, we transition enterprises from exploratory sandboxes to industrial-scale, zero-trust autonomous agent clusters.
+            </p>
+          </div>
 
-      <div id="leadership" className="max-w-[1795px] mx-auto px-6 lg:px-16 pb-16">
-        <h2 className="text-[26px] sm:text-[34px] font-bold text-white tracking-tight mb-6">Leadership Team</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {leadership.map((leader) => (
-            <div key={leader.name} className="p-6 rounded-[20px] border border-white/5 bg-[#050505]/60 backdrop-blur-[12px] hover:border-[#009DFF]/20 transition-all">
-              <h3 className="text-[18px] font-semibold text-white tracking-tight">{leader.name}</h3>
-              <span className="text-[11px] font-mono uppercase text-[#009DFF] tracking-wider font-semibold block mt-1">{leader.role}</span>
-              <p className="mt-3 text-[13.5px] leading-[1.6] text-white/60 font-light">{leader.bio}</p>
+          <div className="lg:col-span-5">
+            <div className="p-6 rounded-[20px] border border-white/5 bg-[#050505]/60 backdrop-blur-[12px] space-y-4 relative overflow-hidden">
+              <h3 className="text-[15px] font-semibold text-white tracking-tight flex items-center gap-2">
+                <Shield className="w-4 h-4 text-[#009DFF]" />
+                <span>Corporate Verification</span>
+              </h3>
+              <div className="space-y-2 text-[12px]">
+                {[
+                  { label: "Registered Entity", value: "GFF AI PTE. LTD." },
+                  { label: "UEN Identification", value: "202621347N" },
+                  { label: "Headquarters", value: "Singapore" },
+                  { label: "Locations Hub", value: "Singapore, London, India" },
+                ].map((item, idx) => (
+                  <div key={idx} className="flex justify-between items-center py-2 border-b border-white/5 last:border-b-0">
+                    <span className="text-white/40 font-mono uppercase tracking-wider text-[9px]">{item.label}</span>
+                    <span className="text-white/80 font-medium font-sans">{item.value}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          ))}
+          </div>
         </div>
-      </div>
+      </section>
 
-      <div id="locations" className="max-w-[1795px] mx-auto px-6 lg:px-16 pb-24">
-        <h2 className="text-[26px] sm:text-[34px] font-bold text-white tracking-tight mb-4">Locations & Global Presence</h2>
-        <p className="text-[14.5px] text-white/70 max-w-[800px] font-light leading-[1.6]">
-          GFF AI operates a remote-first organizational model with physical collaboration hubs in major technological corridors. Our engineering cores remain globally distributed to ensure continuous network coverage and 24/7 client operations monitoring.
-        </p>
-      </div>
+      <section className="relative w-full px-6 lg:px-16 pb-16 border-t border-white/5 pt-16">
+        <div className="max-w-[1795px] mx-auto">
+          <h2 className="text-[22px] font-bold text-white tracking-tight mb-8">Our Organizational Divisions</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {divisions.map((item, idx) => (
+              <div key={idx} className="p-6 rounded-[16px] border border-white/5 bg-[#030304]/40 hover:border-[#009DFF]/20 transition-all flex flex-col justify-between group">
+                <div className="space-y-2">
+                  <div className="w-8 h-8 rounded bg-white/[0.02] border border-white/10 flex items-center justify-center">{item.icon}</div>
+                  <h3 className="text-[15px] font-semibold text-white tracking-tight">{item.title}</h3>
+                  <p className="text-[12.5px] leading-[1.5] text-white/60 font-light font-sans">{item.desc}</p>
+                </div>
+                <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-[9px] font-mono text-[#009DFF] uppercase tracking-wider">
+                  <span>Authorized Division</span>
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="relative w-full px-6 lg:px-16 pb-16">
+        <div className="max-w-[1795px] mx-auto">
+          <PremiumCTA
+            title="Operationalize Your AI Ambitions"
+            description="Consult our lead architects to transition from conceptual sandboxes to secure, multi-agent automated production loops."
+            primaryLabel="Schedule Architecture Briefing"
+            secondaryLabel="View Locations"
+            secondaryHref="/company/locations"
+          />
+        </div>
+      </section>
     </InnerPageShell>
   );
 }
