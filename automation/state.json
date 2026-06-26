@@ -132,6 +132,10 @@
     {
       "id": "51-phase3-proposal-builder-preview",
       "reason": "cline implementation failed"
+    },
+    {
+      "id": "53-phase3-sandbox-simulated-agent-preview",
+      "reason": "cline implementation failed"
     }
   ]
 }
