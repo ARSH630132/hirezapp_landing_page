@@ -153,6 +153,12 @@ export default function ProposalBuilderPage() {
   const [isSigned, setIsSigned] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [exportToast, setExportToast] = useState<string | null>(null);
+
+  const handleExportClick = (type: string) => {
+    setExportToast(`Premium Feature Sandbox: Exporting as ${type} requires a GFF Enterprise Control Center gateway cloud connection. This offline terminal runs in strict zero-retention memory isolation.`);
+    setTimeout(() => setExportToast(null), 6000);
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -248,21 +254,67 @@ export default function ProposalBuilderPage() {
 
   const handleCopyOutline = () => {
     const data = generateProposalData();
-    const outlineText = `GFF AI SOVEREIGN INTEGRATION PROPOSAL
-----------------------------------------
-Organization Name: ${data.org}
-Sector Vertical: ${data.industryLabel}
-Operational Footprint: ${data.companySizeLabel}
-Geographic Deployment: ${data.geographyLabel}
-Priority Challenge: ${data.challengeLabel}
-Target Path: ${data.engagementPathObj.label} (${data.engagementPathObj.badge})
-Project Scope Timeline: ${data.timelineLabel} (${data.weeks} Weeks)
-Core Squad Config: ${data.engagementPathObj.squad}
-Capital Allocation Range: ${data.budgetLabel}
-Sponsor Stakeholders: ${data.stakeholdersLabel}
+    const p1 = data.p1;
+    const p2 = data.p2;
+    const p3 = data.p3;
+    const weeks = data.weeks;
 
-KEY DELIVERABLES:
-${data.deliverables.map((d, i) => `${i + 1}. ${d}`).join("\n")}
+    const outlineText = `GFF AI SOVEREIGN INTEGRATION PROPOSAL & OUTLINE (FRONTEND PREVIEW ONLY)
+======================================================================
+CLIENT: ${data.org} | VERTICAL: ${data.industryLabel}
+OPERATIONAL SCALE: ${data.companySizeLabel} (${data.companySizeRange})
+VPC DEPLOYMENT REGION: ${data.geographyLabel}
+PREFERRED ENGAGEMENT PATHWAY: ${data.engagementPathObj.label} (${data.engagementPathObj.badge})
+CALCULATED SOW TIMELINE: ${weeks} Weeks | BUDGET: ${data.budgetLabel}
+STAKEHOLDER SPONSORS: ${data.stakeholdersLabel}
+
+SECTION I: EXECUTIVE SUMMARY
+GFF AI recommends deploying a dedicated ${data.engagementPathObj.label} framework inside the single-tenant VPC perimeter for ${data.org} to address strategic bottlenecks in the ${data.industryLabel} sector. Over ${weeks} Weeks, GFF establishes isolated secure pipelines, delivering sovereign capabilities like ${data.selectedOutcomeLabels.join(", ")}.
+
+SECTION II: CHALLENGE STATEMENT
+Third-party cloud-hosted AI APIs introduce severe compliance risks and telemetry leaks. The core technical bottleneck to resolve for ${data.org} is "${data.challengeLabel}". Left unmitigated, data fragmentation and cost explosion will slow down operational cycles.
+
+SECTION III: RECOMMENDED GFF PATH
+We recommend the ${data.engagementPathObj.label} path (${data.engagementPathObj.badge}) deployed completely isolated on single-tenant architecture within ${data.geographyLabel} with a strict zero data-retention layer.
+
+SECTION IV: PROPOSED WORKSTREAMS
+- Workstream A: Hardened Perimeter Setup (Weeks 1 - ${p1}): Configure VPC boundaries and verify zero-retention.
+- Workstream B: Pipeline Core Integration (Weeks ${p1 + 1} - ${p1 + p2}): Deploy OmniMesh read-only connectors and metadata layers.
+- Workstream C: Agent Orchestration & Tuning (Weeks ${p1 + p2 + 1} - ${p1 + p2 + p3}): Standardize agent configurations and workflow guardrails.
+- Workstream D: Telemetry Logging & Handoff (Weeks ${p1 + p2 + p3 + 1} - ${weeks}): Integrate real-time audit ledgers and operator dashboards.
+
+SECTION V: 90-DAY ROADMAP
+- Day 1-30: Perimeter Isolation: Connect legacy data silos via OmniMesh read-only boundaries.
+- Day 31-60: Agent Workflow Design: Orchestrate multi-agent decision nodes and feedback loops.
+- Day 61-90: Go-Live & Certification: Scale the agent fleet and complete sovereign compliance certification.
+
+SECTION VI: SUGGESTED SQUAD
+Squad cohort: ${data.engagementPathObj.squad}
+- Lead Solutions Architect (VPC & data boundary configuration)
+- Systems Engineers (local weight tuning & pipeline performance)
+- Security Compliance Auditor (zero-retention validation logging)
+
+SECTION VII: GOVERNANCE APPROACH
+GFF enforces a "Zero Trust, Zero Retention" sovereign AI governance framework. Prompt-history is instantly zeroed out post-execution, and telemetry logs are recorded to a read-only audit ledger.
+
+SECTION VIII: SUCCESS MEASURES
+- Latency: Sub-150ms dynamic cognitive decision loops.
+- IP Safety: Absolute zero external IP leaks or SaaS memory retention logs.
+- OpEx Reclamation: 30%+ reclaimed external SaaS token and licensing expenses.
+- Telemetry Auditing: 100% logging coverage verified by the secure audit ledger.
+
+SECTION IX: ASSUMPTIONS
+- Read-only database access is granted via VPC boundaries within 7 business days.
+- Stakeholders listed (${data.stakeholdersLabel}) participate in weekly 15-minute syncs.
+
+SECTION X: RISKS & MITIGATIONS
+- Risk: Legacy silo schema complexity. Mitigation: GFF OmniMesh builds semantic indices without altering original sources.
+- Risk: Isolated hardware lead-times. Mitigation: Prototype on staging enclaves.
+
+SECTION XI: NEXT STEPS
+1. Complete digital sign-off.
+2. VPC configurations & discovery call.
+3. Mobilize co-innovation squad (${data.engagementPathObj.squad}) in 7 days.
 `;
     navigator.clipboard.writeText(outlineText);
     setCopied(true);
@@ -836,13 +888,20 @@ ${data.deliverables.map((d, i) => `${i + 1}. ${d}`).join("\n")}
               {/* INDEX COLUMN (3 columns) */}
               <div className="lg:col-span-3 space-y-4 sticky top-6 print:hidden">
                 <div className="p-4 rounded-2xl border border-white/5 bg-[#030306]/95 text-left">
-                  <span className="text-[8px] font-mono text-white/35 font-bold block mb-3">DOSSIER INDEX</span>
+                  <span className="text-[8px] font-mono text-[#009DFF] font-bold block mb-3 uppercase tracking-widest">Dossier Index</span>
                   <nav className="space-y-0.5">
                     {[
                       { id: "executive-summary", label: "Executive Summary", icon: "📄" },
-                      { id: "geographical-scope", label: "Hardened Perimeter Setup", icon: "🔍" },
-                      { id: "recommended-gff-path", label: "Deployment Model", icon: "🚀" },
-                      { id: "proposed-workstreams", label: "Delivery Phases", icon: "🗺️" }
+                      { id: "challenge-statement", label: "Challenge Statement", icon: "⚠️" },
+                      { id: "recommended-gff-path", label: "Recommended GFF Path", icon: "🚀" },
+                      { id: "proposed-workstreams", label: "Proposed Workstreams", icon: "🗺️" },
+                      { id: "ninety-day-roadmap", label: "90-Day Roadmap", icon: "📅" },
+                      { id: "suggested-squad", label: "Suggested Squad", icon: "👥" },
+                      { id: "governance-approach", label: "Governance Approach", icon: "⚖️" },
+                      { id: "success-measures", label: "Success Measures", icon: "📈" },
+                      { id: "assumptions", label: "Assumptions", icon: "📝" },
+                      { id: "risks-mitigations", label: "Risks & Mitigations", icon: "🔒" },
+                      { id: "next-steps", label: "Next Steps", icon: "🏁" }
                     ].map((sec, idx) => (
                       <button
                         key={sec.id}
@@ -851,24 +910,48 @@ ${data.deliverables.map((d, i) => `${i + 1}. ${d}`).join("\n")}
                           const el = document.getElementById(sec.id);
                           if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
                         }}
-                        className={`w-full text-left px-3 py-1.5 rounded text-[11px] transition flex items-center gap-2 ${activePreviewSection === sec.id ? "bg-white/5 text-[#009DFF] font-bold border-l border-[#009DFF]" : "text-white/50 hover:text-white"}`}
+                        className={`w-full text-left px-2.5 py-1.5 rounded text-[10px] font-mono transition flex items-center gap-2 ${activePreviewSection === sec.id ? "bg-[#009DFF]/10 text-[#009DFF] font-bold border-l border-[#009DFF]" : "text-white/40 hover:text-white"}`}
                       >
                         <span>{sec.icon}</span>
-                        <span>{idx + 1}. {sec.label}</span>
+                        <span>{String(idx + 1).padStart(2, "0")}. {sec.label}</span>
                       </button>
                     ))}
                   </nav>
 
                   <div className="mt-4 pt-3 border-t border-white/5 space-y-2">
-                    <button onClick={handleCopyOutline} className="w-full py-1.5 rounded bg-white/5 text-white border border-white/10 hover:bg-white/10 transition text-[9px] font-mono uppercase font-semibold">
+                    <button onClick={handleCopyOutline} className="w-full py-1.5 rounded bg-white/5 text-[#00FF9D] border border-white/10 hover:bg-[#00FF9D]/10 hover:text-[#00FF9D] transition text-[9px] font-mono uppercase font-semibold">
                       {copied ? "✓ Copied" : "Copy Outline"}
                     </button>
-                    <button onClick={handlePrint} className="w-full py-1.5 rounded bg-white/5 text-white border border-white/10 hover:bg-white/10 transition text-[9px] font-mono uppercase font-semibold">
+                    <button onClick={handlePrint} className="w-full py-1.5 rounded bg-[#009DFF]/10 text-[#009DFF] border border-[#009DFF]/20 hover:bg-[#009DFF]/20 transition text-[9px] font-mono uppercase font-semibold">
                       Print Spec Preview
                     </button>
-                    <button onClick={handleReset} className="w-full py-1 text-center text-white/30 text-[9px] font-mono hover:text-white block uppercase">
-                      [ Clear Form & Restart ]
+                    <button onClick={handleSaveDraft} className="w-full py-1.5 rounded bg-white/5 text-white/85 border border-white/10 hover:bg-white/10 transition text-[9px] font-mono uppercase font-semibold">
+                      {saved ? "✓ Saved" : "Save SOW Draft"}
                     </button>
+                    <button onClick={handleReset} className="w-full py-1 text-center text-white/30 text-[8.5px] font-mono hover:text-[#E4000F] block uppercase mt-1">
+                      [ Reset & Restart ]
+                    </button>
+                  </div>
+
+                  {/* PREMIUM INTEGRATIONS CARD LIST */}
+                  <div className="mt-4 pt-3 border-t border-white/5 space-y-2">
+                    <span className="text-[7.5px] font-mono text-white/35 font-bold uppercase block tracking-wider">PREMIUM EXPORTS</span>
+                    {[
+                      { id: "PDF", label: "Export PDF Dossier", color: "hover:border-[#00FF9D]/20 group-hover:text-[#00FF9D]" },
+                      { id: "PPTX", label: "Export PPT Briefing", color: "hover:border-[#009DFF]/20 group-hover:text-[#009DFF]" },
+                      { id: "DOCX", label: "Generate SOW DOCX", color: "hover:border-[#9D00FF]/20 group-hover:text-[#9D00FF]" }
+                    ].map((exp) => (
+                      <button 
+                        key={exp.id}
+                        onClick={() => handleExportClick(exp.id)}
+                        className={`w-full text-left p-1.5 rounded border border-white/5 bg-white/[0.01] ${exp.color} transition group`}
+                      >
+                        <div className="flex justify-between items-center font-mono text-[8.5px]">
+                          <span className="font-bold text-white/60 group-hover:text-white">{exp.label}</span>
+                          <span className="text-[6px] bg-white/5 text-white/40 px-1 rounded">OFFLINE</span>
+                        </div>
+                      </button>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -879,6 +962,18 @@ ${data.deliverables.map((d, i) => `${i + 1}. ${d}`).join("\n")}
                   <span>GFF AI CONFIDENTIAL PORTFOLIO // SOVEREIGN SPECIFICATION ARCHITECTURE</span>
                 </div>
 
+                {/* FRONTEND PREVIEW ONLY DISCLAIMER BANNER */}
+                <div className="mb-6 p-3.5 rounded-xl border border-amber-500/20 bg-amber-500/[0.03] text-left print:border-black/10 print:bg-black/5">
+                  <div className="flex gap-2.5 items-start font-mono text-[9px]">
+                    <span className="text-amber-500 mt-0.5">⚠️</span>
+                    <div className="space-y-0.5">
+                      <span className="text-[8px] font-bold text-amber-500 uppercase tracking-wider block">FRONTEND SPECIFICATION PREVIEW ONLY</span>
+                      <p className="text-white/50 print:text-black/80 leading-relaxed font-light font-mono">
+                        This document represents a deterministic co-innovation draft outline compiled locally inside your secure offline browser session. It is for visualization and technical planning purposes only and does NOT constitute a final legally binding commercial proposal or master contract agreement.
+                      </p>
+                    </div>
+                  </div>
+                </div>
                 <div className="border-b border-white/10 pb-6 mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4 print:border-black/20">
                   <div className="space-y-2 text-left">
                     <div className="flex items-center gap-2">
@@ -909,164 +1004,305 @@ ${data.deliverables.map((d, i) => `${i + 1}. ${d}`).join("\n")}
                     </div>
                     <div className="text-xs text-white/70 font-light leading-relaxed space-y-3 print:text-black/85">
                       <p>
-                        This SOW details the strategic sovereign integration architecture mapped for deploying GFF AI systems inside the boundary of <strong className="text-white print:text-black font-semibold">{pData.org}</strong>. Operating inside the <strong className="text-white print:text-black font-semibold">{pData.industryLabel}</strong> vertical, GFF AI will deploy a dedicated single-tenant enclave designed to resolve the primary challenge: <strong className="text-white print:text-black font-semibold">{pData.challengeLabel}</strong>.
+                        GFF AI recommends deploying a dedicated <strong className="text-white print:text-black font-semibold">{pData.engagementPathObj.label}</strong> architecture inside the single-tenant VPC perimeter for <strong className="text-white print:text-black font-semibold">{pData.org}</strong>. Operating inside the <strong className="text-white print:text-black font-semibold">{pData.industryLabel}</strong> vertical, GFF AI will deploy a dedicated single-tenant enclave designed to resolve the primary challenge: <strong className="text-white print:text-black font-semibold">{pData.challengeLabel}</strong>.
                       </p>
                       <p>
-                        Our integration guarantees complete compliance with zero data retention logging metrics, running completely in-memory inside custom partitioned secure workspaces.
+                        Over an implementation lifecycle of <strong className="text-white print:text-black font-semibold">{pData.weeks} Weeks</strong>, GFF will establish isolated secure pipelines under the guidance of key stakeholders (<strong className="text-white print:text-black font-semibold">{pData.stakeholdersLabel}</strong>), delivering sovereign capabilities like:
                       </p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-4">
+                        {pData.selectedOutcomeLabels.map((outcome, idx) => (
+                          <div key={idx} className="p-3 rounded-lg border border-white/5 bg-white/[0.01] print:bg-black/5 print:border-black/10 flex items-center gap-2">
+                            <span className="text-[#00FF9D] font-mono text-[10px]">✓</span>
+                            <span className="text-[10px] font-mono text-white/80 print:text-black">{outcome}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
 
-                  {/* SECTION 2: GEOGRAPHICAL & STAKEHOLDER SCOPE */}
-                  <div id="geographical-scope" className="scroll-mt-10 space-y-4">
+                  {/* SECTION 2: CHALLENGE STATEMENT */}
+                  <div id="challenge-statement" className="scroll-mt-10 space-y-4">
                     <div className="border-b border-white/5 pb-1 print:border-black/10">
                       <span className="text-[8px] font-mono text-[#009DFF] font-bold uppercase print:text-black/50">SECTION II</span>
-                      <h2 className="text-sm font-bold text-white print:text-black flex items-center gap-1.5 font-bold">🔍 Hardened Perimeter Setup</h2>
+                      <h2 className="text-sm font-bold text-white print:text-black flex items-center gap-1.5 font-bold">⚠️ Challenge Statement</h2>
                     </div>
-                    <div className="text-xs text-white/70 font-light leading-relaxed space-y-3 print:text-black/85">
+                    <div className="text-xs text-white/70 font-light leading-relaxed space-y-4 print:text-black/85">
                       <p>
-                        To ensure absolute compliance, all operations and data pipeline queries will be configured exclusively within the geographic parameters: <strong className="text-white print:text-black font-semibold">{pData.geographyLabel}</strong>.
+                        For a <strong className="text-white print:text-black font-semibold">{pData.companySizeLabel}</strong> operation, legacy or third-party cloud-hosted AI APIs introduce severe compliance risks and telemetry leaks. Private company IP can be used for public third-party model tuning. The primary bottleneck identified in this intake session is:
                       </p>
-                      <div className="p-3.5 rounded-lg border border-white/5 bg-black/40 print:border-black/10 text-[9.5px]">
-                        <h4 className="font-bold text-white print:text-black mb-1.5 uppercase font-mono tracking-wide">ADMINISTRATIVE BOUNDS & SPONSORS</h4>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="p-4 rounded-xl border border-red-500/10 bg-red-500/[0.02] print:border-black/10 print:bg-black/5">
+                        <div className="flex gap-2 items-start">
+                          <span className="text-red-400 mt-0.5">⚠️</span>
                           <div>
-                            <span className="text-white/30 font-mono block">SPONSOR STAKEHOLDERS:</span>
-                            <span className="text-white font-medium print:text-black">{pData.stakeholdersLabel}</span>
-                          </div>
-                          <div>
-                            <span className="text-white/30 font-mono block">OPERATIONAL SCOPE:</span>
-                            <span className="text-white font-medium print:text-black">{pData.industryLabel} Context // {pData.companySizeLabel} Scale</span>
+                            <h4 className="text-xs font-bold text-red-400 print:text-black uppercase tracking-wider font-mono">PRIORITY FRICTION DETECTED</h4>
+                            <p className="text-[11px] text-white/80 print:text-black mt-1 leading-relaxed">
+                              "{pData.challengeLabel}" is trapping valuable context inside isolated legacy silos, while exposing telemetry interfaces. This operational latency blocks prompt-chain efficiency and increases licensing costs.
+                            </p>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* SECTION 3: RECOMMENDED GFF DEPLOYMENT MODEL */}
+                  {/* SECTION 3: RECOMMENDED GFF PATH */}
                   <div id="recommended-gff-path" className="scroll-mt-10 space-y-4">
                     <div className="border-b border-white/5 pb-1 print:border-black/10">
                       <span className="text-[8px] font-mono text-[#009DFF] font-bold uppercase print:text-black/50">SECTION III</span>
-                      <h2 className="text-sm font-bold text-white print:text-black flex items-center gap-1.5 font-bold">🚀 Deployment & Engagement Model</h2>
+                      <h2 className="text-sm font-bold text-white print:text-black flex items-center gap-1.5 font-bold">🚀 Recommended GFF Path</h2>
                     </div>
                     <div className="text-xs text-white/70 font-light leading-relaxed space-y-4 print:text-black/85">
                       <p>
-                        GFF AI recommends the <strong className="text-white print:text-black font-semibold">{pData.engagementPathObj.label}</strong> engagement model to deliver secure, industrialized cognitive capabilities within your environment:
+                        GFF AI recommends the <strong className="text-[#00FF9D] font-extrabold">{pData.engagementPathObj.label}</strong> engagement path (Model: <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-white/5 print:bg-black/5 print:text-black text-white">{pData.engagementPathObj.badge}</span>) to deliver secure, industrialized cognitive capabilities within your environment:
                       </p>
-
-                      <div className="space-y-2">
-                        <span className="text-[7.5px] font-mono text-white/30 uppercase tracking-widest block font-bold">SOVEREIGN ACTIVE DEPLOYMENT ARCHITECTURE PLAN</span>
-                        {renderTopologyDiagram(inputs.preferredEngagementPath)}
+                      
+                      <div className="p-4 rounded-xl border border-white/5 bg-white/[0.01] print:bg-black/5 print:border-black/10 space-y-3">
+                        <div className="flex justify-between items-center text-[8px] font-mono text-white/30 uppercase tracking-widest">
+                          <span>SOVEREIGN ACTIVE DEPLOYMENT ARCHITECTURE</span>
+                          <span className="text-[#00FF9D] font-bold">VPC PERIMETER STAGED</span>
+                        </div>
+                        
+                        {/* Premium Topology map inline */}
+                        <div className="flex flex-col md:flex-row items-center justify-between gap-4 py-3">
+                          <div className="flex-1 w-full p-2.5 rounded border border-white/5 bg-black/40 text-center print:border-black/15">
+                            <span className="text-[7.5px] font-mono text-white/40 block mb-0.5">LOCAL INGEST</span>
+                            <span className="text-[9px] font-bold text-white uppercase print:text-black">{pData.industryLabel} Context</span>
+                          </div>
+                          <div className="text-[#009DFF] text-xs font-mono hidden md:block select-none">▶▶</div>
+                          <div className="flex-1 w-full p-3 rounded border border-[#009DFF]/30 bg-[#009DFF]/5 text-center shadow-[0_0_10px_rgba(0,157,255,0.05)] print:border-black/15">
+                            <span className="text-[7.5px] font-mono text-[#009DFF] block mb-0.5">VPC ENCLAVE</span>
+                            <span className="text-[10px] font-black text-white uppercase print:text-black">{pData.engagementPathObj.badge} NODE</span>
+                          </div>
+                          <div className="text-[#00FF9D] text-xs font-mono hidden md:block select-none">▶▶</div>
+                          <div className="flex-1 w-full p-2.5 rounded border border-[#00FF9D]/30 bg-[#00FF9D]/5 text-center shadow-[0_0_10px_rgba(0,255,157,0.05)] print:border-black/15">
+                            <span className="text-[7.5px] font-mono text-[#00FF9D] block mb-0.5">COMPLIANCE EDGE</span>
+                            <span className="text-[9px] font-bold text-white uppercase print:text-black">ZERO RETENTION</span>
+                          </div>
+                        </div>
+                        <p className="text-[9px] text-white/40 leading-snug font-mono print:text-black/60">
+                          Workloads are deployed completely within single-tenant VPC boundaries in <strong>{pData.geographyLabel}</strong>. Memory arrays clear prompt logs instantly.
+                        </p>
                       </div>
+                    </div>
+                  </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
-                        <div className="p-3 rounded-lg border border-white/5 bg-black/30 print:border-black/10 text-left">
-                          <h4 className="text-[10px] font-bold text-white print:text-black mb-1 uppercase font-mono tracking-wide">Delivery Fleet Sizing</h4>
-                          <p className="text-[9.5px] text-white/40 leading-relaxed print:text-black/70">
-                            Our team configuration targets rapid engineering, assigning: <strong className="text-white print:text-black font-semibold">{pData.engagementPathObj.squad}</strong>.
+                  {/* SECTION 4: PROPOSED WORKSTREAMS */}
+                  <div id="proposed-workstreams" className="scroll-mt-10 space-y-4">
+                    <div className="border-b border-white/5 pb-1 print:border-black/10">
+                      <span className="text-[8px] font-mono text-[#009DFF] font-bold uppercase print:text-black/50">SECTION IV</span>
+                      <h2 className="text-sm font-bold text-white print:text-black flex items-center gap-1.5 font-bold">🗺️ Proposed Workstreams</h2>
+                    </div>
+                    <div className="text-xs text-white/70 font-light leading-relaxed space-y-4 print:text-black/85">
+                      <p>
+                        The technical integration of your sovereign AI nodes is divided into four distinct phases spanning the <strong className="text-white print:text-black font-semibold">{pData.weeks} Weeks</strong> schedule:
+                      </p>
+                      
+                      <div className="relative pl-6 border-l border-white/5 space-y-6 print:border-black/10">
+                        <div className="relative text-left">
+                          <span className="absolute -left-[29px] top-0.5 w-3.5 h-3.5 rounded-full bg-[#009DFF] border-2 border-black flex items-center justify-center text-[7px] font-bold text-black font-mono">A</span>
+                          <h4 className="text-xs font-bold text-white print:text-black font-mono">Phase A: Hardened Perimeter Setup <span className="text-[#009DFF] text-[10px] font-normal ml-2">(Weeks 1 - {pData.p1})</span></h4>
+                          <p className="text-[11px] text-white/50 print:text-black/70 mt-1 leading-relaxed font-sans">
+                            Configure single-tenant geographic VPC rules inside {pData.geographyLabel}, stand up secure isolated container layers, and test zero-retention logging firewalls.
                           </p>
                         </div>
-                        <div className="p-3 rounded-lg border border-white/5 bg-black/30 print:border-black/10 text-left">
-                          <h4 className="text-[10px] font-bold text-white print:text-black mb-1 uppercase font-mono tracking-wide">Core Objective Delivery</h4>
-                          <p className="text-[9.5px] text-white/40 leading-relaxed print:text-black/70">
-                            The milestone outcome of this contract phase is: <strong className="text-white print:text-black font-semibold">{pData.engagementPathObj.outcome}</strong>.
+                        <div className="relative text-left">
+                          <span className="absolute -left-[29px] top-0.5 w-3.5 h-3.5 rounded-full bg-[#009DFF] border-2 border-black flex items-center justify-center text-[7px] font-bold text-black font-mono">B</span>
+                          <h4 className="text-xs font-bold text-white print:text-black font-mono">Phase B: Pipeline Core Integration <span className="text-[#009DFF] text-[10px] font-normal ml-2">(Weeks {pData.p1 + 1} - {pData.p1 + pData.p2})</span></h4>
+                          <p className="text-[11px] text-white/50 print:text-black/70 mt-1 leading-relaxed font-sans font-light">
+                            Establish OmniMesh read-only adapters connecting unindexed silos, map structured database schemas to semantic search index structures, and configure context vectors.
+                          </p>
+                        </div>
+                        <div className="relative text-left">
+                          <span className="absolute -left-[29px] top-0.5 w-3.5 h-3.5 rounded-full bg-[#009DFF] border-2 border-black flex items-center justify-center text-[7px] font-bold text-black font-mono">C</span>
+                          <h4 className="text-xs font-bold text-white print:text-black font-mono">Phase C: Agent Orchestration & Tuning <span className="text-[#009DFF] text-[10px] font-normal ml-2">(Weeks {pData.p1 + pData.p2 + 1} - {pData.p1 + pData.p2 + pData.p3})</span></h4>
+                          <p className="text-[11px] text-white/50 print:text-black/70 mt-1 leading-relaxed font-sans font-light">
+                            Configure local agent node consensus workflows, program target priority outcome loops, fine-tune model parameters on domain schemas, and apply strict safety watchdogs.
+                          </p>
+                        </div>
+                        <div className="relative text-left">
+                          <span className="absolute -left-[29px] top-0.5 w-3.5 h-3.5 rounded-full bg-[#00FF9D] border-2 border-black flex items-center justify-center text-[7px] font-bold text-black font-mono">D</span>
+                          <h4 className="text-xs font-bold text-white print:text-black font-mono">Phase D: Telemetry Logging & Handoff <span className="text-[#00FF9D] text-[10px] font-normal ml-2">(Weeks {pData.p1 + pData.p2 + pData.p3 + 1} - {pData.weeks})</span></h4>
+                          <p className="text-[11px] text-white/50 print:text-black/70 mt-1 leading-relaxed font-sans font-light">
+                            Integrate the real-time compliance audit ledger system, customize user control-center dashboards, conduct team compliance training, and finalize administrative handoff.
                           </p>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* SECTION 4: PROJECT WORKSTREAMS & DELIVERABLES */}
-                  <div id="proposed-workstreams" className="scroll-mt-10 space-y-4">
+                  {/* SECTION 5: 90-DAY ROADMAP */}
+                  <div id="ninety-day-roadmap" className="scroll-mt-10 space-y-4">
                     <div className="border-b border-white/5 pb-1 print:border-black/10">
-                      <span className="text-[8px] font-mono text-[#009DFF] font-bold uppercase print:text-black/50">SECTION IV</span>
-                      <h2 className="text-sm font-bold text-white print:text-black flex items-center gap-1.5 font-bold">🗺️ Strategic Delivery Phases</h2>
+                      <span className="text-[8px] font-mono text-[#009DFF] font-bold uppercase print:text-black/50">SECTION V</span>
+                      <h2 className="text-sm font-bold text-white print:text-black flex items-center gap-1.5 font-bold">📅 90-Day Roadmap</h2>
                     </div>
                     <div className="text-xs text-white/70 font-light leading-relaxed space-y-4 print:text-black/85">
-                      <p>
-                        Technical delivery objectives are divided into four clear workstreams mapped to your target timeline of <strong className="text-white print:text-black font-semibold">{pData.weeks} Weeks</strong>:
-                      </p>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div className="p-3 rounded-lg border border-white/5 bg-black/45 space-y-1 print:border-black/10 text-left">
-                          <div className="flex justify-between items-center border-b border-white/5 pb-1">
-                            <span className="text-[9.5px] font-bold text-white print:text-black">Workstream A: Hardened Perimeter Setup</span>
-                            <span className="text-[8.5px] font-mono text-[#009DFF] font-bold">WEEKS 1 - {pData.p1}</span>
-                          </div>
-                          <p className="text-[9px] text-white/40 print:text-black/70 font-light">Provision isolated enclaves, establish secure networking perimeters, and verify local data retention compliance rules.</p>
+                      <p>GFF coordinates all physical deployments within a tactical 90-Day Integration Roadmap framework. This ensures quick wins and step-by-step security audits:</p>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div className="p-4 rounded-xl border border-white/5 bg-white/[0.005] print:border-black/10 print:bg-black/5 relative overflow-hidden text-left">
+                          <div className="text-[10px] font-mono text-[#009DFF] font-black mb-1 uppercase tracking-wide">DAY 01 - 30</div>
+                          <h4 className="text-xs font-bold text-white print:text-black mb-1">Isolation & Foundation</h4>
+                          <p className="text-[10px] text-white/50 print:text-black/70 leading-relaxed font-light mt-1">Configure VPC boundaries, install OmniMesh data pipelines, and test first in-memory token execution pipelines with zero log leaks.</p>
                         </div>
-
-                        <div className="p-3 rounded-lg border border-white/5 bg-black/45 space-y-1 print:border-black/10 text-left">
-                          <div className="flex justify-between items-center border-b border-white/5 pb-1">
-                            <span className="text-[9.5px] font-bold text-white print:text-black">Workstream B: Ingestion Integration</span>
-                            <span className="text-[8.5px] font-mono text-[#009DFF] font-bold">WEEKS {pData.p1 + 1} - {pData.p1 + pData.p2}</span>
-                          </div>
-                          <p className="text-[9px] text-white/40 print:text-black/70 font-light">Establish OmniMesh read-only connections to local databases and structured schemas.</p>
+                        <div className="p-4 rounded-xl border border-white/5 bg-white/[0.005] print:border-black/10 print:bg-black/5 relative overflow-hidden text-left">
+                          <div className="text-[10px] font-mono text-[#009DFF] font-black mb-1 uppercase tracking-wide">DAY 31 - 60</div>
+                          <h4 className="text-xs font-bold text-white print:text-black mb-1">Agent Fleet Assembly</h4>
+                          <p className="text-[10px] text-white/50 print:text-black/70 leading-relaxed font-light mt-1">Orchestrate agent fleets inside the secure sandbox, wire prompt chains to outcomes, and establish user authorization dashboard interfaces.</p>
                         </div>
-
-                        <div className="p-3 rounded-lg border border-white/5 bg-black/45 space-y-1 print:border-black/10 text-left">
-                          <div className="flex justify-between items-center border-b border-white/5 pb-1">
-                            <span className="text-[9.5px] font-bold text-white print:text-black">Workstream C: Fine-Tuning</span>
-                            <span className="text-[8.5px] font-mono text-[#009DFF] font-bold">WEEKS {pData.p1 + pData.p2 + 1} - {pData.p1 + pData.p2 + pData.p3}</span>
-                          </div>
-                          <p className="text-[9px] text-white/40 print:text-black/70 font-light">Configure customized agent topologies, compile consensus decision-loop modules, and validate response safety.</p>
-                        </div>
-
-                        <div className="p-3 rounded-lg border border-white/5 bg-black/45 space-y-1 print:border-black/10 text-left">
-                          <div className="flex justify-between items-center border-b border-white/5 pb-1">
-                            <span className="text-[9.5px] font-bold text-white print:text-black">Workstream D: Validation & SLA Lock</span>
-                            <span className="text-[8.5px] font-mono text-[#009DFF] font-bold">WEEKS {pData.p1 + pData.p2 + pData.p3 + 1} - {pData.weeks}</span>
-                          </div>
-                          <p className="text-[9px] text-white/40 print:text-black/70 font-light font-sans">Enforce target compliance policies, measure execution rates under high volume, and initiate co-innovation handoff.</p>
+                        <div className="p-4 rounded-xl border border-white/5 bg-white/[0.005] print:border-black/10 print:bg-black/5 relative overflow-hidden text-left">
+                          <div className="text-[10px] font-mono text-[#00FF9D] font-black mb-1 uppercase tracking-wide">DAY 61 - 90</div>
+                          <h4 className="text-xs font-bold text-white print:text-black mb-1">Federated Go-Live</h4>
+                          <p className="text-[10px] text-white/50 print:text-black/70 leading-relaxed font-light mt-1">Run stress-testing of loops, perform end-to-end telemetry audits, and handover local administrative control keys to client operators.</p>
                         </div>
                       </div>
+                    </div>
+                  </div>
 
-                      <div className="p-3.5 rounded-xl border border-white/5 bg-white/[0.005] print:border-black/10">
-                        <h4 className="text-[10px] font-bold text-white print:text-black mb-1.5 font-mono uppercase tracking-wider">CONTRACTUAL DELIVERABLES LOG:</h4>
-                        <ul className="list-disc pl-5 space-y-1 text-[9.5px] text-white/50 print:text-black/80 font-light">
-                          {pData.deliverables.map((del, idx) => (
-                            <li key={idx}><strong>Deliverable {idx + 1}:</strong> {del}</li>
-                          ))}
+                  {/* SECTION 6: SUGGESTED SQUAD */}
+                  <div id="suggested-squad" className="scroll-mt-10 space-y-4">
+                    <div className="border-b border-white/5 pb-1 print:border-black/10">
+                      <span className="text-[8px] font-mono text-[#009DFF] font-bold uppercase print:text-black/50">SECTION VI</span>
+                      <h2 className="text-sm font-bold text-white print:text-black flex items-center gap-1.5 font-bold">👥 Suggested Squad</h2>
+                    </div>
+                    <div className="text-xs text-white/70 font-light leading-relaxed space-y-4 print:text-black/85">
+                      <p>Based on your path, we propose allocating co-innovation cohort <strong className="text-white print:text-black font-semibold font-mono text-[10px]">{pData.engagementPathObj.squad}</strong>:</p>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left">
+                        <div className="p-3 rounded border border-white/5 bg-white/[0.01]">
+                          <span className="text-[7.5px] font-mono text-white/30 uppercase block">01 / ARCHITECT</span>
+                          <p className="text-[9.5px] text-white/40 leading-snug mt-1 font-light">Designs VPC peering, geography boundaries, and single-tenant clusters.</p>
+                        </div>
+                        <div className="p-3 rounded border border-white/5 bg-white/[0.01]">
+                          <span className="text-[7.5px] font-mono text-white/30 uppercase block">02 / ENGINEER</span>
+                          <p className="text-[9.5px] text-white/40 leading-snug mt-1 font-light">Programs read-only OmniMesh data adapters, model local tuning, and loop optimizations.</p>
+                        </div>
+                        <div className="p-3 rounded border border-white/5 bg-white/[0.01]">
+                          <span className="text-[7.5px] font-mono text-white/30 uppercase block">03 / AUDITOR</span>
+                          <p className="text-[9.5px] text-white/40 leading-snug mt-1 font-light">Vulnerability audits and continuous zero persistent retention verification.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* SECTION 7: GOVERNANCE APPROACH */}
+                  <div id="governance-approach" className="scroll-mt-10 space-y-4">
+                    <div className="border-b border-white/5 pb-1 print:border-black/10">
+                      <span className="text-[8px] font-mono text-[#009DFF] font-bold uppercase print:text-black/50">SECTION VII</span>
+                      <h2 className="text-sm font-bold text-white print:text-black flex items-center gap-1.5 font-bold font-sans">⚖️ Governance Approach</h2>
+                    </div>
+                    <div className="text-xs text-white/70 font-light leading-relaxed space-y-4 print:text-black/85 text-left font-sans">
+                      <p>
+                        Sovereign AI deployments mandate strict, zero-trust governance protocols to eliminate data leakage. GFF enforces safety policies directly at the runtime layer:
+                      </p>
+                      
+                      <div className="p-4 rounded-xl border border-white/5 bg-[#030305] print:border-black/10 print:bg-black/5 font-mono text-[9px] space-y-2.5">
+                        <div className="flex justify-between items-center text-[7px] text-white/30 uppercase tracking-widest">
+                          <span>GOVERNANCE PROTOCOL CHECKS</span>
+                          <span className="text-[#00FF9D]">ENFORCED AT RUNTIME</span>
+                        </div>
+                        <ul className="space-y-1.5 text-white/60 print:text-black/80 font-light font-mono leading-relaxed">
+                          <li className="flex items-start gap-2">
+                            <span className="text-[#00FF9D]">»</span>
+                            <span><strong>Boundary Isolation:</strong> No prompts or weight matrices leave the single-tenant VPC environment. All model inferences are computed locally.</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-[#00FF9D]">»</span>
+                            <span><strong>Memory Scrubbing:</strong> In-memory buffers are hard-flushed instantly after query completion to maintain absolute zero data retention.</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="text-[#00FF9D]">»</span>
+                            <span><strong>Immutable Audit Logs:</strong> Live user transactions generate trace receipts written to a secure read-only compliance ledger.</span>
+                          </li>
                         </ul>
                       </div>
                     </div>
                   </div>
 
-                  {/* SECTION 5: SUCCESS MEASURES */}
+                  {/* SECTION 8: SUCCESS MEASURES */}
                   <div id="success-measures" className="scroll-mt-10 space-y-4">
                     <div className="border-b border-white/5 pb-1 print:border-black/10">
-                      <span className="text-[8px] font-mono text-[#009DFF] font-bold uppercase print:text-black/50">SECTION V</span>
-                      <h2 className="text-sm font-bold text-white print:text-black flex items-center gap-1.5 font-bold">📈 Strategic Success Measures</h2>
+                      <span className="text-[8px] font-mono text-[#009DFF] font-bold uppercase print:text-black/50">SECTION VIII</span>
+                      <h2 className="text-sm font-bold text-white print:text-black flex items-center gap-1.5 font-bold font-sans">📈 Success Measures</h2>
                     </div>
-                    <div className="text-xs text-white/70 font-light leading-relaxed space-y-3 print:text-black/85">
-                      <p>Compliance and operational performance targets are tracked dynamically using our sovereign consensus dashboard system:</p>
+                    <div className="text-xs text-white/70 font-light leading-relaxed space-y-3 print:text-black/85 text-left font-sans">
+                      <p>Operational performance metrics and compliance SLAs are tracked in real-time inside the control center:</p>
                       
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center font-mono">
-                        <div className="p-2.5 rounded border border-white/5 bg-white/[0.005] print:border-black/10">
+                        <div className="p-3 rounded border border-white/5 bg-white/[0.005] print:border-black/10">
                           <span className="text-xs font-bold text-[#00FF9D] block print:text-black">&gt; 99.9%</span>
-                          <span className="text-[6.5px] text-white/35 uppercase mt-1 block">Task Success</span>
+                          <span className="text-[7px] text-white/35 uppercase mt-1 block">Task Efficacy</span>
                         </div>
-                        <div className="p-2.5 rounded border border-white/5 bg-white/[0.005] print:border-black/10">
+                        <div className="p-3 rounded border border-white/5 bg-white/[0.005] print:border-black/10">
                           <span className="text-xs font-bold text-[#009DFF] block print:text-black">&lt; 150ms</span>
-                          <span className="text-[6.5px] text-white/35 uppercase mt-1 block">Latency</span>
+                          <span className="text-[7px] text-white/35 uppercase mt-1 block">Decision Latency</span>
                         </div>
-                        <div className="p-2.5 rounded border border-white/5 bg-white/[0.005] print:border-black/10">
-                          <span className="text-xs font-bold text-[#9D00FF] block print:text-black">0</span>
-                          <span className="text-[6.5px] text-white/35 uppercase mt-1 block">IP Leaks</span>
+                        <div className="p-3 rounded border border-white/5 bg-white/[0.005] print:border-black/10">
+                          <span className="text-xs font-bold text-[#9D00FF] block print:text-black">0 Trace</span>
+                          <span className="text-[7px] text-white/35 uppercase mt-1 block">Retention</span>
                         </div>
-                        <div className="p-2.5 rounded border border-white/5 bg-white/[0.005] print:border-black/10">
-                          <span className="text-xs font-bold text-[#E5A93C] block print:text-black">30%+</span>
-                          <span className="text-[6.5px] text-white/35 uppercase mt-1 block">Reclaimed Exp</span>
+                        <div className="p-3 rounded border border-white/5 bg-white/[0.005] print:border-black/10">
+                          <span className="text-xs font-bold text-[#E5A93C] block print:text-black">30%+ Saved</span>
+                          <span className="text-[7px] text-white/35 uppercase mt-1 block">API OpEx Saved</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* SECTION 9: ASSUMPTIONS */}
+                  <div id="assumptions" className="scroll-mt-10 space-y-4">
+                    <div className="border-b border-white/5 pb-1 print:border-black/10">
+                      <span className="text-[8px] font-mono text-[#009DFF] font-bold uppercase print:text-black/50">SECTION IX</span>
+                      <h2 className="text-sm font-bold text-white print:text-black flex items-center gap-1.5 font-bold font-sans">📝 Assumptions</h2>
+                    </div>
+                    <div className="text-xs text-white/70 font-light leading-relaxed space-y-3 print:text-black/85 text-left font-sans">
+                      <p>To guarantee target timeline delivery within the calculated <strong className="text-white print:text-black font-semibold">{pData.weeks} Weeks</strong> window, we assume:</p>
+                      <ul className="space-y-1 list-disc pl-4 text-white/60 print:text-black/80 font-light">
+                        <li>Read-only VPC network interfaces to unindexed legacy database silos are provisioned within 7 business days.</li>
+                        <li>Key stakeholder sponsors listed (specifically: <strong className="text-white print:text-black font-semibold">{pData.stakeholdersLabel}</strong>) participate in weekly alignment syncs.</li>
+                        <li>Isolated staging clusters are pre-cleared for local sandbox simulation.</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* SECTION 10: RISKS & MITIGATIONS */}
+                  <div id="risks-mitigations" className="scroll-mt-10 space-y-4">
+                    <div className="border-b border-white/5 pb-1 print:border-black/10">
+                      <span className="text-[8px] font-mono text-[#009DFF] font-bold uppercase print:text-black/50">SECTION X</span>
+                      <h2 className="text-sm font-bold text-white print:text-black flex items-center gap-1.5 font-bold font-sans font-bold">🔒 Risks & Mitigations</h2>
+                    </div>
+                    <div className="text-xs text-white/70 font-light leading-relaxed space-y-4 print:text-black/85">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+                        <div className="p-3 rounded border border-white/5 bg-white/[0.005] print:border-black/10 space-y-1">
+                          <h4 className="text-xs font-bold text-white print:text-black font-mono flex items-center gap-1">⚡ Schema Fragmentation</h4>
+                          <p className="text-[10px] text-white/50 print:text-black/70">Legacy silos inside {pData.org} might contain poorly indexed database schemas, causing query lookup delays.</p>
+                          <div className="pt-1.5 border-t border-white/5 text-[9.5px] text-[#00FF9D] font-mono">Mitigation: GFF OmniMesh automatically creates a read-only local semantic layer without altering physical tables.</div>
+                        </div>
+                        <div className="p-3 rounded border border-white/5 bg-white/[0.005] print:border-black/10 space-y-1">
+                          <h4 className="text-xs font-bold text-white print:text-black font-mono flex items-center gap-1">⚡ Provisioning Bottlenecks</h4>
+                          <p className="text-[10px] text-white/50 print:text-black/70">Lead times for single-tenant cloud instance clearance might delay core systems setup.</p>
+                          <div className="pt-1.5 border-t border-white/5 text-[9.5px] text-[#00FF9D] font-mono">Mitigation: GFF runs lightweight containerized prototypes on isolated local staging nodes immediately.</div>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* SECTION 6: EXECUTIVE SIGNATURE */}
+                  {/* SECTION 11: NEXT STEPS */}
+                  <div id="next-steps" className="scroll-mt-10 space-y-4">
+                    <div className="border-b border-white/5 pb-1 print:border-black/10">
+                      <span className="text-[8px] font-mono text-[#00FF9D] font-bold uppercase print:text-black/50">SECTION XI</span>
+                      <h2 className="text-sm font-bold text-white print:text-black flex items-center gap-1.5 font-bold font-sans">🏁 Next Steps</h2>
+                    </div>
+                    <div className="text-xs text-white/70 font-light leading-relaxed space-y-4 print:text-black/85">
+                      <p className="text-left font-sans font-light">To begin the co-innovation deployment of GFF AI within your single-tenant infrastructure, we propose:</p>
+                      <ol className="space-y-2 font-mono text-[9.5px] text-white/60 print:text-black/80 list-decimal pl-4 text-left">
+                        <li><strong>Complete SOW Sign-off:</strong> Apply your secure signature stamp using the executive authorization panel below.</li>
+                        <li><strong>Boundary Discovery Session:</strong> Conduct a 1-hour secure VPC routing and credential clearance call with our Lead Architect.</li>
+                        <li><strong>Squad Mobilization:</strong> Finalize resource provisioning of suggested squad cohort (<strong className="text-white print:text-black font-semibold">{pData.engagementPathObj.squad}</strong>) in 7 days.</li>
+                      </ol>
+                    </div>
+                  </div>
+                  {/* EXECUTIVE SOW AUTHORIZATION */}
                   <div id="sign-off-block" className="scroll-mt-10 space-y-4">
                     <div className="border-b border-white/5 pb-1 print:border-black/10">
-                      <span className="text-[8px] font-mono text-[#009DFF] font-bold uppercase print:text-black/50">SECTION VI</span>
-                      <h2 className="text-sm font-bold text-white print:text-black flex items-center gap-1.5 font-bold">✍️ SOW Authorization</h2>
+                      <span className="text-[8px] font-mono text-[#00FF9D] font-bold uppercase print:text-black/50 font-bold">AUTHORIZATION</span>
+                      <h2 className="text-sm font-bold text-[#00FF9D] print:text-black flex items-center gap-1.5 font-bold">✍️ SOW Stamp Sign-Off</h2>
                     </div>
                     
                     <div className="p-4 rounded-xl border border-white/5 bg-black/40 space-y-4 print:border-black/10">
@@ -1135,6 +1371,25 @@ ${data.deliverables.map((d, i) => `${i + 1}. ${d}`).join("\n")}
             </div>
           </motion.div>
         )}
+        {/* PREMIUM TOAST NOTIFICATION FOR OFFLINE EXPORT ATTEMPTS */}
+        <AnimatePresence>
+          {exportToast && (
+            <motion.div
+              initial={{ opacity: 0, y: 12, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 12, scale: 0.95 }}
+              className="fixed bottom-6 right-6 z-50 max-w-sm p-4 rounded-xl border border-[#009DFF]/30 bg-black/95 backdrop-blur-xl shadow-2xl text-left font-mono"
+            >
+              <div className="flex items-start gap-2.5">
+                <span className="text-[#009DFF] text-xs">ℹ️</span>
+                <div className="space-y-1">
+                  <span className="text-[9px] font-bold text-[#009DFF] uppercase tracking-wider block">ENTERPRISE GATEWAY MESSAGE</span>
+                  <p className="text-[9.5px] text-white/80 leading-relaxed">{exportToast}</p>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
       </AnimatePresence>
 
