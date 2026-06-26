@@ -1,0 +1,45 @@
+## npm run lint
+exit=1
+STDOUT:
+
+> hirezapp_landing_page@0.1.0 lint
+> eslint
+
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/components/sections/ClientSuccessSection.tsx
+  198:7  error    Error: Cannot access variable before it is declared
+
+`startLogStream` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/components/sections/ClientSuccessSection.tsx:198:7
+  196 |
+  197 |     if (isPlaying) {
+> 198 |       startLogStream();
+      |       ^^^^^^^^^^^^^^ `startLogStream` accessed before it is declared
+  199 |     }
+  200 |
+  201 |     return () => {
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/components/sections/ClientSuccessSection.tsx:206:3
+  204 |   }, [activePatternId, isPlaying, playSpeed]);
+  205 |
+> 206 |   const startLogStream = () => {
+      |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 207 |     if (timerIdRef.current) clearInterval(timerIdRef.current);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 208 |
+      …
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 220 |     }, playSpeed);
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 221 |   };
+      | ^^^^^ `startLogStream` is declared here
+  222 |
+  223 |   const handleTogglePlay = () => {
+  224 |     if (isPlaying) {  react-hooks/immutability
+  204:6  warning  React Hook useEffect has missing dependencies: 'activePattern.logs' and 'startLogStream'. Either include them or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     react-hooks/exhaustive-deps
+
+✖ 2 problems (1 error, 1 warning)
+
+
+STDERR:

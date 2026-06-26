@@ -173,3 +173,10 @@
     transform: translateY(0) scale(0.99);
   }
 }
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -40;
+  }
+}
+
