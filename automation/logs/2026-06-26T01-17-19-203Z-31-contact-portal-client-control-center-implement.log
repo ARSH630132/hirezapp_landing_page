@@ -1,0 +1,7 @@
+COMMAND: cline -y --json "<prompt>"
+EXIT: 1
+
+STDOUT:
+
+
+STDERR:
