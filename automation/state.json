@@ -155,7 +155,8 @@
     "177-phase6-dashboard-analytics-dynamodb",
     "178-phase6-s3-document-files",
     "179-phase6-frontend-documents-s3-integration",
-    "180-phase6-seed-aws-data"
+    "180-phase6-seed-aws-data",
+    "181-phase6-frontend-env-and-api-finalization"
   ],
   "failed": [
     {
