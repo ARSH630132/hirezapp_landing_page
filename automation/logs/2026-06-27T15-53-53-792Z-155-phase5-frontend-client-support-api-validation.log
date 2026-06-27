@@ -1,0 +1,17 @@
+## npm run lint
+exit=1
+STDOUT:
+
+> hirezapp_landing_page@0.1.0 lint
+> eslint
+
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/app/api/v1/support/[id]/route.ts
+  29:9  error  'ticket' is never reassigned. Use 'const' instead  prefer-const
+  61:9  error  'ticket' is never reassigned. Use 'const' instead  prefer-const
+
+✖ 2 problems (2 errors, 0 warnings)
+  2 errors and 0 warnings potentially fixable with the `--fix` option.
+
+
+STDERR:

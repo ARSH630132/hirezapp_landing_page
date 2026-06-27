@@ -35,6 +35,10 @@ export default function ClientSupportPage() {
   const [project, setProject] = useState("none");
   const [desc, setDesc] = useState("");
 
+  // Connected API States
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   // Enhanced UI States
   const [rightTab, setRightTab] = useState<"intake" | "topology">("intake");
   const [selectedSvgNode, setSelectedSvgNode] = useState<"client" | "shield" | "sentinel">("shield");
@@ -46,129 +50,112 @@ export default function ClientSupportPage() {
 
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  const saveTickets = (updated: ClientSupportTicket[]) => {
-    setTickets(updated);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("gff_support_tickets", JSON.stringify(updated));
-    }
+  const normalizeTicket = (t: any): ClientSupportTicket => {
+    const mappedPriority = t.priority === "P1" ? "critical" : t.priority === "P2" ? "high" : t.priority === "P3" ? "medium" : (t.priority || "low");
+    const mappedStatus = t.status === "OPEN" ? "open" : (t.status === "IN_PROGRESS" || t.status === "INVESTIGATING") ? "in_progress" : (t.status === "RESOLVED" ? "resolved" : "open");
+    return {
+      id: t.id,
+      title: t.subject || t.title,
+      desc: t.description || t.desc,
+      status: mappedStatus as any,
+      priority: mappedPriority as any,
+      category: t.category || "General",
+      projectId: t.linkedProjectId || t.projectId,
+      createdAt: t.createdDate || t.createdAt,
+      replies: t.replies || (t.wireFeed ? t.wireFeed.map((w: any) => ({
+        sender: w.senderName, text: w.text, timestamp: w.timestamp.includes("-") ? w.timestamp : new Date().toISOString()
+      })) : [])
+    };
   };
 
-  const resetToDefault = () => {
-    const cats: ClientSupportTicket["category"][] = ["AI Operations", "AI Operations", "Governance"];
-    const projs = ["proj-001", "proj-002", "proj-001"];
-    const augmented = previewSupportTickets.map((t, i) => ({
-      ...t,
-      category: cats[i] || "General",
-      projectId: projs[i]
-    })) as ClientSupportTicket[];
-    saveTickets(augmented);
+  const fetchTickets = async () => {
+    setLoading(true); setError(null);
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") : null;
+      if (!token) { setError("AUTHENTICATION EXPIRED. PLEASE RE-LOG IN."); return; }
+      const res = await fetch("/api/v1/support", {
+        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }
+      });
+      if (!res.ok) throw new Error(`Enclave sync failed with status ${res.status}`);
+      const data = await res.json();
+      if (data.success && Array.isArray(data.tickets)) {
+        setTickets(data.tickets.map(normalizeTicket));
+      } else { throw new Error("Malformed enclave response."); }
+    } catch (err: any) {
+      setError(err.message || "Decentralized ledger handshake timed out.");
+    } finally { setLoading(false); }
   };
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("gff_support_tickets");
-      if (saved) {
-        try { setTickets(JSON.parse(saved)); } catch (e) { resetToDefault(); }
-      } else { resetToDefault(); }
-    }
+    fetchTickets();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleCreate = (e: React.FormEvent) => {
+  const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!subject.trim() || !desc.trim()) return;
-
     setIsSubmittingForm(true);
     setSubmittingLogs([
       "Negotiating session keys inside Intel SGX memory page...",
       "Binding secure hardware-signed enclave session (Clearance Level III)..."
     ]);
 
-    setTimeout(() => {
-      setSubmittingLogs(prev => [...prev, "Encrypting local diagnostics dump payload...", "Dispatching secure signal packet to GFF triage array..."]);
-    }, 600);
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") : null;
+      if (!token) { throw new Error("Session token not found."); }
+      const res = await fetch("/api/v1/support", {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          subject, description: desc, category, priority,
+          linkedProjectId: project !== "none" ? project : undefined
+        })
+      });
 
-    setTimeout(() => {
-      const newId = `SLA-TKT-${Math.floor(1000 + Math.random() * 9000)}`;
-      const newTkt: ClientSupportTicket = {
-        id: newId,
-        title: subject,
-        status: "open",
-        priority,
-        category,
-        projectId: project !== "none" ? project : undefined,
-        createdAt: new Date().toISOString(),
-        desc,
-        replies: []
-      };
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || `API error (${res.status})`);
+      }
 
-      saveTickets([newTkt, ...tickets]);
-      setToastMsg(`Sovereign Tunnel ${newId} initialized successfully.`);
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 4000);
-
-      setSelectedTicketId(newId);
-      setSubject("");
-      setDesc("");
-      setProject("none");
-      setIsSubmittingForm(false);
-      setSubmittingLogs([]);
-    }, 1500);
+      const data = await res.json();
+      if (data.success && data.ticket) {
+        const normalized = normalizeTicket(data.ticket);
+        setTickets(prev => [normalized, ...prev]);
+        setToastMsg(`Sovereign Tunnel ${normalized.id} initialized successfully.`);
+        setShowToast(true);
+        setTimeout(() => setShowToast(false), 4000);
+        setSelectedTicketId(normalized.id);
+        setSubject(""); setDesc(""); setProject("none");
+      } else { throw new Error("Malformed response."); }
+    } catch (err: any) {
+      alert(err.message || "Failed to create ticket.");
+    } finally {
+      setIsSubmittingForm(false); setSubmittingLogs([]);
+    }
   };
 
-  const handleSendReply = (e: React.FormEvent) => {
+  const handleSendReply = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!replyText.trim() || !selectedTicketId) return;
-
     const currentReply = replyText;
-    setReplyText("");
-    setIsReplying(true);
+    setReplyText(""); setIsReplying(true);
 
-    const userReply = {
-      sender: "Alexander Mercer (Client)",
-      text: currentReply,
-      timestamp: new Date().toISOString()
-    };
-
-    const target = tickets.find(t => t.id === selectedTicketId);
-    if (!target) return;
-
-    const updatedReplies = [...(target.replies || []), userReply];
-    const updatedTickets = tickets.map(t => {
-      if (t.id === selectedTicketId) {
-        return { ...t, replies: updatedReplies, status: t.status === "resolved" ? "in_progress" : t.status };
-      }
-      return t;
-    }) as ClientSupportTicket[];
-
-    saveTickets(updatedTickets);
-
-    setTimeout(() => {
-      let botText = "Handshake acknowledged. Our on-call systems engineers are reviewing your trace reports inside the secure sandbox.";
-      let botSender = "GFF Support Sentinel";
-
-      if (target.category === "AI Operations") {
-        botSender = "Dr. Sarah Vance (Lead Systems Architect)";
-        botText = "Analyzing enclave CPU and HSM logs. The cryptographic state is re-asserted and key rotational interlocks are operating nominally. All propagation latency is mitigated (<0.4ms).";
-      } else if (target.category === "Billing") {
-        botSender = "Nicolette Durand (Billing & Treasury)";
-        botText = "Invoices check completed. Invoice settlement is verified at blockchain epoch block 18290192 under seal 0xDE897FFA.";
-      } else if (target.category === "Governance" || target.category === "Documents") {
-        botSender = "Sovereign Audit Agent";
-        botText = "Operator credentials verified at Clearance Level IV. The NIST AI RMF logs are compiled successfully within SGX memory. Access credentials issued.";
-      }
-
-      const botReply = { sender: botSender, text: botText, timestamp: new Date().toISOString() };
-      
-      saveTickets(updatedTickets.map(t => {
-        if (t.id === selectedTicketId) {
-          return { ...t, replies: [...updatedReplies, botReply], status: "in_progress" };
-        }
-        return t;
-      }) as ClientSupportTicket[]);
-      
-      setIsReplying(false);
-    }, 1500);
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") : null;
+      if (!token) throw new Error("Session expired.");
+      const res = await fetch(`/api/v1/support/${selectedTicketId}`, {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ text: currentReply })
+      });
+      if (!res.ok) throw new Error(`Reply post failed status ${res.status}`);
+      const data = await res.json();
+      if (data.success && data.ticket) {
+        setTickets(prev => prev.map(t => t.id === selectedTicketId ? normalizeTicket(data.ticket) : t));
+      } else { throw new Error("Malformed response."); }
+    } catch (err: any) {
+      alert(err.message || "Failed to send comment.");
+    } finally { setIsReplying(false); }
   };
 
   const runDiagnostic = (idx: number) => {
@@ -330,7 +317,35 @@ export default function ClientSupportPage() {
 
           {/* Ticket List */}
           <div className="space-y-3 max-h-[580px] overflow-y-auto pr-1">
-            {filtered.length === 0 ? (
+            {loading ? (
+              <div className="space-y-3">
+                {[1, 2, 3].map(i => (
+                  <div key={i} className="animate-pulse p-4 rounded-xl border border-white/5 bg-[#050505]/40 space-y-3">
+                    <div className="flex justify-between items-center">
+                      <div className="h-3 w-16 bg-white/10 rounded" />
+                      <div className="h-3 w-12 bg-white/10 rounded" />
+                    </div>
+                    <div className="h-4 w-3/4 bg-white/10 rounded" />
+                    <div className="h-3 w-1/2 bg-white/10 rounded" />
+                  </div>
+                ))}
+              </div>
+            ) : error ? (
+              <div className="p-6 rounded-xl border border-red-500/10 bg-red-500/[0.02] text-center space-y-4 font-mono">
+                <ShieldAlert className="w-8 h-8 text-red-400 mx-auto animate-pulse" />
+                <div className="space-y-1">
+                  <h4 className="text-xs font-bold text-red-400 uppercase tracking-wider font-mono">SECURE TUNNEL HANDSHAKE FAILED</h4>
+                  <p className="text-[10px] text-white/45 leading-relaxed font-mono">{error}</p>
+                </div>
+                <button 
+                  onClick={fetchTickets} 
+                  className="px-4 h-8 rounded border border-red-500/20 bg-red-500/5 hover:bg-red-500/10 text-[9.5px] text-red-400 uppercase font-bold transition-all cursor-pointer flex items-center gap-1.5 mx-auto font-mono"
+                >
+                  <RefreshCw className="w-3 h-3" />
+                  <span>Retry Attestation</span>
+                </button>
+              </div>
+            ) : filtered.length === 0 ? (
               <div className="p-10 rounded-xl border border-white/5 bg-[#050505]/20 text-center space-y-3.5 font-mono">
                 <ShieldAlert className="w-8 h-8 text-white/20 mx-auto" />
                 <p className="text-xs text-white/30 font-bold">No active wires match the current security filters.</p>
