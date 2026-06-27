@@ -522,3 +522,140 @@ export function getNextInvoiceId(): string {
   return `inv-${String(maxId + 1).padStart(3, "0")}`;
 }
 
+// --- GOVERNANCE CRUD API MODELS & SEED DATA ---
+
+export interface ApiGovernanceItem {
+  id: string;
+  client_id: string;
+  client_name?: string;
+  project_id?: string;
+  project_name?: string;
+  title: string;
+  severity: string; // e.g. "Critical" | "High" | "Medium" | "Low"
+  status: string; // e.g. "active" | "completed" | "archived" | "Under Review" | "Flagged" | "Remediated" | "Suppressed"
+  owner: string;
+  due_date: string; // ISO or date string format, e.g. "2026-07-01"
+  description: string;
+  nodeId?: string;
+  standard?: string;
+  hash?: string;
+  logs?: string[];
+  lastUpdated?: string;
+}
+
+export const DEFAULT_API_MOCK_GOVERNANCE: Record<string, ApiGovernanceItem> = {
+  "gov-001": {
+    id: "gov-001",
+    title: "Sovereign Packet Leakage",
+    client_id: "client-001",
+    client_name: "Apex Sovereign Group [Preview Client]",
+    project_id: "proj-001",
+    project_name: "Apex Sovereign Multi-Agent Lattice",
+    nodeId: "APEX-SEC-G4",
+    standard: "ISO-27001",
+    severity: "Critical",
+    status: "Under Review",
+    owner: "Alexander Mercer",
+    due_date: "2026-07-01",
+    description: "Anomalous outbound socket attempt detected bypassing the primary encrypted gRPC proxy. Isolation boundary successfully clamped.",
+    hash: "0x7F9B1E22D4A3C8F",
+    logs: [
+      "[12:15:33] initializing eBPF socket listener on enclave APEX-SEC-G4...",
+      "[12:15:35] OUTBOUND PACKET DETECTED: payload 4.8MB towards external_ip (unauthorized IP range).",
+      "[12:15:36] WARNING: Outbound socket bypassed primary gRPC enclave proxy.",
+      "[12:15:36] ACTION TRIGGERED: Enclave boundary isolated. Port clamped.",
+      "[12:15:37] Policy ENFORCE_ISOLATION triggered alert GOV-091."
+    ],
+    lastUpdated: "2026-06-27T15:20:00Z"
+  },
+  "gov-002": {
+    id: "gov-002",
+    title: "eBPF Telemetry Decoupled",
+    client_id: "client-001",
+    client_name: "Apex Sovereign Group [Preview Client]",
+    project_id: "proj-002",
+    project_name: "Global Retail Real-Time Audit Ring",
+    nodeId: "MED-CLINIC-H9",
+    standard: "HIPAA",
+    severity: "High",
+    status: "Flagged",
+    owner: "Alexander Mercer",
+    due_date: "2026-07-03",
+    description: "Kernel-level auditing probe detached unexpectedly during hot model re-allocation. Real-time telemetry feed paused.",
+    hash: "0xBC3E491A2E385D9",
+    logs: [
+      "[10:04:12] Performing multi-agent re-allocation on node MED-CLINIC-H9...",
+      "[10:04:14] System telemetry probe lost connection with kernel ring buffer.",
+      "[10:04:15] CRITICAL WARNING: Enclave tracing decoupled. Zero-knowledge logging offline.",
+      "[10:04:16] System flag: Telemetry missing. Policy eBPF_HEARTBEAT breached."
+    ],
+    lastUpdated: "2026-06-27T14:10:00Z"
+  },
+  "gov-003": {
+    id: "gov-003",
+    title: "HIPAA Key Rotation Delay",
+    client_id: "client-004",
+    client_name: "Federal Treasury Division [Preview Client]",
+    project_id: "proj-004",
+    project_name: "Federal Treasury Multi-Enclave Ledger",
+    nodeId: "MED-CLINIC-H12",
+    standard: "HIPAA",
+    severity: "Medium",
+    status: "Flagged",
+    owner: "Evelyn Carter",
+    due_date: "2026-07-05",
+    description: "Automated cryptographic handshake postponed due to cluster lock. Needs manual administrative rollover trigger.",
+    hash: "0xDE8911C400AA38B",
+    logs: [
+      "[08:00:00] Triggering 30-day key rotation handshake on MED-CLINIC-H12...",
+      "[08:00:02] Rotation aborted: Enclave memory locked by surgical run.",
+      "[08:00:03] HANDSHAKE DELAYED. System continues with stale key-seal.",
+      "[08:00:04] Policy KEY_ROT_AGE breached. Alert logged."
+    ],
+    lastUpdated: "2026-06-27T09:30:00Z"
+  },
+  "gov-004": {
+    id: "gov-004",
+    title: "Memory Boundary Shift",
+    client_id: "client-002",
+    client_name: "Global Retail Enclave [Preview Client]",
+    project_id: "proj-002",
+    project_name: "Global Retail Real-Time Audit Ring",
+    nodeId: "RETAIL-CORE-A1",
+    standard: "SOC2 Type II",
+    severity: "Critical",
+    status: "Suppressed",
+    owner: "Alexander Mercer",
+    due_date: "2026-06-30",
+    description: "Sovereign model thread requested high-clearance cache inspect block. Denied by hardware gate.",
+    hash: "0x99AA18CCBFF002E",
+    logs: [
+      "[14:22:10] Model agent requested access to host shared L3 cache block...",
+      "[14:22:11] SECURE ENCLAVE DENIED: Memory address space outside assigned page registry.",
+      "[14:22:12] Sandboxed memory boundary defended successfully.",
+      "[14:22:13] Policy SEGREGATION_OF_DUTIES logged warning."
+    ],
+    lastUpdated: "2026-06-27T14:10:00Z"
+  }
+};
+
+// Initialize globally to persist edits in memory across hot-reloads
+if (!(global as any)._apiMockGovernance) {
+  (global as any)._apiMockGovernance = { ...DEFAULT_API_MOCK_GOVERNANCE };
+}
+
+export const API_MOCK_GOVERNANCE: Record<string, ApiGovernanceItem> = (global as any)._apiMockGovernance;
+
+export function getNextGovernanceId(): string {
+  const items = Object.values(API_MOCK_GOVERNANCE);
+  const ids = items
+    .map(g => {
+      const match = g.id.match(/^gov-(\d+)$/);
+      return match ? parseInt(match[1], 10) : 0;
+    })
+    .filter(id => id > 0);
+  const maxId = ids.length > 0 ? Math.max(...ids) : 4;
+  return `gov-${String(maxId + 1).padStart(3, "0")}`;
+}
+
+
