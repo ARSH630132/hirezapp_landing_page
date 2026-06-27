@@ -1021,6 +1021,75 @@ Status: MODELLED - ILLUSTRATIVE ONLY
             </div>
           </div>
 
+          {/* Section A2: Scenario Contrast Matrix */}
+          <div className="p-5 rounded-2xl border border-white/5 bg-[#030306]/95 relative overflow-hidden space-y-4">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#00FF9D]/2 blur-3xl pointer-events-none" />
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-white/[0.04] pb-3">
+              <div>
+                <span className="text-[8px] font-mono text-[#009DFF] font-bold block uppercase tracking-wider">PROJECTED RISK SCENARIOS</span>
+                <h3 className="text-xs font-extrabold text-white">Multi-Tier Operational Amortization Matrix</h3>
+              </div>
+              <span className="text-[8px] font-mono text-white/30 uppercase">COGNITIVE MULTIPLIERS MODELLED</span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Conservative */}
+              <div className="p-3.5 rounded-xl border border-white/5 bg-white/[0.005] space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-[8px] font-mono text-[#E4000F] font-bold uppercase tracking-widest">CONSERVATIVE</span>
+                  <span className="text-[7px] font-mono text-white/30">75% TARGET</span>
+                </div>
+                <div className="text-lg font-bold text-white font-mono">{formatCompactCurrency(conservativeGrossSavings)}<span className="text-[9px] text-white/30 font-light font-sans">/yr</span></div>
+                <div className="space-y-1">
+                  <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                    <div className="h-full bg-[#E4000F]" style={{ width: "35%" }} />
+                  </div>
+                  <div className="flex justify-between font-mono text-[7px] text-white/40">
+                    <span>PAYBACK: {formatPayback(conservativePaybackMonths)}</span>
+                    <span className="text-[#E4000F] font-bold">ROI: {conservativeRoi}%</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Expected */}
+              <div className="p-3.5 rounded-xl border border-[#009DFF]/15 bg-[#009DFF]/5 space-y-3 relative">
+                <div className="absolute top-2.5 right-2.5 w-1 h-1 rounded-full bg-[#009DFF]" />
+                <div className="flex justify-between items-center">
+                  <span className="text-[8px] font-mono text-[#009DFF] font-extrabold uppercase tracking-widest">EXPECTED (BASELINE)</span>
+                  <span className="text-[7px] font-mono text-white/30">100% CAPACITY</span>
+                </div>
+                <div className="text-lg font-bold text-white font-mono">{formatCompactCurrency(expectedGrossSavings)}<span className="text-[9px] text-white/30 font-light font-sans">/yr</span></div>
+                <div className="space-y-1">
+                  <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                    <div className="h-full bg-[#009DFF]" style={{ width: "65%" }} />
+                  </div>
+                  <div className="flex justify-between font-mono text-[7px] text-white/40">
+                    <span>PAYBACK: {formatPayback(expectedPaybackMonths)}</span>
+                    <span className="text-[#009DFF] font-bold">ROI: {expectedRoi}%</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Aggressive */}
+              <div className="p-3.5 rounded-xl border border-white/5 bg-white/[0.005] space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-[8px] font-mono text-[#00FF9D] font-bold uppercase tracking-widest">AGGRESSIVE SYNERGY</span>
+                  <span className="text-[7px] font-mono text-white/30">115% MULTIPLIER</span>
+                </div>
+                <div className="text-lg font-bold text-white font-mono">{formatCompactCurrency(aggressiveGrossSavings)}<span className="text-[9px] text-white/30 font-light font-sans">/yr</span></div>
+                <div className="space-y-1">
+                  <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                    <div className="h-full bg-[#00FF9D]" style={{ width: "95%" }} />
+                  </div>
+                  <div className="flex justify-between font-mono text-[7px] text-white/40">
+                    <span>PAYBACK: {formatPayback(aggressivePaybackMonths)}</span>
+                    <span className="text-[#00FF9D] font-bold">ROI: {aggressiveRoi}%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Section B: Payback-Style Strategic Narrative */}
           <div className="p-6 rounded-2xl border border-white/5 bg-[#030306]/80 backdrop-blur-sm space-y-4">
             <span className="text-[9px] font-mono text-white/40 uppercase tracking-widest block">EXECUTIVE SIMULATION DIALOGUE // {currentPriorityObj.title.toUpperCase()}</span>

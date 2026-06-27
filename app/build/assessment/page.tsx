@@ -894,44 +894,87 @@ CONFIDENTIALITY NOTICE: This report was compiled locally in a zero-retention env
             {/* TOP CARD GRID: Score Ring & Maturity Ladder */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               {/* Overall Score Ring */}
-              <div className="lg:col-span-4 p-6 rounded-2xl border border-white/5 bg-[#030306]/95 flex flex-col items-center justify-center text-center space-y-4 font-mono relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-b from-[#009DFF]/2 to-transparent pointer-events-none" />
-                <span className="text-[9px] text-white/40 uppercase tracking-widest font-semibold">OVERALL READINESS SCORE</span>
+              <div className="lg:col-span-4 p-6 rounded-2xl border border-white/5 bg-[#030306]/95 flex flex-col items-center justify-center text-center space-y-5 font-mono relative overflow-hidden group">
+                {/* Decorative mesh glows */}
+                <div className="absolute inset-0 bg-gradient-to-b from-[#009DFF]/4 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute -top-12 -left-12 w-32 h-32 bg-[#00FF9D]/3 rounded-full blur-2xl pointer-events-none group-hover:bg-[#00FF9D]/6 transition-all duration-500" />
                 
-                <div className="relative w-40 h-40 flex items-center justify-center">
+                {/* Header spec tags */}
+                <div className="w-full flex items-center justify-between border-b border-white/[0.04] pb-2 z-10">
+                  <span className="text-[8px] text-white/40 uppercase tracking-wider font-semibold">DIAGNOSTIC RADIAL GAUGE</span>
+                  <span className="text-[8px] text-[#00FF9D] font-bold flex items-center gap-1">
+                    <span className="w-1 h-1 rounded-full bg-[#00FF9D] animate-ping" />
+                    LIVE MODEL V2.8
+                  </span>
+                </div>
+                
+                <span className="text-[9px] text-white/50 uppercase tracking-widest font-bold z-10">OVERALL INTEGRATION SCORE</span>
+                
+                <div className="relative w-48 h-48 flex items-center justify-center">
+                  {/* Outer digital tick marks */}
+                  <div className="absolute inset-0 w-full h-full rounded-full border border-dashed border-white/[0.02] animate-spin" style={{ animationDuration: '40s' }} />
+                  
                   <svg className="absolute inset-0 w-full h-full transform -rotate-90">
-                    <circle cx="80" cy="80" r="72" stroke="rgba(255,255,255,0.03)" strokeWidth="6" fill="transparent" />
+                    {/* Outer Calibration Ring */}
+                    <circle cx="96" cy="96" r="88" stroke="rgba(255,255,255,0.02)" strokeWidth="1" fill="transparent" />
+                    <circle cx="96" cy="96" r="84" stroke="rgba(255,255,255,0.03)" strokeWidth="1" strokeDasharray="3 3" fill="transparent" />
+                    
+                    {/* Base circle track */}
+                    <circle cx="96" cy="96" r="76" stroke="rgba(255,255,255,0.03)" strokeWidth="8" fill="transparent" />
+                    
+                    {/* Active score ring */}
                     <motion.circle 
-                      cx="80" 
-                      cy="80" 
-                      r="72" 
-                      stroke="url(#scoreRingGradient)" 
-                      strokeWidth="6" 
+                      cx="96" 
+                      cy="96" 
+                      r="76" 
+                      stroke="url(#scoreRingGradientPremium)" 
+                      strokeWidth="8" 
                       fill="transparent" 
-                      strokeDasharray={452}
-                      initial={{ strokeDashoffset: 452 }}
-                      animate={{ strokeDashoffset: 452 - (452 * report.percentage) / 100 }}
-                      transition={{ duration: 1.5, ease: "easeOut" }}
+                      strokeDasharray={477.5}
+                      initial={{ strokeDashoffset: 477.5 }}
+                      animate={{ strokeDashoffset: 477.5 - (477.5 * report.percentage) / 100 }}
+                      transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
                       strokeLinecap="round"
+                      style={{ filter: "drop-shadow(0 0 4px rgba(0, 255, 157, 0.15))" }}
                     />
+                    
+                    {/* Inner tracking dotted ring */}
+                    <circle cx="96" cy="96" r="66" stroke="rgba(0, 157, 255, 0.08)" strokeWidth="1" strokeDasharray="2 4" fill="transparent" />
+                    <circle cx="96" cy="96" r="62" stroke="rgba(255,255,255,0.02)" strokeWidth="1" fill="transparent" />
+                    
                     <defs>
-                      <linearGradient id="scoreRingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <linearGradient id="scoreRingGradientPremium" x1="0%" y1="0%" x2="100%" y2="100%">
                         <stop offset="0%" stopColor="#009DFF" />
+                        <stop offset="60%" stopColor="#3B82F6" />
                         <stop offset="100%" stopColor="#00FF9D" />
                       </linearGradient>
                     </defs>
                   </svg>
-                  <div className="text-center">
-                    <span className="text-4xl font-extrabold text-white block tracking-tighter">{report.percentage}%</span>
-                    <span className="text-[8px] text-white/30 uppercase tracking-widest block mt-0.5">READINESS</span>
+                  
+                  {/* Glowing center text readouts */}
+                  <div className="text-center z-10 space-y-0.5">
+                    <span className="text-5xl font-black text-white block tracking-tighter drop-shadow-md">
+                      {report.percentage}%
+                    </span>
+                    <span className="text-[8px] text-white/40 uppercase tracking-widest block font-extrabold">READINESS METRIC</span>
                   </div>
+                  
+                  {/* Decorative Corner crosshair ticks */}
+                  <div className="absolute top-1 left-1 w-2.5 h-2.5 border-t border-l border-white/25" />
+                  <div className="absolute top-1 right-1 w-2.5 h-2.5 border-t border-r border-white/25" />
+                  <div className="absolute bottom-1 left-1 w-2.5 h-2.5 border-b border-l border-white/25" />
+                  <div className="absolute bottom-1 right-1 w-2.5 h-2.5 border-b border-r border-white/25" />
                 </div>
 
-                <div className="text-center space-y-1 z-10">
-                  <span className={`text-[11px] font-bold tracking-wide uppercase ${report.tierColor}`}>
+                <div className="text-center space-y-1 z-10 pt-2 border-t border-white/[0.04] w-full">
+                  <span className={`text-xs font-extrabold tracking-wide uppercase block ${report.tierColor}`}>
                     {report.tierName}
                   </span>
-                  <span className="text-[8px] text-white/20 uppercase block">DATA SECURITY STATUS: COMPLIANT</span>
+                  <div className="flex items-center justify-center gap-4 text-[7px] text-white/35 font-mono pt-1">
+                    <span>SECTOR: ENCLAVE VPC</span>
+                    <span className="w-1 h-1 rounded-full bg-white/15" />
+                    <span>CALIBRATION: ACTIVE</span>
+                  </div>
                 </div>
               </div>
               {/* Maturity Ladder Visual */}
