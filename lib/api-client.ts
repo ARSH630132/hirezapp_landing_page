@@ -135,6 +135,8 @@ export interface ClientAccount {
 // CORE AUTHORIZATION & FETCH UTILITIES
 // ============================================================================
 
+import { getPreviewSession } from "./preview-auth";
+
 const TOKEN_KEY = "gff_api_token";
 
 export const getApiBaseUrl = (): string => {
@@ -147,7 +149,51 @@ export const getStoredToken = (): string | null => typeof window !== "undefined"
 export const setStoredToken = (token: string): void => { if (typeof window !== "undefined") localStorage.setItem(TOKEN_KEY, token); };
 export const clearStoredToken = (): void => { if (typeof window !== "undefined") localStorage.removeItem(TOKEN_KEY); };
 
+export async function ensureValidToken(): Promise<string | null> {
+  if (typeof window === "undefined") return null;
+  const session = getPreviewSession();
+  if (!session) return getStoredToken();
+  
+  const currentToken = getStoredToken();
+  if (currentToken) {
+    try {
+      const parts = currentToken.split(".");
+      if (parts.length === 3) {
+        const payload = JSON.parse(atob(parts[1]));
+        if (payload.email && payload.email.toLowerCase() === session.email.toLowerCase()) {
+          return currentToken;
+        }
+      }
+    } catch (e) {
+      // Decode failed
+    }
+  }
+  
+  try {
+    const res = await fetch(`${getApiBaseUrl().replace(/\/$/, "")}/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: session.email,
+        password: "gff-secure-2026!"
+      })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success && data.accessToken) {
+        setStoredToken(data.accessToken);
+        localStorage.setItem("gff_ai_access_token", data.accessToken);
+        return data.accessToken;
+      }
+    }
+  } catch (err) {
+    console.error("Auto token sync failed:", err);
+  }
+  return getStoredToken();
+}
+
 export async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+  await ensureValidToken();
   const token = getStoredToken();
   const headers = new Headers(options.headers || {});
   if (token && !headers.has("Authorization")) headers.set("Authorization", `Bearer ${token}`);

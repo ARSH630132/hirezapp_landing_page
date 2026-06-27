@@ -1,14 +1,15 @@
 "use client";
 
-import React, { useState, useMemo, useEffect, useRef } from "react";
+import React, { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { 
   Bot, Cpu, Layers, Activity, AlertTriangle, CheckCircle2, Clock, 
   SlidersHorizontal, Search, User, X, ExternalLink, ShieldAlert, 
   RefreshCw, Sliders, HelpCircle, History, UserCheck, Users, 
   Settings, ShieldCheck, ChevronRight, AlertCircle, PlayCircle,
-  TrendingUp, Terminal, Shield, Check
+  TrendingUp, Terminal, Shield, Check, Plus, Edit2, Trash2
 } from "lucide-react";
 import Link from "next/link";
+import { apiClient } from "@/lib/api-client";
 import { 
   WorkspaceCard, 
   MetricTile, 
@@ -131,175 +132,83 @@ const getStatusStreamText = (status: "active" | "evaluating" | "decoupled" | "wa
 };
 
 
+const getProjectNameFromId = (id: string): string => {
+  switch (id.toLowerCase()) {
+    case "proj-001": return "Sovereign Core Sandbox 02";
+    case "proj-002": return "Model Guardrail Sandbox 04";
+    case "proj-003": return "Sovereign Mining Intel Loop";
+    case "proj-004": return "Federal Ledger Enclave Alpha";
+    default: return "Sovereign Core Sandbox 02";
+  }
+};
+
+const getClientIdFromName = (name: string): string => {
+  const normalized = name.toLowerCase();
+  if (normalized.includes("apex")) return "client-001";
+  if (normalized.includes("retail") || normalized.includes("global")) return "client-002";
+  if (normalized.includes("logistics")) return "client-003";
+  if (normalized.includes("treasury") || normalized.includes("federal")) return "client-004";
+  return "client-001";
+};
+
+const mapApiToRichAgent = (op: any): RichAgentOperation => {
+  let extra: any = {};
+  try {
+    if (op.desc && op.desc.startsWith("{")) {
+      extra = JSON.parse(op.desc);
+    }
+  } catch (e) {}
+
+  return {
+    id: op.id,
+    name: op.name,
+    projectId: op.project_id,
+    projectName: extra.projectName || getProjectNameFromId(op.project_id),
+    clientName: op.client_name,
+    status: (op.status as any) || "active",
+    threads: typeof extra.threads === 'number' ? extra.threads : (op.status === "decoupled" ? 0 : 16 + (op.id.charCodeAt(op.id.length - 1) % 4) * 8),
+    memory: extra.memory || (op.status === "decoupled" ? "0.0 GB / 8.0 GB" : "7.5 GB / 8.0 GB"),
+    cpu: typeof extra.cpu === 'number' ? extra.cpu : (op.status === "decoupled" ? 0 : (op.status === "warning" ? 92 : 45 + (op.id.charCodeAt(op.id.length - 1) % 10) * 4)),
+    latencyMs: typeof extra.latencyMs === 'number' ? extra.latencyMs : (op.status === "decoupled" ? 0 : (op.status === "warning" ? 95 : 12 + (op.id.charCodeAt(op.id.length - 1) % 15))),
+    uptime: typeof extra.uptime === 'number' ? extra.uptime : 99.0 + (op.id.charCodeAt(op.id.length - 1) % 100) / 100,
+    enclaveType: extra.enclaveType || "Intel SGX",
+    agentType: (op.agent_type as any) || "Core Model",
+    severity: (op.governance_status as any) || "Low",
+    owner: op.owner,
+    logs: extra.logs || [
+      "Zero-Trust telemetry handshake established.",
+      "Hardware enclave decoupled."
+    ],
+    lastHeartbeat: op.lastUpdated || new Date().toISOString()
+  };
+};
+
+
 // ============================================================================
 // 2. CORE COMPONENT
 // ============================================================================
 
 export default function AdminAiOperationsPage() {
   // --- 2.1 LOCAL VOLATILE STATES (REACTION LAB) ---
-  const [agents, setAgents] = useState<RichAgentOperation[]>(() => [
-    {
-      id: "agent-001",
-      name: "RETAIL-CORE-A1 [Preview Agent]",
-      projectId: "proj-001",
-      projectName: "Sovereign Core Sandbox 02",
-      clientName: "Apex Sovereign Group [Preview Client]",
-      status: "active",
-      threads: 24,
-      memory: "4.2 GB / 8.0 GB",
-      cpu: 42,
-      latencyMs: 12,
-      uptime: 99.998,
-      enclaveType: "Intel SGX",
-      agentType: "Core Model",
-      severity: "Low",
-      owner: "Dr. Sarah Vance",
-      logs: [
-        "Core verification complete (SHA-256: FF81)",
-        "Local memory state synchronized successfully",
-        "eBPF telemetry boundary active"
-      ],
-      lastHeartbeat: "2026-06-27T11:58:30Z"
-    },
-    {
-      id: "agent-002",
-      name: "ALIGN-GUARD-A2 [Preview Agent]",
-      projectId: "proj-002",
-      projectName: "Model Guardrail Sandbox 04",
-      clientName: "Apex Sovereign Group [Preview Client]",
-      status: "evaluating",
-      threads: 16,
-      memory: "3.1 GB / 4.0 GB",
-      cpu: 18,
-      latencyMs: 24,
-      uptime: 99.982,
-      enclaveType: "AMD SEV-SNP",
-      agentType: "Alignment Filter",
-      severity: "Low",
-      owner: "Alexander Mercer",
-      logs: [
-        "Policy verification pass 99.8%",
-        "No direct model manipulation requests detected.",
-        "Syncing guardrail ledger block..."
-      ],
-      lastHeartbeat: "2026-06-27T11:59:12Z"
-    },
-    {
-      id: "agent-003",
-      name: "ORE-TUNNEL-X4 [Preview Agent]",
-      projectId: "proj-003",
-      projectName: "Sovereign Mining Intel Loop",
-      clientName: "Global Retail Enclave [Preview Client]",
-      status: "active",
-      threads: 32,
-      memory: "12.8 GB / 16.0 GB",
-      cpu: 65,
-      latencyMs: 14,
-      uptime: 99.991,
-      enclaveType: "AMD SEV-SNP",
-      agentType: "Sensory Map",
-      severity: "Low",
-      owner: "Marcus Vance",
-      logs: [
-        "Seismic array map loaded successfully.",
-        "AMD SEV memory block verified securely.",
-        "Telemetry streaming active: 45.2 MB/s"
-      ],
-      lastHeartbeat: "2026-06-27T11:57:45Z"
-    },
-    {
-      id: "agent-004",
-      name: "MED-CLINIC-H9 [Preview Agent]",
-      projectId: "proj-001",
-      projectName: "Sovereign Core Sandbox 02",
-      clientName: "Apex Sovereign Group [Preview Client]",
-      status: "warning",
-      threads: 16,
-      memory: "7.1 GB / 8.0 GB",
-      cpu: 94,
-      latencyMs: 88,
-      uptime: 99.954,
-      enclaveType: "Intel SGX",
-      agentType: "Core Model",
-      severity: "High",
-      owner: "Evelyn Carter",
-      logs: [
-        "Warning: Thread load above safety line (85%)",
-        "Triggered telemetry frame check...",
-        "Awaiting auto-scaling context re-allocator"
-      ],
-      lastHeartbeat: "2026-06-27T11:58:11Z"
-    },
-    {
-      id: "agent-005",
-      name: "TRANS-LOOP-Z1 [Preview Agent]",
-      projectId: "proj-001",
-      projectName: "Sovereign Core Sandbox 02",
-      clientName: "Apex Sovereign Group [Preview Client]",
-      status: "decoupled",
-      threads: 0,
-      memory: "0.0 GB / 8.0 GB",
-      cpu: 0,
-      latencyMs: 0,
-      uptime: 98.712,
-      enclaveType: "Intel SGX",
-      agentType: "Sensory Map",
-      severity: "Medium",
-      owner: "Unassigned",
-      logs: [
-        "Thread execution terminated gracefully by operator.",
-        "State dumped to local cryptographic storage block.",
-        "Hardware enclave decoupled."
-      ],
-      lastHeartbeat: "2026-06-26T23:55:00Z"
-    },
-    {
-      id: "agent-006",
-      name: "FED-SYSTEM-G2 [Preview Agent]",
-      projectId: "proj-004",
-      projectName: "Federal Ledger Enclave Alpha",
-      clientName: "Federal Treasury Division [Preview Client]",
-      status: "active",
-      threads: 48,
-      memory: "14.2 GB / 32.0 GB",
-      cpu: 48,
-      latencyMs: 8,
-      uptime: 100.000,
-      enclaveType: "AWS Nitro Enclave",
-      agentType: "Fintech Ledger",
-      severity: "Low",
-      owner: "Sarah Jenkins",
-      logs: [
-        "NIST key verified securely",
-        "Sovereign HSM sync in progress",
-        "Active high-throughput thread pooling"
-      ],
-      lastHeartbeat: "2026-06-27T11:59:00Z"
-    },
-    {
-      id: "agent-007",
-      name: "SENSORY-LOOP-X1 [Preview Agent]",
-      projectId: "proj-003",
-      projectName: "Sovereign Mining Intel Loop",
-      clientName: "Global Retail Enclave [Preview Client]",
-      status: "warning",
-      threads: 12,
-      memory: "3.5 GB / 8.0 GB",
-      cpu: 82,
-      latencyMs: 110,
-      uptime: 99.812,
-      enclaveType: "AMD SEV-SNP",
-      agentType: "Sensory Map",
-      severity: "Medium",
-      owner: "Unassigned",
-      logs: [
-        "Warning: Delay in sensory synchronization",
-        "Retrying socket connection...",
-        "Host reporting packet loss"
-      ],
-      lastHeartbeat: "2026-06-27T11:55:10Z"
-    }
-  ]);
+  const [agents, setAgents] = useState<RichAgentOperation[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editAgentForm, setEditAgentForm] = useState<RichAgentOperation | null>(null);
+
+  const [newAgent, setNewAgent] = useState({
+    name: "",
+    projectId: "proj-001",
+    clientName: "Apex Sovereign Group [Preview Client]",
+    status: "active" as const,
+    agentType: "Core Model" as const,
+    severity: "Low" as const,
+    owner: "Unassigned",
+    enclaveType: "Intel SGX" as const,
+    desc: ""
+  });
 
   const [alerts, setAlerts] = useState<RichAlert[]>(() => [
     {
@@ -368,6 +277,35 @@ export default function AdminAiOperationsPage() {
     });
     return initialLogs;
   });
+
+  const fetchOperations = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await apiClient.aiOperations.list();
+      if (res.success && res.operations) {
+        const mapped = res.operations.map(mapApiToRichAgent);
+        setAgents(mapped);
+        
+        // Build initial logs
+        const logsMap: Record<string, string[]> = {};
+        mapped.forEach(a => {
+          logsMap[a.id] = a.logs;
+        });
+        setAgentLogs(logsMap);
+      } else {
+        setError("Failed to fetch running AI Operations from secure ledger.");
+      }
+    } catch (err: any) {
+      setError(err?.message || "Secure endpoint connection timeout.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchOperations();
+  }, [fetchOperations]);
 
   // --- 2.2 OBSERVED STATES (FILTERS) ---
   const [searchQuery, setSearchQuery] = useState("");
@@ -481,23 +419,137 @@ export default function AdminAiOperationsPage() {
 
 
 
-  // --- 2.6 LOCAL MUTATIVE ACTIONS (FRONTEND-ONLY) ---
-  const handleAssignOwner = (agentId: string, newOwner: string) => {
-    setAgents(prev => prev.map(a => {
-      if (a.id === agentId) {
-        return { ...a, owner: newOwner };
+  // --- 2.6 LOCAL MUTATIVE ACTIONS (REST BACKEND CRUD CONNECTED) ---
+  const handleAssignOwner = async (agentId: string, newOwner: string) => {
+    try {
+      const res = await apiClient.aiOperations.update(agentId, {
+        owner: newOwner
+      });
+      if (res.success) {
+        setAgents(prev => prev.map(a => a.id === agentId ? { ...a, owner: newOwner } : a));
+        setAlerts(prev => prev.map(al => al.agentId === agentId ? { ...al, owner: newOwner } : al));
+        appendLogMessage(agentId, `Security clearance validated. Re-assigned owner bounds to: ${newOwner}`);
       }
-      return a;
-    }));
-    
-    setAlerts(prev => prev.map(al => {
-      if (al.agentId === agentId) {
-        return { ...al, owner: newOwner };
-      }
-      return al;
-    }));
+    } catch (err: any) {
+      console.error("Failed to assign owner on backend:", err);
+    }
+  };
 
-    appendLogMessage(agentId, `Security clearance validated. Re-assigned owner bounds to: ${newOwner}`);
+  const handleCreateAgentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newAgent.name) {
+      alert("Please provide an Agent name.");
+      return;
+    }
+
+    try {
+      const extraPayload = {
+        projectName: getProjectNameFromId(newAgent.projectId),
+        threads: 24,
+        memory: "4.0 GB / 8.0 GB",
+        cpu: 35,
+        latencyMs: 15,
+        uptime: 99.98,
+        enclaveType: newAgent.enclaveType,
+        logs: [
+          "Zero-Trust verification complete.",
+          "Secure isolated telemetry stream initiated."
+        ]
+      };
+
+      const payload = {
+        name: newAgent.name,
+        client_id: getClientIdFromName(newAgent.clientName),
+        project_id: newAgent.projectId,
+        status: newAgent.status,
+        health: "healthy",
+        agent_type: newAgent.agentType,
+        governance_status: newAgent.severity,
+        owner: newAgent.owner,
+        desc: JSON.stringify(extraPayload)
+      };
+
+      const res = await apiClient.aiOperations.create(payload);
+      if (res.success && res.operation) {
+        const op = res.operation;
+        const mapped = mapApiToRichAgent(op);
+        setAgents(prev => [mapped, ...prev]);
+        setAgentLogs(prev => ({ ...prev, [mapped.id]: mapped.logs }));
+        setIsCreateModalOpen(false);
+        setNewAgent({
+          name: "",
+          projectId: "proj-001",
+          clientName: "Apex Sovereign Group [Preview Client]",
+          status: "active",
+          agentType: "Core Model",
+          severity: "Low",
+          owner: "Unassigned",
+          enclaveType: "Intel SGX",
+          desc: ""
+        });
+      } else {
+        alert("Failed to register operational agent on backend.");
+      }
+    } catch (err: any) {
+      alert(`Error: ${err.message || "Failed to sync enclave database."}`);
+    }
+  };
+
+  const handleEditAgentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editAgentForm) return;
+
+    try {
+      const extraPayload = {
+        projectName: getProjectNameFromId(editAgentForm.projectId),
+        threads: editAgentForm.threads,
+        memory: editAgentForm.memory,
+        cpu: editAgentForm.cpu,
+        latencyMs: editAgentForm.latencyMs,
+        uptime: editAgentForm.uptime,
+        enclaveType: editAgentForm.enclaveType,
+        logs: agentLogs[editAgentForm.id] || []
+      };
+
+      const payload = {
+        name: editAgentForm.name,
+        client_id: getClientIdFromName(editAgentForm.clientName),
+        project_id: editAgentForm.projectId,
+        status: editAgentForm.status,
+        agent_type: editAgentForm.agentType,
+        governance_status: editAgentForm.severity,
+        owner: editAgentForm.owner,
+        desc: JSON.stringify(extraPayload)
+      };
+
+      const res = await apiClient.aiOperations.update(editAgentForm.id, payload);
+      if (res.success && res.operation) {
+        const mapped = mapApiToRichAgent(res.operation);
+        setAgents(prev => prev.map(a => a.id === editAgentForm.id ? mapped : a));
+        setIsEditModalOpen(false);
+        setEditAgentForm(null);
+      } else {
+        alert("Failed to update operational agent.");
+      }
+    } catch (err: any) {
+      alert(`Error: ${err.message || "Failed to update agent."}`);
+    }
+  };
+
+  const handleTerminateAgent = async (id: string) => {
+    if (confirm(`Terminate running operational agent ${id}? This halts and deallocates all enclave memory blocks.`)) {
+      try {
+        const res = await apiClient.aiOperations.delete(id);
+        if (res.success) {
+          setAgents(prev => prev.filter(a => a.id !== id));
+          if (selectedAgentId === id) setSelectedAgentId(null);
+        } else {
+          alert("Failed to terminate running agent on the backend.");
+        }
+      } catch (err: any) {
+        alert(`Error: ${err.message || "Failed to connect to supervisor."}`);
+      }
+    }
   };
 
   const handleAlertAssignOwner = (alertId: string, newOwner: string) => {
@@ -598,12 +650,22 @@ export default function AdminAiOperationsPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3 self-start md:self-auto font-mono text-[11px] border border-white/5 bg-[#050505]/35 rounded-lg px-3 py-2 text-white/60">
-          <Activity className={`w-3.5 h-3.5 text-[#00FFC2] shrink-0 ${simulationPulse ? "opacity-100" : "opacity-40"}`} />
-          <span className="text-white/30 uppercase">Telemetry state:</span>
-          <span className="text-[#00FFC2] font-semibold uppercase tracking-wider">SYNCED</span>
-          <span className="text-white/20">•</span>
-          <span className="text-[10px] text-white/40">EPOCH SEC_2026_A</span>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 self-start md:self-auto">
+          <button
+            onClick={() => setIsCreateModalOpen(true)}
+            className="h-9 px-4 rounded bg-[#009DFF] hover:bg-[#0082d4] text-[11px] font-mono font-bold uppercase tracking-wider text-white flex items-center gap-1.5 transition-all cursor-pointer shadow-[0_0_20px_rgba(0,157,255,0.2)]"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Create Operational Agent</span>
+          </button>
+
+          <div className="flex items-center gap-3 font-mono text-[11px] border border-white/5 bg-[#050505]/35 rounded-lg px-3 py-2 text-white/60">
+            <Activity className={`w-3.5 h-3.5 text-[#00FFC2] shrink-0 ${simulationPulse ? "opacity-100" : "opacity-40"}`} />
+            <span className="text-white/30 uppercase">Telemetry state:</span>
+            <span className="text-[#00FFC2] font-semibold uppercase tracking-wider">SYNCED</span>
+            <span className="text-white/20">•</span>
+            <span className="text-[10px] text-white/40">EPOCH SEC_2026_A</span>
+          </div>
         </div>
       </div>
 
@@ -862,6 +924,29 @@ export default function AdminAiOperationsPage() {
             </div>
           </div>
 
+          {loading ? (
+            <div className="flex flex-col items-center justify-center p-24 font-mono text-center space-y-4">
+              <RefreshCw className="w-10 h-10 text-[#009DFF] animate-spin" />
+              <h4 className="text-white text-xs font-bold uppercase tracking-widest">Routing Telemetric Stream...</h4>
+              <p className="text-white/40 text-[10px] max-w-sm">
+                Authenticating context frame connections to running sovereign agent clusters. Maintain bypass clearance.
+              </p>
+            </div>
+          ) : error ? (
+            <div className="flex flex-col items-center justify-center p-20 border border-red-500/10 rounded-xl bg-red-950/5 font-mono text-center space-y-4">
+              <AlertTriangle className="w-10 h-10 text-red-500 animate-pulse" />
+              <h4 className="text-red-400 text-xs font-bold uppercase tracking-widest">Connection Failure Blocked</h4>
+              <p className="text-white/50 text-[10px] max-w-sm leading-relaxed">
+                {error}
+              </p>
+              <button
+                onClick={fetchOperations}
+                className="h-8 px-4 rounded border border-red-500/20 hover:border-red-500/40 bg-red-500/10 text-[10px] font-bold text-red-400 hover:bg-red-500/20 transition-all uppercase tracking-wider cursor-pointer"
+              >
+                Reconnect Wire
+              </button>
+            </div>
+          ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[900px] text-left font-mono text-[11px] text-white/70">
               <thead>
@@ -1001,6 +1086,7 @@ export default function AdminAiOperationsPage() {
               </tbody>
             </table>
           </div>
+          )}
         </div>
 
         {/* RIGHT COLUMN (COLSPAN 1): GOVERNANCE INCIDENTS LEDGER */}
@@ -1118,12 +1204,25 @@ export default function AdminAiOperationsPage() {
                 </h3>
                 <div className="text-[10px] text-[#009DFF] font-semibold">{selectedAgent.id}</div>
               </div>
-              <button 
-                onClick={() => setSelectedAgentId(null)}
-                className="p-1 rounded-md border border-white/5 bg-white/[0.01] hover:bg-white/5 text-white/45 hover:text-white transition-all cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={() => {
+                    setEditAgentForm({ ...selectedAgent });
+                    setIsEditModalOpen(true);
+                  }}
+                  className="px-2 py-1 rounded border border-white/5 bg-white/[0.01] hover:bg-[#009DFF]/10 text-[#009DFF] hover:text-white transition-all cursor-pointer flex items-center gap-1 text-[9px] uppercase font-mono font-bold"
+                >
+                  <Edit2 className="w-3 h-3" />
+                  <span>Edit</span>
+                </button>
+
+                <button 
+                  onClick={() => setSelectedAgentId(null)}
+                  className="p-1.5 rounded hover:bg-white/5 text-white/40 hover:text-white transition-all cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
             </div>
 
             {/* Quick Stats Grid */}
@@ -1280,6 +1379,193 @@ export default function AdminAiOperationsPage() {
         </div>
       )}
     </AnimatePresence>
+
+    {isCreateModalOpen && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200 font-mono text-xs text-white">
+        <div className="w-full max-w-lg rounded-xl border border-white/10 bg-[#090909] p-6 shadow-2xl space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-white/5">
+            <h3 className="text-sm font-bold uppercase text-[#009DFF]">Register Agent</h3>
+            <button onClick={() => setIsCreateModalOpen(false)} className="text-white/40 hover:text-white">✕</button>
+          </div>
+          <form onSubmit={handleCreateAgentSubmit} className="space-y-4">
+            <div className="space-y-1.5">
+              <label className="text-white/40 uppercase block text-[9.5px] font-bold">Agent Name *</label>
+              <input
+                type="text" required placeholder="e.g., RISK-ENGINE-V2" value={newAgent.name}
+                onChange={(e) => setNewAgent({ ...newAgent, name: e.target.value })}
+                className="w-full h-9 rounded border border-white/5 bg-[#050505] px-3 text-white outline-none focus:border-[#009DFF]/30 font-mono"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-white/40 uppercase block text-[9.5px] font-bold">Project Link</label>
+                <select value={newAgent.projectId} onChange={(e) => setNewAgent({ ...newAgent, projectId: e.target.value })} className="w-full h-9 rounded border border-white/5 bg-[#050505] px-2 text-white outline-none font-mono">
+                  <option value="proj-001">Sovereign Core Sandbox 02</option>
+                  <option value="proj-002">Model Guardrail Sandbox 04</option>
+                  <option value="proj-003">Sovereign Mining Intel Loop</option>
+                  <option value="proj-004">Federal Ledger Enclave Alpha</option>
+                </select>
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-white/40 uppercase block text-[9.5px] font-bold">Client</label>
+                <select value={newAgent.clientName} onChange={(e) => setNewAgent({ ...newAgent, clientName: e.target.value })} className="w-full h-9 rounded border border-white/5 bg-[#050505] px-2 text-white outline-none font-mono">
+                  {UNIQUE_CLIENTS.map(c => <option key={c} value={c}>{c.replace(" [Preview Client]", "")}</option>)}
+                </select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-white/40 uppercase block text-[9.5px] font-bold">Type</label>
+                <select value={newAgent.agentType} onChange={(e) => setNewAgent({ ...newAgent, agentType: e.target.value as any })} className="w-full h-9 rounded border border-white/5 bg-[#050505] px-2 text-white outline-none font-mono">
+                  {UNIQUE_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-white/40 uppercase block text-[9.5px] font-bold">Hardware Enclave</label>
+                <select value={newAgent.enclaveType} onChange={(e) => setNewAgent({ ...newAgent, enclaveType: e.target.value as any })} className="w-full h-9 rounded border border-white/5 bg-[#050505] px-2 text-white outline-none font-mono">
+                  <option value="Intel SGX">Intel SGX</option>
+                  <option value="AMD SEV-SNP">AMD SEV-SNP</option>
+                  <option value="AWS Nitro Enclave">AWS Nitro Enclave</option>
+                </select>
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              <div className="space-y-1.5">
+                <label className="text-white/40 uppercase block text-[9.5px] font-bold">State</label>
+                <select value={newAgent.status} onChange={(e) => setNewAgent({ ...newAgent, status: e.target.value as any })} className="w-full h-9 rounded border border-white/5 bg-[#050505] px-1 text-white outline-none font-mono">
+                  <option value="active">Active</option>
+                  <option value="evaluating">Evaluating</option>
+                  <option value="warning">Warning</option>
+                  <option value="decoupled">Decoupled</option>
+                </select>
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-white/40 uppercase block text-[9.5px] font-bold">Severity</label>
+                <select value={newAgent.severity} onChange={(e) => setNewAgent({ ...newAgent, severity: e.target.value as any })} className="w-full h-9 rounded border border-white/5 bg-[#050505] px-1 text-white outline-none font-mono">
+                  {UNIQUE_SEVERITIES.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-white/40 uppercase block text-[9.5px] font-bold">Assignee</label>
+                <select value={newAgent.owner} onChange={(e) => setNewAgent({ ...newAgent, owner: e.target.value })} className="w-full h-9 rounded border border-white/5 bg-[#050505] px-1 text-white outline-none font-mono">
+                  {OWNERS.map(o => <option key={o} value={o}>{o.replace("Dr. ", "").replace("Auditor ", "")}</option>)}
+                </select>
+              </div>
+            </div>
+            <div className="flex items-center justify-end gap-3 pt-3 border-t border-white/5">
+              <button type="button" onClick={() => setIsCreateModalOpen(false)} className="h-8 px-4 rounded border border-white/10 hover:bg-white/5 text-white/70">Cancel</button>
+              <button type="submit" className="h-8 px-4 rounded bg-[#009DFF] hover:bg-[#0082d4] text-white font-bold">Register Agent</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    )}
+
+    {isEditModalOpen && editAgentForm && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200 font-mono text-xs text-white">
+        <div className="w-full max-w-lg rounded-xl border border-white/10 bg-[#090909] p-6 shadow-2xl space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-white/5">
+            <h3 className="text-sm font-bold uppercase text-[#009DFF]">Edit Agent: {editAgentForm.id}</h3>
+            <button onClick={() => { setIsEditModalOpen(false); setEditAgentForm(null); }} className="text-white/40 hover:text-white">✕</button>
+          </div>
+          <form onSubmit={handleEditAgentSubmit} className="space-y-4">
+            <div className="space-y-1.5">
+              <label className="text-white/40 uppercase block text-[9.5px] font-bold">Agent Name *</label>
+              <input
+                type="text" required value={editAgentForm.name}
+                onChange={(e) => setEditAgentForm({ ...editAgentForm, name: e.target.value })}
+                className="w-full h-9 rounded border border-white/5 bg-[#050505] px-3 text-white outline-none focus:border-[#009DFF]/30 font-mono"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-white/40 uppercase block text-[9.5px] font-bold">Project Link</label>
+                <select value={editAgentForm.projectId} onChange={(e) => setEditAgentForm({ ...editAgentForm, projectId: e.target.value })} className="w-full h-9 rounded border border-white/5 bg-[#050505] px-2 text-white outline-none font-mono">
+                  <option value="proj-001">Sovereign Core Sandbox 02</option>
+                  <option value="proj-002">Model Guardrail Sandbox 04</option>
+                  <option value="proj-003">Sovereign Mining Intel Loop</option>
+                  <option value="proj-004">Federal Ledger Enclave Alpha</option>
+                </select>
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-white/40 uppercase block text-[9.5px] font-bold">Client</label>
+                <select value={editAgentForm.clientName} onChange={(e) => setEditAgentForm({ ...editAgentForm, clientName: e.target.value })} className="w-full h-9 rounded border border-white/5 bg-[#050505] px-2 text-white outline-none font-mono">
+                  {UNIQUE_CLIENTS.map(c => <option key={c} value={c}>{c.replace(" [Preview Client]", "")}</option>)}
+                </select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-white/40 uppercase block text-[9.5px] font-bold">Type</label>
+                <select value={editAgentForm.agentType} onChange={(e) => setEditAgentForm({ ...editAgentForm, agentType: e.target.value as any })} className="w-full h-9 rounded border border-white/5 bg-[#050505] px-2 text-white outline-none font-mono">
+                  {UNIQUE_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-white/40 uppercase block text-[9.5px] font-bold">Hardware Enclave</label>
+                <select value={editAgentForm.enclaveType} onChange={(e) => setEditAgentForm({ ...editAgentForm, enclaveType: e.target.value as any })} className="w-full h-9 rounded border border-white/5 bg-[#050505] px-2 text-white outline-none font-mono">
+                  <option value="Intel SGX">Intel SGX</option>
+                  <option value="AMD SEV-SNP">AMD SEV-SNP</option>
+                  <option value="AWS Nitro Enclave">AWS Nitro Enclave</option>
+                </select>
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              <div className="space-y-1.5">
+                <label className="text-white/40 uppercase block text-[9.5px] font-bold">State</label>
+                <select value={editAgentForm.status} onChange={(e) => setEditAgentForm({ ...editAgentForm, status: e.target.value as any })} className="w-full h-9 rounded border border-white/5 bg-[#050505] px-1 text-white outline-none font-mono">
+                  <option value="active">Active</option>
+                  <option value="evaluating">Evaluating</option>
+                  <option value="warning">Warning</option>
+                  <option value="decoupled">Decoupled</option>
+                </select>
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-white/40 uppercase block text-[9.5px] font-bold">Severity</label>
+                <select value={editAgentForm.severity} onChange={(e) => setEditAgentForm({ ...editAgentForm, severity: e.target.value as any })} className="w-full h-9 rounded border border-white/5 bg-[#050505] px-1 text-white outline-none font-mono">
+                  {UNIQUE_SEVERITIES.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-white/40 uppercase block text-[9.5px] font-bold">Assignee</label>
+                <select value={editAgentForm.owner} onChange={(e) => setEditAgentForm({ ...editAgentForm, owner: e.target.value })} className="w-full h-9 rounded border border-white/5 bg-[#050505] px-1 text-white outline-none font-mono">
+                  {OWNERS.map(o => <option key={o} value={o}>{o.replace("Dr. ", "").replace("Auditor ", "")}</option>)}
+                </select>
+              </div>
+            </div>
+            <div className="flex items-center justify-between pt-4 border-t border-white/5">
+              <button
+                type="button"
+                onClick={() => handleTerminateAgent(editAgentForm.id)}
+                className="h-8 px-3 rounded border border-red-500/20 hover:border-red-500/40 bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all uppercase tracking-wider font-bold cursor-pointer inline-flex items-center gap-1.5"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Terminate</span>
+              </button>
+
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsEditModalOpen(false);
+                    setEditAgentForm(null);
+                  }}
+                  className="h-8 px-4 rounded border border-white/10 hover:border-white/20 bg-transparent text-white/70"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="h-8 px-4 rounded bg-[#009DFF] hover:bg-[#0082d4] text-white font-bold"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    )}
   </motion.div>
   );
 }

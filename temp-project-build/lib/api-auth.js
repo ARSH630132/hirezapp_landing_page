@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.API_MOCK_SUPPORT_TICKETS = exports.DEFAULT_API_MOCK_SUPPORT_TICKETS = exports.API_MOCK_DOCUMENTS = exports.DEFAULT_API_MOCK_DOCUMENTS = exports.API_MOCK_GOVERNANCE = exports.DEFAULT_API_MOCK_GOVERNANCE = exports.API_MOCK_INVOICES = exports.DEFAULT_API_MOCK_INVOICES = exports.API_MOCK_AI_OPERATIONS = exports.DEFAULT_API_MOCK_AI_OPERATIONS = exports.API_MOCK_PROJECTS = exports.DEFAULT_API_MOCK_PROJECTS = exports.API_MOCK_USERS = exports.DEFAULT_API_MOCK_USERS = void 0;
+exports.API_MOCK_CLIENTS = exports.DEFAULT_API_MOCK_CLIENTS = exports.API_MOCK_SUPPORT_TICKETS = exports.DEFAULT_API_MOCK_SUPPORT_TICKETS = exports.API_MOCK_DOCUMENTS = exports.DEFAULT_API_MOCK_DOCUMENTS = exports.API_MOCK_GOVERNANCE = exports.DEFAULT_API_MOCK_GOVERNANCE = exports.API_MOCK_INVOICES = exports.DEFAULT_API_MOCK_INVOICES = exports.API_MOCK_AI_OPERATIONS = exports.DEFAULT_API_MOCK_AI_OPERATIONS = exports.API_MOCK_PROJECTS = exports.DEFAULT_API_MOCK_PROJECTS = exports.API_MOCK_USERS = exports.DEFAULT_API_MOCK_USERS = void 0;
 exports.base64UrlEncode = base64UrlEncode;
 exports.base64UrlDecode = base64UrlDecode;
 exports.signJwt = signJwt;
@@ -18,6 +18,7 @@ exports.getNextAiOperationId = getNextAiOperationId;
 exports.getNextInvoiceId = getNextInvoiceId;
 exports.getNextGovernanceId = getNextGovernanceId;
 exports.getNextDocumentId = getNextDocumentId;
+exports.getNextClientId = getNextClientId;
 const crypto_1 = __importDefault(require("crypto"));
 const JWT_SECRET = process.env.JWT_SECRET || "gff-ai-sovereign-secure-access-token-secret-2026";
 function base64UrlEncode(str) {
@@ -782,3 +783,84 @@ if (!global._apiMockSupportTickets) {
     global._apiMockSupportTickets = { ...exports.DEFAULT_API_MOCK_SUPPORT_TICKETS };
 }
 exports.API_MOCK_SUPPORT_TICKETS = global._apiMockSupportTickets;
+exports.DEFAULT_API_MOCK_CLIENTS = {
+    "client-001": {
+        id: "client-001",
+        name: "Apex Sovereign Group [Preview Client]",
+        domain: "apex-sovereign.gff.ai",
+        status: "active",
+        tier: "Sovereign",
+        createdAt: "2026-01-15T08:30:00Z",
+        region: "EU-West (Isolated)",
+        complianceLevel: "ISO-27001 Fully Certified",
+        contactName: "Alexander Mercer",
+        contactEmail: "a.mercer@apex-sovereign.gff.ai",
+        industry: "Cybersecurity & Defense",
+        healthStatus: "Healthy",
+        billingStatus: "Paid",
+        accountOwner: "Dr. Sarah Vance"
+    },
+    "client-002": {
+        id: "client-002",
+        name: "Global Retail Enclave [Preview Client]",
+        domain: "global-retail.gff.ai",
+        status: "active",
+        tier: "Enterprise",
+        createdAt: "2026-02-10T14:15:00Z",
+        region: "US-East (Dedicated)",
+        complianceLevel: "SOC2 Type II Assured",
+        contactName: "Evelyn Carter",
+        contactEmail: "e.carter@global-retail.gff.ai",
+        industry: "E-Commerce & Retail",
+        healthStatus: "Warning",
+        billingStatus: "Overdue",
+        accountOwner: "Alexander Mercer"
+    },
+    "client-003": {
+        id: "client-003",
+        name: "Sovereign Logistics Unit [Preview Client]",
+        domain: "sovereign-logistics.gff.ai",
+        status: "pending",
+        tier: "Standard",
+        createdAt: "2026-06-01T09:00:00Z",
+        region: "APAC-South (Shared)",
+        complianceLevel: "NIST AI RMF Pending",
+        contactName: "Marcus Vance",
+        contactEmail: "m.vance@sovereign-logistics.gff.ai",
+        industry: "Supply Chain & Logistics",
+        healthStatus: "Offline",
+        billingStatus: "Unpaid",
+        accountOwner: "Sarah Jenkins"
+    },
+    "client-004": {
+        id: "client-004",
+        name: "Federal Treasury Division [Preview Client]",
+        domain: "fed-treasury.gff.ai",
+        status: "active",
+        tier: "Sovereign",
+        createdAt: "2025-11-20T11:45:00Z",
+        region: "US-GovWest (Airgapped)",
+        complianceLevel: "NIST SP 800-53 High",
+        contactName: "Sarah Jenkins",
+        contactEmail: "s.jenkins@fed-treasury.gff.ai",
+        industry: "FinTech & Treasury",
+        healthStatus: "Healthy",
+        billingStatus: "Paid",
+        accountOwner: "Marcus Vance"
+    }
+};
+if (!global._apiMockClients) {
+    global._apiMockClients = { ...exports.DEFAULT_API_MOCK_CLIENTS };
+}
+exports.API_MOCK_CLIENTS = global._apiMockClients;
+function getNextClientId() {
+    const clients = Object.values(exports.API_MOCK_CLIENTS);
+    const ids = clients
+        .map(c => {
+        const match = c.id.match(/^client-(\d+)$/);
+        return match ? parseInt(match[1], 10) : 0;
+    })
+        .filter(id => id > 0);
+    const maxId = ids.length > 0 ? Math.max(...ids) : 4;
+    return `client-${String(maxId + 1).padStart(3, "0")}`;
+}
