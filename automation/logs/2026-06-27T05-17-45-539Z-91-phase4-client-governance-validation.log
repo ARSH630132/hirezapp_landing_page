@@ -1,0 +1,27 @@
+## npm run lint
+exit=1
+STDOUT:
+
+> hirezapp_landing_page@0.1.0 lint
+> eslint
+
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/app/portal/governance/page.tsx
+  245:16  error  Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/app/portal/governance/page.tsx:245:16
+  243 |
+  244 |   const triggerToast = (msg: string, type: "success" | "info" | "warning" = "success") => {
+> 245 |     const id = Math.random().toString(36).substring(2, 9);
+      |                ^^^^^^^^^^^^^ Cannot call impure function
+  246 |     setToasts(prev => [...prev, { id, msg, type }]);
+  247 |     setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 3000);
+  248 |   };  react-hooks/purity
+  810:13  error  Do not use an `<a>` element to navigate to `/portal/support/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               @next/next/no-html-link-for-pages
+
+✖ 2 problems (2 errors, 0 warnings)
+
+
+STDERR:
