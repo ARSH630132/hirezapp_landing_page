@@ -659,3 +659,196 @@ export function getNextGovernanceId(): string {
 }
 
 
+
+// --- DOCUMENTS & SUPPORT TICKETS CRUD API MODELS & SEED DATA ---
+
+export interface ApiDocumentItem {
+  id: string;
+  title: string;
+  fileSize: string;
+  type: string; // "PDF" | "JSON" | "YAML" etc.
+  sha256: string;
+  client_id: string;
+  client_name: string;
+  projectId?: string;
+  status: "Verified" | "Under Review" | "Action Required" | "Superseded";
+  owner: string;
+  version: string;
+  lastUpdated: string;
+  description: string;
+  governanceChecks?: { label: string; checked: boolean; framework: string }[];
+}
+
+export interface ApiSupportTicket {
+  id: string;
+  subject: string;
+  client_id: string;
+  client_name: string;
+  priority: "P1" | "P2" | "P3";
+  category: string;
+  status: "INVESTIGATING" | "OPEN" | "RESOLVED" | "IN_PROGRESS";
+  assignedAgent: string;
+  linkedProjectId?: string;
+  linkedDocId?: string;
+  slaSeconds: number;
+  description: string;
+  createdDate: string;
+  wireFeed?: { id: string; sender: string; senderName: string; text: string; timestamp: string }[];
+}
+
+
+export const DEFAULT_API_MOCK_DOCUMENTS: Record<string, ApiDocumentItem> = {
+  "doc-801": {
+    id: "DOC-801",
+    title: "Sovereign Core Architectural Blueprint",
+    fileSize: "12.4 MB",
+    type: "PDF",
+    sha256: "0xAB9811C82FFD201A99E8F3C721A0C5E89812A",
+    client_id: "client-001",
+    client_name: "Apex Sovereign Group [Preview Client]",
+    projectId: "proj-001",
+    status: "Verified",
+    owner: "Dr. Sarah Vance",
+    version: "v2.4.1",
+    lastUpdated: "2026-06-27T15:20:00Z",
+    description: "Deep-level system-wide architectural layout mapping high-throughput isolated core loop with secure localized kernel telemetry and dual-layer TLS 1.3 socket.",
+    governanceChecks: [
+      { label: "Hardware Cryptographic Enclave Key Binding", checked: true, framework: "ISO-27001 Sec A.12" },
+      { label: "Zero-Trust TLS 1.3 Handshake Protocol Verification", checked: true, framework: "SOC2 CC6.3" },
+      { label: "Kernel-Level eBPF Event Stream Telemetry", checked: true, framework: "NIST SP 800-53" },
+      { label: "Continuous Airgapped Workspace Isolation Check", checked: true, framework: "FIPS-140-3" }
+    ]
+  },
+  "doc-802": {
+    id: "DOC-802",
+    title: "SOC2 Compliance Enclave Certificate",
+    fileSize: "4.8 MB",
+    type: "PDF",
+    sha256: "0xFF410D390E8F91B02AA6E8F3C2C77215446C1",
+    client_id: "client-002",
+    client_name: "Global Retail Enclave [Preview Client]",
+    projectId: "proj-002",
+    status: "Verified",
+    owner: "Alexander Mercer",
+    version: "v1.1.0",
+    lastUpdated: "2026-06-27T14:10:00Z",
+    description: "Verified SOC2 trust services criteria certification covering security, availability, and processing integrity inside target cloud sandboxes.",
+    governanceChecks: [
+      { label: "Third-Party Attestation Key Signing", checked: true, framework: "AICPA TSC 2017" },
+      { label: "Continuous Monitoring & Event Stream Audit", checked: true, framework: "SOC2 CC7.2" },
+      { label: "Threat and Vulnerability Scan Verification", checked: true, framework: "ISO-27001" }
+    ]
+  },
+  "doc-803": {
+    id: "DOC-803",
+    title: "GFF AI Runtime Governance Ruleset",
+    fileSize: "1.2 MB",
+    type: "JSON",
+    sha256: "0x01DE8A88FF4E201B7FF911A3E2298F390D88B",
+    client_id: "client-003",
+    client_name: "Sovereign Logistics Unit [Preview Client]",
+    projectId: "proj-003",
+    status: "Under Review",
+    owner: "Marcus Vance",
+    version: "v3.0.2",
+    lastUpdated: "2026-06-26T18:05:00Z",
+    description: "Structured policy ruleset defining sensory bounds, alignment tolerances, and real-time model override guardrails applied to agent networks.",
+    governanceChecks: [
+      { label: "Static Model Behavioral Rules Match", checked: true, framework: "NIST SP 800" },
+      { label: "Dynamic Runtime Guardrail Policy Validation", checked: false, framework: "EU AI Act" },
+      { label: "Emergency Kill-Switch Interface Enforceability", checked: true, framework: "GFF Gov Core" }
+    ]
+  },
+  "doc-804": {
+    id: "DOC-804",
+    title: "NIST Federal Treasury Integration Schema",
+    fileSize: "750 KB",
+    type: "YAML",
+    sha256: "0x99A1C4E72B7FD40A9D8E3C2C77E1546C1A4B0",
+    client_id: "client-004",
+    client_name: "Federal Treasury Division [Preview Client]",
+    projectId: "proj-004",
+    status: "Verified",
+    owner: "Evelyn Carter",
+    version: "v1.0.5",
+    lastUpdated: "2026-06-27T09:30:00Z",
+    description: "NIST-compliant hardware enclave schema isolating cryptographic treasury signatures and financial auditing models from general compute networks.",
+    governanceChecks: [
+      { label: "FIPS 140-3 Cryptographic Module Verification", checked: true, framework: "FIPS-140-3" },
+      { label: "Hardware-enforced Security Boundary Isolation", checked: true, framework: "NIST SP 800" },
+      { label: "Dual-Custodian Sign-off Enforcement Logic", checked: true, framework: "Treasury SEC" }
+    ]
+  }
+};
+
+if (!(global as any)._apiMockDocuments) {
+  (global as any)._apiMockDocuments = { ...DEFAULT_API_MOCK_DOCUMENTS };
+}
+export const API_MOCK_DOCUMENTS: Record<string, ApiDocumentItem> = (global as any)._apiMockDocuments;
+
+
+export const DEFAULT_API_MOCK_SUPPORT_TICKETS: Record<string, ApiSupportTicket> = {
+  "t-882": {
+    id: "T-882",
+    subject: "London core node replication delay above SLA threshold",
+    client_id: "client-001",
+    client_name: "Apex Sovereign Group [Preview Client]",
+    priority: "P1",
+    category: "Infrastructure",
+    status: "INVESTIGATING",
+    assignedAgent: "Dr. Sarah Vance",
+    linkedProjectId: "proj-001",
+    linkedDocId: "DOC-801",
+    slaSeconds: 862,
+    description: "High-throughput isolated core loop with secure localized kernel telemetry in the London node cluster is showing a replication latency of 145ms, which exceeds the 50ms SLA maximum limit.",
+    createdDate: "2026-06-27T14:30:00Z",
+    wireFeed: [
+      { id: "w1", sender: "client", senderName: "Apex Sovereign Core Dev", text: "We are seeing alerts on our London nodes. Replication delay spiked to 145ms.", timestamp: "14:30" },
+      { id: "w2", sender: "system", senderName: "SLA MONITOR", text: "Warning: SLA response threshold exceeded 50ms on Node LON-01.", timestamp: "14:31" },
+      { id: "w3", sender: "agent", senderName: "Dr. Sarah Vance", text: "I have established a secure dual-layer TLS handshake. Analyzing eBPF events stream.", timestamp: "14:35" }
+    ]
+  },
+  "t-881": {
+    id: "T-881",
+    subject: "Request for specialized auto-scaling GPU limits",
+    client_id: "client-002",
+    client_name: "Global Retail Enclave [Preview Client]",
+    priority: "P2",
+    category: "Enclave Security",
+    status: "OPEN",
+    assignedAgent: "Alexander Mercer",
+    linkedProjectId: "proj-002",
+    linkedDocId: "None",
+    slaSeconds: 11460,
+    description: "Client requests temporary override of AWS Nitro Enclave thermal boundary and memory bounds to allocate additional sparse GPU clusters during end-of-quarter auditing.",
+    createdDate: "2026-06-27T11:00:00Z",
+    wireFeed: [
+      { id: "w1", sender: "client", senderName: "Global Retail SecOps", text: "We are running a massive continuous model alignment sandbox simulation.", timestamp: "11:00" },
+      { id: "w2", sender: "system", senderName: "GATEWAY", text: "Request logged under secure sandbox override protocols.", timestamp: "11:02" }
+    ]
+  },
+  "t-880": {
+    id: "T-880",
+    subject: "Cryptographic verification failure on Ledger Node 4",
+    client_id: "client-004",
+    client_name: "Federal Treasury Division [Preview Client]",
+    priority: "P1",
+    category: "Compliance Audit",
+    status: "OPEN",
+    assignedAgent: "Unassigned",
+    linkedProjectId: "None",
+    linkedDocId: "DOC-802",
+    slaSeconds: 345,
+    description: "Enclave telemetry reported a dual-layer TLS 1.3 socket handshake failure on node GOV-SYSTEM-G2. Continuous compliance auto-scan is currently blocking active consensus blocks.",
+    createdDate: "2026-06-27T15:22:00Z",
+    wireFeed: [
+      { id: "w1", sender: "system", senderName: "SECURE KERNEL", text: "CRITICAL: SHA-256 verification failed on node GOV-SYSTEM-G2. Isolation triggered.", timestamp: "15:22" }
+    ]
+  }
+};
+
+if (!(global as any)._apiMockSupportTickets) {
+  (global as any)._apiMockSupportTickets = { ...DEFAULT_API_MOCK_SUPPORT_TICKETS };
+}
+export const API_MOCK_SUPPORT_TICKETS: Record<string, ApiSupportTicket> = (global as any)._apiMockSupportTickets;
+
