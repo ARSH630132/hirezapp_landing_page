@@ -25,6 +25,22 @@ class Settings(BaseSettings):
     
     # CORS (origins allowed to connect)
     CORS_ORIGINS: Union[str, List[str]] = ["http://localhost:3000", "http://127.0.0.1:3000"]
+    FRONTEND_BASE_URL: str = "http://localhost:3000"
+
+    # AWS Environment Configuration
+    AWS_REGION: str = "us-east-1"
+    AWS_ACCESS_KEY_ID: str = "local_aws_access_key_id_placeholder"
+    AWS_SECRET_ACCESS_KEY: str = "local_aws_secret_access_key_placeholder"
+
+    # DynamoDB Tables Configuration
+    DYNAMODB_USERS_TABLE: str = "gff-users-local"
+    DYNAMODB_CLIENTS_TABLE: str = "gff-clients-local"
+    DYNAMODB_ITEMS_TABLE: str = "gff-portal-items-local"
+    DYNAMODB_ITEMS_TYPE_INDEX: str = "GSI1"
+
+    # S3 Storage Configuration
+    S3_DOCUMENTS_BUCKET: str = "gff-documents-local"
+    S3_DOCUMENTS_PREFIX: str = "clients"
 
     model_config = SettingsConfigDict(
         env_file=".env",
