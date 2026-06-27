@@ -293,7 +293,7 @@ export default function AdminGovernancePage() {
   return (
     <div className="space-y-6 text-white font-mono text-[11px] relative max-w-7xl mx-auto">
       {/* Toasts */}
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none select-none">
+      <div className="fixed bottom-20 lg:bottom-6 right-4 lg:right-6 z-50 flex flex-col gap-2 pointer-events-none select-none">
         <AnimatePresence>
           {toasts.map(t => (
             <motion.div key={t.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className={`p-3 rounded-xl border text-[10px] font-bold flex items-center gap-2 pointer-events-auto max-w-xs bg-black border-white/10 ${t.type === "success" ? "border-[#00FFC2]/30 text-[#00FFC2]" : t.type === "warning" ? "border-amber-500/30 text-amber-500" : "border-[#009DFF]/30 text-[#009DFF]"}`}>

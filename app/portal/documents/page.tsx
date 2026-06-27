@@ -359,7 +359,7 @@ export default function ClientDocumentsPage() {
       
       {/* 1. TOAST NOTIFICATION WINDOW */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 animate-in fade-in slide-in-from-bottom duration-300">
+        <div className="fixed bottom-20 lg:bottom-6 right-4 lg:right-6 z-50 animate-in fade-in slide-in-from-bottom duration-300">
           <div className={`p-4 rounded-xl border backdrop-blur-xl shadow-2xl flex items-center gap-3 font-mono text-[12px] max-w-sm ${
             toastType === "warning" ? "border-amber-500/30 bg-amber-950/70 text-amber-300" :
             toastType === "success" ? "border-[#00FFC2]/30 bg-black/80 text-[#00FFC2]" :

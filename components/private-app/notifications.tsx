@@ -67,7 +67,7 @@ export function NotificationBell() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.98 }}
               transition={{ duration: 0.15 }}
-              className="absolute right-0 top-full mt-2 z-50 w-80 rounded-xl border border-white/5 bg-[#0a0a0a]/95 p-4 shadow-[0_10px_40px_rgba(0,0,0,0.8)] backdrop-blur-md"
+              className="absolute right-0 top-full mt-2 z-50 w-80 max-w-[calc(100vw-32px)] rounded-xl border border-white/5 bg-[#0a0a0a]/95 p-4 shadow-[0_10px_40px_rgba(0,0,0,0.8)] backdrop-blur-md"
             >
               <div className="flex justify-between items-center border-b border-white/5 pb-2.5 mb-2.5 font-mono">
                 <span className="text-[12px] font-bold text-white tracking-wider">SYSTEM EVENTS</span>

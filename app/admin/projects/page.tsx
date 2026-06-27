@@ -1161,7 +1161,7 @@ export default function AdminProjectsPage() {
       {/* 7. PREVIEW LIVE TOAST ALERTS */}
       {/* ============================================================================ */}
       {toast.visible && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-3 rounded-lg border border-emerald-500/30 bg-[#050505]/95 text-[#00FFC2] font-mono text-xs shadow-[0_0_20px_rgba(0,255,194,0.15)] animate-in fade-in slide-in-from-bottom-4 duration-300">
+        <div className="fixed bottom-20 lg:bottom-6 right-4 lg:right-6 z-50 flex items-center gap-2.5 px-4 py-3 rounded-lg border border-emerald-500/30 bg-[#050505]/95 text-[#00FFC2] font-mono text-xs shadow-[0_0_20px_rgba(0,255,194,0.15)] animate-in fade-in slide-in-from-bottom-4 duration-300">
           <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
           <span>{toast.message}</span>
         </div>

@@ -821,7 +821,7 @@ export default function ClientGovernancePage() {
       </WorkspaceCard>
 
       {/* Toast Notifications */}
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none select-none font-mono">
+      <div className="fixed bottom-20 lg:bottom-6 right-4 lg:right-6 z-50 flex flex-col gap-2 pointer-events-none select-none font-mono">
         {toasts.map(t => (
           <div 
             key={t.id} 

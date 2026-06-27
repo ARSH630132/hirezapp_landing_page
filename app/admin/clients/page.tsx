@@ -464,7 +464,8 @@ export default function AdminClientsPage() {
           </button>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-xl border border-white/5 bg-[#050505]/20 backdrop-blur-sm">
+        <>
+          <div className="hidden lg:block overflow-hidden rounded-xl border border-white/5 bg-[#050505]/20 backdrop-blur-sm">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse font-mono text-[11.5px]" role="grid">
               <thead>
@@ -617,6 +618,86 @@ export default function AdminClientsPage() {
             </div>
           </div>
         </div>
+
+        {/* Mobile Card Layout */}
+        <div className="lg:hidden space-y-4 animate-fade-in mt-4">
+          {filteredClients.map((client) => {
+            const projectsCount = getProjectsForClient(client.id).length;
+            const agentsCount = getAgentOpsForClient(client.id).length;
+            return (
+              <div 
+                key={client.id}
+                onClick={() => {
+                  setSelectedClient(client);
+                  setDrawerTab("overview");
+                }}
+                className="p-4 rounded-xl border border-white/5 bg-[#050505]/40 backdrop-blur-sm space-y-3 font-mono text-[11px] cursor-pointer hover:border-white/10 transition-all text-left"
+              >
+                <div className="flex items-start justify-between border-b border-white/5 pb-2">
+                  <div className="text-left">
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-bold text-white text-[12px]">{client.name}</span>
+                      {client.tier === "Sovereign" && <BadgeCheck className="w-3.5 h-3.5 text-amber-400 shrink-0" />}
+                    </div>
+                    <span className="text-[9.5px] text-[#009DFF]">{client.domain}</span>
+                  </div>
+                  <div className="flex flex-col items-end gap-1 shrink-0">
+                    {getTierBadge(client.tier)}
+                    <span className="text-[8.5px] text-white/30">{client.id.toUpperCase()}</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 text-white/60 text-[10px] text-left">
+                  <div className="space-y-1">
+                    <span className="text-white/30 block uppercase text-[8px] font-bold">Industry & Region</span>
+                    <div className="text-white/85 font-medium truncate">{client.industry}</div>
+                    <div className="text-white/50 text-[9px]">{client.region}</div>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-white/30 block uppercase text-[8px] font-bold">Enclaves Status</span>
+                    <div className="text-white font-bold">{projectsCount} {projectsCount === 1 ? "Project" : "Projects"}</div>
+                    {agentsCount > 0 && <div className="text-emerald-400 text-[9px] font-semibold">{agentsCount} Live Agents</div>}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 text-white/60 text-[10px] text-left border-t border-white/[0.03] pt-2">
+                  <div className="space-y-1">
+                    <span className="text-white/30 block uppercase text-[8px] font-bold">Billing & Health</span>
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      {getBillingBadge(client.billingStatus)}
+                      {getHealthBadge(client.healthStatus)}
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-white/30 block uppercase text-[8px] font-bold">Account Owner</span>
+                    <div className="text-white/80 font-medium truncate mt-0.5">{client.accountOwner}</div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-2 border-t border-white/5 text-[#009DFF]" onClick={(e) => e.stopPropagation()}>
+                  <button
+                    onClick={(e) => handleInitiateHandshake(client, e)}
+                    className="h-7 px-2.5 rounded border border-[#009DFF]/30 bg-[#009DFF]/5 hover:bg-[#009DFF]/15 text-[#009DFF] text-[9.5px] font-bold uppercase flex items-center gap-1 transition-all cursor-pointer"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                    <span>Preview Portal</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSelectedClient(client);
+                      setDrawerTab("overview");
+                    }}
+                    className="text-[10px] flex items-center gap-1 font-bold text-[#009DFF]"
+                  >
+                    <span>INSPECT</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        </>
       )}
 
       {/* -----------------------------------------------------------------------

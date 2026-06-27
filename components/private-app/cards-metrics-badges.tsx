@@ -80,7 +80,7 @@ export function MetricTile({
   const strokeColor = direction === "up" ? "#10b981" : direction === "down" ? "#E4000F" : "#009DFF";
 
   return (
-    <WorkspaceCard className="flex items-center justify-between gap-4">
+    <WorkspaceCard className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div className="space-y-1">
         <span className="text-[10.5px] font-mono tracking-widest text-white/35 uppercase block">{title}</span>
         <div className="text-[22px] font-bold tracking-tight text-white">{value}</div>

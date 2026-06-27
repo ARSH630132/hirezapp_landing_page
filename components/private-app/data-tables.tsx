@@ -275,7 +275,7 @@ export function DataTable<T extends { id: string | number }>({
               </div>
             </div>
 
-            <div className="p-5 border-t border-white/5 bg-black/[0.15] space-y-3">
+            <div className="p-5 pb-8 sm:pb-5 border-t border-white/5 bg-black/[0.15] space-y-3">
               <div className="flex items-center gap-2 text-[10.5px] font-mono text-white/40"><Lock className="w-3.5 h-3.5 text-[#00FFC2]" /><span>Isolated Enclave Memory Lock Active</span></div>
               <div className="grid grid-cols-2 gap-3">
                 <button onClick={() => copy(`0xSHA256_${selRow ? String(selRow.id).toUpperCase() : ""}_2026`)} className="h-9 rounded border border-white/10 hover:border-white/20 bg-white/[0.01] text-[11px] font-mono font-bold uppercase text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer">

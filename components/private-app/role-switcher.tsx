@@ -58,7 +58,8 @@ export function RoleSwitcherPreview({
     <div className="relative font-mono select-none">
       <button onClick={() => setDropdownOpen(!dropdownOpen)} disabled={switching} className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/5 bg-black/40 text-[10px] hover:border-white/10 transition-all cursor-pointer text-white/80">
         <CurrentIcon className={`w-3.5 h-3.5 ${currentRoleObj.color}`} />
-        <span className="font-bold">{currentRoleObj.label.toUpperCase()}</span>
+        <span className="font-bold hidden sm:inline">{currentRoleObj.label.toUpperCase()}</span>
+        <span className="font-bold sm:hidden">{currentRoleObj.clearance}</span>
         <ChevronDown className="w-3 h-3 text-white/40 shrink-0" />
       </button>
 
