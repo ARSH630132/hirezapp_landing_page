@@ -172,27 +172,29 @@ export function WizardStepperSystem<T = any>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStepIndex, data]);
 
-  useEffect(() => {
-    if (onInit) {
-      onInit({
-        loadState: (savedData: T, savedResult: any) => {
-          setData(savedData);
-          setResult(savedResult);
-          setShowResult(true);
-          setIsCompiling(false);
-          setCurrentStepIndex(steps.length - 1);
-        },
-        reset: () => {
-          setData(initialData);
-          setCurrentStepIndex(0);
-          setError(null);
-          setResult(null);
-          setShowResult(false);
-          setIsCompiling(false);
-        }
-      });
-    }
-  }, [initialData, steps.length, onInit]);
+ useEffect(() => {
+  if (!onInit) return;
+
+  onInit({
+    loadState: (savedData: T, savedResult: any) => {
+      setData(savedData);
+      setResult(savedResult);
+      setShowResult(true);
+      setIsCompiling(false);
+      setCurrentStepIndex(steps.length - 1);
+    },
+    reset: () => {
+      setData(initialData);
+      setCurrentStepIndex(0);
+      setError(null);
+      setResult(null);
+      setShowResult(false);
+      setIsCompiling(false);
+    },
+  });
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
 
   const manifest = summaryItems(data);
 

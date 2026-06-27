@@ -201,24 +201,26 @@ export default function ClientSuccessSection() {
         logIndexRef.current = 1;
       }
     }, playSpeed);
-  }, [activePattern.logs, playSpeed]);
-
+}, [playSpeed, activePatternId]);
   useEffect(() => {
-    setStreamedLogs([activePattern.logs[0]]);
-    logIndexRef.current = 1;
-    
+  setStreamedLogs([activePattern.logs[0]]);
+  logIndexRef.current = 1;
+
+  if (timerIdRef.current) {
+    clearInterval(timerIdRef.current);
+  }
+
+  if (isPlaying) {
+    startLogStream();
+  }
+
+  return () => {
     if (timerIdRef.current) {
       clearInterval(timerIdRef.current);
     }
-
-    if (isPlaying) {
-      startLogStream();
-    }
-
-    return () => {
-      if (timerIdRef.current) clearInterval(timerIdRef.current);
-    };
-  }, [activePattern.logs, isPlaying, startLogStream]);
+  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [activePatternId, isPlaying, playSpeed]);
 
   const handleTogglePlay = () => {
     if (isPlaying) {

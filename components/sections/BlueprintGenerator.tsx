@@ -53,6 +53,13 @@ const getIndustryIcon = (val: string) => {
           <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5" />
         </svg>
       );
+    case "Education":
+      return (
+        <svg className="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.75L3 11.25l9 4.5 9-4.5-9-4.5z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 13.5v3.75c0 1.243 2.35 2.25 5.25 2.25s5.25-1.007 5.25-2.25V13.5" />
+        </svg>
+      );
     case "Manufacturing":
       return (
         <svg className="w-5 h-5 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
@@ -97,6 +104,13 @@ const industryOptItems = [
     description: "HIPAA-compliant workflows, local patient clinical enclaves and vector records search.",
     icon: getIndustryIcon("Healthcare"),
     accentColor: "#10B981"
+  },
+    {
+    id: "Education",
+    title: "Education",
+    description: "AI-powered learning systems, student support copilots, campus operations automation and knowledge search.",
+    icon: getIndustryIcon("Education"),
+    accentColor: "#22C55E"
   },
   {
     id: "Manufacturing",

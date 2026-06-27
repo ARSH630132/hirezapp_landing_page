@@ -16,6 +16,7 @@ export const industryOptions = [
   { value: "Banking", label: "Banking & Financial Services" },
   { value: "Retail", label: "Retail & E-commerce" },
   { value: "Healthcare", label: "Healthcare & Life Sciences" },
+  { value: "Education", label: "Education" },
   { value: "Manufacturing", label: "Manufacturing & Automotive" },
   { value: "Tech", label: "Technology & Software" },
   { value: "Other", label: "Other Services / General" },
@@ -29,13 +30,13 @@ export const companySizeOptions = [
 ];
 
 export const priorityOptions = [
-  { value: "Cost Reduction", label: "Cost Reduction" },
-  { value: "Productivity", label: "Productivity" },
-  { value: "Customer Experience", label: "Customer Experience" },
-  { value: "Revenue Growth", label: "Revenue Growth" },
-  { value: "Compliance", label: "Compliance" },
-  { value: "AI Transformation", label: "AI Transformation" },
+  { value: "Reduce Costs", label: "Reduce Costs" },
+  { value: "Increase Revenue", label: "Increase Revenue" },
+  { value: "Improve Productivity", label: "Improve Productivity" },
+  { value: "Improve Customer Experience", label: "Improve Customer Experience" },
   { value: "Automate Processes", label: "Automate Processes" },
+  { value: "Strengthen Compliance", label: "Strengthen Compliance" },
+  { value: "AI Transformation", label: "AI Transformation" },
 ];
 
 export const aiJourneyOptions = [
@@ -93,15 +94,15 @@ export function calculateBlueprintDimensions(answers: BlueprintAnswers) {
   else if (answers.aiJourney === "AI-Driven Enterprise" || answers.aiJourney === "AI-Native") aiMaturity = 100;
 
   let businessNeed = 0;
-  (answers.topPriorities || []).forEach(p => {
-    if (p === "Cost Reduction") businessNeed += 20;
-    else if (p === "Productivity") businessNeed += 20;
-    else if (p === "Customer Experience") businessNeed += 15;
-    else if (p === "Revenue Growth") businessNeed += 15;
-    else if (p === "Compliance") businessNeed += 10;
-    else if (p === "AI Transformation") businessNeed += 20;
-    else if (p === "Automate Processes") businessNeed += 20;
-  });
+(answers.topPriorities || []).forEach(p => {
+  if (p === "Reduce Costs") businessNeed += 20;
+  else if (p === "Increase Revenue") businessNeed += 15;
+  else if (p === "Improve Productivity") businessNeed += 20;
+  else if (p === "Improve Customer Experience") businessNeed += 15;
+  else if (p === "Strengthen Compliance") businessNeed += 10;
+  else if (p === "AI Transformation") businessNeed += 20;
+  else if (p === "Automate Processes") businessNeed += 20;
+});
   if (businessNeed > 100) businessNeed = 100;
 
   let dataReadiness = 20;
@@ -131,9 +132,9 @@ export function calculateBlueprintDimensions(answers: BlueprintAnswers) {
   const isLargeCompany = answers.companySize === "10000+" || (answers.companySize && (answers.companySize.includes("15000") || answers.companySize.includes("10000")));
 
   const hasRequiredPriorities =
-    answers.topPriorities.includes("Productivity") &&
-    answers.topPriorities.includes("Cost Reduction") &&
-    answers.topPriorities.includes("Compliance");
+  answers.topPriorities.includes("Improve Productivity") &&
+  answers.topPriorities.includes("Reduce Costs") &&
+  answers.topPriorities.includes("Strengthen Compliance");
 
   if (isBanking && isLargeCompany && isScalingAI && hasRequiredPriorities && isMostlyIntegrated && isBudgetApproved) {
     businessNeed = 92; // Sets exact weighted sum to 87: (17 + 23 + 15 + 20 + 12 = 87)
