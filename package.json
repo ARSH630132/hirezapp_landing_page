@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "verify-tools": "node scripts/verify-tool-logic.js"
   },
   "dependencies": {
     "@fontsource/montserrat": "^5.2.8",
