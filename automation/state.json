@@ -115,7 +115,8 @@
     "132-phase5-backend-run-scripts",
     "133-phase5-api-clients-crud",
     "134-phase5-api-users-crud",
-    "135-phase5-api-projects-crud"
+    "135-phase5-api-projects-crud",
+    "136-phase5-api-ai-operations-crud"
   ],
   "failed": [
     {
