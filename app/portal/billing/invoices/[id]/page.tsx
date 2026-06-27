@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { 
   ArrowLeft, CreditCard, ShieldCheck, Copy, Check, Printer, 
-  Landmark, Cpu, FileCheck 
+  Landmark, Cpu, FileCheck, RefreshCw, Info 
 } from "lucide-react";
 import { DETAILED_INVOICES } from "../mock-billing-data";
 
@@ -16,16 +16,72 @@ export default function ClientInvoiceDetailPage() {
   const [verifying, setVerifying] = useState(false);
   const [sealStatus, setSealStatus] = useState<"verified" | "processing" | "idle">("idle");
 
-  const invoiceId = typeof id === "string" ? id : "GFF-2026-0899";
-  
-  // Find match or fallback to the first entry
-  const invoiceData = DETAILED_INVOICES[invoiceId] || DETAILED_INVOICES["GFF-2026-0899"];
+  // API Integration States
+  const [invoice, setInvoice] = useState<any | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchInvoice = useCallback(async () => {
+    if (!id) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") : null;
+      if (!token) {
+        setError("AUTHENTICATION TOKENS MISSING. SECURE SESSION EXPIRED.");
+        return;
+      }
+      const res = await fetch(`/api/v1/invoices/${id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+      if (res.status === 404) {
+        throw new Error("Invoice statement not found in enclave registry.");
+      }
+      if (!res.ok) {
+        throw new Error(`Enclave sync failed with status ${res.status}`);
+      }
+      const data = await res.json();
+      if (data.success && data.invoice) {
+        setInvoice(data.invoice);
+      } else {
+        throw new Error("Handshake returned malformed enclave register.");
+      }
+    } catch (err: any) {
+      console.error("Error fetching invoice detail:", err);
+      setError(err.message || "Decentralized ledger handshake timed out.");
+    } finally {
+      setLoading(false);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    fetchInvoice();
+  }, [fetchInvoice]);
 
   const handleCopy = (text: string, type: string) => {
     navigator.clipboard.writeText(text);
     setCopied(type);
     setTimeout(() => setCopied(null), 1500);
   };
+
+  // Find match from DETAILED_INVOICES based on invoice_number, or fallback dynamically
+  const invoiceData = invoice ? (DETAILED_INVOICES[invoice.invoice_number] || {
+    projectName: invoice.project_name || "Sovereign Cluster Allocation",
+    category: invoice.category || "Compute Epoch",
+    date: invoice.issue_date,
+    dueDate: invoice.due_date,
+    amount: typeof invoice.amount === "number" ? invoice.amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " " + invoice.currency : invoice.amount,
+    hash: invoice.hash,
+    signature: invoice.signature,
+    items: [
+      { desc: invoice.description || "Isolated Sovereign Node Compute Allocation", cost: typeof invoice.amount === "number" ? invoice.amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " " + invoice.currency : invoice.amount }
+    ],
+    method: "Corporate Wire Transfer (SWIFT)",
+    enclaveZone: "US-ZONE-E (VIRGINIA ENCLAVE)"
+  }) : null;
 
   const triggerSealVerification = () => {
     setVerifying(true);
@@ -65,62 +121,93 @@ export default function ClientInvoiceDetailPage() {
         </button>
       </div>
 
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        {/* Left Columns: Invoice Details Receipt */}
-        <div className="lg:col-span-2 space-y-6">
+      {loading ? (
+        <div className="flex flex-col items-center justify-center py-32 space-y-4 border border-white/5 bg-[#050505]/40 backdrop-blur-sm rounded-xl">
+          <RefreshCw className="w-10 h-10 animate-spin text-[#009DFF]" />
+          <div className="text-center">
+            <p className="text-sm font-mono font-semibold text-white tracking-wider uppercase">DECRYPTING ENCLAVE MEMORY...</p>
+            <p className="text-xs text-white/40 font-mono mt-1">Establishing secure enclave connection for token {id}</p>
+          </div>
+        </div>
+      ) : error ? (
+        <div className="flex flex-col items-center justify-center py-32 space-y-4 border border-red-500/10 bg-red-500/[0.01] rounded-xl">
+          <Info className="w-10 h-10 text-red-400" />
+          <div className="text-center">
+            <p className="text-sm font-mono font-semibold text-red-400 tracking-wider uppercase">ENCLAVE DECRYPTION ERROR</p>
+            <p className="text-xs text-white/40 font-mono mt-1 max-w-sm">{error}</p>
+          </div>
+          <button 
+            onClick={fetchInvoice}
+            className="px-4 py-2 border border-red-500/20 hover:border-red-500/40 bg-red-500/5 text-red-400 font-mono text-xs uppercase font-bold rounded cursor-pointer transition-all"
+          >
+            RE-INITIATE DECRYPTION HANDSHAKE
+          </button>
+        </div>
+      ) : !invoiceData ? (
+        <div className="flex flex-col items-center justify-center py-32 space-y-4 border border-white/5 bg-[#050505]/40 backdrop-blur-sm rounded-xl">
+          <Info className="w-10 h-10 text-white/20" />
+          <div className="text-center">
+            <p className="text-sm font-mono font-semibold text-white tracking-wider uppercase">STATEMENT NOT FOUND</p>
+            <p className="text-xs text-white/40 font-mono mt-1">The requested ledger statement could not be resolved.</p>
+          </div>
+        </div>
+      ) : (
+        /* Main Grid */
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
-          {/* Receipt block */}
-          <div className="p-6 rounded-xl border border-white/5 bg-[#050505]/40 backdrop-blur-sm space-y-6">
+          {/* Left Columns: Invoice Details Receipt */}
+          <div className="lg:col-span-2 space-y-6">
             
-            {/* Logo and metadata */}
-            <div className="flex justify-between items-start border-b border-white/5 pb-5 select-none">
-              <div>
-                <h3 className="text-sm font-bold text-white font-mono uppercase tracking-wider">GFF AI Systems</h3>
-                <p className="text-[10px] text-white/40 font-mono mt-0.5">Automated Enclave Settlement Ledger</p>
+            {/* Receipt block */}
+            <div className="p-6 rounded-xl border border-white/5 bg-[#050505]/40 backdrop-blur-sm space-y-6">
+              
+              {/* Logo and metadata */}
+              <div className="flex justify-between items-start border-b border-white/5 pb-5 select-none">
+                <div>
+                  <h3 className="text-sm font-bold text-white font-mono uppercase tracking-wider">GFF AI Systems</h3>
+                  <p className="text-[10px] text-white/40 font-mono mt-0.5">Automated Enclave Settlement Ledger</p>
+                </div>
+                <div className="text-right font-mono text-[10.5px]">
+                  <div className="text-white/40">STATEMENT REFERENCE</div>
+                  <div className="text-[#009DFF] font-bold mt-0.5">{invoice?.invoice_number || id}</div>
+                </div>
               </div>
-              <div className="text-right font-mono text-[10.5px]">
-                <div className="text-white/40">STATEMENT REFERENCE</div>
-                <div className="text-[#009DFF] font-bold mt-0.5">{invoiceId}</div>
-              </div>
-            </div>
 
-            {/* Address Info */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 font-mono text-[11px] text-white/50 border-b border-white/5 pb-5 select-none">
-              <div className="space-y-1">
-                <div className="text-white/30 text-[9.5px] uppercase">Issuer (Hardware Custodian)</div>
-                <div className="text-white font-semibold">GFF AI Global Treasury Corp</div>
-                <div>Berlin Secure Server Enclave 01</div>
-                <div>Hash Ring Corridor 4</div>
+              {/* Address Info */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 font-mono text-[11px] text-white/50 border-b border-white/5 pb-5 select-none">
+                <div className="space-y-1">
+                  <div className="text-white/30 text-[9.5px] uppercase">Issuer (Hardware Custodian)</div>
+                  <div className="text-white font-semibold">GFF AI Global Treasury Corp</div>
+                  <div>Berlin Secure Server Enclave 01</div>
+                  <div>Hash Ring Corridor 4</div>
+                </div>
+                <div className="space-y-1 sm:text-right">
+                  <div className="text-white/30 text-[9.5px] uppercase">Sovereign Client</div>
+                  <div className="text-white font-semibold">Alexander Mercer</div>
+                  <div>Apex Sovereign Sandbox</div>
+                  <div>enclave-ref: apex-sovereign.gff.ai</div>
+                </div>
               </div>
-              <div className="space-y-1 sm:text-right">
-                <div className="text-white/30 text-[9.5px] uppercase">Sovereign Client</div>
-                <div className="text-white font-semibold">Alexander Mercer</div>
-                <div>Apex Sovereign Sandbox</div>
-                <div>enclave-ref: apex-sovereign.gff.ai</div>
-              </div>
-            </div>
 
-            {/* Dates & Billing Method */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 font-mono text-[11px] text-white/50 border-b border-white/5 pb-5 select-none">
-              <div>
-                <span className="text-white/30 text-[9.5px] block uppercase">Epoch Date</span>
-                <span className="text-white font-semibold mt-0.5 block">{invoiceData.date}</span>
+              {/* Dates & Billing Method */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 font-mono text-[11px] text-white/50 border-b border-white/5 pb-5 select-none">
+                <div>
+                  <span className="text-white/30 text-[9.5px] block uppercase">Epoch Date</span>
+                  <span className="text-white font-semibold mt-0.5 block">{invoiceData.date}</span>
+                </div>
+                <div>
+                  <span className="text-white/30 text-[9.5px] block uppercase">Due Date</span>
+                  <span className="text-white font-semibold mt-0.5 block">{invoiceData.dueDate}</span>
+                </div>
+                <div>
+                  <span className="text-white/30 text-[9.5px] block uppercase">Billing Category</span>
+                  <span className="text-white font-semibold mt-0.5 block">{invoiceData.category}</span>
+                </div>
+                <div>
+                  <span className="text-white/30 text-[9.5px] block uppercase">Hardware Zone</span>
+                  <span className="text-white font-semibold mt-0.5 block">{invoiceData.enclaveZone}</span>
+                </div>
               </div>
-              <div>
-                <span className="text-white/30 text-[9.5px] block uppercase">Due Date</span>
-                <span className="text-white font-semibold mt-0.5 block">{invoiceData.dueDate}</span>
-              </div>
-              <div>
-                <span className="text-white/30 text-[9.5px] block uppercase">Billing Category</span>
-                <span className="text-white font-semibold mt-0.5 block">{invoiceData.category}</span>
-              </div>
-              <div>
-                <span className="text-white/30 text-[9.5px] block uppercase">Hardware Zone</span>
-                <span className="text-white font-semibold mt-0.5 block">{invoiceData.enclaveZone}</span>
-              </div>
-            </div>
 
             {/* Detailed Line Items */}
             <div className="space-y-4">
@@ -163,10 +250,10 @@ export default function ClientInvoiceDetailPage() {
                 <span className="text-white/30 text-[9.5px] block uppercase">Transaction Reference Seal:</span>
                 <div className="flex items-center gap-1.5 mt-0.5">
                   <span className="text-[#00FFC2] font-semibold truncate block max-w-[200px]">
-                    0xWIRE-{invoiceId}
+                    0xWIRE-{invoice?.invoice_number || id}
                   </span>
                   <button 
-                    onClick={() => handleCopy(`0xWIRE-${invoiceId}`, "ref")}
+                    onClick={() => handleCopy(`0xWIRE-${invoice?.invoice_number || id}`, "ref")}
                     className="text-white/35 hover:text-white transition-all p-0.5 opacity-60 hover:opacity-100 cursor-pointer"
                     aria-label="Copy transaction reference"
                   >
@@ -259,8 +346,8 @@ export default function ClientInvoiceDetailPage() {
           </div>
 
         </div>
-
       </div>
-    </div>
+    )}
+  </div>
   );
 }

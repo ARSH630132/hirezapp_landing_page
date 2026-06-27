@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { 
   ArrowRight, CreditCard, ShieldCheck, RefreshCw, Briefcase, 
@@ -78,12 +78,58 @@ export default function ClientBillingPage() {
   const [inquirySent, setInquirySent] = useState(false);
   const [selProjectKey, setSelProjectKey] = useState<string>("GFF-2026-0899");
 
-  const invoices = [
-    { id: "GFF-2026-0899", date: "2026-06-01", amount: "14,820.00 USD", status: "paid", dueDate: "2026-06-15", category: "Compute Epoch", hash: "0xDE897FF021BC8102C019FFAD998E1256E3B890CC7FFADE138EE87A02FF90A11B" },
-    { id: "GFF-2026-0914", date: "2026-06-15", amount: "3,500.00 USD", status: "paid", dueDate: "2026-06-30", category: "SLA Support", hash: "0x11B8A02FEE907C10BDE8267FEE10BC91A23D4FFA289F02ECBC12A349CDE150FA" },
-    { id: "GFF-2026-0945", date: "2026-06-25", amount: "24,900.00 USD", status: "processing", dueDate: "2026-07-10", category: "Telemetry Stream", hash: "0x8FDE3102C130D7B2D26788AB0E8A850CE3207FFCDE10B74E824A45B12A4F23AA" },
-    { id: "GFF-2026-0988", date: "2026-06-27", amount: "8,250.00 USD", status: "unpaid", dueDate: "2026-07-15", category: "Compute Epoch", hash: "0x3FBC128EE809FF9CC9810A88AA11B8FFFA02CE8274A08B0192A45C89FBC10492" }
-  ];
+  // API Integration States
+  const [invoices, setInvoices] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchInvoices = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") : null;
+      if (!token) {
+        setError("AUTHENTICATION TOKENS MISSING. SECURE SESSION EXPIRED.");
+        return;
+      }
+      
+      const res = await fetch("/api/v1/invoices", {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (!res.ok) {
+        throw new Error(`Enclave sync failed with status ${res.status}`);
+      }
+
+      const data = await res.json();
+      if (data.success && Array.isArray(data.invoices)) {
+        setInvoices(data.invoices);
+        if (data.invoices.length > 0) {
+          // Select first invoice's invoice number with matching PROJECTS_DATA if possible
+          const matched = data.invoices.find((inv: any) => PROJECTS_DATA[inv.invoice_number]);
+          if (matched) {
+            setSelProjectKey(matched.invoice_number);
+          } else {
+            setSelProjectKey(data.invoices[0].invoice_number);
+          }
+        }
+      } else {
+        throw new Error("Handshake returned malformed enclave register.");
+      }
+    } catch (err: any) {
+      console.error("Error fetching billing invoices:", err);
+      setError(err.message || "Decentralized ledger handshake timed out.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchInvoices();
+  }, [fetchInvoices]);
 
   const handleCopy = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
@@ -91,7 +137,7 @@ export default function ClientBillingPage() {
     setTimeout(() => setCopiedId(null), 1500);
   };
 
-  const selectedProj = PROJECTS_DATA[selProjectKey];
+  const selectedProj = PROJECTS_DATA[selProjectKey] || PROJECTS_DATA["GFF-2026-0899"];
 
   const generatePathData = (pts: number[]) => {
     const width = 500;
@@ -227,57 +273,95 @@ export default function ClientBillingPage() {
           </div>
 
           <div className="space-y-2.5">
-            {invoices.map((inv) => (
-              <div 
-                key={inv.id} 
-                className={`p-3 rounded-lg border transition-all font-mono text-[10.5px] cursor-pointer ${
-                  selProjectKey === inv.id 
-                    ? "bg-white/[0.03] border-white/15" 
-                    : "bg-[#020202]/30 border-white/5 hover:border-white/10"
-                }`}
-                onClick={() => setSelProjectKey(inv.id)}
-              >
-                <div className="flex justify-between items-start">
-                  <div>
-                    <span className="font-bold text-white block">{inv.id}</span>
-                    <span className="text-[9.5px] text-white/40 block mt-0.5">{PROJECTS[inv.id]}</span>
-                  </div>
-                  <span className={`px-1.5 py-0.5 rounded text-[8px] font-bold uppercase ${
-                    inv.status === "paid" ? "bg-green-500/10 border border-green-500/20 text-green-400" :
-                    inv.status === "processing" ? "bg-blue-500/10 border border-blue-500/20 text-[#009DFF]" :
-                    "bg-amber-500/10 border border-amber-500/20 text-amber-400"
-                  }`}>
-                    {inv.status}
-                  </span>
-                </div>
-                
-                <div className="flex justify-between items-center mt-3 pt-2 border-t border-white/[0.03] text-[9.5px]">
-                  <span className="text-white/40">{inv.category}</span>
-                  <span className="text-white font-semibold">{inv.amount}</span>
-                </div>
-
-                <div className="flex justify-between items-center mt-2 text-[9.5px]">
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelInvoice(inv);
-                    }}
-                    className="text-[#009DFF] hover:underline font-bold"
-                  >
-                    Audit Drawer &gt;
-                  </button>
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleCopy(inv.hash, inv.id);
-                    }}
-                    className="text-white/30 hover:text-white"
-                  >
-                    {copiedId === inv.id ? "Copied Hash" : "Copy Hash"}
-                  </button>
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-12 space-y-4 border border-white/5 bg-white/[0.01] rounded-lg">
+                <RefreshCw className="w-8 h-8 animate-spin text-[#009DFF]" />
+                <div className="text-center">
+                  <p className="text-xs font-mono font-semibold text-white tracking-wider uppercase">DECRYPTING ENCLAVE BILLS...</p>
+                  <p className="text-[10px] text-white/40 font-mono mt-1">Establishing ZK-ledger tunnel to secure nodes</p>
                 </div>
               </div>
-            ))}
+            ) : error ? (
+              <div className="flex flex-col items-center justify-center py-12 space-y-4 border border-red-500/10 bg-red-500/[0.01] rounded-lg">
+                <Info className="w-8 h-8 text-red-400" />
+                <div className="text-center">
+                  <p className="text-xs font-mono font-semibold text-red-400 tracking-wider uppercase">SYNC HANDSHAKE FAILED</p>
+                  <p className="text-[10px] text-white/40 font-mono mt-1 max-w-xs">{error}</p>
+                </div>
+                <button 
+                  onClick={fetchInvoices}
+                  className="px-3 py-1.5 border border-red-500/20 hover:border-red-500/40 bg-red-500/5 text-red-400 font-mono text-[10px] uppercase font-bold rounded cursor-pointer transition-all"
+                >
+                  RE-ESTABLISH SYNCHRONIZATION
+                </button>
+              </div>
+            ) : invoices.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 space-y-4 border border-white/5 bg-white/[0.01] rounded-lg">
+                <Briefcase className="w-8 h-8 text-white/20" />
+                <div className="text-center">
+                  <p className="text-xs font-mono font-semibold text-white tracking-wider uppercase">NO INVOICES REGISTERED</p>
+                  <p className="text-[10px] text-white/40 font-mono mt-1">This enclave does not have active transaction records.</p>
+                </div>
+              </div>
+            ) : (
+              invoices.slice(0, 4).map((inv) => {
+                const isSelected = selProjectKey === inv.invoice_number;
+                const formattedAmount = typeof inv.amount === "number" 
+                  ? inv.amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " " + inv.currency 
+                  : inv.amount;
+                return (
+                  <div 
+                    key={inv.id} 
+                    className={`p-3 rounded-lg border transition-all font-mono text-[10.5px] cursor-pointer ${
+                      isSelected 
+                        ? "bg-white/[0.03] border-white/15" 
+                        : "bg-[#020202]/30 border-white/5 hover:border-white/10"
+                    }`}
+                    onClick={() => setSelProjectKey(inv.invoice_number)}
+                  >
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <span className="font-bold text-white block">{inv.invoice_number}</span>
+                        <span className="text-[9.5px] text-white/40 block mt-0.5">{inv.project_name || "Sovereign Cluster Allocation"}</span>
+                      </div>
+                      <span className={`px-1.5 py-0.5 rounded text-[8px] font-bold uppercase ${
+                        inv.status === "paid" ? "bg-green-500/10 border border-green-500/20 text-green-400" :
+                        inv.status === "processing" ? "bg-blue-500/10 border border-blue-500/20 text-[#009DFF]" :
+                        "bg-amber-500/10 border border-amber-500/20 text-amber-400"
+                      }`}>
+                        {inv.status}
+                      </span>
+                    </div>
+                    
+                    <div className="flex justify-between items-center mt-3 pt-2 border-t border-white/[0.03] text-[9.5px]">
+                      <span className="text-white/40">{inv.category}</span>
+                      <span className="text-white font-semibold">{formattedAmount}</span>
+                    </div>
+
+                    <div className="flex justify-between items-center mt-2 text-[9.5px]">
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelInvoice(inv);
+                        }}
+                        className="text-[#009DFF] hover:underline font-bold"
+                      >
+                        Audit Drawer &gt;
+                      </button>
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleCopy(inv.hash, inv.id);
+                        }}
+                        className="text-white/30 hover:text-white"
+                      >
+                        {copiedId === inv.id ? "Copied Hash" : "Copy Hash"}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
 
@@ -329,8 +413,8 @@ export default function ClientBillingPage() {
               <div className="flex justify-between items-start border-b border-white/5 pb-3">
                 <div>
                   <span className="text-[9px] bg-blue-500/10 border border-blue-500/20 text-[#009DFF] px-1.5 py-0.5 rounded font-mono font-bold uppercase">Statement preview</span>
-                  <h3 className="text-lg font-bold text-white font-mono mt-1">{selInvoice.id}</h3>
-                  <span className="text-[10px] text-white/40 font-mono block mt-0.5 font-bold">Project: {PROJECTS[selInvoice.id]}</span>
+                  <h3 className="text-lg font-bold text-white font-mono mt-1">{selInvoice.invoice_number}</h3>
+                  <span className="text-[10px] text-white/40 font-mono block mt-0.5 font-bold">Project: {selInvoice.project_name || "Sovereign Cluster Allocation"}</span>
                 </div>
                 <button 
                   onClick={() => setSelInvoice(null)}
@@ -356,7 +440,11 @@ export default function ClientBillingPage() {
                   <div className="space-y-1.5 text-white/70">
                     <div className="flex justify-between">
                       <span>{selInvoice.category} SLA Allocation</span>
-                      <span className="text-white font-bold">{selInvoice.amount}</span>
+                      <span className="text-white font-bold">
+                        {typeof selInvoice.amount === "number" 
+                          ? selInvoice.amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " " + selInvoice.currency 
+                          : selInvoice.amount}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -364,11 +452,11 @@ export default function ClientBillingPage() {
                 <div className="p-3 rounded border border-white/[0.03] bg-white/[0.01] space-y-2 text-[10.5px] text-white/50">
                   <div className="flex justify-between">
                     <span>Invoice Timestamp:</span>
-                    <span className="text-white">{selInvoice.date}</span>
+                    <span className="text-white">{selInvoice.issue_date}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Epoch Due Date:</span>
-                    <span className="text-white">{selInvoice.dueDate}</span>
+                    <span className="text-white">{selInvoice.due_date}</span>
                   </div>
                 </div>
               </div>
@@ -376,7 +464,7 @@ export default function ClientBillingPage() {
 
             <div className="space-y-3 pt-6 border-t border-white/5">
               <button 
-                onClick={() => alert("Simulated PDF export initiated for ledger ID: " + selInvoice.id)}
+                onClick={() => alert("Simulated PDF export initiated for ledger ID: " + selInvoice.invoice_number)}
                 className="w-full h-9 rounded bg-white hover:bg-white/95 text-black font-semibold text-[11px] uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer"
               >
                 <Download className="w-3.5 h-3.5" />
