@@ -22,14 +22,14 @@ const CONFIGS: Record<string, any> = {
     altHref: "/build/proposal",
     color: "#E4000F"
   },
-  roi: {
-    next: "proposal",
-    title: "Compile Enterprise Statement of Work",
-    desc: "Convert your modeled economic variables and cost efficiency baseline into an executive-ready Statement of Work detailing licensing structures.",
-    alt: "Execution Sandbox",
-    altHref: "/build/sandbox",
-    color: "#3B82F6"
-  },
+  // roi: {
+  //   next: "proposal",
+  //   title: "Compile Enterprise Statement of Work",
+  //   desc: "Convert your modeled economic variables and cost efficiency baseline into an executive-ready Statement of Work detailing licensing structures.",
+  //   alt: "Execution Sandbox",
+  //   altHref: "/build/sandbox",
+  //   color: "#3B82F6"
+  // },
   talk: {
     next: "blueprint",
     title: "Convert Intake into Blueprint Diagram",

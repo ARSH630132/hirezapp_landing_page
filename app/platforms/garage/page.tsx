@@ -64,7 +64,7 @@ export default function GaragePage() {
           </div>
         </MotionReveal>
 
-        <MotionReveal className="space-y-6 max-w-4xl mx-auto">
+        {/* <MotionReveal className="space-y-6 max-w-4xl mx-auto">
           <h2 className="text-2xl font-bold text-white text-center">Experiment Zone Sandbox</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-black/40 p-6 rounded-2xl border border-white/5">
             <div className="flex flex-col gap-3 justify-center">
@@ -82,7 +82,7 @@ export default function GaragePage() {
               </button>
             </div>
           </div>
-        </MotionReveal>
+        </MotionReveal> */}
 
         <PremiumCTA
           title="Start Joint Discovery in the Garage"

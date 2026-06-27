@@ -1500,16 +1500,16 @@ Status: MODELLED - ILLUSTRATIVE ONLY
           {!isFlushing && <NextBestAction currentTool="roi" />}
 
           {/* Section F: Action Bar */}
-          <div className={`flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl border border-white/5 bg-[#030306]/85 font-mono ${isFlushing ? "hidden" : ""}`}>
+          {/* <div className={`flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl border border-white/5 bg-[#030306]/85 font-mono ${isFlushing ? "hidden" : ""}`}>
             <button
               onClick={handleReset}
               type="button"
               className="px-4 py-2 text-xs font-bold uppercase tracking-wider border border-white/10 rounded-lg hover:bg-white/5 hover:text-white transition-all text-white/40 cursor-pointer"
             >
               Reset Inputs
-            </button>
+            </button> */}
             
-            <div className="flex gap-2">
+            {/* <div className="flex gap-2">
               <button
                 onClick={handleCopyReport}
                 type="button"
@@ -1526,8 +1526,8 @@ Status: MODELLED - ILLUSTRATIVE ONLY
                 )}
                 <span>{copied ? "Report Copied!" : "Copy Markdown Report"}</span>
               </button>
-            </div>
-          </div>
+            </div> */}
+          {/* </div> */}
         </div>
       </div>
     </ToolPageShell>
