@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { API_MOCK_USERS, verifyUserPassword, signJwt } from "@/lib/api-auth";
+import { getUserFromDynamoDB, verifyDbUserPassword, mapDynamoUserToApiUser } from "@/lib/dynamodb-client";
 
 export const runtime = "nodejs";
 
@@ -23,23 +24,50 @@ export async function POST(req: Request) {
     }
 
     const normalizedEmail = email.toLowerCase().trim();
-    const user = API_MOCK_USERS[normalizedEmail];
+    
+    // Attempt DynamoDB lookup first
+    let userResponse: any = null;
+    let isInactive = false;
+    let isValidPassword = false;
 
-    if (!user) {
+    const dynamoUser = await getUserFromDynamoDB(normalizedEmail);
+    if (dynamoUser) {
+      userResponse = mapDynamoUserToApiUser(dynamoUser);
+      isInactive = userResponse.status === "inactive";
+      isValidPassword = verifyDbUserPassword(dynamoUser, password);
+    } else {
+      // Fallback to in-memory mock users
+      const mockUser = API_MOCK_USERS[normalizedEmail];
+      if (mockUser) {
+        userResponse = {
+          id: mockUser.id,
+          name: mockUser.name,
+          email: mockUser.email,
+          role: mockUser.role,
+          clientAssociation: mockUser.clientAssociation,
+          status: mockUser.status,
+          clearance: mockUser.clearance,
+          permissions: mockUser.permissions,
+        };
+        isInactive = mockUser.status === "inactive";
+        isValidPassword = verifyUserPassword(normalizedEmail, password);
+      }
+    }
+
+    if (!userResponse) {
       return NextResponse.json(
         { success: false, error: "Unauthorized", message: "Invalid credentials provided." },
         { status: 401 }
       );
     }
 
-    if (user.status === "inactive") {
+    if (isInactive) {
       return NextResponse.json(
         { success: false, error: "Forbidden", message: "This account is inactive. Please contact your platform administrator." },
         { status: 403 }
       );
     }
 
-    const isValidPassword = verifyUserPassword(normalizedEmail, password);
     if (!isValidPassword) {
       return NextResponse.json(
         { success: false, error: "Unauthorized", message: "Invalid credentials provided." },
@@ -48,17 +76,14 @@ export async function POST(req: Request) {
     }
 
     const tokenPayload = {
-      sub: user.id,
-      email: user.email,
-      role: user.role,
-      name: user.name,
-      clearance: user.clearance,
+      sub: userResponse.id,
+      email: userResponse.email,
+      role: userResponse.role,
+      name: userResponse.name,
+      clearance: userResponse.clearance,
     };
 
     const accessToken = signJwt(tokenPayload);
-
-    // Exclude passwordHash from user info returned
-    const { passwordHash, ...userResponse } = user;
 
     return NextResponse.json(
       {
@@ -78,3 +103,4 @@ export async function POST(req: Request) {
     );
   }
 }
+

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { API_MOCK_USERS, verifyJwt } from "@/lib/api-auth";
+import { getUserFromDynamoDB, mapDynamoUserToApiUser } from "@/lib/dynamodb-client";
 
 export const runtime = "nodejs";
 
@@ -24,23 +25,46 @@ export async function GET(req: Request) {
     }
 
     const email = decoded.email.toLowerCase().trim();
-    const user = API_MOCK_USERS[email];
+    
+    let userResponse: any = null;
+    let isInactive = false;
 
-    if (!user) {
+    // Attempt DynamoDB lookup first
+    const dynamoUser = await getUserFromDynamoDB(email);
+    if (dynamoUser) {
+      userResponse = mapDynamoUserToApiUser(dynamoUser);
+      isInactive = userResponse.status === "inactive";
+    } else {
+      // Fallback to mock users
+      const mockUser = API_MOCK_USERS[email];
+      if (mockUser) {
+        userResponse = {
+          id: mockUser.id,
+          name: mockUser.name,
+          email: mockUser.email,
+          role: mockUser.role,
+          clientAssociation: mockUser.clientAssociation,
+          status: mockUser.status,
+          clearance: mockUser.clearance,
+          permissions: mockUser.permissions,
+        };
+        isInactive = mockUser.status === "inactive";
+      }
+    }
+
+    if (!userResponse) {
       return NextResponse.json(
         { success: false, error: "Unauthorized", message: "User not found." },
         { status: 401 }
       );
     }
 
-    if (user.status === "inactive") {
+    if (isInactive) {
       return NextResponse.json(
         { success: false, error: "Forbidden", message: "This account is inactive." },
         { status: 403 }
       );
     }
-
-    const { passwordHash, ...userResponse } = user;
 
     return NextResponse.json(
       {
@@ -57,3 +81,4 @@ export async function GET(req: Request) {
     );
   }
 }
+
