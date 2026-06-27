@@ -151,7 +151,8 @@
     "173-phase6-dynamodb-table-documentation",
     "174-phase6-dynamodb-client-and-repositories",
     "175-phase6-auth-users-dynamodb",
-    "176-phase6-clients-and-portal-items-dynamodb"
+    "176-phase6-clients-and-portal-items-dynamodb",
+    "177-phase6-dashboard-analytics-dynamodb"
   ],
   "failed": [
     {
