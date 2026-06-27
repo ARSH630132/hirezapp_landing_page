@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Clock, Lock, Terminal, Send, RefreshCw, X, ShieldCheck, ShieldAlert } from "lucide-react";
-import { previewProjects, SupportTicket } from "@/lib/mock-data-model";
+import { SupportTicket } from "@/lib/mock-data-model";
 import { StatusBadge } from "@/components/private-app";
 
 interface ClientSupportTicket extends SupportTicket {

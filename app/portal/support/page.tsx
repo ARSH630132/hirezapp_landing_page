@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { 
   MessageSquare, Cpu, DollarSign, FileText, Key, Shield, HelpCircle, 
   Layers, Plus, Search, ArrowLeft, Clock, Lock, Terminal, Send, X, Sparkles, RefreshCw, ChevronDown, CheckCircle2, ShieldAlert, Activity, ChevronRight, Play, Server, Radio
@@ -38,6 +38,19 @@ export default function ClientSupportPage() {
   // Connected API States
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [dbProjects, setDbProjects] = useState<any[]>([]);
+
+  // Prefer backend projects data, fall back to high-fidelity Phase 4 mock data
+  const projectsList = useMemo(() => {
+    if (dbProjects.length > 0) {
+      return dbProjects.map(p => ({
+        id: p.id,
+        name: p.name,
+        tag: p.name.substring(0, 3).toUpperCase()
+      }));
+    }
+    return previewProjects;
+  }, [dbProjects]);
 
   // Enhanced UI States
   const [rightTab, setRightTab] = useState<"intake" | "topology">("intake");
@@ -88,6 +101,25 @@ export default function ClientSupportPage() {
 
   useEffect(() => {
     fetchTickets();
+
+    const fetchDbProjects = async () => {
+      try {
+        const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") : null;
+        if (!token) return;
+        const res = await fetch("/api/v1/projects", {
+          headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && Array.isArray(data.projects)) {
+            setDbProjects(data.projects);
+          }
+        }
+      } catch (err) {
+        console.error("Error loading dynamic projects for support:", err);
+      }
+    };
+    fetchDbProjects();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -300,7 +332,7 @@ export default function ClientSupportPage() {
                 { l: "Status", v: statusFilter, s: setStatusFilter, o: [{ v: "ALL", l: "ALL STATUSES" }, { v: "open", l: "OPEN" }, { v: "in_progress", l: "IN PROGRESS" }, { v: "resolved", l: "RESOLVED" }] },
                 { l: "Category", v: catFilter, s: setCatFilter, o: [{ v: "ALL", l: "ALL CATEGORIES" }, ...CATEGORIES.map(c => ({ v: c, l: c.toUpperCase() }))] },
                 { l: "Priority", v: priFilter, s: setPriFilter, o: [{ v: "ALL", l: "ALL PRIORITIES" }, { v: "critical", l: "CRITICAL" }, { v: "high", l: "HIGH" }, { v: "medium", l: "MEDIUM" }, { v: "low", l: "LOW" }] },
-                { l: "Project", v: projFilter, s: setProjFilter, o: [{ v: "ALL", l: "ALL PROJECTS" }, ...previewProjects.map(p => ({ v: p.id, l: p.tag }))] }
+                { l: "Project", v: projFilter, s: setProjFilter, o: [{ v: "ALL", l: "ALL PROJECTS" }, ...projectsList.map(p => ({ v: p.id, l: p.tag }))] }
               ].map((f, i) => (
                 <div key={i}>
                   <label className="text-white/35 block mb-1 uppercase font-bold">{f.l}</label>
@@ -359,7 +391,7 @@ export default function ClientSupportPage() {
             ) : (
               filtered.map(t => {
                 const isSelected = t.id === selectedTicketId;
-                const proj = previewProjects.find(p => p.id === t.projectId);
+                const proj = projectsList.find(p => p.id === t.projectId);
                 return (
                   <div 
                     key={t.id} 
@@ -737,7 +769,7 @@ export default function ClientSupportPage() {
                                 className="w-full h-9 rounded-lg border border-white/10 bg-black/50 px-2.5 text-white outline-none cursor-pointer text-[10px] transition-all font-mono appearance-none hover:bg-black/70 focus:border-[#009DFF]/35"
                               >
                                 <option value="none" className="bg-[#050505] text-white/45">NO ATTACHED ARCHITECTURE (GENERAL SUPPORT)</option>
-                                {previewProjects.map(p => <option key={p.id} value={p.id} className="bg-[#050505] text-white font-mono">{p.name.toUpperCase()} ({p.tag})</option>)}
+                                {projectsList.map(p => <option key={p.id} value={p.id} className="bg-[#050505] text-white font-mono">{p.name.toUpperCase()} ({p.tag})</option>)}
                               </select>
                               <ChevronDown className="absolute right-2 top-3 h-3.5 w-3.5 text-white/30 pointer-events-none" />
                             </div>

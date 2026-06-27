@@ -34,6 +34,7 @@ export default function AdminClientsPage() {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [dbProjectsCount, setDbProjectsCount] = useState<number | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
@@ -95,6 +96,15 @@ export default function AdminClientsPage() {
       const clientsData = await clientsRes.json();
       if (clientsData.success) {
         setClients(clientsData.clients);
+
+        // Fetch dynamic projects count
+        const projectsRes = await fetch("/api/v1/projects", { headers: { "Authorization": `Bearer ${token}` } });
+        if (projectsRes.ok) {
+          const projectsData = await projectsRes.json();
+          if (projectsData.success && Array.isArray(projectsData.projects)) {
+            setDbProjectsCount(projectsData.projects.length);
+          }
+        }
       } else {
         throw new Error(clientsData.message || "Failed to load clients registry.");
       }
@@ -232,7 +242,7 @@ export default function AdminClientsPage() {
         </div>
         <div className="rounded-xl border border-white/5 bg-[#050505]/40 p-4 space-y-1">
           <span className="text-[10px] text-white/40 uppercase font-bold block font-mono">Active Projects</span>
-          <div className="text-2xl font-bold">{loading ? "..." : previewProjects.length}</div>
+          <div className="text-2xl font-bold">{loading ? "..." : (dbProjectsCount !== null ? dbProjectsCount : previewProjects.length)}</div>
         </div>
         <div className="rounded-xl border border-white/5 bg-[#050505]/40 p-4 space-y-1">
           <span className="text-[10px] text-white/40 uppercase font-bold block font-mono">Monitoring Score</span>

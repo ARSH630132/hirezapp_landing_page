@@ -59,6 +59,30 @@ export default function AdminBillingPage() {
   const [status, setStatus] = useState<Invoice["status"]>("unpaid");
   const [month, setMonth] = useState("2026-06");
 
+  const [dbClients, setDbClients] = useState<any[]>([]);
+  const [dbProjects, setDbProjects] = useState<any[]>([]);
+
+  // Derived lists prioritizing dynamic backend API data, falling back to Phase 4 mock data
+  const clientsList = useMemo(() => {
+    if (dbClients.length > 0) {
+      return dbClients;
+    }
+    return previewClientAccounts;
+  }, [dbClients]);
+
+  const projects = useMemo(() => {
+    if (!cId) return [];
+    if (dbProjects.length > 0) {
+      return dbProjects.filter(p => p.client_id === cId).map(p => ({
+        id: p.id,
+        name: p.name,
+        clientAccountId: p.client_id,
+        tag: p.name.substring(0, 3).toUpperCase()
+      }));
+    }
+    return previewProjects.filter(p => p.clientAccountId === cId);
+  }, [cId, dbProjects]);
+
   // Signing State
   const [signing, setSigning] = useState(false);
   const [step, setStep] = useState(0);
@@ -113,6 +137,24 @@ export default function AdminBillingPage() {
             billingMonth: i.issue_date.substring(0, 7)
           }));
           setInvoices(mappedInvoices);
+
+          // Fetch dynamic client accounts for selection
+          const clientsRes = await fetch("/api/v1/clients", { headers: { "Authorization": `Bearer ${token}` } });
+          if (clientsRes.ok) {
+            const clientsData = await clientsRes.json();
+            if (clientsData.success && Array.isArray(clientsData.clients)) {
+              setDbClients(clientsData.clients);
+            }
+          }
+
+          // Fetch dynamic projects for selection
+          const projectsRes = await fetch("/api/v1/projects", { headers: { "Authorization": `Bearer ${token}` } });
+          if (projectsRes.ok) {
+            const projectsData = await projectsRes.json();
+            if (projectsData.success && Array.isArray(projectsData.projects)) {
+              setDbProjects(projectsData.projects);
+            }
+          }
         } else {
           throw new Error(data.message || "Failed to load active ledger blocks.");
         }
@@ -138,8 +180,8 @@ export default function AdminBillingPage() {
           if (s < HSM_SIGNING_LOGS.length - 1) return s + 1;
           clearInterval(t);
           
-          const cl = previewClientAccounts.find(x => x.id === cId);
-          const pr = previewProjects.find(x => x.id === pId);
+          const cl = clientsList.find(x => x.id === cId);
+          const pr = projects.find(x => x.id === pId);
           const id = `GFF-2026-${String(invoices.length + 900).padStart(4, "0")}`;
 
           const token = localStorage.getItem("gff_ai_access_token");
@@ -188,7 +230,6 @@ export default function AdminBillingPage() {
     return () => clearInterval(t);
   }, [signing, cId, pId, amount, due, status, month, invoices.length, fetchData]);
 
-  const projects = useMemo(() => cId ? previewProjects.filter(p => p.clientAccountId === cId) : [], [cId]);
   
   useEffect(() => { 
     if (projects.length > 0) {
@@ -403,7 +444,7 @@ export default function AdminBillingPage() {
           className="h-9 px-3 rounded bg-black/40 border border-white/5 text-xs text-zinc-300 focus:outline-none appearance-none cursor-pointer hover:border-white/10"
         >
           <option value="all">Sovereign Client: All</option>
-          {previewClientAccounts.map(c => (
+          {clientsList.map(c => (
             <option key={c.id} value={c.id}>{c.name.replace(" [Preview Client]", "")}</option>
           ))}
         </select>
@@ -631,7 +672,7 @@ export default function AdminBillingPage() {
                       className="w-full h-8.5 px-2 rounded bg-black/50 border border-white/5 text-white text-xs focus:outline-none focus:border-[#009DFF]/40 cursor-pointer hover:border-white/10"
                     >
                       <option value="">-- Choose Client --</option>
-                      {previewClientAccounts.map(c => (
+                      {clientsList.map(c => (
                         <option key={c.id} value={c.id}>{c.name.replace(" [Preview Client]", "")}</option>
                       ))}
                     </select>

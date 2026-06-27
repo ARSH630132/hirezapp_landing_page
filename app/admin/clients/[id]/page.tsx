@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Cpu, Layers, Terminal, RefreshCw } from "lucide-react";
 import { previewClientAccounts, previewProjects } from "@/lib/mock-data-model";
@@ -7,8 +7,60 @@ import { previewClientAccounts, previewProjects } from "@/lib/mock-data-model";
 export default function AdminClientDetailPage() {
   const router = useRouter();
   const { id } = useParams();
-  const client = previewClientAccounts.find(c => c.id === id) || previewClientAccounts[0];
-  const projects = previewProjects.filter(p => p.clientAccountId === client.id);
+
+  const [dbClient, setDbClient] = useState<any>(null);
+  const [dbProjects, setDbProjects] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchClientAndProjects = async () => {
+      setLoading(true);
+      try {
+        const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") || localStorage.getItem("gff_api_token") : null;
+        if (!token) return;
+
+        // Fetch client details
+        const clientRes = await fetch(`/api/v1/clients/${id}`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (clientRes.ok) {
+          const clientData = await clientRes.json();
+          if (clientData.success && clientData.client) {
+            setDbClient(clientData.client);
+          }
+        }
+
+        // Fetch projects
+        const projectsRes = await fetch(`/api/v1/projects`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (projectsRes.ok) {
+          const projectsData = await projectsRes.json();
+          if (projectsData.success && Array.isArray(projectsData.projects)) {
+            const filteredProjects = projectsData.projects.filter((p: any) => p.client_id === id);
+            setDbProjects(filteredProjects);
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching client details/projects:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchClientAndProjects();
+    }
+  }, [id]);
+
+  // Derived Client and Projects data leveraging dynamic API enclaves, falling back to Phase 4 mock models
+  const client = dbClient || previewClientAccounts.find(c => c.id === id) || previewClientAccounts[0];
+  const projects = dbProjects.length > 0 ? dbProjects.map(p => ({
+    id: p.id,
+    name: p.name,
+    status: p.status
+  })) : previewProjects.filter(p => p.clientAccountId === client.id);
+
   const [rotating, setRotating] = useState(false);
   const [logs, setLogs] = useState<string[]>(["Secure link bound."]);
   return (
