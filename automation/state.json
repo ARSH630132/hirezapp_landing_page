@@ -153,7 +153,8 @@
     "175-phase6-auth-users-dynamodb",
     "176-phase6-clients-and-portal-items-dynamodb",
     "177-phase6-dashboard-analytics-dynamodb",
-    "178-phase6-s3-document-files"
+    "178-phase6-s3-document-files",
+    "179-phase6-frontend-documents-s3-integration"
   ],
   "failed": [
     {
