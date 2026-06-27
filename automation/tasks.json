@@ -613,7 +613,7 @@
     "scope": "phase4-layout",
     "target": "shared client and admin app shell",
     "allowLandingChanges": false,
-    "prompt": "Build the shared private app shell used by client portal and admin portal pages. Do not touch landing page. The shell should include a responsive sidebar, topbar, workspace switcher or organization label, breadcrumb area, global search trigger, notification bell, user menu, role preview indicator, sign out preview action, and content container. The sidebar should support grouped navigation and collapse behavior on desktop, bottom or drawer navigation on mobile, and clear active states. Client portal navigation must include Dashboard, Projects, AI Operations, Documents, Billing, Support, Analytics, Governance, Activity, Settings. Admin navigation must include Dashboard, Clients, Projects, Users, AI Operations, Documents, Billing, Support, Analytics, Governance, Activity, Settings. Make the UI feel like a premium enterprise control center, not a basic admin template. Use current theme, subtle motion, accessible landmarks, keyboard focus, and mobile-first behavior. Run lint and build."
+    "prompt": "Build the shared private app shell used by client portal and admin portal pages. Do not touch landing page. The shell should include a responsive sidebar, topbar, workspace switcher or organization label, breadcrumb area, user menu, sign out preview action, and content container. The sidebar should support grouped navigation and collapse behavior on desktop, bottom or drawer navigation on mobile, and clear active states. Client portal navigation must include Dashboard, Projects, AI Operations, Documents, Billing, Support, Analytics, Governance. Admin navigation must include Dashboard, Clients, Projects, Users, AI Operations, Documents, Billing, Support, Analytics, Governance, Activity, Settings. Make the UI feel like a premium enterprise control center, not a basic admin template. Use current theme, subtle motion, accessible landmarks, keyboard focus, and mobile-first behavior. Run lint and build."
   },
   {
     "id": "77-phase4-private-mock-data-model",
@@ -621,7 +621,7 @@
     "scope": "phase4-data",
     "target": "local mock data",
     "allowLandingChanges": false,
-    "prompt": "Create a local mock data model for the client portal and admin portal. Do not add a database or backend. Do not create fake real customer data that implies actual clients. Use clearly representative data and label it as preview/demo data where surfaced. Data should support dashboard, projects, AI operations, documents, billing/invoices, support tickets, analytics, governance, users, clients, activity feed, and notifications. Include types for ClientAccount, Project, Program, AgentOperation, AgentHealth, DocumentItem, Invoice, SupportTicket, AnalyticsMetric, GovernanceItem, Approval, User, Role, ActivityEvent, Notification. Include deterministic sample entries such as representative client account, representative project names, representative agent names, preview invoices, preview tickets. No fake logos or real client names. Centralize in a safe local data file. Run lint and build."
+    "prompt": "Create a local mock data model for the client portal and admin portal. Do not add a database or backend. Do not create fake real customer data that implies actual clients. Use clearly representative data and label it as preview/demo data where surfaced. Data should support dashboard, projects, AI operations, documents, billing/invoices, support tickets, analytics, governance, users, clients, activity feed, and notifications. Include types for ClientAccount, Project, AgentOperation, DocumentItem, Invoice, SupportTicket, AnalyticsMetric, GovernanceItem, User, Role. Include deterministic sample entries such as representative client account, representative project names, representative agent names, preview invoices, preview tickets. No fake logos or real client names. Centralize in a safe local data file. Run lint and build."
   },
   {
     "id": "78-phase4-data-table-filter-system",
@@ -629,7 +629,7 @@
     "scope": "phase4-component",
     "target": "tables lists filters",
     "allowLandingChanges": false,
-    "prompt": "Build reusable premium table, list, filter, and detail-drawer components for portal and admin pages. Do not touch landing page. Components should support search, status filters, type filters, date range placeholder, sort controls, empty state, row click, selected state, pagination or local visible count, mobile card fallback, and accessible keyboard navigation. Use these components for Projects, Documents, Billing, Support, Users, Clients, AI Operations, Governance, and Activity. Make the design feel custom and expensive, not default HTML tables. Use subtle row hover, sticky header where useful, and clean responsive cards on mobile. No backend calls. Run lint and build."
+    "prompt": "Build reusable premium table, list, filter, and detail-drawer components for portal and admin pages. Do not touch landing page. Components should support search, status filters, type filters, sort controls, empty state, row click, mobile card fallback, and accessible keyboard navigation. Use these components for Projects, Documents, Billing, Support, Users, Clients, AI Operations, Governance, and Activity. Make the design feel custom and expensive, not default HTML tables. Use subtle row hover, sticky header where useful, and clean responsive cards on mobile. No backend calls. Run lint and build."
   },
   {
     "id": "79-phase4-client-dashboard",
@@ -637,7 +637,7 @@
     "scope": "phase4-client-portal",
     "target": "/portal/dashboard",
     "allowLandingChanges": false,
-    "prompt": "Build /portal/dashboard as the main client portal cockpit. Do not touch landing page. Use the private app shell. The dashboard should include welcome header, account summary, active projects, AI operations status, document updates, billing snapshot, open support tickets, analytics highlights, governance alerts, recent activity, and next actions. Use representative preview data only, no fake live data. Dashboard widgets should be visually premium, with bento layout, metric tiles, progress visuals, status cards, timeline, and CTA cards. Metrics must be clearly preview/demo if they could be mistaken as real. Add links to Projects, AI Operations, Documents, Billing, Support, Analytics, Governance. Mobile must stack beautifully. Use motion lightly. Run lint and build."
+    "prompt": "Build /portal/dashboard as the main client portal cockpit. Do not touch landing page. Use the private app shell. The dashboard should include welcome header, account summary, active projects, AI operations status, document updates, billing snapshot, open support tickets. Use representative preview data only, no fake live data. Dashboard widgets should be visually premium, with bento layout, metric tiles, progress visuals, status cards, timeline, and CTA cards. Metrics must be clearly preview/demo if they could be mistaken as real. Add links to Projects, AI Operations, Documents, Billing, Support, Analytics, Governance. Mobile must stack beautifully. Use motion lightly. Run lint and build."
   },
   {
     "id": "80-phase4-client-projects-list",
@@ -680,14 +680,6 @@
     "prompt": "Build /portal/support as a premium support center for clients. Do not touch landing page. Include ticket list, create ticket frontend-only form, priority, category, linked project, linked document optional, status filters, support SLA preview copy without guarantees, knowledge/help cards, and recent support activity. No backend submission. On create, add ticket locally in current browser state or show preview-created state. Ticket categories: Project Delivery, AI Operations, Billing, Documents, Access, Governance, General. UI should feel calm, secure, and operational. Mobile excellent. Run lint and build."
   },
   {
-    "id": "90-phase4-client-analytics",
-    "title": "Build Client Portal Analytics",
-    "scope": "phase4-client-portal",
-    "target": "/portal/analytics",
-    "allowLandingChanges": false,
-    "prompt": "Build /portal/analytics as a client-facing analytics page. Do not touch landing page. Include delivery analytics, adoption analytics, AI operations analytics, document activity, support analytics, and governance activity using representative preview data only. Do not claim live data. Use CSS/SVG charts or existing chart utilities only, no new heavy dependencies. Include time range selector frontend-only, tabs, metric cards, trend panels, and insight cards. Every analytic should be labelled preview/demo where needed. No backend. Mobile charts must be readable. Run lint and build."
-  },
-  {
     "id": "91-phase4-client-governance",
     "title": "Build Client Portal Governance",
     "scope": "phase4-client-portal",
@@ -717,7 +709,7 @@
     "scope": "phase4-admin",
     "target": "/admin/projects",
     "allowLandingChanges": false,
-    "prompt": "Build /admin/projects as internal project delivery management. Do not touch landing page. Include project table/cards with client, phase, status, delivery owner, squad, timeline, next milestone, risk status, budget preview if available, and linked AI operations. Add filters by client, phase, status, owner, risk. Add frontend-only actions: create project preview, update status locally, assign squad preview. No backend. Make UI premium and dense but readable. Include mobile card fallback. Run lint and build."
+    "prompt": "Build /admin/projects as internal project delivery management. Do not touch landing page. Include project table/cards with client, phase, status, delivery owner, timeline, next milestone. Add filters by client, phase, status, owner, risk. Add frontend-only actions: create project preview, update status locally. No backend. Make UI premium and dense but readable. Include mobile card fallback. Run lint and build."
   },
   {
     "id": "99-phase4-admin-users-rbac",
@@ -725,7 +717,7 @@
     "scope": "phase4-admin",
     "target": "/admin/users",
     "allowLandingChanges": false,
-    "prompt": "Build /admin/users as frontend-only user and role management preview. Do not touch landing page. Include user list, role filters, client association, status, last activity preview, and permissions summary. Roles: client_admin, client_member, gff_admin, gff_operator, finance_admin, support_agent, viewer. Add local-only actions: invite user preview, change role preview, deactivate preview, reset access preview. Do not send invites. Do not implement real security. Include a clear backend/auth phase notice. UI must be secure-looking and polished. Run lint and build."
+    "prompt": "Build /admin/users as frontend-only user and role management preview. Do not touch landing page. Include user list, role filters, client association, status, last activity preview, and permissions summary. Roles: client_admin, client_member, gff_admin. Add local-only actions: invite user preview, change role preview, deactivate preview, reset access preview. Do not send invites. Do not implement real security. Include a clear backend/auth phase notice. UI must be secure-looking and polished. Run lint and build."
   },
   {
     "id": "100-phase4-admin-ai-operations",
@@ -733,7 +725,7 @@
     "scope": "phase4-admin",
     "target": "/admin/ai-operations",
     "allowLandingChanges": false,
-    "prompt": "Build /admin/ai-operations as internal AI operations command center. Do not touch landing page. Include all client agent operations, agent health, incident queue preview, governance alerts, human approval queue, adoption signals, spend preview, project links, and owner assignment. Add filters by client, project, agent type, status, severity, owner. Add local-only actions: assign owner, mark reviewed, escalate preview. Do not claim live runtime or real monitoring. Use premium observability UI with status rails, health cards, tables, and detail drawer. Run lint and build."
+    "prompt": "Build /admin/ai-operations as internal AI operations command center. Do not touch landing page. Include all client agent operations, agent health, governance alerts, adoption signals, project links, and owner assignment. Add filters by client, project, agent type, status, severity, owner. Add local-only actions: assign owner, mark reviewed. Do not claim live runtime or real monitoring. Use premium observability UI with status rails, health cards, tables, and detail drawer. Run lint and build."
   },
   {
     "id": "101-phase4-admin-documents",
@@ -741,7 +733,7 @@
     "scope": "phase4-admin",
     "target": "/admin/documents",
     "allowLandingChanges": false,
-    "prompt": "Build /admin/documents as internal document management preview. Do not touch landing page. Include all documents across clients/projects with search, filters by client, project, type, status, owner, version. Add local-only upload placeholder, assign document to project, mark shared with client, and version preview. No real upload, no storage, no download. Use document drawer with metadata, activity, related project, and governance status. Premium admin UI, mobile card fallback. Run lint and build."
+    "prompt": "Build /admin/documents as internal document management preview. Do not touch landing page. Include all documents across clients/projects with search, filters by client, project, type, status, owner, version. Add assign document to project. No real upload, no storage, no download. Use document drawer with metadata, related project, and governance status. Premium admin UI, mobile card fallback. Run lint and build."
   },
   {
     "id": "102-phase4-admin-billing",
@@ -749,7 +741,7 @@
     "scope": "phase4-admin",
     "target": "/admin/billing",
     "allowLandingChanges": false,
-    "prompt": "Build /admin/billing as internal billing and invoice management preview. Do not touch landing page. Include invoice list, client, project, amount preview, due date, status, finance owner, aging preview, and billing activity. Add filters by client, status, month, owner. Add local-only actions: create invoice preview, mark reviewed, contact finance preview. No payment provider, no real invoices, no real PDF generation. Use polished finance dashboard UI with summary cards and table. Run lint and build."
+    "prompt": "Build /admin/billing as internal billing and invoice management preview. Do not touch landing page. Include invoice list, client, project, amount preview, due date, status and billing activity. Add filters by client, status, month. Add local-only actions: create invoice preview, mark reviewed. No payment provider, no real invoices, no real PDF generation. Use polished finance dashboard UI with summary cards and table. Run lint and build."
   },
   {
     "id": "103-phase4-admin-support",
@@ -757,15 +749,7 @@
     "scope": "phase4-admin",
     "target": "/admin/support",
     "allowLandingChanges": false,
-    "prompt": "Build /admin/support as internal support operations page. Do not touch landing page. Include support ticket queue, client, priority, category, status, assigned agent, SLA-style preview without guarantees, linked project/document, and latest activity. Add filters and local-only actions: assign, change status, add internal note, reply preview. No backend, no email sending, no uploads. Use premium support queue UI with split view or detail drawer. Run lint and build."
-  },
-  {
-    "id": "104-phase4-admin-analytics",
-    "title": "Build Admin Analytics",
-    "scope": "phase4-admin",
-    "target": "/admin/analytics",
-    "allowLandingChanges": false,
-    "prompt": "Build /admin/analytics as internal analytics overview. Do not touch landing page. Include preview analytics across clients, projects, AI operations, documents, billing, support, and governance. Use representative local data only. No fake live metrics. Use CSS/SVG charts or existing chart utilities only. Include filters for client, date range preview, project phase, and module. Use charts, trend cards, leaderboards or rankings only if clearly preview. Make it premium and operational. Run lint and build."
+    "prompt": "Build /admin/support as internal support operations page. Do not touch landing page. Include support ticket queue, client, priority, category, status, assigned agent, linked project/document. Add filters and local-only actions: assign, change status. No backend, no email sending, no uploads. Use premium support queue UI with detail drawer. Run lint and build."
   },
   {
     "id": "105-phase4-admin-governance",
@@ -773,7 +757,7 @@
     "scope": "phase4-admin",
     "target": "/admin/governance",
     "allowLandingChanges": false,
-    "prompt": "Build /admin/governance as internal governance management. Do not touch landing page. Include governance items across clients/projects/agents, review queue, approval queue, policy items, risk severity, owner, status, due date, linked documents, and audit activity preview. Do not guarantee compliance. Use local-only actions: assign reviewer, mark reviewed, request info preview. Premium governance console UI with filters, cards, and detail drawer. Run lint and build."
+    "prompt": "Build /admin/governance as internal governance management. Do not touch landing page. Include governance items across clients/projects/agents, risk severity, owner, status, due date, linked documents. Do not guarantee compliance. Use local-only actions: assign reviewer, mark reviewed. Premium governance console UI with filters, cards, and detail drawer. Run lint and build."
   },
   {
     "id": "113-phase4-route-guard-ux",
@@ -984,22 +968,6 @@
     "prompt": "Create MVP governance APIs under /api/v1/governance. Do not touch landing page or GFF AI tools. Endpoints: GET list, GET by id, POST create, PATCH update, PATCH status, DELETE or archive. Admin roles can manage all. Client roles can read their client_id governance items and optionally mark reviewed if the Phase 4 UI already supports local preview. No legal/compliance guarantees. Include filters: client_id, project_id, severity, status, owner, due date, search. Add ActivityEvent if simple. Run backend checks."
   },
   {
-    "id": "141-phase5-api-activity-events",
-    "title": "Build Activity feed APIs",
-    "scope": "phase5-portal-admin-api",
-    "target": "activity APIs",
-    "allowLandingChanges": false,
-    "prompt": "Create MVP ActivityEvent APIs under /api/v1/activity. Do not touch landing page or GFF AI tools. Endpoint: GET list with filtering. Admin roles can view all activity. Client roles can view only activity for their client_id. Activity can be created internally by service helpers when CRUD actions happen. Include filters: module, client_id, project_id, actor_id, severity, entity_type, search. Do not overbuild audit logs. This is MVP operational activity feed, not production compliance audit. Run backend checks."
-  },
-  {
-    "id": "142-phase5-api-notifications",
-    "title": "Build Notifications APIs",
-    "scope": "phase5-portal-admin-api",
-    "target": "notifications APIs",
-    "allowLandingChanges": false,
-    "prompt": "Create MVP Notifications APIs under /api/v1/notifications. Do not touch landing page or GFF AI tools. Endpoints: GET my notifications, PATCH mark read, PATCH mark all read. Notifications should be user-specific where possible, or client-specific for MVP if user-specific is too much. No push, no email, no real-time websockets. Create notifications from seed data and optionally from simple ticket/project updates. Protect routes with auth. Client users see their own or client notifications. Admin users see relevant admin notifications. Run backend checks."
-  },
-  {
     "id": "143-phase5-api-dashboard-summary",
     "title": "Build dashboard summary APIs",
     "scope": "phase5-portal-admin-api",
@@ -1112,14 +1080,6 @@
     "prompt": "Connect /portal/analytics to /api/v1/analytics/client and /portal/governance to /api/v1/governance. Do not touch landing page or GFF AI tools. Replace static data with backend summaries and governance records. Governance read actions may be backend-connected if endpoint exists, otherwise keep read-only. Preserve Phase 4 visual design, charts, filters, and mobile behavior. Add loading, empty, error, and retry states. Run lint/build."
   },
   {
-    "id": "157-phase5-frontend-activity-notifications-api",
-    "title": "Connect Activity and Notifications to backend",
-    "scope": "phase5-frontend-integration",
-    "target": "activity and notifications",
-    "allowLandingChanges": false,
-    "prompt": "Connect /portal/activity, /admin/activity, private topbar notifications, and notification dropdown to backend /api/v1/activity and /api/v1/notifications. Do not touch landing page or GFF AI tools. Replace static local activity/notifications with backend data. Support mark notification read and mark all read if backend endpoints exist. Preserve UI. Add loading, empty, error, and retry states. Run lint/build."
-  },
-  {
     "id": "158-phase5-frontend-admin-dashboard-api",
     "title": "Connect Admin Dashboard to backend",
     "scope": "phase5-frontend-integration",
@@ -1158,22 +1118,6 @@
     "target": "/admin/support and /admin/governance",
     "allowLandingChanges": false,
     "prompt": "Connect /admin/support to backend support ticket APIs and /admin/governance to backend governance APIs. Do not touch landing page or GFF AI tools. Admin support should list, filter, assign, update status, and optionally add local/backend comment depending on API. Admin governance should list, filter, create, update status, assign reviewer if API supports it. Preserve Phase 4 premium UI. No email, no attachments, no compliance guarantees. Add loading, empty, error, success, retry states. Run lint/build."
-  },
-  {
-    "id": "163-phase5-frontend-admin-analytics-settings-api",
-    "title": "Connect Admin Analytics and keep Settings minimal",
-    "scope": "phase5-frontend-integration",
-    "target": "/admin/analytics and /admin/settings",
-    "allowLandingChanges": false,
-    "prompt": "Connect /admin/analytics to backend /api/v1/analytics/admin. Do not touch landing page or GFF AI tools. Replace static analytics with backend aggregations. Preserve charts and UI. Keep /admin/settings mostly frontend-only for MVP unless small backend-backed current user/profile data exists. Do not implement integrations, security settings, billing provider settings, or production auth settings yet. Add loading/error states where backend is used. Run lint/build."
-  },
-  {
-    "id": "164-phase5-frontend-client-settings-minimal",
-    "title": "Connect Client Settings minimally to backend auth user",
-    "scope": "phase5-frontend-integration",
-    "target": "/portal/settings",
-    "allowLandingChanges": false,
-    "prompt": "Update /portal/settings to use current authenticated user and client account data from backend where available. Do not touch landing page or GFF AI tools. Keep security, integrations, notifications preferences, and organization settings mostly read-only or frontend preview for MVP. Do not implement password change, email change, MFA, real notification settings, or integration keys. Show current user, role, client account, and backend-connected session state. Add sign out action. Run lint/build."
   },
   {
     "id": "165-phase5-remove-old-local-preview-data-dependency",

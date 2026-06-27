@@ -43,6 +43,101 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
   const [telemetryLogs, setTelemetryLogs] = useState<string[]>([]);
   const consoleBottomRef = useRef<HTMLDivElement>(null);
 
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotSubmitted, setForgotSubmitted] = useState(false);
+  const [forgotError, setForgotError] = useState("");
+  const [forgotLoading, setForgotLoading] = useState(false);
+
+  const [mfaTimeRemaining, setMfaTimeRemaining] = useState(30);
+
+  const otpRefs = [
+    useRef<HTMLInputElement>(null),
+    useRef<HTMLInputElement>(null),
+    useRef<HTMLInputElement>(null),
+    useRef<HTMLInputElement>(null),
+    useRef<HTMLInputElement>(null),
+    useRef<HTMLInputElement>(null),
+  ];
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout | undefined;
+    if (authMethod === "otp") {
+      setMfaTimeRemaining(30);
+      interval = setInterval(() => {
+        setMfaTimeRemaining((prev) => {
+          if (prev <= 1) {
+            const generated = Math.floor(100000 + Math.random() * 900000).toString();
+            logTelemetry(`[MFA] Rotation cycle complete. Generated temporary token: ${generated}`);
+            setOtpCode(generated);
+            return 30;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [authMethod]);
+
+  const handleOtpChange = (index: number, val: string) => {
+    const sanitizedVal = val.replace(/\D/g, "");
+    if (!sanitizedVal) {
+      const newOtp = otpCode.split("");
+      newOtp[index] = "";
+      const updatedCode = newOtp.join("");
+      setOtpCode(updatedCode);
+      return;
+    }
+
+    const char = sanitizedVal[sanitizedVal.length - 1];
+    const newOtp = Array.from({ length: 6 }, (_, i) => otpCode[i] || "");
+    newOtp[index] = char;
+    const updatedCode = newOtp.join("");
+    setOtpCode(updatedCode);
+
+    if (updatedCode.length === 6) {
+      logTelemetry(`[OTP] Multi-factor authentication block complete. Ready for clearance verification.`);
+    }
+
+    if (index < 5 && char) {
+      otpRefs[index + 1].current?.focus();
+    }
+  };
+
+  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Backspace") {
+      const currentVal = otpCode[index] || "";
+      if (!currentVal && index > 0) {
+        otpRefs[index - 1].current?.focus();
+        const newOtp = otpCode.split("");
+        newOtp[index - 1] = "";
+        setOtpCode(newOtp.join(""));
+      } else {
+        const newOtp = otpCode.split("");
+        newOtp[index] = "";
+        setOtpCode(newOtp.join(""));
+      }
+    } else if (e.key === "ArrowLeft" && index > 0) {
+      otpRefs[index - 1].current?.focus();
+    } else if (e.key === "ArrowRight" && index < 5) {
+      otpRefs[index + 1].current?.focus();
+    }
+  };
+
+  const handleOtpPaste = (e: React.ClipboardEvent) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+    if (pastedData) {
+      setOtpCode(pastedData);
+      logTelemetry(`[OTP] Pasted authentication block: ${pastedData}`);
+      const targetIndex = Math.min(pastedData.length, 5);
+      setTimeout(() => {
+        otpRefs[targetIndex].current?.focus();
+      }, 50);
+    }
+  };
+
   const rolesList = [
     { id: "client_admin" as PreviewRole, label: "Client Admin", clearance: "L-3", desc: "Sovereign gateway owner", icon: Users, color: "text-[#009DFF]" },
     { id: "client_member" as PreviewRole, label: "Client Member", clearance: "L-2", desc: "Model operator layer worker", icon: Layers, color: "text-blue-400" },
@@ -308,7 +403,13 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
                           </label>
                           <button
                             type="button"
-                            onClick={() => setShowForgot(true)}
+                            onClick={() => {
+                              setForgotEmail(email);
+                              setForgotSubmitted(false);
+                              setForgotError("");
+                              setShowForgot(true);
+                              logTelemetry("[SYS] Initializing local enclave passphrase key recovery handshake.");
+                            }}
                             className="text-[9px] text-zinc-500 hover:text-[#009DFF] transition-colors focus:outline-none cursor-pointer hover:underline"
                           >
                             Forgot Key?
@@ -337,30 +438,62 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
                     ) : (
                       <div className="space-y-1.5">
                         <div className="flex justify-between items-center">
-                          <label htmlFor="auth-otp" className="text-[9.5px] font-mono text-zinc-400 uppercase tracking-widest block font-bold">
-                            Multi-Factor OTP Code
+                          <label htmlFor="otp-0" className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest block font-bold flex items-center gap-2">
+                            <Key className="w-3.5 h-3.5 text-[#009DFF]" /> Multi-Factor OTP Code
                           </label>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              logTelemetry("[SYS] Requested simulation OTP broadcast. Code generated: 102486");
-                              setOtpCode("102486");
-                            }}
-                            className="text-[9px] text-zinc-500 hover:text-[#009DFF] transition-colors focus:outline-none cursor-pointer"
-                          >
-                            Send OTP Broadcast?
-                          </button>
+                          <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1.5 text-[9px] font-mono text-zinc-500">
+                              <span className="text-[#009DFF] font-semibold">{mfaTimeRemaining}s</span>
+                              <svg className="w-3.5 h-3.5" viewBox="0 0 20 20">
+                                <circle cx="10" cy="10" r="7" fill="none" stroke="#27272a" strokeWidth="1.5" />
+                                <circle 
+                                  cx="10" 
+                                  cy="10" 
+                                  r="7" 
+                                  fill="none" 
+                                  stroke="#009DFF" 
+                                  strokeWidth="1.5" 
+                                  strokeDasharray={`${2 * Math.PI * 7}`}
+                                  strokeDashoffset={`${2 * Math.PI * 7 * (1 - mfaTimeRemaining / 30)}`}
+                                  strokeLinecap="round"
+                                  className="transition-all duration-1000 ease-linear"
+                                />
+                              </svg>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                logTelemetry("[SYS] Requested simulation OTP broadcast. Code generated: 102486");
+                                setOtpCode("102486");
+                                setError("");
+                                setTimeout(() => otpRefs[5].current?.focus(), 50);
+                              }}
+                              className="px-2 py-0.5 rounded bg-[#009DFF]/10 border border-[#009DFF]/20 text-[#009DFF] font-mono text-[8.5px] font-bold tracking-wider hover:bg-[#009DFF]/25 transition-colors cursor-pointer focus:outline-none"
+                            >
+                              GENERATE CODE
+                            </button>
+                          </div>
                         </div>
-                        <input
-                          id="auth-otp"
-                          type="text"
-                          value={otpCode}
-                          onChange={(e) => handleInputChange("otp", e.target.value)}
-                          placeholder="102486"
-                          maxLength={6}
-                          className="w-full h-10 px-3 rounded-lg bg-zinc-950/80 border border-zinc-800 focus:border-[#009DFF] focus:ring-1 focus:ring-[#009DFF] text-zinc-200 text-xs placeholder-zinc-700 transition-all outline-none font-mono tracking-[0.4em] text-center focus:bg-zinc-950"
-                          required
-                        />
+                        <div className="flex justify-between gap-2.5 max-w-[320px] mx-auto py-2">
+                          {Array.from({ length: 6 }).map((_, idx) => (
+                            <input
+                              key={idx}
+                              id={`otp-${idx}`}
+                              ref={otpRefs[idx]}
+                              type="text"
+                              inputMode="numeric"
+                              pattern="[0-9]*"
+                              value={otpCode[idx] || ""}
+                              onChange={(e) => handleOtpChange(idx, e.target.value)}
+                              onKeyDown={(e) => handleOtpKeyDown(idx, e)}
+                              onPaste={handleOtpPaste}
+                              placeholder="•"
+                              maxLength={1}
+                              className="w-10 h-12 rounded-lg bg-zinc-950 border border-zinc-800 text-center text-sm font-bold text-white placeholder-zinc-850 focus:border-[#009DFF] focus:ring-1 focus:ring-[#009DFF] transition-all outline-none font-mono"
+                              aria-label={`Digit ${idx + 1}`}
+                            />
+                          ))}
+                        </div>
                       </div>
                     )}
 
@@ -622,8 +755,8 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
       </div>
 
       {showForgot && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4 animate-fade-in" role="dialog" aria-modal="true">
-          <div className="bg-zinc-950 border border-zinc-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4 animate-fade-in" role="dialog" aria-modal="true" aria-labelledby="forgot-title">
+          <div className="bg-zinc-950 border border-zinc-800 rounded-2xl max-w-lg w-full p-6 space-y-5 shadow-2xl relative overflow-hidden transition-all duration-300">
             <div className="flex justify-between items-start">
               <div className="flex items-center gap-2.5 text-zinc-200">
                 <div className="p-1.5 rounded-lg bg-[#009DFF]/10 text-[#009DFF]">
@@ -638,22 +771,159 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
                 <X className="w-4 h-4" />
               </button>
             </div>
-            <p className="text-xs text-zinc-400 leading-relaxed font-sans">
-              GFF AI Zero-Trust Enclaves enforce rigorous defense protocols. Reset requests require out-of-band authorization by your sovereign security administrator.
-            </p>
-            <div className="bg-zinc-900/40 p-3.5 rounded-xl border border-zinc-800/80 font-mono text-[10px] text-zinc-500 space-y-1">
-              <div className="flex justify-between"><span className="uppercase">Recovery Link:</span> <span className="text-zinc-400">ISOLATED_OFFLINE</span></div>
-              <div className="flex justify-between"><span className="uppercase">Reference ID:</span> <span className="text-[#009DFF]">RECOVERY_0x8F9B2C</span></div>
-            </div>
-            <div className="flex justify-end pt-2">
-              <button
-                type="button"
-                onClick={() => setShowForgot(false)}
-                className="px-4 h-9 bg-zinc-800 hover:bg-zinc-700 text-white font-sans font-bold text-xs uppercase tracking-wider rounded-lg transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-white"
-              >
-                Close Handshake
-              </button>
-            </div>
+            {!forgotSubmitted ? (
+              <form onSubmit={async (e) => {
+                e.preventDefault();
+                if (!forgotEmail) { setForgotError("Enterprise email is required."); return; }
+                if (!forgotEmail.includes("@")) { setForgotError("Valid enterprise email is required."); return; }
+                setForgotError(""); setForgotLoading(true);
+                await new Promise(r => setTimeout(r, 1000));
+                setForgotLoading(false); setForgotSubmitted(true);
+                logTelemetry(`[RECOVERY] Dispatched isolated recovery simulation to ${forgotEmail}.`);
+              }} className="space-y-4">
+                <p className="text-xs text-zinc-400 leading-relaxed text-left">
+                  GFF AI Zero-Trust Enclaves enforce rigorous defense protocols. Reset requests require out-of-band authorization.
+                </p>
+                <input id="forgot-email" type="email" value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} placeholder="employee@gff.ai" className="w-full h-10 px-3 bg-zinc-950 border border-zinc-800 rounded-lg text-xs outline-none focus:border-[#009DFF] text-white" required />
+                {forgotError && <p className="text-xs text-rose-450">{forgotError}</p>}
+                <div className="flex gap-3">
+                  <button type="button" onClick={() => setShowForgot(false)} className="flex-1 h-9 bg-zinc-800 rounded-lg text-xs text-zinc-400">Cancel</button>
+                  <button type="submit" disabled={forgotLoading} className="flex-1 h-9 bg-[#009DFF] text-black rounded-lg text-xs font-bold">{forgotLoading ? "Verifying..." : "Request Reset"}</button>
+                </div>
+              </form>
+            ) : (
+              <div className="space-y-4 text-left font-sans animate-fade-in">
+                {/* SVG Style Keyframes */}
+                <style>{`
+                  @keyframes recoveryDash {
+                    to {
+                      stroke-dashoffset: -20;
+                    }
+                  }
+                  .animate-recovery-dash {
+                    stroke-dasharray: 6 4;
+                    animation: recoveryDash 1.2s linear infinite;
+                  }
+                `}</style>
+
+                <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl text-xs flex items-start gap-3">
+                  <CheckCircle className="w-5 h-5 shrink-0 mt-0.5 text-emerald-400" />
+                  <div>
+                    <span className="font-bold block uppercase tracking-wider text-[10px] mb-1">Enclave Recovery Dispatched</span>
+                    <p className="leading-relaxed text-zinc-300">
+                      An out-of-band reset vector has been securely provisioned for: <span className="font-bold text-white select-all">{forgotEmail}</span>
+                    </p>
+                  </div>
+                </div>
+
+                {/* Animated SVG Handshake Diagram */}
+                <div className="space-y-2">
+                  <span className="text-[9.5px] font-mono text-zinc-400 uppercase tracking-widest block font-bold">Handshake Isolation Transmission</span>
+                  <div className="w-full bg-zinc-950/80 p-4 rounded-xl border border-zinc-900 flex justify-between items-center relative overflow-hidden">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(0,157,255,0.03),transparent)] pointer-events-none" />
+                    
+                    <div className="flex flex-col items-center gap-1.5 z-10">
+                      <div className="p-2 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 flex items-center justify-center">
+                        <Server className="w-4 h-4 text-zinc-300" />
+                      </div>
+                      <span className="font-mono text-[8px] uppercase tracking-wider text-zinc-500">Terminal</span>
+                    </div>
+
+                    {/* SVG Connector with animated pulse */}
+                    <div className="flex-1 relative h-6 mx-1">
+                      <svg className="w-full h-full" fill="none" viewBox="0 0 100 24" preserveAspectRatio="none">
+                        <path d="M0,12 L100,12" stroke="#27272a" strokeWidth="1.5" strokeDasharray="3 3" />
+                        <path d="M0,12 L100,12" stroke="#009DFF" strokeWidth="1.5" className="animate-recovery-dash" />
+                      </svg>
+                    </div>
+
+                    <div className="flex flex-col items-center gap-1.5 z-10">
+                      <div className="p-2 rounded-lg bg-zinc-900 border border-[#009DFF]/30 text-[#009DFF] flex items-center justify-center animate-pulse">
+                        <Shield className="w-4 h-4" />
+                      </div>
+                      <span className="font-mono text-[8px] uppercase tracking-wider text-[#009DFF]">Crypt Node</span>
+                    </div>
+
+                    {/* SVG Connector with animated pulse */}
+                    <div className="flex-1 relative h-6 mx-1">
+                      <svg className="w-full h-full" fill="none" viewBox="0 0 100 24" preserveAspectRatio="none">
+                        <path d="M0,12 L100,12" stroke="#27272a" strokeWidth="1.5" strokeDasharray="3 3" />
+                        <path d="M0,12 L100,12" stroke="rgb(16,185,129)" strokeWidth="1.5" className="animate-recovery-dash" style={{ animationDirection: 'reverse' }} />
+                      </svg>
+                    </div>
+
+                    <div className="flex flex-col items-center gap-1.5 z-10">
+                      <div className="p-2 rounded-lg bg-zinc-900 border border-emerald-500/30 text-emerald-400 flex items-center justify-center">
+                        <Globe className="w-4 h-4 text-emerald-400" />
+                      </div>
+                      <span className="font-mono text-[8px] uppercase tracking-wider text-emerald-500">Secure Mail</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Narrative Operations Timeline */}
+                <div className="space-y-2">
+                  <span className="text-[9.5px] font-mono text-zinc-400 uppercase tracking-widest block font-bold">Sovereign Recovery Protocol Timeline</span>
+                  <div className="space-y-2.5 pl-2 border-l border-zinc-800/80">
+                    <div className="relative pl-4">
+                      <div className="absolute left-[-4.5px] top-1.5 w-2 h-2 rounded-full bg-[#009DFF]" />
+                      <span className="text-[9px] font-mono font-bold uppercase text-[#009DFF] tracking-wider block">Step 01 / Identity Resolution</span>
+                      <p className="text-[10px] text-zinc-400 leading-relaxed mt-0.5 font-sans">
+                        GFF AI Zero-Trust Enclave verified target signature against DNSSEC records and verified clearance authorization.
+                      </p>
+                    </div>
+                    <div className="relative pl-4">
+                      <div className="absolute left-[-4.5px] top-1.5 w-2 h-2 rounded-full bg-blue-500" />
+                      <span className="text-[9px] font-mono font-bold uppercase text-blue-400 tracking-wider block">Step 02 / Enclave Handshake Generated</span>
+                      <p className="text-[10px] text-zinc-400 leading-relaxed mt-0.5 font-sans">
+                        Isolated a dynamic recovery token within the local cryptographic memory space, salting with SHA-512 vector.
+                      </p>
+                    </div>
+                    <div className="relative pl-4">
+                      <div className="absolute left-[-4.5px] top-1.5 w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                      <span className="text-[9px] font-mono font-bold uppercase text-emerald-400 tracking-wider block">Step 03 / Simulated Vector Provisioned</span>
+                      <p className="text-[10px] text-zinc-400 leading-relaxed mt-0.5 font-sans">
+                        Dispatched outbound simulation handshake message to the target enterprise mailbox (Simulation complete).
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Ref & Notice Details */}
+                <div className="bg-zinc-950 p-3 rounded-xl border border-zinc-900 font-mono text-[10px] text-zinc-500 space-y-1.5">
+                  <div className="flex justify-between items-center">
+                    <span className="uppercase">Notice context:</span> 
+                    <span className="text-[#009DFF] font-semibold tracking-wider">SANDBOX HANDSHAKE</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="uppercase">Isolated Hash:</span> 
+                    <span className="text-zinc-400 font-mono">0x{getDeterministicHash(forgotEmail, 8)}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="uppercase">Active Queue:</span> 
+                    <span className="text-emerald-400 font-bold uppercase">Sovereign-P1</span>
+                  </div>
+                </div>
+
+                <p className="text-[9.5px] text-zinc-500 leading-relaxed font-sans text-left">
+                  <span className="font-bold text-zinc-400">Honest Disclaimer:</span> This interface represents a frontend-only design preview of GFF AI's secure identity recovery pipeline. No real email notifications or permanent modifications are made.
+                </p>
+
+                <div className="flex justify-end pt-2">
+                  <button 
+                    type="button" 
+                    onClick={() => { 
+                      setShowForgot(false); 
+                      setForgotSubmitted(false); 
+                      setForgotEmail(""); 
+                    }} 
+                    className="px-5 h-9 bg-zinc-900 border border-zinc-800 hover:bg-zinc-850 hover:text-white text-zinc-300 font-bold text-xs uppercase tracking-wider rounded-lg transition-colors cursor-pointer"
+                  >
+                    Return to Login
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
