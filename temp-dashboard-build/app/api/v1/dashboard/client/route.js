@@ -4,8 +4,9 @@ exports.runtime = void 0;
 exports.GET = GET;
 const server_1 = require("next/server");
 const api_auth_1 = require("../../../../../lib/api-auth");
+const dynamodb_client_1 = require("../../../../../lib/dynamodb-client");
 exports.runtime = "nodejs";
-function getAuthCaller(req) {
+async function getAuthCaller(req) {
     const auth = req.headers.get("authorization");
     if (!auth?.startsWith("Bearer ")) {
         return { status: 401, error: "Unauthorized", msg: "Missing/malformed Authorization header." };
@@ -14,18 +15,24 @@ function getAuthCaller(req) {
     if (!decoded?.email) {
         return { status: 401, error: "Unauthorized", msg: "Invalid/expired access token." };
     }
-    const user = api_auth_1.API_MOCK_USERS[decoded.email.toLowerCase().trim()];
-    if (!user) {
+    const email = decoded.email.toLowerCase().trim();
+    const dynamoUser = await (0, dynamodb_client_1.getUserFromDynamoDB)(email);
+    if (dynamoUser) {
+        const mapped = (0, dynamodb_client_1.mapDynamoUserToApiUser)(dynamoUser);
+        if (mapped.status === "inactive")
+            return { status: 403, error: "Forbidden", msg: "This account is inactive." };
+        return { caller: mapped };
+    }
+    const user = api_auth_1.API_MOCK_USERS[email];
+    if (!user)
         return { status: 401, error: "Unauthorized", msg: "Authorized user not found." };
-    }
-    if (user.status === "inactive") {
+    if (user.status === "inactive")
         return { status: 403, error: "Forbidden", msg: "This account is inactive." };
-    }
     return { caller: user };
 }
 async function GET(req) {
     try {
-        const auth = getAuthCaller(req);
+        const auth = await getAuthCaller(req);
         if ("status" in auth) {
             return server_1.NextResponse.json({ success: false, error: auth.error, message: auth.msg }, { status: auth.status });
         }
@@ -44,38 +51,35 @@ async function GET(req) {
                 return server_1.NextResponse.json({ success: false, error: "Forbidden", message: "Access denied to requested client's dashboard." }, { status: 403 });
             }
         }
-        const clientProjects = Object.values(api_auth_1.API_MOCK_PROJECTS).filter(p => p.client_id === callerClientId);
-        const clientOps = Object.values(api_auth_1.API_MOCK_AI_OPERATIONS).filter(o => o.client_id === callerClientId);
-        const clientDocs = Object.values(api_auth_1.API_MOCK_DOCUMENTS).filter(d => d.client_id === callerClientId);
-        const clientInvoices = Object.values(api_auth_1.API_MOCK_INVOICES).filter(i => i.client_id === callerClientId);
-        const clientTickets = Object.values(api_auth_1.API_MOCK_SUPPORT_TICKETS).filter(t => t.client_id === callerClientId);
-        const clientGov = Object.values(api_auth_1.API_MOCK_GOVERNANCE).filter(g => g.client_id === callerClientId);
+        const clientProjects = await (0, dynamodb_client_1.dynamoDbListPortalItems)("PROJECT", callerClientId);
+        const clientOps = await (0, dynamodb_client_1.dynamoDbListPortalItems)("AI_OPERATION", callerClientId);
+        const clientDocs = await (0, dynamodb_client_1.dynamoDbListPortalItems)("DOCUMENT", callerClientId);
+        const clientInvoices = await (0, dynamodb_client_1.dynamoDbListPortalItems)("INVOICE", callerClientId);
+        const clientTickets = await (0, dynamodb_client_1.dynamoDbListPortalItems)("SUPPORT", callerClientId);
+        const clientGov = await (0, dynamodb_client_1.dynamoDbListPortalItems)("GOVERNANCE", callerClientId);
         const activeProjectsCount = clientProjects.filter(p => p.status === "active").length;
         const activeOperationsCount = clientOps.filter(o => o.status === "active").length;
-        const verifiedDocsCount = clientDocs.filter(d => d.status === "Verified").length;
+        const verifiedDocsCount = clientDocs.filter(d => d.status === "Verified" || d.status === "verified").length;
         const unpaidInvoicesCount = clientInvoices.filter(i => i.status === "unpaid" || i.status === "processing").length;
         const openSupportTicketsCount = clientTickets.filter(t => t.status !== "RESOLVED").length;
         const flaggedGovCount = clientGov.filter(g => g.status === "Flagged" || g.status === "Critical" || g.severity === "Critical").length;
-        const recentProjects = [...clientProjects].sort((a, b) => new Date(b.lastUpdated || "").getTime() - new Date(a.lastUpdated || "").getTime()).slice(0, 5);
-        const recentOperations = [...clientOps].sort((a, b) => new Date(b.lastUpdated || "").getTime() - new Date(a.lastUpdated || "").getTime()).slice(0, 5);
-        const recentDocuments = [...clientDocs].sort((a, b) => new Date(b.lastUpdated || "").getTime() - new Date(a.lastUpdated || "").getTime()).slice(0, 5);
-        const recentInvoices = [...clientInvoices].sort((a, b) => new Date(b.lastUpdated || "").getTime() - new Date(a.lastUpdated || "").getTime()).slice(0, 5);
-        const recentSupportTickets = [...clientTickets].sort((a, b) => new Date(b.createdDate || "").getTime() - new Date(a.createdDate || "").getTime()).slice(0, 5);
-        const recentGovernanceItems = [...clientGov].sort((a, b) => new Date(b.lastUpdated || "").getTime() - new Date(a.lastUpdated || "").getTime()).slice(0, 5);
+        const sortByDate = (items) => [...items].sort((a, b) => new Date(b.lastUpdated || b.updated_at || b.createdAt || b.created_at || b.createdDate || "").getTime() -
+            new Date(a.lastUpdated || a.updated_at || a.createdAt || a.created_at || a.createdDate || "").getTime()).slice(0, 5);
         return server_1.NextResponse.json({
             success: true,
             client_id: callerClientId,
             summary: {
-                projects: { activeCount: activeProjectsCount, totalCount: clientProjects.length, recent: recentProjects },
-                aiOperations: { activeCount: activeOperationsCount, totalCount: clientOps.length, recent: recentOperations },
-                documents: { verifiedCount: verifiedDocsCount, totalCount: clientDocs.length, recent: recentDocuments },
-                invoices: { unpaidCount: unpaidInvoicesCount, totalCount: clientInvoices.length, recent: recentInvoices },
-                supportTickets: { openCount: openSupportTicketsCount, totalCount: clientTickets.length, recent: recentSupportTickets },
-                governance: { flaggedCount: flaggedGovCount, totalCount: clientGov.length, recent: recentGovernanceItems }
+                projects: { activeCount: activeProjectsCount, totalCount: clientProjects.length, recent: sortByDate(clientProjects) },
+                aiOperations: { activeCount: activeOperationsCount, totalCount: clientOps.length, recent: sortByDate(clientOps) },
+                documents: { verifiedCount: verifiedDocsCount, totalCount: clientDocs.length, recent: sortByDate(clientDocs) },
+                invoices: { unpaidCount: unpaidInvoicesCount, totalCount: clientInvoices.length, recent: sortByDate(clientInvoices) },
+                supportTickets: { openCount: openSupportTicketsCount, totalCount: clientTickets.length, recent: sortByDate(clientTickets) },
+                governance: { flaggedCount: flaggedGovCount, totalCount: clientGov.length, recent: sortByDate(clientGov) }
             }
         });
     }
     catch (err) {
+        console.error("Dashboard client summary error:", err);
         return server_1.NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
     }
 }

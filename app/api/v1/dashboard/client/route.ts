@@ -1,26 +1,10 @@
 import { NextResponse } from "next/server";
-import { 
-  API_MOCK_USERS, 
-  API_MOCK_PROJECTS, 
-  API_MOCK_AI_OPERATIONS,
-  API_MOCK_INVOICES,
-  API_MOCK_GOVERNANCE,
-  API_MOCK_DOCUMENTS,
-  API_MOCK_SUPPORT_TICKETS,
-  verifyJwt, 
-  MockUserDbEntry, 
-  getClientIdFromAssociation,
-  ApiProject,
-  ApiAiOperation,
-  ApiDocumentItem,
-  ApiInvoice,
-  ApiSupportTicket,
-  ApiGovernanceItem
-} from "../../../../../lib/api-auth";
+import { API_MOCK_USERS, verifyJwt, MockUserDbEntry, getClientIdFromAssociation } from "../../../../../lib/api-auth";
+import { getUserFromDynamoDB, mapDynamoUserToApiUser, dynamoDbListPortalItems } from "../../../../../lib/dynamodb-client";
 
 export const runtime = "nodejs";
 
-function getAuthCaller(req: Request) {
+async function getAuthCaller(req: Request) {
   const auth = req.headers.get("authorization");
   if (!auth?.startsWith("Bearer ")) {
     return { status: 401, error: "Unauthorized", msg: "Missing/malformed Authorization header." };
@@ -29,19 +13,24 @@ function getAuthCaller(req: Request) {
   if (!decoded?.email) {
     return { status: 401, error: "Unauthorized", msg: "Invalid/expired access token." };
   }
-  const user = (API_MOCK_USERS as Record<string, MockUserDbEntry>)[decoded.email.toLowerCase().trim()];
-  if (!user) {
-    return { status: 401, error: "Unauthorized", msg: "Authorized user not found." };
+  const email = decoded.email.toLowerCase().trim();
+
+  const dynamoUser = await getUserFromDynamoDB(email);
+  if (dynamoUser) {
+    const mapped = mapDynamoUserToApiUser(dynamoUser);
+    if (mapped.status === "inactive") return { status: 403, error: "Forbidden", msg: "This account is inactive." };
+    return { caller: mapped };
   }
-  if (user.status === "inactive") {
-    return { status: 403, error: "Forbidden", msg: "This account is inactive." };
-  }
+
+  const user = (API_MOCK_USERS as Record<string, MockUserDbEntry>)[email];
+  if (!user) return { status: 401, error: "Unauthorized", msg: "Authorized user not found." };
+  if (user.status === "inactive") return { status: 403, error: "Forbidden", msg: "This account is inactive." };
   return { caller: user };
 }
 
 export async function GET(req: Request) {
   try {
-    const auth = getAuthCaller(req);
+    const auth = await getAuthCaller(req);
     if ("status" in auth) {
       return NextResponse.json({ success: false, error: auth.error, message: auth.msg }, { status: auth.status });
     }
@@ -63,42 +52,42 @@ export async function GET(req: Request) {
       }
     }
 
-    const clientProjects = (Object.values(API_MOCK_PROJECTS) as ApiProject[]).filter(p => p.client_id === callerClientId);
-    const clientOps = (Object.values(API_MOCK_AI_OPERATIONS) as ApiAiOperation[]).filter(o => o.client_id === callerClientId);
-    const clientDocs = (Object.values(API_MOCK_DOCUMENTS) as ApiDocumentItem[]).filter(d => d.client_id === callerClientId);
-    const clientInvoices = (Object.values(API_MOCK_INVOICES) as ApiInvoice[]).filter(i => i.client_id === callerClientId);
-    const clientTickets = (Object.values(API_MOCK_SUPPORT_TICKETS) as ApiSupportTicket[]).filter(t => t.client_id === callerClientId);
-    const clientGov = (Object.values(API_MOCK_GOVERNANCE) as ApiGovernanceItem[]).filter(g => g.client_id === callerClientId);
+    const clientProjects = await dynamoDbListPortalItems("PROJECT", callerClientId);
+    const clientOps = await dynamoDbListPortalItems("AI_OPERATION", callerClientId);
+    const clientDocs = await dynamoDbListPortalItems("DOCUMENT", callerClientId);
+    const clientInvoices = await dynamoDbListPortalItems("INVOICE", callerClientId);
+    const clientTickets = await dynamoDbListPortalItems("SUPPORT", callerClientId);
+    const clientGov = await dynamoDbListPortalItems("GOVERNANCE", callerClientId);
 
     const activeProjectsCount = clientProjects.filter(p => p.status === "active").length;
     const activeOperationsCount = clientOps.filter(o => o.status === "active").length;
-    const verifiedDocsCount = clientDocs.filter(d => d.status === "Verified").length;
+    const verifiedDocsCount = clientDocs.filter(d => d.status === "Verified" || d.status === "verified").length;
     const unpaidInvoicesCount = clientInvoices.filter(i => i.status === "unpaid" || i.status === "processing").length;
     const openSupportTicketsCount = clientTickets.filter(t => t.status !== "RESOLVED").length;
     const flaggedGovCount = clientGov.filter(g => g.status === "Flagged" || g.status === "Critical" || g.severity === "Critical").length;
 
-    const recentProjects = [...clientProjects].sort((a, b) => new Date(b.lastUpdated || "").getTime() - new Date(a.lastUpdated || "").getTime()).slice(0, 5);
-    const recentOperations = [...clientOps].sort((a, b) => new Date(b.lastUpdated || "").getTime() - new Date(a.lastUpdated || "").getTime()).slice(0, 5);
-    const recentDocuments = [...clientDocs].sort((a, b) => new Date(b.lastUpdated || "").getTime() - new Date(a.lastUpdated || "").getTime()).slice(0, 5);
-    const recentInvoices = [...clientInvoices].sort((a, b) => new Date(b.lastUpdated || "").getTime() - new Date(a.lastUpdated || "").getTime()).slice(0, 5);
-    const recentSupportTickets = [...clientTickets].sort((a, b) => new Date(b.createdDate || "").getTime() - new Date(a.createdDate || "").getTime()).slice(0, 5);
-    const recentGovernanceItems = [...clientGov].sort((a, b) => new Date(b.lastUpdated || "").getTime() - new Date(a.lastUpdated || "").getTime()).slice(0, 5);
+    const sortByDate = (items: any[]) => [...items].sort((a, b) => 
+      new Date(b.lastUpdated || b.updated_at || b.createdAt || b.created_at || b.createdDate || "").getTime() - 
+      new Date(a.lastUpdated || a.updated_at || a.createdAt || a.created_at || a.createdDate || "").getTime()
+    ).slice(0, 5);
 
     return NextResponse.json({
       success: true,
       client_id: callerClientId,
       summary: {
-        projects: { activeCount: activeProjectsCount, totalCount: clientProjects.length, recent: recentProjects },
-        aiOperations: { activeCount: activeOperationsCount, totalCount: clientOps.length, recent: recentOperations },
-        documents: { verifiedCount: verifiedDocsCount, totalCount: clientDocs.length, recent: recentDocuments },
-        invoices: { unpaidCount: unpaidInvoicesCount, totalCount: clientInvoices.length, recent: recentInvoices },
-        supportTickets: { openCount: openSupportTicketsCount, totalCount: clientTickets.length, recent: recentSupportTickets },
-        governance: { flaggedCount: flaggedGovCount, totalCount: clientGov.length, recent: recentGovernanceItems }
+        projects: { activeCount: activeProjectsCount, totalCount: clientProjects.length, recent: sortByDate(clientProjects) },
+        aiOperations: { activeCount: activeOperationsCount, totalCount: clientOps.length, recent: sortByDate(clientOps) },
+        documents: { verifiedCount: verifiedDocsCount, totalCount: clientDocs.length, recent: sortByDate(clientDocs) },
+        invoices: { unpaidCount: unpaidInvoicesCount, totalCount: clientInvoices.length, recent: sortByDate(clientInvoices) },
+        supportTickets: { openCount: openSupportTicketsCount, totalCount: clientTickets.length, recent: sortByDate(clientTickets) },
+        governance: { flaggedCount: flaggedGovCount, totalCount: clientGov.length, recent: sortByDate(clientGov) }
       }
     });
   } catch (err) {
+    console.error("Dashboard client summary error:", err);
     return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
   }
 }
+
 
 
