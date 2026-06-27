@@ -157,7 +157,8 @@
     "179-phase6-frontend-documents-s3-integration",
     "180-phase6-seed-aws-data",
     "181-phase6-frontend-env-and-api-finalization",
-    "182-phase6-cors-and-deployment-config"
+    "182-phase6-cors-and-deployment-config",
+    "183-phase6-final-product-qa"
   ],
   "failed": [
     {
