@@ -34,7 +34,7 @@ export default function ROICalculatorPage() {
   const [isHydrated, setIsHydrated] = useState(false);
   const [isFlushing, setIsFlushing] = useState(false);
   const [isIndustryOpen, setIsIndustryOpen] = useState(false);
-
+  const [isFunctionOpen, setIsFunctionOpen] = useState(false);
   // Load from Local Workspace on mount
   useEffect(() => {
     const saved = getToolState("roi");
@@ -637,19 +637,74 @@ Status: MODELLED - ILLUSTRATIVE ONLY
                   </label>
                   <span className="text-[8px] font-mono text-white/30 uppercase tracking-widest">Labor Complexity Factor</span>
                 </div>
-                <select
-                  id="function-select"
-                  value={opFunction}
-                  onChange={(e) => setOpFunction(e.target.value)}
-                  className="w-full h-9 bg-white/5 border border-white/10 rounded-lg px-2.5 text-xs text-white focus:outline-none focus:border-[#009DFF]/50 transition-colors cursor-pointer"
-                >
-                  <option className="bg-[#0A0A0A] text-white" value="customer_operations">Customer Support & Operations</option>
-<option className="bg-[#0A0A0A] text-white" value="legal_compliance">Legal, Risk & Compliance</option>
-<option className="bg-[#0A0A0A] text-white" value="supply_chain">Supply Chain & Logistics</option>
-<option className="bg-[#0A0A0A] text-white" value="finance_accounting">Finance, Audit & Accounting</option>
-<option className="bg-[#0A0A0A] text-white" value="it_engineering">IT Service & Infrastructure</option>
-<option className="bg-[#0A0A0A] text-white" value="hr_admin">People & Administrative Services</option>
-                </select>
+               <div className="relative">
+  <button
+    id="function-select"
+    type="button"
+    onClick={() => setIsFunctionOpen((prev) => !prev)}
+    className="w-full h-9 bg-white/5 border border-white/10 rounded-lg px-2.5 text-xs text-white focus:outline-none focus:border-[#009DFF]/50 transition-colors cursor-pointer flex items-center justify-between"
+  >
+    <span>
+      {{
+        customer_operations: "Customer Support & Operations",
+        legal_compliance: "Legal, Risk & Compliance",
+        supply_chain: "Supply Chain & Logistics",
+        finance_accounting: "Finance, Audit & Accounting",
+        it_engineering: "IT Service & Infrastructure",
+        hr_admin: "People & Administrative Services",
+      }[opFunction]}
+    </span>
+
+    <span className="text-white/70">⌄</span>
+  </button>
+
+  {isFunctionOpen && (
+    <div className="absolute z-50 mt-1 w-full rounded-lg border border-white/10 bg-[#050505] shadow-xl overflow-hidden">
+      {[
+        {
+          value: "customer_operations",
+          label: "Customer Support & Operations",
+        },
+        {
+          value: "legal_compliance",
+          label: "Legal, Risk & Compliance",
+        },
+        {
+          value: "supply_chain",
+          label: "Supply Chain & Logistics",
+        },
+        {
+          value: "finance_accounting",
+          label: "Finance, Audit & Accounting",
+        },
+        {
+          value: "it_engineering",
+          label: "IT Service & Infrastructure",
+        },
+        {
+          value: "hr_admin",
+          label: "People & Administrative Services",
+        },
+      ].map((item) => (
+        <button
+          key={item.value}
+          type="button"
+          onClick={() => {
+            setOpFunction(item.value);
+            setIsFunctionOpen(false);
+          }}
+          className={`w-full px-3 py-2 text-left text-xs transition-colors ${
+            opFunction === item.value
+              ? "bg-[#009DFF]/20 text-white"
+              : "text-white/80 hover:bg-white/10 hover:text-white"
+          }`}
+        >
+          {item.label}
+        </button>
+      ))}
+    </div>
+  )}
+</div>
               </div>
             </div>
 
