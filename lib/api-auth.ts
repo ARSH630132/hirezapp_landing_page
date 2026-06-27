@@ -78,7 +78,7 @@ export function verifyJwt(token: string, secret: string = JWT_SECRET): Record<st
   }
 }
 
-export const API_MOCK_USERS: Record<string, MockUserDbEntry> = {
+export const DEFAULT_API_MOCK_USERS: Record<string, MockUserDbEntry> = {
   "s.vance@governance.gff.ai": {
     id: "usr-001",
     name: "Dr. Sarah Vance",
@@ -145,12 +145,40 @@ export const API_MOCK_USERS: Record<string, MockUserDbEntry> = {
   }
 };
 
+// Initialize the mock users database globally to persist edits in memory across hot reloads.
+if (!(global as any)._apiMockUsers) {
+  (global as any)._apiMockUsers = { ...DEFAULT_API_MOCK_USERS };
+}
+
+export const API_MOCK_USERS: Record<string, MockUserDbEntry> = (global as any)._apiMockUsers;
+
+export function hashPassword(password: string): string {
+  return crypto
+    .createHmac("sha256", "gff-ai-salt-2026")
+    .update(password.trim())
+    .digest("hex");
+}
+
+export function getNextUserId(): string {
+  const users = Object.values(API_MOCK_USERS);
+  const ids = users
+    .map(u => {
+      const match = u.id.match(/^usr-(\d+)$/);
+      return match ? parseInt(match[1], 10) : 0;
+    })
+    .filter(id => id > 0);
+  const maxId = ids.length > 0 ? Math.max(...ids) : 5;
+  return `usr-${String(maxId + 1).padStart(3, "0")}`;
+}
+
 export function verifyUserPassword(userEmail: string, passwordAttempt: string): boolean {
   const user = API_MOCK_USERS[userEmail.toLowerCase().trim()];
   if (!user) return false;
   const attempt = passwordAttempt.trim();
+  const hashedAttempt = hashPassword(attempt);
   return (
     attempt === user.passwordHash ||
+    hashedAttempt === user.passwordHash ||
     attempt === "gff-secure-2026!" ||
     attempt === "password123"
   );
