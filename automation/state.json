@@ -63,7 +63,8 @@
     "60-phase3-tool-empty-loading-error-states",
     "61-phase3-mobile-pass-build-tools",
     "62-phase3-accessibility-pass-build-tools",
-    "63-phase3-motion-and-interaction-polish"
+    "63-phase3-motion-and-interaction-polish",
+    "64-phase3-visual-premium-polish-build-tools"
   ],
   "failed": [
     {
