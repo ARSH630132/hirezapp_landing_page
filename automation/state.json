@@ -80,7 +80,8 @@
     "77-phase4-private-mock-data-model",
     "79-phase4-client-dashboard",
     "80-phase4-client-projects-list",
-    "78-phase4-data-table-filter-system"
+    "78-phase4-data-table-filter-system",
+    "84-phase4-client-documents-library"
   ],
   "failed": [
     {
