@@ -20,6 +20,7 @@ def list_clients(
     region: Annotated[Optional[str], Query(description="Filter by client region")] = None,
     limit: Annotated[int, Query(ge=1, le=1000)] = 100,
     skip: Annotated[int, Query(ge=0)] = 0,
+    offset: Annotated[Optional[int], Query(ge=0)] = None,
     db: Session = Depends(get_db),
     current_user: User = Depends(require_admin)
 ):
@@ -38,7 +39,8 @@ def list_clients(
         query = query.filter(ClientAccount.industry.ilike(f"%{industry}%"))
     if region:
         query = query.filter(ClientAccount.region.ilike(f"%{region}%"))
-    return query.offset(skip).limit(limit).all()
+    final_offset = offset if offset is not None else skip
+    return query.offset(final_offset).limit(limit).all()
 
 @router.get("/{client_id}", response_model=ClientAccountResponse)
 def get_client(

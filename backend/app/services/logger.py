@@ -4,8 +4,8 @@ from ..schemas.system_log import SystemLogCreate
 
 class SystemLoggerService:
     @staticmethod
-    def get_latest_logs(db: Session, limit: int = 10):
-        return db.query(SystemLog).order_by(SystemLog.created_at.desc()).limit(limit).all()
+    def get_latest_logs(db: Session, limit: int = 10, offset: int = 0):
+        return db.query(SystemLog).order_by(SystemLog.created_at.desc()).offset(offset).limit(limit).all()
 
     @staticmethod
     def create_log(db: Session, log_in: SystemLogCreate):

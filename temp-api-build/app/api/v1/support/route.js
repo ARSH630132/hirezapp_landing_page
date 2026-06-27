@@ -92,7 +92,12 @@ async function GET(req) {
                 t.id.toLowerCase().includes(q) ||
                 t.title?.toLowerCase().includes(q));
         }
-        return server_1.NextResponse.json({ success: true, tickets });
+        const limitParam = searchParams.get("limit");
+        const offsetParam = searchParams.get("offset") || searchParams.get("skip");
+        const limit = limitParam ? Math.max(1, Math.min(1000, parseInt(limitParam, 10) || 100)) : 100;
+        const offset = offsetParam ? Math.max(0, parseInt(offsetParam, 10) || 0) : 0;
+        const paginatedTickets = tickets.slice(offset, offset + limit);
+        return server_1.NextResponse.json({ success: true, tickets: paginatedTickets });
     }
     catch (err) {
         return server_1.NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });

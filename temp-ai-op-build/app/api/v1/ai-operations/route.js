@@ -67,7 +67,12 @@ async function GET(req) {
             const q = search.toLowerCase().trim();
             ops = ops.filter(o => o.name.toLowerCase().includes(q) || o.desc.toLowerCase().includes(q) || o.owner.toLowerCase().includes(q) || o.id.toLowerCase().includes(q));
         }
-        return server_1.NextResponse.json({ success: true, operations: ops });
+        const limitParam = searchParams.get("limit");
+        const offsetParam = searchParams.get("offset") || searchParams.get("skip");
+        const limit = limitParam ? Math.max(1, Math.min(1000, parseInt(limitParam, 10) || 100)) : 100;
+        const offset = offsetParam ? Math.max(0, parseInt(offsetParam, 10) || 0) : 0;
+        const paginatedOps = ops.slice(offset, offset + limit);
+        return server_1.NextResponse.json({ success: true, operations: paginatedOps });
     }
     catch (err) {
         return server_1.NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });

@@ -121,6 +121,11 @@ export async function GET(req: Request) {
     }
 
     // Ensure all returned items have both the unified fields to avoid client issues
+    const limitParam = searchParams.get("limit");
+    const offsetParam = searchParams.get("offset") || searchParams.get("skip");
+    const limit = limitParam ? Math.max(1, Math.min(1000, parseInt(limitParam, 10) || 100)) : 100;
+    const offset = offsetParam ? Math.max(0, parseInt(offsetParam, 10) || 0) : 0;
+
     const synchronizedDocs = documents.map(d => ({
       ...d,
       project_id: d.project_id || d.projectId || "",
@@ -130,7 +135,9 @@ export async function GET(req: Request) {
       visibility: d.visibility || (d.client_id === "client-001" ? "LEVEL_IV (Restricted)" : "LEVEL_I (Client View)")
     }));
 
-    return NextResponse.json({ success: true, documents: synchronizedDocs });
+    const paginatedDocs = synchronizedDocs.slice(offset, offset + limit);
+
+    return NextResponse.json({ success: true, documents: paginatedDocs });
   } catch (err) {
     return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
   }

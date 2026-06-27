@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi import APIRouter, Depends, HTTPException, status, Request, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
 import json
@@ -70,6 +70,9 @@ def list_support_tickets(
     project_id: Optional[int] = None,
     assigned_to: Optional[str] = None,
     search: Optional[str] = None,
+    limit: int = Query(100, ge=1, le=1000, description="Limit results"),
+    offset: int = Query(0, ge=0, description="Offset results"),
+    skip: Optional[int] = Query(None, ge=0, description="Skip results (alias for offset)"),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
@@ -107,7 +110,8 @@ def list_support_tickets(
             SupportTicket.description.ilike(search_filter)
         )
         
-    return query.all()
+    final_offset = offset if skip is None else skip
+    return query.offset(final_offset).limit(limit).all()
 
 
 @router.get("/{id}", response_model=SupportTicketResponse)

@@ -46,7 +46,15 @@ export async function GET(req: Request) {
       const q = searchQ.toLowerCase().trim();
       invoices = invoices.filter(i => i.invoice_number.toLowerCase().includes(q) || i.description.toLowerCase().includes(q) || (i.project_name && i.project_name.toLowerCase().includes(q)) || i.client_name.toLowerCase().includes(q) || i.id.toLowerCase().includes(q));
     }
-    return NextResponse.json({ success: true, invoices });
+
+    const limitParam = s.get("limit");
+    const offsetParam = s.get("offset") || s.get("skip");
+    const limit = limitParam ? Math.max(1, Math.min(1000, parseInt(limitParam, 10) || 100)) : 100;
+    const offset = offsetParam ? Math.max(0, parseInt(offsetParam, 10) || 0) : 0;
+
+    const paginatedInvoices = invoices.slice(offset, offset + limit);
+
+    return NextResponse.json({ success: true, invoices: paginatedInvoices });
   } catch (err) {
     return NextResponse.json({ success: false, error: "Internal Error" }, { status: 500 });
   }

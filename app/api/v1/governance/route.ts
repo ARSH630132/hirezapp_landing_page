@@ -57,7 +57,15 @@ export async function GET(req: Request) {
         (i.standard && i.standard.toLowerCase().includes(q))
       );
     }
-    return NextResponse.json({ success: true, governance: items });
+
+    const limitParam = searchParams.get("limit");
+    const offsetParam = searchParams.get("offset") || searchParams.get("skip");
+    const limit = limitParam ? Math.max(1, Math.min(1000, parseInt(limitParam, 10) || 100)) : 100;
+    const offset = offsetParam ? Math.max(0, parseInt(offsetParam, 10) || 0) : 0;
+
+    const paginatedItems = items.slice(offset, offset + limit);
+
+    return NextResponse.json({ success: true, governance: paginatedItems });
   } catch (err) {
     return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
   }

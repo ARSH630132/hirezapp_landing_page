@@ -14,6 +14,9 @@ router = APIRouter()
 def list_projects(
     request: Request,
     client_id: Optional[int] = Query(None, description="Filter projects by client ID"),
+    limit: int = Query(100, ge=1, le=1000, description="Limit results"),
+    offset: int = Query(0, ge=0, description="Offset results"),
+    skip: Optional[int] = Query(None, ge=0, description="Skip results (alias for offset)"),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
@@ -41,4 +44,5 @@ def list_projects(
         if client_id is not None:
             query = query.filter(Project.client_id == client_id)
             
-    return query.all()
+    final_offset = offset if skip is None else skip
+    return query.offset(final_offset).limit(limit).all()

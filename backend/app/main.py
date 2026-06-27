@@ -1,7 +1,9 @@
 import time
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, JSONResponse
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
 from contextlib import asynccontextmanager
 
 from .core.config import settings
@@ -21,6 +23,51 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan
 )
+
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+    # Map status code to friendly error category
+    error_map = {
+        400: "Bad Request",
+        401: "Unauthorized",
+        403: "Forbidden",
+        404: "Not Found",
+        409: "Conflict",
+        422: "Validation Error",
+    }
+    err_title = error_map.get(exc.status_code, "Error")
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "success": False,
+            "error": err_title,
+            "message": exc.detail,
+            "detail": exc.detail
+        }
+    )
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    # Extract details
+    errors = exc.errors()
+    # Format a simple message
+    messages = []
+    for err in errors:
+        loc = " -> ".join(str(loc) for loc in err.get("loc", []))
+        msg = err.get("msg", "invalid value")
+        messages.append(f"{loc}: {msg}")
+    detailed_message = "; ".join(messages) or "Validation failed"
+    
+    return JSONResponse(
+        status_code=422,
+        content={
+            "success": False,
+            "error": "Validation Error",
+            "message": detailed_message,
+            "detail": detailed_message,
+            "errors": errors
+        }
+    )
 
 # CORS configuration
 origins = settings.get_cors_origins()
