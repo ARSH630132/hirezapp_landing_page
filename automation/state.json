@@ -142,7 +142,8 @@
     "162-phase5-frontend-admin-support-governance-api",
     "165-phase5-remove-old-local-preview-data-dependency",
     "166-phase5-dev-environment-docs",
-    "167-phase5-security-limitations-docs"
+    "167-phase5-security-limitations-docs",
+    "168-phase5-backend-frontend-smoke-qa"
   ],
   "failed": [
     {
