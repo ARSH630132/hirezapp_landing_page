@@ -76,7 +76,8 @@
     "73-phase4-client-login-landing",
     "74-phase4-login-page",
     "75-phase4-forgot-password-otp-preview",
-    "76-phase4-private-app-shell"
+    "76-phase4-private-app-shell",
+    "77-phase4-private-mock-data-model"
   ],
   "failed": [
     {
