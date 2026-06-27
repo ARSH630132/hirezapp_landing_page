@@ -183,3 +183,132 @@ export function verifyUserPassword(userEmail: string, passwordAttempt: string): 
     attempt === "password123"
   );
 }
+
+// --- PROJECTS CRUD API MODELS & SEED DATA ---
+
+export interface ApiProject {
+  id: string;
+  name: string;
+  client_id: string;
+  client_name: string;
+  phase: string;
+  status: string; // e.g. "active" | "completed" | "paused" | "archived"
+  health: string; // e.g. "On Track" | "Warning" | "Critical" | "At Risk" | "Delayed"
+  owner: string;
+  nodesCount: number;
+  enclaveType: string;
+  desc: string;
+  lastUpdated: string;
+}
+
+export const DEFAULT_API_MOCK_PROJECTS: Record<string, ApiProject> = {
+  "proj-001": {
+    id: "proj-001",
+    name: "Apex Sovereign Multi-Agent Lattice",
+    client_id: "client-001",
+    client_name: "Apex Sovereign Group [Preview Client]",
+    phase: "Phase V: Production-Live",
+    status: "active",
+    health: "On Track",
+    owner: "Dr. Sarah Vance",
+    nodesCount: 8,
+    enclaveType: "Intel SGX",
+    desc: "High-throughput isolated core loop with secure localized kernel telemetry and dual-layer TLS 1.3 socket.",
+    lastUpdated: "2026-06-27T15:20:00Z"
+  },
+  "proj-002": {
+    id: "proj-002",
+    name: "Global Retail Real-Time Audit Ring",
+    client_id: "client-002",
+    client_name: "Global Retail Enclave [Preview Client]",
+    phase: "Phase IV: User Acceptance Testing",
+    status: "active",
+    health: "At Risk",
+    owner: "Alexander Mercer",
+    nodesCount: 5,
+    enclaveType: "AMD SEV-SNP",
+    desc: "Continuous model alignment sandbox simulating extreme load, prompt injections, and runtime governance audits.",
+    lastUpdated: "2026-06-27T14:10:00Z"
+  },
+  "proj-003": {
+    id: "proj-003",
+    name: "Sovereign Logistics AI Route Optimizer",
+    client_id: "client-003",
+    client_name: "Sovereign Logistics Unit [Preview Client]",
+    phase: "Phase III: Agent Alignment",
+    status: "paused",
+    health: "Paused",
+    owner: "Marcus Vance",
+    nodesCount: 4,
+    enclaveType: "AWS Nitro Enclave",
+    desc: "Airgapped telemetry network running geological route optimizations inside ephemeral containerized enclaves.",
+    lastUpdated: "2026-06-26T18:05:00Z"
+  },
+  "proj-004": {
+    id: "proj-004",
+    name: "Federal Treasury Multi-Enclave Ledger",
+    client_id: "client-004",
+    client_name: "Federal Treasury Division [Preview Client]",
+    phase: "Phase II: Sandbox Provisioning",
+    status: "active",
+    health: "Delayed",
+    owner: "Evelyn Carter",
+    nodesCount: 12,
+    enclaveType: "Intel SGX",
+    desc: "NIST-compliant hardware enclave isolating state estimation and cryptographic treasury signatures from host execution.",
+    lastUpdated: "2026-06-27T09:30:00Z"
+  },
+  "proj-005": {
+    id: "proj-005",
+    name: "National Health Secure Diagnostics Loop",
+    client_id: "client-001",
+    client_name: "Apex Sovereign Group [Preview Client]",
+    phase: "Phase I: Planning",
+    status: "active",
+    health: "On Track",
+    owner: "Auditor Jenkins",
+    nodesCount: 3,
+    enclaveType: "AMD SEV-SNP",
+    desc: "Zero-Trust medical agent handshake validating eBPF kernel event streams on medical imaging diagnostic models.",
+    lastUpdated: "2026-06-27T11:45:00Z"
+  }
+};
+
+// Initialize globally to persist edits in memory across hot-reloads
+if (!(global as any)._apiMockProjects) {
+  (global as any)._apiMockProjects = { ...DEFAULT_API_MOCK_PROJECTS };
+}
+
+export const API_MOCK_PROJECTS: Record<string, ApiProject> = (global as any)._apiMockProjects;
+
+export function getNextProjectId(): string {
+  const projects = Object.values(API_MOCK_PROJECTS);
+  const ids = projects
+    .map(p => {
+      const match = p.id.match(/^proj-(\d+)$/);
+      return match ? parseInt(match[1], 10) : 0;
+    })
+    .filter(id => id > 0);
+  const maxId = ids.length > 0 ? Math.max(...ids) : 5;
+  return `proj-${String(maxId + 1).padStart(3, "0")}`;
+}
+
+export function getClientNameFromId(clientId: string): string {
+  switch (clientId) {
+    case "client-001": return "Apex Sovereign Group [Preview Client]";
+    case "client-002": return "Global Retail Enclave [Preview Client]";
+    case "client-003": return "Sovereign Logistics Unit [Preview Client]";
+    case "client-004": return "Federal Treasury Division [Preview Client]";
+    default: return "GFF AI Platform Core (Global Root)";
+  }
+}
+
+export function getClientIdFromAssociation(association: string): string {
+  const assoc = association.toLowerCase();
+  if (assoc.includes("apex-sovereign") || assoc.includes("apex sovereign")) return "client-001";
+  if (assoc.includes("global-retail") || assoc.includes("global retail")) return "client-002";
+  if (assoc.includes("sovereign-logistics") || assoc.includes("sovereign logistics")) return "client-003";
+  if (assoc.includes("fed-treasury") || assoc.includes("federal treasury")) return "client-004";
+  return "client-unknown";
+}
+

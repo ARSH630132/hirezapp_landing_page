@@ -1,0 +1,20 @@
+## npm run lint
+exit=1
+STDOUT:
+
+> hirezapp_landing_page@0.1.0 lint
+> eslint
+
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/scripts/test-project-apis.js
+   1:22  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   2:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   3:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  12:17  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  13:17  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  14:18  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+✖ 6 problems (6 errors, 0 warnings)
+
+
+STDERR:
