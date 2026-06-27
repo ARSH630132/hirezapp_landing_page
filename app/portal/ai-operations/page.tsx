@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { 
   Bot, 
@@ -30,141 +30,68 @@ import {
   GovernancePanel
 } from "@/components/private-app";
 
-// ==========================================
-// 1. DATA TYPES & HIGH-FIDELITY PREVIEW AGENTS
-// ==========================================
-interface EnrichedAgent {
-  id: string;
-  name: string;
-  projectId: string;
-  projectName: string;
-  status: "active" | "evaluating" | "warning" | "decoupled";
-  type: "Core Telemetry" | "Alignment Guard" | "Seismic Processing" | "Medical Enclave" | "Transport Node";
-  stage: "Sandbox Emulation" | "Staging Enclave" | "Production Guardrail";
-  threads: number;
-  memory: string;
-  logs: string[];
-  lastHeartbeat: string;
-  cpu: number;
-  ram: number;
-  latency: number;
-  uptime: number;
+import { mapApiOpToEnrichedAgent, EnrichedAgent } from "./mapping-helper";
+
+function OperationsSkeleton() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {[1, 2, 3].map((n) => (
+        <WorkspaceCard key={n} className="flex flex-col h-full border border-white/5 bg-[#050505]/20 p-5 rounded-2xl relative animate-pulse">
+          <div className="flex items-center justify-between border-b border-white/5 pb-2.5">
+            <div className="h-4 bg-white/5 rounded w-1/3" />
+            <div className="h-4 bg-white/5 rounded w-1/5" />
+          </div>
+          <div className="mt-4 space-y-3 flex-grow">
+            <div className="h-5 bg-white/5 rounded w-3/4" />
+            <div className="h-3 bg-white/5 rounded w-full" />
+            <div className="h-3 bg-white/5 rounded w-5/6" />
+          </div>
+          <div className="mt-4 h-24 bg-white/5 rounded-lg w-full" />
+          <div className="mt-4 flex gap-2">
+            <div className="h-8 bg-white/5 rounded w-full" />
+            <div className="h-8 bg-white/5 rounded w-12" />
+          </div>
+        </WorkspaceCard>
+      ))}
+    </div>
+  );
 }
 
-const INITIAL_AGENTS: EnrichedAgent[] = [
-  {
-    id: "agent-001",
-    name: "RETAIL-CORE-A1 [Preview Agent]",
-    projectId: "proj-001",
-    projectName: "Sovereign Core Sandbox 02",
-    status: "active",
-    type: "Core Telemetry",
-    stage: "Production Guardrail",
-    threads: 24,
-    memory: "4.2 GB / 8.0 GB",
-    logs: [
-      "Core verification complete (SHA-256: FF81)",
-      "Local memory state synchronized successfully",
-      "eBPF telemetry boundary active"
-    ],
-    lastHeartbeat: "2026-06-27T11:58:30Z",
-    cpu: 42,
-    ram: 52,
-    latency: 12,
-    uptime: 99.998
-  },
-  {
-    id: "agent-002",
-    name: "ALIGN-GUARD-A2 [Preview Agent]",
-    projectId: "proj-002",
-    projectName: "Model Guardrail Sandbox 04",
-    status: "evaluating",
-    type: "Alignment Guard",
-    stage: "Sandbox Emulation",
-    threads: 16,
-    memory: "3.1 GB / 4.0 GB",
-    logs: [
-      "Policy verification pass 99.8%",
-      "No direct model manipulation requests detected.",
-      "Syncing guardrail ledger block..."
-    ],
-    lastHeartbeat: "2026-06-27T11:59:12Z",
-    cpu: 18,
-    ram: 77,
-    latency: 24,
-    uptime: 99.982
-  }
-];
+function OperationsErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
+  return (
+    <WorkspaceCard className="p-8 border border-red-500/10 bg-red-950/5 rounded-2xl flex flex-col items-center justify-center text-center space-y-4 max-w-lg mx-auto my-12">
+      <div className="p-3 rounded-full bg-red-500/10 border border-red-500/20 text-red-400">
+        <Activity className="w-8 h-8 animate-pulse" />
+      </div>
+      <div className="space-y-1.5 font-mono">
+        <h4 className="text-white font-bold uppercase text-[14px]">TELEMETRY DESYNC ERROR</h4>
+        <p className="text-white/50 text-[11px] leading-relaxed">{message || "Failed to establish continuous secure channel with the telemetry ledger."}</p>
+      </div>
+      <button
+        onClick={onRetry}
+        className="h-9 px-6 rounded-lg bg-[#009DFF] hover:bg-[#009DFF]/90 text-white font-mono font-bold text-[11px] uppercase cursor-pointer flex items-center gap-2 transition-all"
+      >
+        <RefreshCw className="w-3.5 h-3.5" />
+        <span>RE-ESTABLISH HANDSHAKE</span>
+      </button>
+    </WorkspaceCard>
+  );
+}
 
+function OperationsEmptyState() {
+  return (
+    <WorkspaceCard className="p-8 border border-white/5 bg-[#050505]/20 rounded-2xl flex flex-col items-center justify-center text-center space-y-4 max-w-lg mx-auto my-12">
+      <div className="p-3 rounded-full bg-[#009DFF]/10 border border-[#009DFF]/20 text-[#009DFF]">
+        <Bot className="w-8 h-8 animate-pulse" />
+      </div>
+      <div className="space-y-1.5 font-mono">
+        <h4 className="text-white font-bold uppercase text-[14px]">NO AI OPERATIONS ENROLLED</h4>
+        <p className="text-white/50 text-[11px] leading-relaxed">This client partition currently has no active or archived sandboxed runtime records in the registry.</p>
+      </div>
+    </WorkspaceCard>
+  );
+}
 
-
-const EXTRA_AGENTS: EnrichedAgent[] = [
-  {
-    id: "agent-003",
-    name: "ORE-TUNNEL-X4 [Preview Agent]",
-    projectId: "proj-003",
-    projectName: "Sovereign Mining Intel Loop",
-    status: "active",
-    type: "Seismic Processing",
-    stage: "Staging Enclave",
-    threads: 32,
-    memory: "12.8 GB / 16.0 GB",
-    logs: [
-      "Seismic array map loaded successfully.",
-      "AMD SEV memory block verified securely.",
-      "Telemetry streaming active: 45.2 MB/s"
-    ],
-    lastHeartbeat: "2026-06-27T11:57:45Z",
-    cpu: 65,
-    ram: 80,
-    latency: 14,
-    uptime: 99.991
-  },
-  {
-    id: "agent-004",
-    name: "MED-CLINIC-H9 [Preview Agent]",
-    projectId: "proj-001",
-    projectName: "Sovereign Core Sandbox 02",
-    status: "warning",
-    type: "Medical Enclave",
-    stage: "Sandbox Emulation",
-    threads: 16,
-    memory: "7.1 GB / 8.0 GB",
-    logs: [
-      "Warning: Thread load above safety line (85%)",
-      "Triggered telemetry frame check...",
-      "Awaiting auto-scaling context re-allocator"
-    ],
-    lastHeartbeat: "2026-06-27T11:58:11Z",
-    cpu: 94,
-    ram: 89,
-    latency: 88,
-    uptime: 99.954
-  },
-  {
-    id: "agent-005",
-    name: "TRANS-LOOP-Z1 [Preview Agent]",
-    projectId: "proj-001",
-    projectName: "Sovereign Core Sandbox 02",
-    status: "decoupled",
-    type: "Transport Node",
-    stage: "Production Guardrail",
-    threads: 0,
-    memory: "0.0 GB / 8.0 GB",
-    logs: [
-      "Thread execution terminated gracefully by operator.",
-      "State dumped to local cryptographic storage block.",
-      "Hardware enclave decoupled."
-    ],
-    lastHeartbeat: "2026-06-26T23:55:00Z",
-    cpu: 0,
-    ram: 0,
-    latency: 999,
-    uptime: 98.712
-  }
-];
-
-const ALL_INITIAL_AGENTS = [...INITIAL_AGENTS, ...EXTRA_AGENTS];
 
 // Custom Health Ring Component
 function HealthRing({ 
@@ -222,7 +149,9 @@ function HealthRing({
 
 
 export default function ClientAiOperationsPage() {
-  const [agents, setAgents] = useState<EnrichedAgent[]>(ALL_INITIAL_AGENTS);
+  const [agents, setAgents] = useState<EnrichedAgent[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [rebootingMap, setRebootingMap] = useState<Record<string, boolean>>({});
   
   // Interactive Filters State
@@ -234,6 +163,40 @@ export default function ClientAiOperationsPage() {
 
   // Tabs State
   const [activeTab, setActiveTab] = useState<"telemetry" | "hardware" | "governance">("telemetry");
+
+  const fetchOperations = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") : null;
+      const res = await fetch("/api/v1/ai-operations", {
+        headers: {
+          "Authorization": `Bearer ${token || ""}`,
+          "Content-Type": "application/json"
+        }
+      });
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.message || `HTTP error! status: ${res.status}`);
+      }
+      const data = await res.json();
+      if (data.success && Array.isArray(data.operations)) {
+        const mapped = data.operations.map(mapApiOpToEnrichedAgent);
+        setAgents(mapped);
+      } else {
+        throw new Error(data.message || "Failed to retrieve sandbox telemetry ledger.");
+      }
+    } catch (err: any) {
+      console.error("Error fetching AI operations:", err);
+      setError(err.message || "An unexpected network error occurred.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchOperations();
+  }, [fetchOperations]);
 
   // Dynamic Reboot Handler (Simulated Enclave Cycling)
   const handleRecycleEnclave = (agentId: string) => {
@@ -493,9 +456,12 @@ export default function ClientAiOperationsPage() {
                   className="w-full h-9 rounded-lg border border-white/5 bg-[#080808] px-3 pr-8 text-[11px] font-mono text-white/70 focus:text-white outline-none cursor-pointer appearance-none"
                 >
                   <option value="all">ALL PROJECTS</option>
-                  <option value="proj-001">Sovereign Core Sandbox 02</option>
-                  <option value="proj-002">Model Guardrail Sandbox 04</option>
-                  <option value="proj-003">Sovereign Mining Intel Loop</option>
+                  {Array.from(new Set(agents.map(a => JSON.stringify({ id: a.projectId, name: a.projectName }))))
+                    .map(str => JSON.parse(str) as { id: string; name: string })
+                    .map(p => (
+                      <option key={p.id} value={p.id}>{p.name.toUpperCase()}</option>
+                    ))
+                  }
                 </select>
                 <ChevronDown className="absolute right-3 top-2.5 w-4 h-4 text-white/40 pointer-events-none" />
               </div>
@@ -558,7 +524,13 @@ export default function ClientAiOperationsPage() {
           </WorkspaceCard>
 
 
-          {filteredAgents.length > 0 ? (
+          {loading ? (
+            <OperationsSkeleton />
+          ) : error ? (
+            <OperationsErrorState message={error} onRetry={fetchOperations} />
+          ) : agents.length === 0 ? (
+            <OperationsEmptyState />
+          ) : filteredAgents.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredAgents.map((agent) => {
                 const isRebooting = rebootingMap[agent.id];
