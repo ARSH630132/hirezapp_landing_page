@@ -39,4 +39,11 @@ class AuthService:
     @staticmethod
     def create_access_token_for_user(user: User) -> str:
         expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-        return create_access_token(subject=user.email, expires_delta=expires)
+        return create_access_token(
+            subject=user.email,
+            user_id=user.id,
+            role=user.role,
+            client_id=user.client_id,
+            email=user.email,
+            expires_delta=expires
+        )

@@ -72,6 +72,9 @@ cp .env.example .env
 ```
 The defaults in `.env` are pre-tuned for seamless local development with the Next.js local frontend.
 
+> ⚠️ **Production Security Warning**:
+> In local development mode, `JWT_SECRET` defaults to a safe developer-only fallback key. However, for any production deployment, you **MUST** override `JWT_SECRET` in your environment variables with a cryptographically secure, high-entropy key (e.g., generated via `openssl rand -hex 32`). Leaving the default key active in production compromises token verification and authentication security.
+
 ### 5. Run the Server
 Launch the development server via Uvicorn:
 ```bash
