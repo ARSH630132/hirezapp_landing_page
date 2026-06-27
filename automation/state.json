@@ -136,7 +136,8 @@
     "145-phase5-backend-error-handling-and-pagination",
     "156-phase5-frontend-client-analytics-governance-api",
     "158-phase5-frontend-admin-dashboard-api",
-    "159-phase5-frontend-admin-clients-users-api"
+    "159-phase5-frontend-admin-clients-users-api",
+    "160-phase5-frontend-admin-projects-aiops-api"
   ],
   "failed": [
     {
