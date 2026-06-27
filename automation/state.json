@@ -125,7 +125,8 @@
     "147-phase5-frontend-api-client",
     "148-phase5-frontend-auth-integration",
     "149-phase5-frontend-route-guard-backend-auth",
-    "150-phase5-frontend-client-dashboard-api"
+    "150-phase5-frontend-client-dashboard-api",
+    "151-phase5-frontend-client-projects-api"
   ],
   "failed": [
     {
