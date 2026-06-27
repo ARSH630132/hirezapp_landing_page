@@ -356,10 +356,10 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
   className="absolute -right-20 bottom-20 h-56 w-56 rounded-full border border-[#E4000F]/20"
 />
             <div className="relative space-y-5">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/30 px-3 py-1 text-[10px] font-mono font-bold uppercase tracking-widest text-[#009DFF]">
+              {/* <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/30 px-3 py-1 text-[10px] font-mono font-bold uppercase tracking-widest text-[#009DFF]">
                 <Shield className="w-3.5 h-3.5" />
                 Secure Client Portal
-              </div>
+              </div> */}
               <div className="space-y-3 max-w-xl">
                 <h1 className="text-[44px] leading-[1.05] font-semibold tracking-wide">
                   Welcome back to your GFF AI workspace.
@@ -392,9 +392,9 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
               <div className="space-y-7">
                 <div className="space-y-2">
                   <div className="flex items-center justify-between gap-4">
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#E98828]">
+                    {/* <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#E98828]">
                       Client Login
-                    </span>
+                    </span> */}
                     <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-1 text-[9px] font-mono font-bold uppercase tracking-widest text-emerald-400">
                       <span className="relative flex h-2 w-2">
   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />

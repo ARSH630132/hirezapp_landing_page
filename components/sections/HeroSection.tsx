@@ -12,7 +12,7 @@ export default function HeroSection() {
       className="w-full min-h-[70vh] pt-[84px] bg-black flex flex-col lg:flex-row overflow-hidden"
       variants={pageFadeVariants}
     >
-      <div className="relative z-10 w-full lg:w-[48%] xl:w-[46%] shrink-0 flex flex-col justify-center px-6 lg:pl-16 lg:pr-4 py-16 lg:py-24">
+      <div className="relative z-10 w-full lg:w-[48%] xl:w-[46%] shrink-0 flex flex-col justify-start px-6 lg:pl-16 lg:pr-4 pt-10 lg:pt-14 pb-16 lg:pb-20">
         <h1 className="relative z-20 w-[115%] max-w-[760px] text-[40px] sm:text-[48px] lg:text-[52px] leading-[1.1] font-semibold">
         Building the World's First
 <br />
@@ -52,7 +52,24 @@ style={{
             <span className="text-white text-[16px] leading-none font-medium whitespace-nowrap">Experience GFF AI Live</span>
           </a>
         </div>
-        
+        <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-4 max-w-[520px]">
+  {[
+    "Animated Foundry",
+    "Live Agent Counter",
+    "Live Projects",
+    "Countries",
+    "Client Logos",
+    "Scroll Indicator",
+  ].map((item) => (
+    <button
+      key={item}
+      type="button"
+      className="w-full h-[42px] rounded-full border border-white/15 bg-white/[0.04] px-4 text-white/75 text-[12px] font-medium hover:border-[#009DFF]/50 hover:text-white hover:bg-[#009DFF]/10 transition-all"
+    >
+      {item}
+    </button>
+  ))}
+</div>
         <div className="mt-12 pt-8 border-t border-white/10 grid grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="flex flex-col"><span className="text-2xl font-bold text-white">500+</span><span className="text-xs text-gray-400">AI Use Cases</span></div>
           <div className="flex flex-col"><span className="text-2xl font-bold text-white">20+</span><span className="text-xs text-gray-400">Industries</span></div>

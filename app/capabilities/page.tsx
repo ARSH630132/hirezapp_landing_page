@@ -47,7 +47,7 @@ export default function CapabilitiesPage() {
       <section className="relative w-full px-6 lg:px-16 pb-20">
         <div className="max-w-[1795px] mx-auto">
           <div className="text-center max-w-[800px] mx-auto mb-12">
-            <span className="text-[10px] font-mono tracking-[0.2em] text-[#009DFF] uppercase font-bold">THE STRUCTURAL FABRIC</span>
+            {/* <span className="text-[10px] font-mono tracking-[0.2em] text-[#009DFF] uppercase font-bold">THE STRUCTURAL FABRIC</span> */}
             <h2 className="text-[28px] sm:text-[34px] font-bold text-white tracking-tight mt-2">Enterprise AI Stack Architecture</h2>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
@@ -75,7 +75,7 @@ export default function CapabilitiesPage() {
             </div>
             <div className="lg:col-span-5 bg-[#030304]/60 backdrop-blur-xl border border-white/5 rounded-2xl p-6 min-h-[300px] flex flex-col justify-between">
               <div>
-                <span className="text-[9px] font-mono tracking-widest text-[#009DFF] uppercase bg-[#009DFF]/5 px-2 py-0.5 rounded border border-[#009DFF]/10">INSPECTOR SPEC</span>
+                {/* <span className="text-[9px] font-mono tracking-widest text-[#009DFF] uppercase bg-[#009DFF]/5 px-2 py-0.5 rounded border border-[#009DFF]/10">INSPECTOR SPEC</span> */}
                 <h3 className="text-[20px] font-bold text-white mt-3">{currentLayer.name}</h3>
                 <p className="mt-2 text-[13px] leading-[1.6] text-white/60 font-light">{currentLayer.desc}</p>
                 <div className="mt-4 space-y-1.5">
@@ -104,7 +104,7 @@ export default function CapabilitiesPage() {
       <section className="relative w-full px-6 lg:px-16 pb-20 border-t border-white/5 pt-16">
         <div className="max-w-[1795px] mx-auto">
           <div className="text-center max-w-[800px] mx-auto mb-12">
-            <span className="text-[10px] font-mono tracking-[0.2em] text-[#E4000F] uppercase font-bold">COMMAND GRID</span>
+            {/* <span className="text-[10px] font-mono tracking-[0.2em] text-[#E4000F] uppercase font-bold">COMMAND GRID</span> */}
             <h2 className="text-[28px] sm:text-[34px] font-bold text-white tracking-tight mt-2">Core Capabilities Matrix</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -176,7 +176,7 @@ export default function CapabilitiesPage() {
       <section className="relative w-full px-6 lg:px-16 pb-20 border-t border-white/5 pt-16">
         <div className="max-w-[1795px] mx-auto">
           <div className="text-center max-w-[800px] mx-auto mb-12">
-            <span className="text-[10px] font-mono tracking-[0.2em] text-[#009DFF] uppercase font-bold">LIFECYCLE</span>
+            {/* <span className="text-[10px] font-mono tracking-[0.2em] text-[#009DFF] uppercase font-bold">LIFECYCLE</span> */}
             <h2 className="text-[28px] sm:text-[34px] font-bold text-white tracking-tight mt-2">Garage-to-Factory Progression</h2>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

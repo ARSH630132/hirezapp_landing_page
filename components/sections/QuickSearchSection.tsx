@@ -339,9 +339,9 @@ export default function QuickSearchSection() {
                 transition={{ duration: 0.3 }}
                 className="max-w-4xl mx-auto rounded-[28px] border border-white/5 bg-[#030303]/40 p-8 sm:p-10 text-center backdrop-blur-md shadow-2xl"
               >
-                <div className="inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-[#009DFF]/5 border border-[#009DFF]/10 mb-4 text-[#009DFF]">
+                {/* <div className="inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-[#009DFF]/5 border border-[#009DFF]/10 mb-4 text-[#009DFF]">
                   <Sparkles className="h-5 w-5 animate-pulse" />
-                </div>
+                </div> */}
                 <h3 className="text-[17px] sm:text-lg font-semibold text-white tracking-wide">Enterprise Intelligent Concierge</h3>
                 <p className="mt-2 text-sm text-white/50 max-w-2xl mx-auto leading-relaxed font-normal">
                   Our instant search indexing maps core architectural capabilities, delivery platforms, active research whitepapers, and build specifications across GFF AI's entire ecosystem.
