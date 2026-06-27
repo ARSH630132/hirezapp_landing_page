@@ -148,7 +148,8 @@
     "170-phase5-final-mvp-backend-qa",
     "171-phase6-aws-preflight-final-scope-audit",
     "172-phase6-aws-env-and-config",
-    "173-phase6-dynamodb-table-documentation"
+    "173-phase6-dynamodb-table-documentation",
+    "174-phase6-dynamodb-client-and-repositories"
   ],
   "failed": [
     {
