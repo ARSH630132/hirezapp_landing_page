@@ -31,6 +31,8 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
   const [authMethod, setAuthMethod] = useState<"credentials" | "otp">("credentials");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [simpleEmail, setSimpleEmail] = useState("");
+  const [simplePassword, setSimplePassword] = useState("");
   const [otpCode, setOtpCode] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
@@ -220,6 +222,11 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
     handleAuthenticate();
   };
 
+  const handleSimpleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleAuthenticate();
+  };
+
   const currentMockUser = MOCK_PREVIEW_USERS[selectedRole];
   const activeRoleObj = rolesList.find(r => r.id === selectedRole) || rolesList[0];
 
@@ -288,7 +295,321 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
     "Users Directory"
   ];
 
-  return (
+  const simpleLoginUi = (
+    <div className="min-h-screen w-full bg-[#020202] text-white flex flex-col relative overflow-hidden font-sans">
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(circle_at_25%_10%,rgba(228,0,15,0.16),transparent_34%),radial-gradient(circle_at_78%_8%,rgba(0,157,255,0.16),transparent_30%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.025)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.025)_1px,transparent_1px)] bg-[size:56px_56px] opacity-25" />
+      </div>
+
+      <header className="relative z-10 h-20 w-full flex justify-between items-center px-6 lg:px-16 border-b border-white/10 bg-black/35 backdrop-blur-md">
+        <Link href="/" className="flex items-center gap-2.5 hover:opacity-90 transition-opacity">
+          <img src="/footer/logo.svg" alt="GFF AI Logo" className="w-10 h-10 object-contain" />
+          <div className="flex flex-col text-left">
+            <span className="text-white text-base font-semibold tracking-wider leading-none">GFF AI</span>
+            <span className="text-[7.5px] font-bold tracking-[0.1em] mt-1 text-zinc-400">
+              <span className="text-[#E4000F]">GARAGE</span> | FOUNDRY | <span className="text-[#009DFF]">FACTORY</span>
+            </span>
+          </div>
+        </Link>
+        <Link
+          href="/"
+          className="text-xs font-mono font-bold tracking-widest text-zinc-400 hover:text-white transition-colors"
+        >
+          RETURN TO WEBSITE
+        </Link>
+      </header>
+
+      <main className="relative z-10 flex-1 flex items-center justify-center px-4 py-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45 }}
+          className="w-full max-w-[1080px] grid grid-cols-1 lg:grid-cols-[1fr_440px] gap-8 items-stretch"
+        >
+          <section className="hidden lg:flex rounded-2xl border border-white/10 bg-white/[0.03] p-10 flex-col justify-between overflow-hidden relative">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(0,157,255,0.12),transparent_34%),radial-gradient(circle_at_90%_80%,rgba(228,0,15,0.12),transparent_30%)]" />
+            <div className="absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-[#009DFF]/70 to-transparent" />
+           <motion.div
+  animate={{
+    y: [0, -20, 0],
+    x: [0, 10, 0],
+  }}
+  transition={{
+    duration: 8,
+    repeat: Infinity,
+    ease: "easeInOut",
+  }}
+  className="absolute -left-24 top-24 h-48 w-48 rounded-full border border-[#009DFF]/20"
+/>
+
+<motion.div
+  animate={{
+    y: [0, 20, 0],
+    x: [0, -10, 0],
+  }}
+  transition={{
+    duration: 10,
+    repeat: Infinity,
+    ease: "easeInOut",
+  }}
+  className="absolute -right-20 bottom-20 h-56 w-56 rounded-full border border-[#E4000F]/20"
+/>
+            <div className="relative space-y-5">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/30 px-3 py-1 text-[10px] font-mono font-bold uppercase tracking-widest text-[#009DFF]">
+                <Shield className="w-3.5 h-3.5" />
+                Secure Client Portal
+              </div>
+              <div className="space-y-3 max-w-xl">
+                <h1 className="text-[44px] leading-[1.05] font-semibold tracking-wide">
+                  Welcome back to your GFF AI workspace.
+                </h1>
+                <p className="text-sm leading-7 text-zinc-400">
+                  Access dashboards, managed operations, governance controls, and enterprise AI activity from one protected client environment.
+                </p>
+              </div>
+            </div>
+
+            <div className="relative grid grid-cols-3 gap-3 pt-10">
+              {[
+                ["Garage", "Discovery"],
+                ["Foundry", "Pilot"],
+                ["Factory", "Scale"],
+              ].map(([title, label]) => (
+<div
+  key={title}
+  className="rounded-xl border border-white/10 bg-black/35 p-4 transition-all duration-300 hover:-translate-y-1 hover:border-[#009DFF]/30 hover:bg-white/[0.03]"
+>
+                  <p className="text-sm font-bold text-white">{title}</p>
+                  <p className="mt-1 text-[10px] font-mono uppercase tracking-widest text-zinc-500">{label}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="rounded-2xl border border-white/10 bg-[#060606]/95 shadow-2xl backdrop-blur-xl p-6 sm:p-8 transition-all duration-500 hover:shadow-[0_0_40px_rgba(0,157,255,0.08)]">
+            {!scanning ? (
+              <div className="space-y-7">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#E98828]">
+                      Client Login
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-1 text-[9px] font-mono font-bold uppercase tracking-widest text-emerald-400">
+                      <span className="relative flex h-2 w-2">
+  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+</span>
+                      Online
+                    </span>
+                  </div>
+                  <h2 className="text-2xl font-semibold tracking-wide">Sign in</h2>
+                  <p className="text-xs leading-6 text-zinc-500">
+                    Use your portal credentials to continue to the dashboard.
+                  </p>
+                </div>
+
+                <form onSubmit={handleSimpleSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <label htmlFor="auth-email-simple" className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest font-bold">
+                      Email Address
+                    </label>
+                    <input
+                      id="auth-email-simple"
+                      type="email"
+                      value={simpleEmail}
+                      onChange={(e) => setSimpleEmail(e.target.value)}
+                      placeholder="Enter your business email"
+                      className="w-full h-12 rounded-lg border border-white/10 bg-black px-4 text-sm text-white placeholder:text-zinc-700 outline-none transition focus:border-[#009DFF] focus:ring-1 focus:ring-[#009DFF]"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label htmlFor="auth-pass-simple" className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest font-bold">
+                        Password
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setForgotEmail(simpleEmail);
+                          setForgotSubmitted(false);
+                          setForgotError("");
+                          setShowForgot(true);
+                        }}
+                        className="text-[10px] text-zinc-500 hover:text-[#009DFF] transition-colors"
+                      >
+                        Forgot password?
+                      </button>
+                    </div>
+                    <div className="relative">
+                      <input
+                        id="auth-pass-simple"
+                        type={showPassword ? "text" : "password"}
+                        value={simplePassword}
+                        onChange={(e) => setSimplePassword(e.target.value)}
+                        placeholder="Enter your password"
+                        className="w-full h-12 rounded-lg border border-white/10 bg-black px-4 pr-11 text-sm text-white placeholder:text-zinc-700 outline-none transition focus:border-[#009DFF] focus:ring-1 focus:ring-[#009DFF]"
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition-colors"
+                        aria-label={showPassword ? "Hide password" : "Show password"}
+                      >
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label htmlFor="role-simple" className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest font-bold">
+                      Preview Role
+                    </label>
+                    <select
+                      id="role-simple"
+                      value={selectedRole}
+                      onChange={(e) => {
+                        setSelectedRole(e.target.value as PreviewRole);
+                        setError("");
+                      }}
+                      className="w-full h-12 rounded-lg border border-white/10 bg-black px-4 text-sm text-white outline-none transition focus:border-[#009DFF] focus:ring-1 focus:ring-[#009DFF]"
+                    >
+                      {rolesList.map((role) => (
+                        <option key={role.id} value={role.id}>
+                          {role.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {error && (
+                    <div className="rounded-lg border border-rose-500/25 bg-rose-500/10 p-3 text-xs text-rose-300 flex items-center gap-2">
+                      <AlertCircle className="w-4 h-4 shrink-0" />
+                      <span>{error}</span>
+                    </div>
+                  )}
+
+                  <button
+                    type="submit"
+                    className="w-full h-12 rounded-lg bg-[#009DFF] text-black text-xs font-extrabold uppercase tracking-widest flex items-center justify-center gap-2 transition-all duration-300 hover:bg-[#18a8ff] hover:shadow-[0_0_30px_rgba(0,157,255,0.35)] active:scale-[0.99]"
+                  >
+                    <Lock className="w-4 h-4" />
+                    Login to Dashboard
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </form>
+
+                <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs text-zinc-500">
+                  <span>Protected GFF AI client access</span>
+                  <button
+                    type="button"
+                    onClick={() => setShowSupport(true)}
+                    className="text-left sm:text-right text-[#009DFF] hover:text-white transition-colors"
+                  >
+                    Need help?
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="py-12 text-center space-y-7">
+                <div className="mx-auto h-20 w-20 rounded-full border border-[#009DFF]/25 bg-[#009DFF]/10 flex items-center justify-center">
+                  <RefreshCw className="w-8 h-8 text-[#009DFF] animate-spin" />
+                </div>
+                <div className="space-y-2">
+                  <h2 className="text-xl font-semibold">Signing you in</h2>
+                  <p className="text-xs text-zinc-500">{scanMessages[Math.min(scanStep, scanMessages.length - 1)]}</p>
+                </div>
+                <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-[#009DFF] rounded-full transition-all duration-300"
+                    style={{ width: `${Math.min(100, (scanStep + 1) * 20)}%` }}
+                  />
+                </div>
+              </div>
+            )}
+          </section>
+        </motion.div>
+      </main>
+
+      {showForgot && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4" role="dialog" aria-modal="true">
+          <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#080808] p-6 shadow-2xl">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h3 className="text-base font-semibold text-white">Reset password</h3>
+                <p className="mt-1 text-xs leading-5 text-zinc-500">Enter your email and we will prepare a recovery request.</p>
+              </div>
+              <button type="button" onClick={() => setShowForgot(false)} className="text-zinc-500 hover:text-white">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            {!forgotSubmitted ? (
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  if (!forgotEmail || !forgotEmail.includes("@")) {
+                    setForgotError("Valid enterprise email is required.");
+                    return;
+                  }
+                  setForgotError("");
+                  setForgotLoading(true);
+                  await new Promise(r => setTimeout(r, 700));
+                  setForgotLoading(false);
+                  setForgotSubmitted(true);
+                }}
+                className="mt-5 space-y-4"
+              >
+                <input
+                  type="email"
+                  value={forgotEmail}
+                  onChange={(e) => setForgotEmail(e.target.value)}
+                  placeholder="name@company.com"
+                  className="w-full h-11 rounded-lg border border-white/10 bg-black px-3 text-sm text-white outline-none focus:border-[#009DFF]"
+                />
+                {forgotError && <p className="text-xs text-rose-400">{forgotError}</p>}
+                <button type="submit" disabled={forgotLoading} className="w-full h-11 rounded-lg bg-[#009DFF] text-black text-xs font-bold uppercase tracking-widest disabled:opacity-60">
+                  {forgotLoading ? "Sending..." : "Send Recovery Request"}
+                </button>
+              </form>
+            ) : (
+              <div className="mt-5 rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-4 text-sm text-emerald-300 flex gap-3">
+                <CheckCircle className="w-5 h-5 shrink-0" />
+                <span>Recovery request prepared for {forgotEmail}.</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {showSupport && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4" role="dialog" aria-modal="true">
+          <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#080808] p-6 shadow-2xl">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h3 className="text-base font-semibold text-white">Support</h3>
+                <p className="mt-1 text-xs leading-5 text-zinc-500">Contact GFF AI support for portal access help.</p>
+              </div>
+              <button type="button" onClick={() => setShowSupport(false)} className="text-zinc-500 hover:text-white">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="mt-5 rounded-xl border border-white/10 bg-black p-4 text-xs text-zinc-400">
+              <div className="flex justify-between gap-4">
+                <span>Support Channel</span>
+                <span className="text-[#009DFF]">support@gff.ai</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  // Legacy complex login UI preserved for reference and rollback; no longer returned.
+  const legacySecureLoginUi = (
     <div className="min-h-screen w-full bg-[#010101] text-zinc-100 flex flex-col items-center justify-center relative px-4 py-8 md:py-16 select-none overflow-hidden font-sans">
       <div className="absolute inset-0 z-0 pointer-events-none opacity-40">
         <div 
@@ -972,4 +1293,7 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
       )}
     </div>
   );
+
+  void legacySecureLoginUi;
+  return simpleLoginUi;
 }
