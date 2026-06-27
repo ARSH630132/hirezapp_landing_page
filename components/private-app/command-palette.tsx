@@ -63,8 +63,13 @@ export function CommandPalette({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[999] flex items-start justify-center bg-black/85 p-4 pt-[10vh] backdrop-blur-md">
-      <div className="fixed inset-0" onClick={onClose} />
+    <div 
+      role="dialog" 
+      aria-modal="true" 
+      aria-label="Secure command palette" 
+      className="fixed inset-0 z-[999] flex items-start justify-center bg-black/85 p-4 pt-[10vh] backdrop-blur-md"
+    >
+      <div className="fixed inset-0" onClick={onClose} aria-hidden="true" />
       <div className="relative w-full max-w-xl rounded-2xl border border-white/10 bg-[#080808]/95 p-4 shadow-[0_20px_50px_rgba(0,0,0,0.9)] backdrop-blur-md">
         <div className="flex items-center gap-3 border-b border-white/5 pb-3">
           <Search className="w-4 h-4 text-white/40 shrink-0" />
@@ -74,11 +79,12 @@ export function CommandPalette({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Type a command or module name..."
-            className="w-full bg-transparent text-[13.5px] font-mono text-white placeholder-white/35 outline-none"
+            aria-label="Secure search or command input"
+            className="w-full bg-transparent text-[13.5px] font-mono text-white placeholder-white/35 outline-none focus:ring-0"
           />
           <button 
             onClick={onClose}
-            className="text-[10px] font-mono text-white/30 border border-white/10 rounded px-1.5 py-0.5 hover:bg-white/5 transition-all cursor-pointer"
+            className="text-[10px] font-mono text-white/30 border border-white/10 rounded px-1.5 py-0.5 hover:bg-white/5 transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#009DFF]"
           >
             ESC
           </button>
@@ -101,10 +107,10 @@ export function CommandPalette({
                       <button 
                         key={idx}
                         onClick={() => {
-                          if (onNavigate) onNavigate(item.tab);
-                          onClose();
+                           if (onNavigate) onNavigate(item.tab);
+                           onClose();
                         }}
-                        className="w-full flex justify-between items-center px-2 py-1.5 rounded-lg text-left text-[12px] font-mono text-white/70 hover:text-white hover:bg-white/[0.04] transition-all cursor-pointer"
+                        className="w-full flex justify-between items-center px-2 py-1.5 rounded-lg text-left text-[12px] font-mono text-white/70 hover:text-white hover:bg-white/[0.04] transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#009DFF]"
                       >
                         <div className="flex items-center gap-2">
                           <Terminal className="w-3.5 h-3.5 text-[#009DFF]/70" />

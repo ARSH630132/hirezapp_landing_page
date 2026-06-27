@@ -24,7 +24,8 @@ export function FilterBar({
           type="text"
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder={searchPlaceholder}
-          className="w-full h-9 rounded-lg border border-white/5 bg-white/[0.02] pl-9 pr-4 text-[12px] font-mono text-white placeholder-white/30 outline-none focus:border-white/15 focus:bg-white/[0.04] transition-all"
+          aria-label={searchPlaceholder}
+          className="w-full h-9 rounded-lg border border-white/5 bg-white/[0.02] pl-9 pr-4 text-[12px] font-mono text-white placeholder-white/30 outline-none focus:border-white/15 focus:bg-white/[0.04] focus:ring-1 focus:ring-[#009DFF]/40 transition-all"
         />
       </div>
 
@@ -33,7 +34,8 @@ export function FilterBar({
           <select 
             value={selectedCategory}
             onChange={(e) => onCategoryChange(e.target.value)}
-            className="h-9 rounded-lg border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] px-3 pr-8 text-[12px] font-mono text-white/70 focus:text-white outline-none transition-all cursor-pointer appearance-none"
+            aria-label="Filter by category"
+            className="h-9 rounded-lg border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] px-3 pr-8 text-[12px] font-mono text-white/70 focus:text-white outline-none focus:ring-1 focus:ring-[#009DFF]/40 transition-all cursor-pointer appearance-none"
           >
             <option value="" className="bg-[#0c0c0c] text-white">ALL CATEGORIES</option>
             {categories.map((cat, idx) => (

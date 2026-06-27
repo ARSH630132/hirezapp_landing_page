@@ -14,7 +14,7 @@ export function WorkspaceBreadcrumbs({
   items: BreadcrumbItem[];
 }) {
   return (
-    <nav className="flex items-center space-x-2 text-[11px] font-mono text-white/40 select-none">
+    <nav aria-label="Sovereign workspace breadcrumbs" className="flex items-center space-x-2 text-[11px] font-mono text-white/40 select-none">
       <Link href="/portal" className="hover:text-white transition-colors flex items-center gap-1">
         <Shield className="w-3.5 h-3.5 text-[#009DFF]" />
         <span>GFF CORE</span>

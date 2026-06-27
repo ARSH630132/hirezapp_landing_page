@@ -80,6 +80,17 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
     };
   }, [authMethod]);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (showForgot) setShowForgot(false);
+        if (showSupport) setShowSupport(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [showForgot, showSupport]);
+
   const handleOtpChange = (index: number, val: string) => {
     const sanitizedVal = val.replace(/\D/g, "");
     if (!sanitizedVal) {
@@ -324,7 +335,7 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
         </Link>
       </header>
 
-      <div className="w-full max-w-[1100px] z-10 mt-14">
+      <main className="w-full max-w-[1100px] z-10 mt-14">
         <div className="text-center space-y-2 mb-8 animate-fade-in">
           <h1 className="text-xl md:text-2xl font-semibold tracking-wider font-sans text-white uppercase">Sovereign Portal Authorization</h1>
           <p className="text-xs text-zinc-400 max-w-lg mx-auto leading-relaxed">
@@ -752,7 +763,7 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
             )}
           </AnimatePresence>
         </div>
-      </div>
+      </main>
 
       {showForgot && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4 animate-fade-in" role="dialog" aria-modal="true" aria-labelledby="forgot-title">
@@ -762,7 +773,7 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
                 <div className="p-1.5 rounded-lg bg-[#009DFF]/10 text-[#009DFF]">
                   <Fingerprint className="w-5 h-5" />
                 </div>
-                <h3 className="font-mono font-bold text-xs uppercase tracking-wider">Passphrase Key Recovery</h3>
+                <h3 id="forgot-title" className="font-mono font-bold text-xs uppercase tracking-wider">Passphrase Key Recovery</h3>
               </div>
               <button 
                 onClick={() => setShowForgot(false)} 
@@ -784,7 +795,8 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
                 <p className="text-xs text-zinc-400 leading-relaxed text-left">
                   GFF AI Zero-Trust Enclaves enforce rigorous defense protocols. Reset requests require out-of-band authorization.
                 </p>
-                <input id="forgot-email" type="email" value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} placeholder="employee@gff.ai" className="w-full h-10 px-3 bg-zinc-950 border border-zinc-800 rounded-lg text-xs outline-none focus:border-[#009DFF] text-white" required />
+                <label htmlFor="forgot-email" className="sr-only">Enterprise Email Address</label>
+                <input id="forgot-email" type="email" value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} placeholder="employee@gff.ai" className="w-full h-10 px-3 bg-zinc-950 border border-zinc-800 rounded-lg text-xs outline-none focus:border-[#009DFF] focus:ring-1 focus:ring-[#009DFF] text-white" required />
                 {forgotError && <p className="text-xs text-rose-450">{forgotError}</p>}
                 <div className="flex gap-3">
                   <button type="button" onClick={() => setShowForgot(false)} className="flex-1 h-9 bg-zinc-800 rounded-lg text-xs text-zinc-400">Cancel</button>

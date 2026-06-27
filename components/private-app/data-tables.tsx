@@ -100,15 +100,16 @@ export function DataTable<T extends { id: string | number }>({
           <Search className="absolute left-3 top-2.5 w-4 h-4 text-white/30" />
           <input 
             type="text" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={searchPlaceholder}
-            className="w-full h-9 rounded-lg border border-white/5 bg-white/[0.01] pl-9 pr-4 text-[12px] font-mono text-white placeholder-white/30 outline-none focus:border-white/15 focus:bg-white/[0.03] transition-all"
+            aria-label={searchPlaceholder}
+            className="w-full h-9 rounded-lg border border-white/5 bg-white/[0.01] pl-9 pr-4 text-[12px] font-mono text-white placeholder-white/30 outline-none focus:border-white/15 focus:bg-white/[0.03] focus:ring-1 focus:ring-[#009DFF]/40 transition-all"
           />
-          {query && <button onClick={() => setQuery("")} className="absolute right-3 top-2.5 text-white/40 hover:text-white"><X className="w-4 h-4" /></button>}
+          {query && <button onClick={() => setQuery("")} aria-label="Clear search query" className="absolute right-3 top-2.5 text-white/40 hover:text-white focus:outline-none focus:ring-1 focus:ring-[#009DFF] rounded p-0.5"><X className="w-4 h-4" /></button>}
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
           {statusField && finalStatusOpts.length > 0 && (
             <div className="relative">
-              <select value={status} onChange={(e) => setStatus(e.target.value)} className="h-9 rounded-lg border border-white/5 bg-[#0c0c0c] px-3 pr-8 text-[11px] font-mono text-white/70 focus:text-white outline-none transition-all cursor-pointer appearance-none uppercase">
+              <select value={status} onChange={(e) => setStatus(e.target.value)} aria-label="Filter by status" className="h-9 rounded-lg border border-white/5 bg-[#0c0c0c] px-3 pr-8 text-[11px] font-mono text-white/70 focus:text-white outline-none focus:ring-1 focus:ring-[#009DFF]/40 transition-all cursor-pointer appearance-none uppercase">
                 <option value="">ALL STATUSES</option>
                 {finalStatusOpts.map(o => <option key={o.value} value={o.value}>{o.label.toUpperCase()}</option>)}
               </select>
@@ -117,7 +118,7 @@ export function DataTable<T extends { id: string | number }>({
           )}
           {typeField && finalTypeOpts.length > 0 && (
             <div className="relative">
-              <select value={type} onChange={(e) => setType(e.target.value)} className="h-9 rounded-lg border border-white/5 bg-[#0c0c0c] px-3 pr-8 text-[11px] font-mono text-white/70 focus:text-white outline-none transition-all cursor-pointer appearance-none uppercase">
+              <select value={type} onChange={(e) => setType(e.target.value)} aria-label="Filter by category" className="h-9 rounded-lg border border-white/5 bg-[#0c0c0c] px-3 pr-8 text-[11px] font-mono text-white/70 focus:text-white outline-none focus:ring-1 focus:ring-[#009DFF]/40 transition-all cursor-pointer appearance-none uppercase">
                 <option value="">ALL CATEGORIES</option>
                 {finalTypeOpts.map(o => <option key={o.value} value={o.value}>{o.label.toUpperCase()}</option>)}
               </select>
@@ -136,7 +137,20 @@ export function DataTable<T extends { id: string | number }>({
               <thead>
                 <tr className="border-b border-white/5 bg-white/[0.01]" role="row">
                   {columns.map((col) => (
-                    <th key={String(col.key)} role="columnheader" onClick={() => handleSort(col.key, col.sortable)} className={`p-4 text-[10.5px] font-bold font-mono text-white/40 tracking-wider uppercase ${col.sortable ? "cursor-pointer hover:text-white" : ""}`}>
+                    <th 
+                      key={String(col.key)} 
+                      role="columnheader" 
+                      tabIndex={col.sortable ? 0 : undefined}
+                      aria-sort={sortKey === col.key ? (sortOrder === "asc" ? "ascending" : "descending") : "none"}
+                      onClick={() => handleSort(col.key, col.sortable)} 
+                      onKeyDown={(e) => {
+                        if (col.sortable && (e.key === "Enter" || e.key === " ")) {
+                          e.preventDefault();
+                          handleSort(col.key, col.sortable);
+                        }
+                      }}
+                      className={`p-4 text-[10.5px] font-bold font-mono text-white/40 tracking-wider uppercase focus:outline-none focus:text-white focus:ring-1 focus:ring-[#009DFF]/40 ${col.sortable ? "cursor-pointer hover:text-white" : ""}`}
+                    >
                       <div className="flex items-center gap-1.5">
                         <span>{col.header}</span>
                         {col.sortable && <ArrowUpDown className={`w-3.5 h-3.5 ${sortKey === col.key ? "text-white" : "opacity-30"}`} />}
@@ -172,7 +186,13 @@ export function DataTable<T extends { id: string | number }>({
 
           <div className="grid grid-cols-1 gap-4 md:hidden">
             {paginated.map((row) => (
-              <div key={row.id} onClick={() => setSelRow(row)} className="p-4 rounded-xl border border-white/5 bg-[#050505]/40 hover:bg-white/[0.01] transition-all cursor-pointer space-y-3">
+              <button 
+                type="button"
+                key={row.id} 
+                onClick={() => setSelRow(row)} 
+                className="w-full text-left p-4 rounded-xl border border-white/5 bg-[#050505]/40 hover:bg-white/[0.01] focus:bg-white/[0.02] focus:outline-none focus:ring-1 focus:ring-[#009DFF] transition-all cursor-pointer space-y-3"
+                aria-label={`View ledger details for entry ${String(row.id).toUpperCase()}`}
+              >
                 <div className="flex items-center justify-between border-b border-white/5 pb-2">
                   <span className="text-[10px] font-mono font-bold text-white/40">ID: {String(row.id).toUpperCase()}</span>
                   {statusField && row[statusField as keyof T] && (
@@ -199,7 +219,7 @@ export function DataTable<T extends { id: string | number }>({
                   <span>AUDIT TELEMETRY</span>
                   <ChevronRight className="w-3.5 h-3.5" />
                 </div>
-              </div>
+              </button>
             ))}
           </div>
 
