@@ -8,11 +8,20 @@ import EnterpriseFlowDiagram from "@/components/inner-pages/EnterpriseFlowDiagra
 import PremiumCTA from "@/components/inner-pages/PremiumCTA";
 
 export default function PlatformsHubPage() {
-  const stack = [
-    { name: "FACTORY LAYER (Tier 3)", spec: "Scale, Monitor, Operate, Monetize", path: "/platforms/factory" },
-    { name: "FOUNDRY LAYER (Tier 2)", spec: "Build Agents, Runtime, Data Fabric, AI Eng", path: "/platforms/foundry" },
-    { name: "GARAGE LAYER (Tier 1)", spec: "Discover AI, Workshops, AI Labs, Exp Zone", path: "/platforms/garage" }
-  ];
+const stack = [
+  { name: "Garage", spec: "Discovery, workshops, AI labs, and experiment zones.", path: "/platforms/garage" },
+  { name: "Foundry", spec: "Agent building, runtime design, data fabric, and AI engineering.", path: "/platforms/foundry" },
+  { name: "Factory", spec: "Production scaling, monitoring, operations, and monetization.", path: "/platforms/factory" },
+  { name: "Blueprint", spec: "Build a custom AI blueprint and readiness roadmap.", path: "/build/blueprint" },
+  { name: "Marketplace", spec: "Explore reusable agents, templates, and platform assets.", path: "/platforms/marketplace" },
+  { name: "Control Center", spec: "Govern, monitor, and control enterprise AI operations.", path: "/platforms/control-center" },
+  { name: "AI Academy", spec: "Structured AI learning, enablement, and adoption programs.", path: "/platforms/ai-academy" },
+  { name: "University OneVerse", spec: "AI platform layer for university operations and learning ecosystems.", path: "/platforms/university-oneverse" },
+  { name: "Assessment Mesh", spec: "Evaluate readiness, workflows, governance, and AI maturity.", path: "/platforms/assessment-mesh" },
+  { name: "OREMesh", spec: "Sovereign edge mesh for offline-first mining and remote operations.", path: "/platforms/oremesh" },
+  { name: "RetailMesh", spec: "Omnichannel register ingestion and retail operations support.", path: "/platforms/retailmesh" },
+  { name: "TelecomVerse", spec: "Carrier-grade signaling, automation, and field dispatch intelligence.", path: "/platforms/telecomverse" },
+];
 
   return (
     <InnerPageShell>
