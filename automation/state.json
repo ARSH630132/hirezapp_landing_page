@@ -114,7 +114,8 @@
     "131-phase5-seed-data-and-dev-users",
     "132-phase5-backend-run-scripts",
     "133-phase5-api-clients-crud",
-    "134-phase5-api-users-crud"
+    "134-phase5-api-users-crud",
+    "135-phase5-api-projects-crud"
   ],
   "failed": [
     {
