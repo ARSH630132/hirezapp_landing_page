@@ -62,7 +62,7 @@ export default function CompanyContactPage() {
               })}
             </div>
           </div>
-          <div className="lg:col-span-7">
+          <div className="lg:col-span-7 pt-8">
             <div className="rounded-[20px] border border-white/5 bg-[#050505]/40 backdrop-blur-[12px] p-6 relative overflow-hidden">
               <h3 className="text-sm font-bold text-white mb-2 font-mono uppercase tracking-widest text-white/90 border-b border-white/5 pb-3 flex items-center gap-2">
                 {React.createElement(path.icon, { className: "w-4 h-4" })}
@@ -79,10 +79,10 @@ export default function CompanyContactPage() {
                   <button type="submit" disabled={loading} className="w-full h-11 rounded-lg bg-white text-black font-semibold text-xs tracking-wider uppercase hover:bg-white/90 transition-all cursor-pointer flex items-center justify-center gap-2">
                     {loading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <><span>Transmit Protocol</span><Send className="w-3.5 h-3.5" /></>}
                   </button>
-                  <div className="flex gap-2.5 p-3 rounded-lg bg-white/[0.01] border border-white/5">
+                  {/* <div className="flex gap-2.5 p-3 rounded-lg bg-white/[0.01] border border-white/5">
                     <Lock className="w-4 h-4 text-white/30 shrink-0 mt-0.5" />
                     <p className="text-[10px] text-white/40 leading-relaxed font-mono">SECURE BOUNDARY: This portal is a premium frontend-only simulation. Data is processed locally in memory and never persisted.</p>
-                  </div>
+                  </div> */}
                 </form>
               ) : (
                 <div className="py-8 text-center flex flex-col items-center">
