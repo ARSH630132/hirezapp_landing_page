@@ -47,7 +47,7 @@ const stack = [
           </div>
         </MotionReveal>
 
-        <MotionReveal className="space-y-6">
+        {/* <MotionReveal className="space-y-6">
           <h2 className="text-2xl font-bold text-white text-center">Industry Mesh Platforms</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {[
@@ -64,7 +64,7 @@ const stack = [
               </Link>
             ))}
           </div>
-        </MotionReveal>
+        </MotionReveal> */}
 
         <div className="max-w-[1100px] mx-auto space-y-4">
           <h2 className="text-2xl font-bold text-white text-center">Control & Governance</h2>
