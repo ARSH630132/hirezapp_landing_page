@@ -65,7 +65,8 @@
     "62-phase3-accessibility-pass-build-tools",
     "63-phase3-motion-and-interaction-polish",
     "64-phase3-visual-premium-polish-build-tools",
-    "65-phase3-tool-logic-tests-or-verification-script"
+    "65-phase3-tool-logic-tests-or-verification-script",
+    "66-phase3-api-contract-documentation-only"
   ],
   "failed": [
     {
