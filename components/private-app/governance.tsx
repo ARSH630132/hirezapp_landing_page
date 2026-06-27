@@ -5,13 +5,45 @@ import { CheckCircle, AlertCircle } from "lucide-react";
 import { WorkspaceCard, StatusBadge } from "./cards-metrics-badges";
 import { ComplianceRule } from "./types";
 
-export function GovernancePanel() {
-  const [rules, setRules] = useState<ComplianceRule[]>([
+interface GovernancePanelProps {
+  items?: {
+    id: string;
+    title: string;
+    status: string;
+    description: string;
+    severity?: string;
+  }[];
+}
+
+export function GovernancePanel({ items }: GovernancePanelProps) {
+  const defaultRules: ComplianceRule[] = [
     { id: "1", name: "ISO-27001 Enclave Isolation", status: "verified", desc: "Local hardware memory boundaries isolated completely in sandbox." },
     { id: "2", name: "eBPF Event Log Streaming", status: "verified", desc: "Continuous kernel security auditing streams registered with zero gaps." },
     { id: "3", name: "SOC2 Administrative Decoupling", status: "verified", desc: "No core platform access routes exist inside user enclaves." },
     { id: "4", name: "Regulatory Compliance Ledger Check", status: "verified", desc: "No guardrail boundaries triggered violations during this epoch." }
-  ]);
+  ];
+
+  const initialRules = items && items.length > 0
+    ? items.map(item => ({
+        id: item.id,
+        name: item.title,
+        status: (item.status === "Flagged" || item.status === "Critical" || item.severity === "Critical") ? ("warning" as const) : ("verified" as const),
+        desc: item.description
+      }))
+    : defaultRules;
+
+  const [rules, setRules] = useState<ComplianceRule[]>(initialRules);
+
+  React.useEffect(() => {
+    if (items && items.length > 0) {
+      setRules(items.map(item => ({
+        id: item.id,
+        name: item.title,
+        status: (item.status === "Flagged" || item.status === "Critical" || item.severity === "Critical") ? ("warning" as const) : ("verified" as const),
+        desc: item.description
+      })));
+    }
+  }, [items]);
 
   const toggleRule = (id: string) => {
     setRules(rules.map(r => r.id === id ? { ...r, status: r.status === "verified" ? "warning" : "verified" } : r));

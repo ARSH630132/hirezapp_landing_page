@@ -137,6 +137,61 @@ exports.DEFAULT_API_MOCK_USERS = {
         clearance: "CLEARANCE LEVEL I (BASIC VIEW-ONLY)",
         permissions: ["read:telemetry", "read:projects", "read:ai-operations", "read:documents", "write:support"],
         passwordHash: "JenkinsSecure2026!"
+    },
+    "preview-gff-operator@internal.gff.ai": {
+        id: "usr-006",
+        name: "Operator Node 6",
+        email: "preview-gff-operator@internal.gff.ai",
+        role: "gff_operator",
+        clientAssociation: "GFF AI Operations [Internal]",
+        status: "active",
+        clearance: "CLEARANCE LEVEL IV (GFF TECHNICAL OPERATOR)",
+        permissions: [
+            "read:telemetry", "read:projects", "write:projects", "read:ai-operations",
+            "write:ai-operations", "read:documents", "write:documents", "write:support"
+        ],
+        passwordHash: "gff-secure-2026!"
+    },
+    "preview-finance-admin@internal.gff.ai": {
+        id: "usr-007",
+        name: "Finance Controller",
+        email: "preview-finance-admin@internal.gff.ai",
+        role: "finance_admin",
+        clientAssociation: "GFF Corporate Finance [Internal]",
+        status: "active",
+        clearance: "CLEARANCE LEVEL III (GFF FINANCIAL CONTROLLER)",
+        permissions: [
+            "read:telemetry", "read:projects", "read:ai-operations", "read:documents",
+            "read:billing", "write:billing"
+        ],
+        passwordHash: "gff-secure-2026!"
+    },
+    "preview-support-agent@internal.gff.ai": {
+        id: "usr-008",
+        name: "Support Liaison",
+        email: "preview-support-agent@internal.gff.ai",
+        role: "support_agent",
+        clientAssociation: "GFF Client Support [Internal]",
+        status: "active",
+        clearance: "CLEARANCE LEVEL III (GFF SUPPORT WIRE)",
+        permissions: [
+            "read:telemetry", "read:projects", "read:ai-operations", "read:documents",
+            "read:support", "write:support", "read:users", "write:users"
+        ],
+        passwordHash: "gff-secure-2026!"
+    },
+    "preview-viewer@internal.gff.ai": {
+        id: "usr-009",
+        name: "Auditor Node 9",
+        email: "preview-viewer@internal.gff.ai",
+        role: "viewer",
+        clientAssociation: "Global Compliance Auditor [External]",
+        status: "active",
+        clearance: "CLEARANCE LEVEL I (READ-ONLY AUDITOR)",
+        permissions: [
+            "read:telemetry", "read:projects", "read:ai-operations", "read:documents"
+        ],
+        passwordHash: "gff-secure-2026!"
     }
 };
 // Initialize the mock users database globally to persist edits in memory across hot reloads.
