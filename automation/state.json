@@ -67,7 +67,8 @@
     "64-phase3-visual-premium-polish-build-tools",
     "65-phase3-tool-logic-tests-or-verification-script",
     "66-phase3-api-contract-documentation-only",
-    "67-phase3-linking-and-cta-integration"
+    "67-phase3-linking-and-cta-integration",
+    "68-phase3-final-interactive-tools-qa"
   ],
   "failed": [
     {
