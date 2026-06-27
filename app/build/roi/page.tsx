@@ -33,6 +33,7 @@ export default function ROICalculatorPage() {
   const [copied, setCopied] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
   const [isFlushing, setIsFlushing] = useState(false);
+  const [isIndustryOpen, setIsIndustryOpen] = useState(false);
 
   // Load from Local Workspace on mount
   useEffect(() => {
@@ -542,20 +543,57 @@ Status: MODELLED - ILLUSTRATIVE ONLY
                   </label>
                   <span className="text-[8px] font-mono text-white/30 uppercase tracking-widest">Base Rate Calibration</span>
                 </div>
-                <select
-                  id="industry-select"
-                  value={industry}
-                  onChange={(e) => setIndustry(e.target.value)}
-                  className="w-full h-9 bg-white/5 border border-white/10 rounded-lg px-2.5 text-xs text-white focus:outline-none focus:border-[#009DFF]/50 transition-colors cursor-pointer"
-                >
-                  <option value="financial_services">Financial Services</option>
-                  <option value="healthcare">Healthcare & Life Sciences</option>
-                  <option value="energy_utilities">Energy & Utilities</option>
-                  <option value="telecommunications">Telecommunications</option>
-                  <option value="public_sector">Public Sector & Government</option>
-                  <option value="retail_logistics">Retail & Logistics</option>
-                  <option value="technology_media">Technology & Media</option>
-                </select>
+                <div className="relative">
+  <button
+    id="industry-select"
+    type="button"
+    onClick={() => setIsIndustryOpen((prev) => !prev)}
+    className="w-full h-9 bg-white/5 border border-white/10 rounded-lg px-2.5 text-xs text-white focus:outline-none focus:border-[#009DFF]/50 transition-colors cursor-pointer flex items-center justify-between"
+  >
+    <span>
+      {{
+        financial_services: "Financial Services",
+        healthcare: "Healthcare & Life Sciences",
+        energy_utilities: "Energy & Utilities",
+        telecommunications: "Telecommunications",
+        public_sector: "Public Sector & Government",
+        retail_logistics: "Retail & Logistics",
+        technology_media: "Technology & Media",
+      }[industry]}
+    </span>
+    <span className="text-white/70">⌄</span>
+  </button>
+
+  {isIndustryOpen && (
+    <div className="absolute z-50 mt-1 w-full rounded-lg border border-white/10 bg-[#050505] shadow-xl overflow-hidden">
+      {[
+        { value: "financial_services", label: "Financial Services" },
+        { value: "healthcare", label: "Healthcare & Life Sciences" },
+        { value: "energy_utilities", label: "Energy & Utilities" },
+        { value: "telecommunications", label: "Telecommunications" },
+        { value: "public_sector", label: "Public Sector & Government" },
+        { value: "retail_logistics", label: "Retail & Logistics" },
+        { value: "technology_media", label: "Technology & Media" },
+      ].map((item) => (
+        <button
+          key={item.value}
+          type="button"
+          onClick={() => {
+            setIndustry(item.value);
+            setIsIndustryOpen(false);
+          }}
+          className={`w-full px-3 py-2 text-left text-xs transition-colors ${
+            industry === item.value
+              ? "bg-[#009DFF]/20 text-white"
+              : "text-white/80 hover:bg-white/10 hover:text-white"
+          }`}
+        >
+          {item.label}
+        </button>
+      ))}
+    </div>
+  )}
+</div>
               </div>
 
               {/* Enterprise Scale (Company Size) */}
@@ -605,12 +643,12 @@ Status: MODELLED - ILLUSTRATIVE ONLY
                   onChange={(e) => setOpFunction(e.target.value)}
                   className="w-full h-9 bg-white/5 border border-white/10 rounded-lg px-2.5 text-xs text-white focus:outline-none focus:border-[#009DFF]/50 transition-colors cursor-pointer"
                 >
-                  <option value="customer_operations">Customer Support & Operations</option>
-                  <option value="legal_compliance">Legal, Risk & Compliance</option>
-                  <option value="supply_chain">Supply Chain & Logistics</option>
-                  <option value="finance_accounting">Finance, Audit & Accounting</option>
-                  <option value="it_engineering">IT Service & Infrastructure</option>
-                  <option value="hr_admin">People & Administrative Services</option>
+                  <option className="bg-[#0A0A0A] text-white" value="customer_operations">Customer Support & Operations</option>
+<option className="bg-[#0A0A0A] text-white" value="legal_compliance">Legal, Risk & Compliance</option>
+<option className="bg-[#0A0A0A] text-white" value="supply_chain">Supply Chain & Logistics</option>
+<option className="bg-[#0A0A0A] text-white" value="finance_accounting">Finance, Audit & Accounting</option>
+<option className="bg-[#0A0A0A] text-white" value="it_engineering">IT Service & Infrastructure</option>
+<option className="bg-[#0A0A0A] text-white" value="hr_admin">People & Administrative Services</option>
                 </select>
               </div>
             </div>
