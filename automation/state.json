@@ -104,7 +104,8 @@
     "123-phase5-backend-folder-and-dev-setup",
     "124-phase5-backend-app-structure",
     "125-phase5-database-session-and-base-models",
-    "126-phase5-core-domain-models"
+    "126-phase5-core-domain-models",
+    "82-phase4-client-ai-operations-overview"
   ],
   "failed": [
     {
