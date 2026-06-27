@@ -139,7 +139,8 @@
     "159-phase5-frontend-admin-clients-users-api",
     "160-phase5-frontend-admin-projects-aiops-api",
     "161-phase5-frontend-admin-documents-billing-api",
-    "162-phase5-frontend-admin-support-governance-api"
+    "162-phase5-frontend-admin-support-governance-api",
+    "165-phase5-remove-old-local-preview-data-dependency"
   ],
   "failed": [
     {
