@@ -124,7 +124,8 @@
     "146-phase5-backend-smoke-tests",
     "147-phase5-frontend-api-client",
     "148-phase5-frontend-auth-integration",
-    "149-phase5-frontend-route-guard-backend-auth"
+    "149-phase5-frontend-route-guard-backend-auth",
+    "150-phase5-frontend-client-dashboard-api"
   ],
   "failed": [
     {
