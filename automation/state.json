@@ -92,7 +92,8 @@
     "99-phase4-admin-users-rbac",
     "102-phase4-admin-billing",
     "103-phase4-admin-support",
-    "105-phase4-admin-governance"
+    "105-phase4-admin-governance",
+    "113-phase4-route-guard-ux"
   ],
   "failed": [
     {
