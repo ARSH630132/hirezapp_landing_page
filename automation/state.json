@@ -201,6 +201,10 @@
     {
       "id": "99-phase4-admin-users-rbac",
       "reason": "cline implementation failed"
+    },
+    {
+      "id": "82-phase4-client-ai-operations-overview",
+      "reason": "cline implementation failed"
     }
   ]
 }
