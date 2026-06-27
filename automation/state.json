@@ -102,7 +102,8 @@
     "121-phase4-final-qa",
     "122-phase5-preflight-backend-mvp-audit",
     "123-phase5-backend-folder-and-dev-setup",
-    "124-phase5-backend-app-structure"
+    "124-phase5-backend-app-structure",
+    "125-phase5-database-session-and-base-models"
   ],
   "failed": [
     {
