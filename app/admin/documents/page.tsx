@@ -323,6 +323,7 @@ export default function AdminDocumentsPage() {
   const [newVersion, setNewVersion] = useState("v1.0.0");
   const [newFileSize, setNewFileSize] = useState("1.5 MB");
   const [newDesc, setNewDesc] = useState("");
+  const [adminFile, setAdminFile] = useState<File | null>(null);
 
   // Get active selected document details dynamically
   const selectedDoc = useMemo(() => {
@@ -388,14 +389,48 @@ export default function AdminDocumentsPage() {
     }
   };
 
-  // Simulate secure administrator download (Audit Logs remain mock but logged)
-  const handleSimulatedDownload = (docId: string, title: string) => {
+  // Real secure administrator download from S3
+  const handleRealDownload = async (docId: string, filename: string) => {
     setDownloadingDocId(docId);
-    setTimeout(() => {
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") || localStorage.getItem("gff_api_token") : null;
+      if (!token) {
+        showToast("Authentication token not found.");
+        return;
+      }
+      showToast(`Initiating secure administrator copy transfer...`);
+      
+      const res = await fetch(`/api/v1/documents/download/${docId}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      
+      if (!res.ok) {
+        throw new Error(`Download failed with status ${res.status}`);
+      }
+      
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+      
+      showToast(`Audit log registered: Secure admin transfer of "${filename}" completed.`);
+    } catch (err: any) {
+      console.error("Error downloading document:", err);
+      showToast(`Download failed: ${err.message}`);
+    } finally {
       setDownloadingDocId(null);
-      showToast(`Audit log registered: Secure admin transfer of "${title}" completed.`);
-      alert(`[SECURE VAULT API] Administrator copy successfully transferred.\n\nDocument: ${title}\nSHA-256 integrity checks completed over airgapped connection.`);
-    }, 1500);
+    }
+  };
+
+  const handleSimulatedDownload = (docId: string, title: string) => {
+    handleRealDownload(docId, title);
   };
 
   // Toggle checklist inside drawer (PATCH metadata)
@@ -435,35 +470,66 @@ export default function AdminDocumentsPage() {
     }
   };
 
-  // Register New Document Submit (POST metadata CRUD)
+  // Register New Document Submit (POST multipart upload)
   const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!adminFile) {
+      showToast("Please select a file to upload.");
+      return;
+    }
     if (!newTitle.trim()) return;
 
     setLoading(true);
     try {
-      const token = localStorage.getItem("gff_ai_access_token");
-      const targetClientId = getClientIdFromClientName(newClient);
+      const token = localStorage.getItem("gff_ai_access_token") || localStorage.getItem("gff_api_token");
+      
+      let resolvedClientId = 1; // default fallback
+      try {
+        const clientsRes = await fetch("/api/v1/clients", {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (clientsRes.ok) {
+          const clientsData = await clientsRes.json();
+          const clientsList = Array.isArray(clientsData) ? clientsData : (clientsData.success && Array.isArray(clientsData.clients) ? clientsData.clients : []);
+          
+          const cleanNewClient = newClient.replace(" [Preview Client]", "").toLowerCase();
+          const matchedClient = clientsList.find((c: any) => 
+            cleanNewClient.includes(c.name.toLowerCase()) || 
+            c.name.toLowerCase().includes(cleanNewClient) ||
+            (cleanNewClient.includes("apex") && c.name.toLowerCase().includes("apex")) ||
+            (cleanNewClient.includes("retail") && c.name.toLowerCase().includes("retail")) ||
+            (cleanNewClient.includes("logistics") && c.name.toLowerCase().includes("orion")) ||
+            (cleanNewClient.includes("treasury") && c.name.toLowerCase().includes("nova")) ||
+            (cleanNewClient.includes("health") && c.name.toLowerCase().includes("orion"))
+          );
+          if (matchedClient) {
+            resolvedClientId = matchedClient.id;
+          } else if (clientsList.length > 0) {
+            resolvedClientId = clientsList[0].id;
+          }
+        }
+      } catch (err) {
+        console.error("Error resolving client ID:", err);
+      }
 
-      const res = await fetch("/api/v1/documents", {
+      const formData = new FormData();
+      formData.append("file", adminFile);
+      formData.append("client_id", String(resolvedClientId));
+      if (newProject && newProject !== "UNASSIGNED") {
+        formData.append("project_id", newProject);
+      }
+      formData.append("title", newTitle.trim());
+      formData.append("document_type", newType);
+      formData.append("version", newVersion);
+      formData.append("visibility", "private");
+      formData.append("description", newDesc || "Custom compliance specification uploaded through interactive admin console.");
+
+      const res = await fetch("/api/v1/documents/upload", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify({
-          title: newTitle.trim(),
-          client_id: targetClientId,
-          project_id: newProject === "UNASSIGNED" ? "" : newProject,
-          projectId: newProject === "UNASSIGNED" ? "" : newProject,
-          document_type: newType,
-          type: newType,
-          status: newStatus,
-          version: newVersion,
-          owner: newOwner,
-          description: newDesc || "Custom compliance specification uploaded through interactive admin console.",
-          fileSize: newFileSize || "1.0 MB"
-        })
+        body: formData
       });
       const data = await res.json();
       if (data.success && data.document) {
@@ -473,6 +539,7 @@ export default function AdminDocumentsPage() {
         setNewDesc("");
         setNewFileSize("1.5 MB");
         setNewVersion("v1.0.0");
+        setAdminFile(null);
         await fetchData();
       } else {
         showToast(`Failed to register document: ${data.message || "Unknown error"}`);
@@ -1365,6 +1432,22 @@ export default function AdminDocumentsPage() {
             </div>
 
             <form onSubmit={handleRegisterSubmit} className="p-6 space-y-4 text-xs font-mono">
+              <div className="space-y-1.5">
+                <label className="text-white/40 uppercase block text-[9px] font-bold">Select File Asset *</label>
+                <input
+                  type="file"
+                  required
+                  onChange={(e) => {
+                    const file = e.target.files?.[0] || null;
+                    setAdminFile(file);
+                    if (file && !newTitle) {
+                      setNewTitle(file.name.replace(/\.[^/.]+$/, ""));
+                    }
+                  }}
+                  className="w-full text-white/60 font-mono text-[11.5px] bg-white/[0.01] border border-white/10 rounded p-2 focus:border-[#009DFF]/30 transition-all cursor-pointer"
+                />
+              </div>
+
               <div className="space-y-1.5">
                 <label className="text-white/40 uppercase block text-[9px] font-bold">Document / Asset Title *</label>
                 <input

@@ -204,3 +204,102 @@ def test_7_support_ticket_create_isolation():
     assert response_invalid.status_code == 403
     assert "You can only create tickets for your own client account" in response_invalid.json()["detail"]
 
+
+
+def test_8_document_upload_and_download_scoping():
+    """
+    8. Verify document upload, storage, listing boundaries, and secure download with S3.
+    """
+    # 1. Login as GFF Admin and get token
+    login_admin = client.post(
+        "/api/v1/auth/login",
+        data={"username": "gff_admin@gff.ai", "password": "password123"}
+    )
+    admin_token = login_admin.json()["access_token"]
+    admin_headers = {"Authorization": f"Bearer {admin_token}"}
+
+    # 2. Login as Apex Admin (client_id 1) and get token
+    login_apex = client.post(
+        "/api/v1/auth/login",
+        data={"username": "client_admin@apex.com", "password": "password123"}
+    )
+    apex_token = login_apex.json()["access_token"]
+    apex_headers = {"Authorization": f"Bearer {apex_token}"}
+
+    # 3. Login as Chevron Lead (client_id 4) and get token
+    login_chevron = client.post(
+        "/api/v1/auth/login",
+        data={"username": "client@chevron.com", "password": "chevron_secure_pass_2026"}
+    )
+    chevron_token = login_chevron.json()["access_token"]
+    chevron_headers = {"Authorization": f"Bearer {chevron_token}"}
+
+    # Verify admin can list all documents
+    res_list_admin = client.get("/api/v1/documents", headers=admin_headers)
+    assert res_list_admin.status_code == 200
+    docs_admin = res_list_admin.json()
+    assert len(docs_admin) > 0
+
+    # Verify Apex user only gets documents for client_id 1
+    res_list_apex = client.get("/api/v1/documents", headers=apex_headers)
+    assert res_list_apex.status_code == 200
+    docs_apex = res_list_apex.json()
+    for doc in docs_apex:
+        assert doc["client_id"] == "1"
+
+    # Verify Chevron user cannot upload a document for client_id 1 (Apex)
+    file_payload = {"file": ("test_doc.pdf", b"Sovereign Cryptographic Enclave Ledger Document", "application/pdf")}
+    form_data = {
+        "client_id": 1,
+        "title": "Chevron Intrusion Document",
+        "description": "Malicious attempt to upload document under Apex."
+    }
+    res_upload_forbidden = client.post(
+        "/api/v1/documents/upload",
+        files=file_payload,
+        data=form_data,
+        headers=chevron_headers
+    )
+    assert res_upload_forbidden.status_code == 403
+
+    # Verify Admin can upload a document for client_id 1 (Apex)
+    admin_file_payload = {"file": ("apex_contract_2026.pdf", b"Top secret Apex Core statement of work and specs", "application/pdf")}
+    admin_form_data = {
+        "client_id": 1,
+        "title": "Apex Statement of Work Executed",
+        "document_type": "SOW",
+        "version": "1.0.1",
+        "visibility": "private",
+        "description": "Sealed SOW contract between Apex and GFF AI."
+    }
+    res_upload_success = client.post(
+        "/api/v1/documents/upload",
+        files=admin_file_payload,
+        data=admin_form_data,
+        headers=admin_headers
+    )
+    assert res_upload_success.status_code == 201
+    upload_data = res_upload_success.json()
+    assert upload_data["success"] is True
+    uploaded_doc = upload_data["document"]
+    assert uploaded_doc["title"] == "Apex Statement of Work Executed"
+    assert uploaded_doc["client_id"] == "1"
+    assert uploaded_doc["sha256"].startswith("0x")
+    uploaded_id = uploaded_doc["id"]
+
+    # Verify Apex user (client_id 1) can download the uploaded document
+    res_download_success = client.get(
+        f"/api/v1/documents/download/{uploaded_id}",
+        headers=apex_headers
+    )
+    assert res_download_success.status_code == 200
+    assert res_download_success.content == b"Top secret Apex Core statement of work and specs"
+
+    # Verify Chevron user (client_id 4) is blocked from downloading the same document (client_id 1)
+    res_download_forbidden = client.get(
+        f"/api/v1/documents/download/{uploaded_id}",
+        headers=chevron_headers
+    )
+    assert res_download_forbidden.status_code == 403
+    assert "Access denied" in res_download_forbidden.json()["detail"]
+

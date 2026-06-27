@@ -73,10 +73,16 @@ export default function ClientDocumentDetailPage() {
       }
 
       const data = await res.json();
-      if (data.success && data.document) {
-        setDoc(data.document);
+      if (data) {
+        if (data.success && data.document) {
+          setDoc(data.document);
+        } else if (data.id) {
+          setDoc(data);
+        } else {
+          throw new Error("Handshake returned malformed cryptographic metadata.");
+        }
       } else {
-        throw new Error("Handshake returned malformed cryptographic metadata.");
+        throw new Error("Handshake returned empty response.");
       }
     } catch (err: any) {
       console.error("Error fetching document:", err);
@@ -90,10 +96,46 @@ export default function ClientDocumentDetailPage() {
     fetchDocument();
   }, [fetchDocument]);
 
-  const handleSimulatedDownload = () => {
-    if (doc) {
-      showToast(`DEMO SHIELD: File transfer blocked. '${doc.title}' cannot be downloaded in telemetry preview.`, "warning");
+  const handleRealDownload = async () => {
+    if (!doc) return;
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") : null;
+      if (!token) {
+        showToast("Authentication token not found.", "warning");
+        return;
+      }
+      showToast(`Transferring certified copy: ${doc.title || "document"}...`, "info");
+      
+      const filename_val = doc.filename || doc.title || "document";
+      const res = await fetch(`/api/v1/documents/download/${doc.id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      
+      if (!res.ok) {
+        throw new Error(`Download failed with status ${res.status}`);
+      }
+      
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename_val;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+      
+      showToast(`Securely downloaded: ${filename_val}`, "success");
+    } catch (err: any) {
+      console.error("Error downloading document:", err);
+      showToast(`Download blocked: ${err.message}`, "warning");
     }
+  };
+
+  const handleSimulatedDownload = () => {
+    handleRealDownload();
   };
 
   // Generate premium bespoke audit logs using real backend parameters

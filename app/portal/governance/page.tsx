@@ -314,8 +314,14 @@ export default function ClientGovernancePage() {
         setPolicies(govJson.governance.map(mapApiGovToPolicy));
         setOversights(govJson.governance.map(mapApiGovToOversight));
       }
-      if (docJson.success && Array.isArray(docJson.documents)) {
-        setDocuments(docJson.documents.map(mapApiDocToDocItem));
+      let docArray = null;
+      if (Array.isArray(docJson)) {
+        docArray = docJson;
+      } else if (docJson && docJson.success && Array.isArray(docJson.documents)) {
+        docArray = docJson.documents;
+      }
+      if (docArray) {
+        setDocuments(docArray.map(mapApiDocToDocItem));
       }
     } catch (err: any) {
       setError(err.message || "Failed to load governance registry.");

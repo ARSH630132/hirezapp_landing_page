@@ -337,6 +337,23 @@ export default function ClientDocumentsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // User Profile & Scoped client ID
+  const [currentClientId, setCurrentClientId] = useState<number | null>(null);
+  const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
+  const [availableProjects, setAvailableProjects] = useState<any[]>([]);
+
+  // Real upload modal state variables
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [uploadTitle, setUploadTitle] = useState("");
+  const [uploadCategory, setUploadCategory] = useState("Reports");
+  const [uploadProjectId, setUploadProjectId] = useState<string>("");
+  const [uploadVersion, setUploadVersion] = useState("1.0.0");
+  const [uploadVisibility, setUploadVisibility] = useState("private");
+  const [uploadDescription, setUploadDescription] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
   // Filter States
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -367,8 +384,15 @@ export default function ClientDocumentsPage() {
       }
 
       const data = await res.json();
-      if (data.success && Array.isArray(data.documents)) {
-        const mapped = data.documents.map((d: any) => mapApiDocToPortalDoc(d));
+      let docArray = null;
+      if (Array.isArray(data)) {
+        docArray = data;
+      } else if (data && data.success && Array.isArray(data.documents)) {
+        docArray = data.documents;
+      }
+
+      if (docArray) {
+        const mapped = docArray.map((d: any) => mapApiDocToPortalDoc(d));
         setDocuments(mapped);
       } else {
         throw new Error("Handshake returned malformed enclave register.");
@@ -467,13 +491,162 @@ export default function ClientDocumentsPage() {
     showToast("All filters reset successfully.", "info");
   };
 
+  // Fetch Current User & Projects for uploading
+  useEffect(() => {
+    const fetchUserDataAndProjects = async () => {
+      try {
+        const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") : null;
+        if (!token) return;
+        
+        // Fetch user
+        const meRes = await fetch("/api/v1/auth/me", {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (meRes.ok) {
+          const data = await meRes.json();
+          if (data) {
+            setCurrentClientId(data.client_id || null);
+            setCurrentUserRole(data.role || null);
+          }
+        }
+
+        // Fetch projects
+        const projRes = await fetch("/api/v1/projects", {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (projRes.ok) {
+          const data = await projRes.json();
+          const projectsList = Array.isArray(data) ? data : (data.success && Array.isArray(data.projects) ? data.projects : []);
+          setAvailableProjects(projectsList);
+        }
+      } catch (err) {
+        console.error("Error fetching user data/projects:", err);
+      }
+    };
+    fetchUserDataAndProjects();
+  }, []);
+
+  // Real secure download via API
+  const handleRealDownload = async (doc: PortalDocument) => {
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") : null;
+      if (!token) {
+        showToast("Authentication token not found.", "warning");
+        return;
+      }
+      showToast(`Transferring certified copy: ${doc.name}...`, "info");
+      
+      const res = await fetch(`/api/v1/documents/download/${doc.id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      
+      if (!res.ok) {
+        throw new Error(`Download failed with status ${res.status}`);
+      }
+      
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = doc.name;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+      
+      showToast(`Securely downloaded: ${doc.name}`, "success");
+    } catch (err: any) {
+      console.error("Error downloading document:", err);
+      showToast(`Download blocked: ${err.message}`, "warning");
+    }
+  };
+
+  // Real multipart upload
+  const handleRealUpload = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!uploadFile) {
+      setUploadError("Please select a file to upload.");
+      return;
+    }
+    
+    setUploading(true);
+    setUploadError(null);
+    
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") : null;
+      if (!token) {
+        throw new Error("Authentication token not found.");
+      }
+      
+      let targetClientId = currentClientId;
+      if (!targetClientId) {
+        const meRes = await fetch("/api/v1/auth/me", {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (meRes.ok) {
+          const meData = await meRes.json();
+          targetClientId = meData.client_id;
+        }
+      }
+      
+      if (!targetClientId) {
+        throw new Error("Could not resolve your client account assignment. Please contact support.");
+      }
+      
+      const formData = new FormData();
+      formData.append("file", uploadFile);
+      formData.append("client_id", String(targetClientId));
+      if (uploadProjectId) {
+        formData.append("project_id", uploadProjectId);
+      }
+      formData.append("title", uploadTitle || uploadFile.name);
+      formData.append("document_type", uploadCategory);
+      formData.append("version", uploadVersion);
+      formData.append("visibility", uploadVisibility);
+      formData.append("description", uploadDescription || "Cryptographically secured enclave system documentation.");
+      
+      const res = await fetch("/api/v1/documents/upload", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
+        body: formData
+      });
+      
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.detail || `Upload failed with status ${res.status}`);
+      }
+      
+      const data = await res.json();
+      if (data.success) {
+        showToast(`Document uploaded and sealed: ${uploadFile.name}`, "success");
+        setUploadFile(null);
+        setUploadTitle("");
+        setUploadDescription("");
+        setUploadVersion("1.0.0");
+        setIsUploadModalOpen(false);
+        fetchDocuments();
+      } else {
+        throw new Error(data.message || "Failed to process document upload.");
+      }
+    } catch (err: any) {
+      console.error("Upload error:", err);
+      setUploadError(err.message || "An unexpected error occurred during secure file transfer.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
   // Simulated Actions
   const handleSimulatedDownload = (doc: PortalDocument) => {
-    showToast(`DEMO SHIELD: File transfer blocked. '${doc.name}' cannot be downloaded in telemetry preview.`, "warning");
+    handleRealDownload(doc);
   };
 
   const handleSimulatedUploadClick = () => {
-    showToast("SECURE GATEWAY: Upload restricted. Local sandbox is currently in read-only audit mode.", "warning");
+    setIsUploadModalOpen(true);
   };
 
   // Filtering Logic
@@ -1123,6 +1296,165 @@ export default function ClientDocumentsPage() {
               </div>
             </div>
 
+          </div>
+        </div>
+      )}
+
+      {/* 9. REAL UPLOAD MODAL */}
+      {isUploadModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="w-full max-w-lg rounded-xl border border-white/10 bg-[#090909] shadow-[0_10px_50px_rgba(0,157,255,0.15)] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="p-5 border-b border-white/5 flex items-center justify-between bg-white/[0.01]">
+              <div className="flex items-center gap-2">
+                <UploadCloud className="w-4.5 h-4.5 text-[#009DFF]" />
+                <h3 className="text-xs font-bold text-white font-mono uppercase tracking-wider">
+                  Secure Document Ingestion
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsUploadModalOpen(false);
+                  setUploadError(null);
+                }}
+                className="p-1 rounded hover:bg-white/5 text-white/40 hover:text-white transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleRealUpload} className="p-6 space-y-4 text-xs font-mono">
+              {uploadError && (
+                <div className="p-3.5 rounded border border-red-500/15 bg-red-500/5 text-red-400 text-[11px] leading-relaxed">
+                  {uploadError}
+                </div>
+              )}
+
+              <div className="space-y-1.5">
+                <label className="text-white/40 uppercase block text-[9px] font-bold">Select Document/File *</label>
+                <input
+                  type="file"
+                  required
+                  onChange={(e) => {
+                    const file = e.target.files?.[0] || null;
+                    setUploadFile(file);
+                    if (file && !uploadTitle) {
+                      setUploadTitle(file.name.replace(/\.[^/.]+$/, ""));
+                    }
+                  }}
+                  className="w-full text-white/60 font-mono text-[11.5px] bg-white/[0.01] border border-white/10 rounded p-2 focus:border-[#009DFF]/30 transition-all cursor-pointer"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-white/40 uppercase block text-[9px] font-bold">Document Title *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Master Service Agreement v2"
+                  value={uploadTitle}
+                  onChange={(e) => setUploadTitle(e.target.value)}
+                  className="w-full h-9 rounded border border-white/10 bg-white/[0.02] px-3 text-white outline-none focus:border-[#009DFF]/30 transition-all font-mono"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-white/40 uppercase block text-[9px] font-bold">Category</label>
+                  <select
+                    value={uploadCategory}
+                    onChange={(e) => setUploadCategory(e.target.value)}
+                    className="w-full h-9 rounded border border-white/10 bg-[#090909] px-2 text-white outline-none focus:border-[#009DFF]/30 transition-all cursor-pointer font-bold"
+                  >
+                    {CATEGORIES.map(cat => (
+                      <option key={cat} value={cat}>{cat.toUpperCase()}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-white/40 uppercase block text-[9px] font-bold">Associated Project</label>
+                  <select
+                    value={uploadProjectId}
+                    onChange={(e) => setUploadProjectId(e.target.value)}
+                    className="w-full h-9 rounded border border-white/10 bg-[#090909] px-2 text-white outline-none focus:border-[#009DFF]/30 transition-all cursor-pointer font-bold"
+                  >
+                    <option value="">NO SPECIFIC PROJECT</option>
+                    {availableProjects.map(proj => (
+                      <option key={proj.id} value={proj.id}>
+                        {proj.id}: {proj.name.substring(0, 16)}...
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-white/40 uppercase block text-[9px] font-bold">Document Version</label>
+                  <input
+                    type="text"
+                    value={uploadVersion}
+                    onChange={(e) => setUploadVersion(e.target.value)}
+                    className="w-full h-9 rounded border border-white/10 bg-white/[0.02] px-3 text-white outline-none focus:border-[#009DFF]/30 transition-all font-mono"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-white/40 uppercase block text-[9px] font-bold">S3 Visibility</label>
+                  <select
+                    value={uploadVisibility}
+                    onChange={(e) => setUploadVisibility(e.target.value)}
+                    className="w-full h-9 rounded border border-white/10 bg-[#090909] px-2 text-white outline-none focus:border-[#009DFF]/30 transition-all cursor-pointer font-bold"
+                  >
+                    <option value="private">PRIVATE (ENCLAVE ONLY)</option>
+                    <option value="public">PUBLIC (CLIENT VISIBLE)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-white/40 uppercase block text-[9px] font-bold">Description Summary</label>
+                <textarea
+                  rows={2}
+                  placeholder="Provide technical synopsis or context requirements..."
+                  value={uploadDescription}
+                  onChange={(e) => setUploadDescription(e.target.value)}
+                  className="w-full rounded border border-white/10 bg-white/[0.02] p-3 text-white outline-none focus:border-[#009DFF]/30 transition-all font-mono resize-none"
+                />
+              </div>
+
+              <div className="pt-4 flex items-center justify-end gap-3 border-t border-white/5">
+                <button
+                  type="button"
+                  disabled={uploading}
+                  onClick={() => {
+                    setIsUploadModalOpen(false);
+                    setUploadError(null);
+                  }}
+                  className="h-9 px-4 rounded border border-white/10 text-white/60 hover:text-white hover:bg-white/5 transition-colors cursor-pointer disabled:opacity-40"
+                >
+                  CANCEL
+                </button>
+                <button
+                  type="submit"
+                  disabled={uploading}
+                  className="h-9 px-5 rounded bg-[#009DFF] hover:bg-[#0082d4] text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-[0_0_15px_rgba(0,157,255,0.25)] disabled:opacity-40"
+                >
+                  {uploading ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <span>INGESTING...</span>
+                    </>
+                  ) : (
+                    <>
+                      <ShieldCheck className="w-3.5 h-3.5" />
+                      <span>SEAL & INGEST</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

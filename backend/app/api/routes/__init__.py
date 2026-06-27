@@ -6,6 +6,7 @@ from .clients import router as clients_router
 from .projects import router as projects_router
 from .support_tickets import router as support_tickets_router
 from .dashboard import router as dashboard_router
+from .documents import router as documents_router
 
 api_router = APIRouter()
 
@@ -17,3 +18,5 @@ api_router.include_router(clients_router, prefix="/clients", tags=["clients"])
 api_router.include_router(projects_router, prefix="/projects", tags=["projects"])
 api_router.include_router(support_tickets_router, prefix="/support-tickets", tags=["support-tickets"])
 api_router.include_router(dashboard_router, prefix="/dashboard", tags=["dashboard"])
+api_router.include_router(documents_router, prefix="/documents", tags=["documents"])
+
