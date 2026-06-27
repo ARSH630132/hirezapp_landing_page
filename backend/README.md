@@ -26,7 +26,7 @@ backend/
 
 ## Features
 
-- **Automated DB Bootstrap**: Automatically boots a local SQLite database (`gff_ai_local.db`) on application launch.
+- **Automated DB Bootstrap**: Automatically boots a local SQLite database (`dev.db`) on application launch.
 - **Enterprise Logs**: A simple, high-performance database logger schema for auditing backend/frontend handshakes.
 - **Health Verification**: An endpoint at `/api/v1/health` that dynamically validates database status and platform health.
 - **Next.js Alignment**: Built-in CORS and request timing telemetry middleware matching frontend-dev requirements.

@@ -4,16 +4,15 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from sqlalchemy.orm import Session
-from backend.app.db.session import SessionLocal, engine
-from backend.app.db.base import Base
+from backend.app.db import SessionLocal, init_db
 from backend.app.services.auth import AuthService
 from backend.app.services.logger import SystemLoggerService
 from backend.app.schemas.user import UserCreate
 from backend.app.schemas.system_log import SystemLogCreate
 
 def seed_db():
-    print("Initializing database tables...")
-    Base.metadata.create_all(bind=engine)
+    print("Initializing database tables via init_db...")
+    init_db()
     
     db: Session = SessionLocal()
     try:

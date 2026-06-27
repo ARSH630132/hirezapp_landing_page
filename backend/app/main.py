@@ -5,15 +5,14 @@ from fastapi.responses import RedirectResponse
 from contextlib import asynccontextmanager
 
 from .core.config import settings
-from .db.session import engine
-from .db.base import Base
+from .db import init_db
 from .api.routes import api_router
 
 # Lifespan for FastAPI (creates DB tables on startup)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Create SQLite database tables automatically on launch for a local MVP setup
-    Base.metadata.create_all(bind=engine)
+    # Initialize SQLite database tables automatically on launch for a local MVP setup
+    init_db()
     yield
 
 app = FastAPI(
