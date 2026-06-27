@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ToolPageShell, ToolHero } from "@/components/build/components";
+import RelatedPagesGrid from "@/components/inner-pages/RelatedPagesGrid";
 import { Industry, CompanySize } from "@/components/build/types";
 import { getToolState, saveToolState, clearToolState } from "@/components/build/workspaceUtility";
 
@@ -1447,6 +1448,35 @@ SECTION XI: NEXT STEPS
 
       </AnimatePresence>
 
+      {/* Strategic Pathways & Related Links */}
+      <div className="pt-12 mt-12 border-t border-white/5 print:hidden">
+        <RelatedPagesGrid links={[
+          {
+            title: "Talk to Agent",
+            tag: "Next Step • Interactive Synapse",
+            desc: "Sync directly with GFF AI lead engineers to review core architecture blueprints and secure integration strategies.",
+            href: "/build/talk"
+          },
+          {
+            title: "Secure Contact Portal",
+            tag: "Next Step • Corporate Pathway",
+            desc: "Initiate secure, high-fidelity corporate integration pathways and enclave allocations.",
+            href: "/contact"
+          },
+          {
+            title: "Sovereign Factory Platform",
+            tag: "GFF Platform Module",
+            desc: "Industrial-scale cognitive agent fleet orchestration, automated pipelines, and federated data networks.",
+            href: "/platforms/factory"
+          },
+          {
+            title: "Managed Sovereign Services",
+            tag: "Core GFF Capability",
+            desc: "Explore our proactive optimization, token safety governance, and persistent co-run support.",
+            href: "/capabilities/managed-services"
+          }
+        ]} />
+      </div>
     </ToolPageShell>
   );
 }

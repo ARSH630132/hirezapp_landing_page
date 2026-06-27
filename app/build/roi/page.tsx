@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ToolPageShell, ToolHero } from "@/components/build/components";
 import { getToolState, saveToolState } from "@/components/build/workspaceUtility";
 import NextBestAction from "@/components/build/NextBestAction";
+import RelatedPagesGrid from "@/components/inner-pages/RelatedPagesGrid";
 
 
 type Priority =
@@ -1373,53 +1374,34 @@ Status: MODELLED - ILLUSTRATIVE ONLY
             </p>
           </div>
 
-          {/* Section E: Inter-Tool Ecosystem Routing */}
-          <div className="p-6 rounded-2xl border border-white/5 bg-[#030306]/95 space-y-4">
-            <span className="text-[9px] font-mono text-white/40 uppercase tracking-widest block">INTER-CONNECTED PLATFORM MODULES</span>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              
-              <Link href="/build/blueprint" className="p-5 rounded-2xl border border-white/5 bg-[#030305] hover:border-[#9D00FF]/30 hover:bg-white/[0.01] transition-all flex flex-col justify-between min-h-[170px] group text-left">
-                <div className="space-y-2">
-                  <div className="w-7 h-7 rounded bg-[#9D00FF]/5 border border-[#9D00FF]/15 flex items-center justify-center text-[#9D00FF]">
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M11 3.055A9.003 9.003 0 1020.945 13H11V3.055z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
-                    </svg>
-                  </div>
-                  <h4 className="text-xs font-bold text-white group-hover:text-[#9D00FF] transition-colors">Launch Sovereign Agent Architect</h4>
-                  <p className="text-[10px] text-white/40 font-light leading-relaxed">
-                    Graph custom agent topologies and map reclaimed workforce hours directly to multi-agent execution steps.
-                  </p>
-                </div>
-                <div className="text-[9px] font-mono text-white/30 pt-3 border-t border-white/5 flex items-center gap-1 group-hover:text-white transition-colors">
-                  <span>MODEL AGENT TOPOLOGY</span>
-                  <svg className="w-2.5 h-2.5 group-hover:translate-x-0.5 transition-transform text-[#9D00FF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                  </svg>
-                </div>
-              </Link>
-
-              <Link href="/build/proposal" className="p-5 rounded-2xl border border-white/5 bg-[#030305] hover:border-[#00FF9D]/30 hover:bg-white/[0.01] transition-all flex flex-col justify-between min-h-[170px] group text-left">
-                <div className="space-y-2">
-                  <div className="w-7 h-7 rounded bg-[#00FF9D]/5 border border-[#00FF9D]/15 flex items-center justify-center text-[#00FF9D]">
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                    </svg>
-                  </div>
-                  <h4 className="text-xs font-bold text-white group-hover:text-[#00FF9D] transition-colors">Launch SOW Proposal Studio</h4>
-                  <p className="text-[10px] text-white/40 font-light leading-relaxed">
-                    Translate your calculated amortization model instantly into an enterprise-grade Statement of Work.
-                  </p>
-                </div>
-                <div className="text-[9px] font-mono text-white/30 pt-3 border-t border-white/5 flex items-center gap-1 group-hover:text-white transition-colors">
-                  <span>BUILD PROPOSAL DECK</span>
-                  <svg className="w-2.5 h-2.5 group-hover:translate-x-0.5 transition-transform text-[#00FF9D]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                  </svg>
-                </div>
-              </Link>
-
-            </div>
+          {/* Section E: Strategic Pathways & Related Links */}
+          <div className="pt-12 border-t border-white/5 print:hidden">
+            <RelatedPagesGrid links={[
+              {
+                title: "Proposal Builder",
+                tag: "Next Step • Commercial Studio",
+                desc: "Convert your modeled economic metrics into a formatted Statement of Work and corporate proposal deck.",
+                href: "/build/proposal"
+              },
+              {
+                title: "Blueprint Generator",
+                tag: "Next Step • Architect Graph",
+                desc: "Translate your economic parameters into a multi-agent topological DAG execution map.",
+                href: "/build/blueprint"
+              },
+              {
+                title: "Control Center Platform",
+                tag: "GFF Platform Module",
+                desc: "Monitor your multi-agent fleet operations and trace active token allocation telemetry.",
+                href: "/platforms/control-center"
+              },
+              {
+                title: "Managed Sovereign AI Operations",
+                tag: "Core GFF Capability",
+                desc: "Review custom orchestration, model fine-tuning, and SLA performance guarantees.",
+                href: "/capabilities/operations"
+              }
+            ]} />
           </div>
 
           {!isFlushing && <NextBestAction currentTool="roi" />}

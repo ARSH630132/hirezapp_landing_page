@@ -22,6 +22,7 @@ import {
 import { WizardStepperSystem, WizardStep, WizardStepperSystemActions } from "@/components/build/WizardStepperSystem";
 import { SovereignHistoryDrawer, SavedBlueprint } from "./SovereignHistoryDrawer";
 import NextBestAction from "@/components/build/NextBestAction";
+import RelatedPagesGrid from "@/components/inner-pages/RelatedPagesGrid";
 
 
 // Custom type extending BlueprintAnswers to maintain local UI-only wizard states
@@ -1162,6 +1163,48 @@ PRIVACY NOTICE: Generated locally on the client edge. No data is stored on serve
           description="Work with GFF's core architecture engineers to deploy your synthesized DAG topologies inside private, single-tenant secure VPC enclaves."
           buttonText="Initiate Private Architecture Sync"
         />
+      </div>
+
+      {/* Strategic Pathways & Related Links */}
+      <div className="pt-12 border-t border-white/5 print:hidden">
+        <RelatedPagesGrid links={[
+          {
+            title: "AI Readiness Assessment",
+            tag: "Next Step • Diagnostics",
+            desc: "Evaluate regulatory compliance thresholds, organizational readiness index, and legacy systems compatibility.",
+            href: "/build/assessment"
+          },
+          {
+            title: "ROI Calculator",
+            tag: "Next Step • Economic Engine",
+            desc: "Model multi-year cost savings, task volume automation, and sovereign license multiplier baseline.",
+            href: "/build/roi"
+          },
+          {
+            title: "Proposal Builder",
+            tag: "Next Step • Commercial Studio",
+            desc: "Compile automated corporate Statements of Work (SOW) and export formatted project presentation decks.",
+            href: "/build/proposal"
+          },
+          {
+            title: "Talk to Agent",
+            tag: "Next Step • Interactive Synapse",
+            desc: "Interface with GFF's cognitive supervisors to co-engineer and map legacy process variables.",
+            href: "/build/talk"
+          },
+          {
+            title: "Sovereign Blueprint Platform",
+            tag: "GFF Platform Module",
+            desc: "Deploy highly hardened single-tenant visual nodes topologies mapped to your technical specifications.",
+            href: "/platforms/blueprint"
+          },
+          {
+            title: "Transformation Strategy",
+            tag: "Core GFF Capability",
+            desc: "Explore how we re-architect legacy stacks into zero-retention private AI engines.",
+            href: "/capabilities/strategy"
+          }
+        ]} />
       </div>
 
       {/* Sovereign History Vault Drawer */}

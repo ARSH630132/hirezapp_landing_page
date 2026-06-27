@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { ToolPageShell, ToolHero } from "@/components/build/components";
 import Link from "next/link";
 import PremiumCTA from "@/components/inner-pages/PremiumCTA";
+import RelatedPagesGrid from "@/components/inner-pages/RelatedPagesGrid";
 import { getToolState, saveToolState } from "@/components/build/workspaceUtility";
 
 // ==========================================
@@ -1551,49 +1552,34 @@ ${stages
       </div>
 
 
-      {/* Cross-Tool Navigator Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16 max-w-6xl mx-auto">
-        
-        {/* Sandbox Link card */}
-        <div className="p-6 rounded-2xl border border-white/5 bg-[#030304]/80 flex flex-col justify-between hover:border-white/10 transition-all group relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#9D00FF]/5 to-transparent pointer-events-none" />
-          <div>
-            <span className="text-[9px] font-mono px-2 py-0.5 rounded border border-[#9D00FF]/25 bg-[#9D00FF]/5 text-[#9D00FF]">SANDBOX DEPLOYER</span>
-            <h3 className="text-lg font-bold text-white mt-4 group-hover:text-[#009DFF] transition-colors font-sans">Launch Zero-Trust Sandbox</h3>
-            <p className="mt-2 text-xs text-white/50 leading-relaxed font-light font-sans">
-              Transition your constructed visual DAG pipeline directly into an interactive trace logs simulator. Watch execution steps pass safely inside virtual cryptographic AMD SEV hardware boundaries.
-            </p>
-          </div>
-          <div className="mt-6 pt-4 border-t border-white/5">
-            <Link href="/build/sandbox" className="inline-flex items-center gap-1.5 text-xs font-bold text-white hover:text-[#009DFF] transition font-sans">
-              <span>OPEN SANDBOX SIMULATOR</span>
-              <svg className="w-3 h-3 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
-          </div>
-        </div>
-
-        {/* Proposal Studio Link card */}
-        <div className="p-6 rounded-2xl border border-white/5 bg-[#030304]/80 flex flex-col justify-between hover:border-white/10 transition-all group relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#00FF9D]/5 to-transparent pointer-events-none" />
-          <div>
-            <span className="text-[9px] font-mono px-2 py-0.5 rounded border border-[#00FF9D]/25 bg-[#00FF9D]/5 text-[#00FF9D]">COMMERCIAL SCOPING</span>
-            <h3 className="text-lg font-bold text-white mt-4 group-hover:text-[#009DFF] transition-colors font-sans">Launch Proposal Studio</h3>
-            <p className="mt-2 text-xs text-white/50 leading-relaxed font-light font-sans">
-              Translate this technical topology diagram directly into professional commercials, implementation squad allocations, timeline models, and downloadable Statement of Work (SOW) decks.
-            </p>
-          </div>
-          <div className="mt-6 pt-4 border-t border-white/5">
-            <Link href="/build/proposal" className="inline-flex items-center gap-1.5 text-xs font-bold text-white hover:text-[#009DFF] transition font-sans">
-              <span>OPEN PROPOSAL BUILDER</span>
-              <svg className="w-3 h-3 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-              </svg>
-            </Link>
-          </div>
-        </div>
-
+      {/* Strategic Pathways & Related Links */}
+      <div className="pt-12 mt-12 border-t border-white/5 print:hidden">
+        <RelatedPagesGrid links={[
+          {
+            title: "Proposal Builder",
+            tag: "Next Step • Commercial Studio",
+            desc: "Convert this technical topology diagram into a formal Statement of Work (SOW) and professional commercial options.",
+            href: "/build/proposal"
+          },
+          {
+            title: "Talk to Agent",
+            tag: "Next Step • Interactive Synapse",
+            desc: "Sync directly with GFF AI lead engineers to review core architecture blueprints and secure integration strategies.",
+            href: "/build/talk"
+          },
+          {
+            title: "Sovereign Foundry Platform",
+            tag: "GFF Platform Module",
+            desc: "Assemble and deploy hardened multi-agent workflows inside single-tenant VPC enclaves.",
+            href: "/platforms/foundry"
+          },
+          {
+            title: "Sovereign Systems Engineering",
+            tag: "Core GFF Capability",
+            desc: "Explore our methodologies for building secure, highly scalable vector architectures.",
+            href: "/capabilities/engineering"
+          }
+        ]} />
       </div>
 
       {/* Premium Call to Action */}

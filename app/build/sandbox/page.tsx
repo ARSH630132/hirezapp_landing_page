@@ -8,6 +8,7 @@ import PremiumCTA from "@/components/inner-pages/PremiumCTA";
 import MotionReveal from "@/components/inner-pages/MotionReveal";
 import { getToolState, saveToolState } from "@/components/build/workspaceUtility";
 import NextBestAction from "@/components/build/NextBestAction";
+import RelatedPagesGrid from "@/components/inner-pages/RelatedPagesGrid";
 
 
 // Define TypeScript interfaces for static agent data
@@ -1438,6 +1439,36 @@ export default function SandboxPage() {
           secondaryLabel="Explore Architecture Specs"
           secondaryHref="/resources/architecture-library"
         />
+
+        {/* Strategic Pathways & Related Links */}
+        <div className="pt-12 mt-12 border-t border-white/5 print:hidden">
+          <RelatedPagesGrid links={[
+            {
+              title: "Agent Marketplace",
+              tag: "Next Step • Marketplace Recipes",
+              desc: "License certified enterprise agent templates, multi-system connectors, and pre-built operational flows.",
+              href: "/build/marketplace"
+            },
+            {
+              title: "Foundry Studio",
+              tag: "Next Step • Topology Workspace",
+              desc: "Deploy custom node topologies, multi-agent transition steps, and isolated VPC endpoints.",
+              href: "/build/foundry-studio"
+            },
+            {
+              title: "Sovereign Garage Platform",
+              tag: "GFF Platform Module",
+              desc: "Experience high-fidelity workspace setups for prototyping secure cognitive services.",
+              href: "/platforms/garage"
+            },
+            {
+              title: "GFF Innovation Labs",
+              tag: "Core GFF Capability",
+              desc: "Co-create high-impact proof of concepts with advanced systems engineering support.",
+              href: "/capabilities/labs"
+            }
+          ]} />
+        </div>
 
       </div>
     </InnerPageShell>

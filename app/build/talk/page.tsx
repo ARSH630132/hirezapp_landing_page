@@ -6,6 +6,7 @@ import { ToolPageShell } from "@/components/build/components";
 import Link from "next/link";
 import { getToolState, saveToolState } from "@/components/build/workspaceUtility";
 import NextBestAction from "@/components/build/NextBestAction";
+import RelatedPagesGrid from "@/components/inner-pages/RelatedPagesGrid";
 
 
 interface IntakeInputs {
@@ -1263,6 +1264,36 @@ export default function TalkToAgentPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Strategic Pathways & Related Links */}
+      <div className="pt-12 mt-12 border-t border-white/5 print:hidden">
+        <RelatedPagesGrid links={[
+          {
+            title: "Blueprint Generator",
+            tag: "Next Step • Architect Graph",
+            desc: "Transform your mapped legacy bottlenecks and priorities into a functional, secure agentic blueprint.",
+            href: "/build/blueprint"
+          },
+          {
+            title: "AI Readiness Assessment",
+            tag: "Next Step • Diagnostics",
+            desc: "Evaluate your comprehensive operational, data, and regulatory compliance readiness indexes.",
+            href: "/build/assessment"
+          },
+          {
+            title: "Developer Platform",
+            tag: "GFF Platform Module",
+            desc: "Access our rich library of core multi-agent models, developer tools, and deployment runtimes.",
+            href: "/platforms/developer-platform"
+          },
+          {
+            title: "AI Strategy & Consultation",
+            tag: "Core GFF Capability",
+            desc: "Explore how our senior principal systems architects partner to drive your secure transformation.",
+            href: "/capabilities/strategy"
+          }
+        ]} />
+      </div>
     </ToolPageShell>
   );
 }

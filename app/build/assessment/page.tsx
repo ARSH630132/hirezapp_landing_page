@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ToolPageShell, ToolCTA } from "@/components/build/components";
 import NextBestAction from "@/components/build/NextBestAction";
+import RelatedPagesGrid from "@/components/inner-pages/RelatedPagesGrid";
 
 import Link from "next/link";
 import { DIMENSIONS, Dimension } from "./data";
@@ -1454,6 +1455,36 @@ CONFIDENTIALITY NOTICE: This report was compiled locally in a zero-retention env
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Strategic Pathways & Related Links */}
+      <div className="pt-12 mt-12 border-t border-white/5 print:hidden">
+        <RelatedPagesGrid links={[
+          {
+            title: "Blueprint Generator",
+            tag: "Next Step • Architect Graph",
+            desc: "Translate your readiness scores into a functional, secure agentic orchestration diagram with exact node routing.",
+            href: "/build/blueprint"
+          },
+          {
+            title: "Talk to Agent",
+            tag: "Next Step • Interactive Synapse",
+            desc: "Sync directly with GFF AI lead engineers to review core architecture blueprints and secure integration strategies.",
+            href: "/build/talk"
+          },
+          {
+            title: "Assessment Mesh Platform",
+            tag: "GFF Platform Module",
+            desc: "Continuous sovereign validation framework auditing and tracing organizational readiness metrics.",
+            href: "/platforms/assessment-mesh"
+          },
+          {
+            title: "Sovereign Compliance & Governance",
+            tag: "Core GFF Capability",
+            desc: "Zero-retention data filtering and enterprise-grade policy auditing protocols.",
+            href: "/capabilities/governance"
+          }
+        ]} />
+      </div>
     </ToolPageShell>
   );
 }

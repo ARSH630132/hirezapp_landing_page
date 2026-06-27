@@ -14,6 +14,7 @@ import MotionReveal from "@/components/inner-pages/MotionReveal";
 import { BentoGrid, BentoCard } from "@/components/inner-pages/BentoGrid";
 import PremiumCTA from "@/components/inner-pages/PremiumCTA";
 import NextBestAction from "@/components/build/NextBestAction";
+import RelatedPagesGrid from "@/components/inner-pages/RelatedPagesGrid";
 
 import { getToolState, saveToolState } from "@/components/build/workspaceUtility";
 
@@ -1121,23 +1122,35 @@ export default function BuildMarketplacePage() {
           </BentoGrid>
         </MotionReveal>
 
-        {/* RELATED LINKS */}
-        <MotionReveal className="border-t border-white/5 pt-16 grid grid-cols-1 md:grid-cols-2 gap-8">
-          <Link href="/build/sandbox" className="group p-8 rounded-2xl border border-white/5 bg-gradient-to-br from-black to-[#050507] hover:border-white/10 transition-all flex flex-col justify-between min-h-[160px]">
-            <div>
-              <span className="text-[10px] font-mono text-[#009DFF] uppercase tracking-widest">UTILITY DECK</span>
-              <h4 className="text-lg font-bold text-white group-hover:text-[#009DFF] transition-colors mt-2 flex items-center gap-1.5">Zero-Trust Sandbox Utility <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" /></h4>
-              <p className="text-xs text-white/50 font-light mt-1">Explore containerized enclaves, trace transaction schemas, and review audit telemetry reports.</p>
-            </div>
-          </Link>
-          <Link href="/build/blueprint" className="group p-8 rounded-2xl border border-white/5 bg-gradient-to-br from-black to-[#050507] hover:border-white/10 transition-all flex flex-col justify-between min-h-[160px]">
-            <div>
-              <span className="text-[10px] font-mono text-purple-500 uppercase tracking-widest">COGNITIVE CANVAS</span>
-              <h4 className="text-lg font-bold text-white group-hover:text-purple-500 transition-colors mt-2 flex items-center gap-1.5 font-sans">Interactive Blueprint Architect <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" /></h4>
-              <p className="text-xs text-white/50 font-light mt-1 font-sans">Design tailored multi-agent execution roadmaps, model transaction DAG flowcharts, and compile specs.</p>
-            </div>
-          </Link>
-        </MotionReveal>
+        {/* Strategic Pathways & Related Links */}
+        <div className="pt-12 mt-12 border-t border-white/5 print:hidden">
+          <RelatedPagesGrid links={[
+            {
+              title: "Execution Sandbox",
+              tag: "Next Step • Safe Simulations",
+              desc: "Simulate certified marketplace agent recipes inside our isolated, zero-retention execution sandbox environments.",
+              href: "/build/sandbox"
+            },
+            {
+              title: "Proposal Builder",
+              tag: "Next Step • Commercial Studio",
+              desc: "Convert your curated agent requirements into a formal Statement of Work (SOW) and commercial presentation.",
+              href: "/build/proposal"
+            },
+            {
+              title: "Agent Marketplace Platform",
+              tag: "GFF Platform Module",
+              desc: "Deploy custom pre-validated multi-system connector nodes mapped directly to your internal secure clusters.",
+              href: "/platforms/agent-marketplace"
+            },
+            {
+              title: "Sovereign Cognitive Agents",
+              tag: "Core GFF Capability",
+              desc: "Explore how we engineer and deploy highly robust decision agents inside single-tenant secure enclaves.",
+              href: "/capabilities/agents"
+            }
+          ]} />
+        </div>
 
         <NextBestAction currentTool="marketplace" />
 
