@@ -205,6 +205,10 @@
     {
       "id": "82-phase4-client-ai-operations-overview",
       "reason": "cline implementation failed"
+    },
+    {
+      "id": "88-phase4-client-support-center",
+      "reason": "cline implementation failed"
     }
   ]
 }
