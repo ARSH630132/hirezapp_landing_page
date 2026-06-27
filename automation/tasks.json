@@ -1166,5 +1166,117 @@
     "target": "MVP backend auth RBAC portal admin integration",
     "allowLandingChanges": false,
     "prompt": "Perform final QA for Phase 5. Do not add new features unless fixing a small clear issue. Verify local/dev backend exists and runs. Verify SQLite database setup. Verify seed data and dev users. Verify JWT login, auth/me, logout, RBAC, client data scoping, admin access. Verify CRUD APIs for clients, users, projects, AI operations, documents metadata, invoices metadata, support tickets, governance, dashboard summaries, analytics summaries. Verify frontend login connects to backend. Verify client portal pages use backend data: Dashboard, Projects, AI Operations, Documents, Billing, Support, Analytics, Governance, Activity, Settings. Verify admin pages use backend data: Dashboard, Clients, Users, Projects, AI Operations, Documents, Billing, Support, Analytics, Governance, Settings. Verify no AWS, storage, payment, email, OTP, OAuth, SSO, production auth, or backend for GFF AI tools was added. Verify landing page unchanged. Run backend tests/checks if available, backend startup/import checks, npm run lint, npm run build, npm run typecheck if available, and npm test if available. Final response must include pass/fail checklist, files changed, commands run, remaining warnings, local dev login credentials from seed docs, and TODOs for Phase 6 production hardening."
+  },
+  {
+    "id": "171-phase6-aws-preflight-final-scope-audit",
+    "title": "Phase 6 AWS final scope audit",
+    "scope": "phase6-audit",
+    "target": "final AWS DynamoDB S3 product completion",
+    "allowLandingChanges": false,
+    "prompt": "Audit the current Phase 5 implementation before AWS conversion. Do not edit files. Confirm that login, admin, client portal, local backend, SQLite models, JWT auth, RBAC, CRUD APIs, frontend API client, and portal/admin pages exist. Confirm GFF AI tools remain frontend-only and must not receive backend integration. Produce a short final implementation checklist only. Phase 6 must only move the MVP product from local SQLite to AWS DynamoDB and S3, connect document uploads/downloads, update env configuration, seed AWS data, and run final QA. Do not add new product features. Do not add payment, OTP, email, SSO, rate limiting, advanced security, audit logs, or backend for Blueprint, ROI, Proposal, Assessment, Sandbox, Marketplace, Foundry Studio, or Talk to Agent."
+  },
+  {
+    "id": "172-phase6-aws-env-and-config",
+    "title": "Add AWS env config",
+    "scope": "phase6-config",
+    "target": "backend AWS environment configuration",
+    "allowLandingChanges": false,
+    "prompt": "Add final AWS configuration to the backend. Do not touch landing page. Do not modify GFF AI tools. Update backend env example and settings/config to support AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, DYNAMODB_USERS_TABLE, DYNAMODB_CLIENTS_TABLE, DYNAMODB_ITEMS_TABLE, DYNAMODB_ITEMS_TYPE_INDEX, S3_DOCUMENTS_BUCKET, S3_DOCUMENTS_PREFIX, JWT_SECRET, ACCESS_TOKEN_EXPIRE_MINUTES, CORS_ORIGINS, and FRONTEND_BASE_URL. Keep local development support if it already exists. Do not commit real secrets. Do not add unnecessary security features. Run backend import check."
+  },
+  {
+    "id": "173-phase6-dynamodb-table-documentation",
+    "title": "Document final DynamoDB tables",
+    "scope": "phase6-docs",
+    "target": "DynamoDB table setup documentation",
+    "allowLandingChanges": false,
+    "prompt": "Create or update docs/PHASE_6_AWS_FINAL_SETUP.md with the exact AWS resources required. Document only three DynamoDB tables: GFF_USERS with primary key email, GFF_CLIENTS with primary key client_id, and GFF_PORTAL_ITEMS with PK and SK plus GSI1 using GSI1PK and GSI1SK. Document that GFF_PORTAL_ITEMS stores Projects, AI Operations, Documents metadata, Invoices metadata, Support Tickets, and Governance Items. Document one S3 bucket for portal documents. Include required backend and frontend env keys. Keep documentation concise."
+  },
+  {
+    "id": "174-phase6-dynamodb-client-and-repositories",
+    "title": "Create DynamoDB client and repository layer",
+    "scope": "phase6-backend",
+    "target": "DynamoDB repository layer",
+    "allowLandingChanges": false,
+    "prompt": "Create a simple DynamoDB client and repository layer for the backend. Do not touch landing page or GFF AI tools. Replace direct SQLite usage in portal/admin APIs with DynamoDB repository functions. Create repositories for users, clients, and portal items. Portal items must support entity types: PROJECT, AI_OPERATION, DOCUMENT, INVOICE, SUPPORT, GOVERNANCE. Keep implementation simple and readable. Use boto3 if backend is Python/FastAPI. Do not add unnecessary abstraction. Run backend import check."
+  },
+  {
+    "id": "175-phase6-auth-users-dynamodb",
+    "title": "Move auth users to DynamoDB",
+    "scope": "phase6-auth",
+    "target": "DynamoDB-backed login",
+    "allowLandingChanges": false,
+    "prompt": "Update auth to read users from the GFF_USERS DynamoDB table. Do not touch landing page or GFF AI tools. Login must verify email and password_hash from DynamoDB. /auth/me must return current user from DynamoDB. Keep JWT behavior from Phase 5. Roles are only gff_admin, client_admin, client_member. Do not add forgot password, OTP, SSO, refresh token, or production cookie flow. Run backend check."
+  },
+  {
+    "id": "176-phase6-clients-and-portal-items-dynamodb",
+    "title": "Move clients and portal CRUD to DynamoDB",
+    "scope": "phase6-backend",
+    "target": "DynamoDB-backed portal admin CRUD",
+    "allowLandingChanges": false,
+    "prompt": "Update CRUD APIs for clients, projects, AI operations, documents metadata, invoices metadata, support tickets, and governance items to use DynamoDB. Use GFF_CLIENTS for clients and GFF_PORTAL_ITEMS for all other portal/admin items. Admin users can access all records. Client users can access only their own client_id records. Keep endpoints from Phase 5. Do not add new routes unless required to keep current frontend working. Run backend check."
+  },
+  {
+    "id": "177-phase6-dashboard-analytics-dynamodb",
+    "title": "Use DynamoDB for dashboard and analytics summaries",
+    "scope": "phase6-backend",
+    "target": "dashboard analytics DynamoDB",
+    "allowLandingChanges": false,
+    "prompt": "Update dashboard and analytics summary endpoints to compute from DynamoDB records. Do not touch landing page or GFF AI tools. Client dashboard must count only that user's client_id records. Admin dashboard must summarize all clients and all portal items. Analytics should stay simple: counts by status, phase, support priority, invoice status, AI operation health, and governance severity. Do not add new analytics features. Run backend check."
+  },
+  {
+    "id": "178-phase6-s3-document-files",
+    "title": "Add S3 document upload and download",
+    "scope": "phase6-s3",
+    "target": "portal document file storage",
+    "allowLandingChanges": false,
+    "prompt": "Add S3 support only for portal/admin documents. Do not touch landing page or GFF AI tools. Backend should upload document files to S3 under clients/<client_id>/documents/<document_id>/<filename>. Store metadata in GFF_PORTAL_ITEMS as DOCUMENT records. Add backend endpoints for document upload and download or signed download URL if simpler. Keep it minimal. Do not add virus scanning, advanced permissions, OCR, previews, or versioning. Ensure client users can only access documents for their client_id. Run backend check."
+  },
+  {
+    "id": "179-phase6-frontend-documents-s3-integration",
+    "title": "Connect frontend document upload and download",
+    "scope": "phase6-frontend",
+    "target": "documents UI S3 integration",
+    "allowLandingChanges": false,
+    "prompt": "Connect client and admin document pages to the S3-backed document endpoints. Do not touch landing page or GFF AI tools. Client portal documents should list documents, upload document if allowed, and download/view document link. Admin documents should list, create metadata/upload file, edit metadata, and download/view document link. Keep UI simple. Do not add previews, OCR, version history, or advanced file management. Add loading, error, and success states. Run frontend lint/build."
+  },
+  {
+    "id": "180-phase6-seed-aws-data",
+    "title": "Create AWS DynamoDB seed script",
+    "scope": "phase6-data",
+    "target": "AWS seed data",
+    "allowLandingChanges": false,
+    "prompt": "Create or update seed script to seed DynamoDB tables with final MVP data. Do not touch landing page or GFF AI tools. Seed users for gff_admin, client_admin, and client_member only. Seed 2 representative clients, projects, AI operations, document metadata, invoices, support tickets, and governance items. Do not seed fake real client names or logos. Document seed credentials in Phase 6 docs. Ensure seed can be safely rerun without duplicate records. Run seed only if environment is configured."
+  },
+  {
+    "id": "181-phase6-frontend-env-and-api-finalization",
+    "title": "Finalize frontend API environment integration",
+    "scope": "phase6-frontend",
+    "target": "frontend production env",
+    "allowLandingChanges": false,
+    "prompt": "Finalize frontend environment usage. Do not touch landing page or GFF AI tools. Ensure portal/admin frontend uses NEXT_PUBLIC_API_BASE_URL for backend calls. Ensure NEXT_PUBLIC_PORTAL_UPLOADS_ENABLED controls document upload visibility if implemented. Remove local preview dependency from portal/admin pages except safe fallback states. Do not connect GFF AI tools to backend. Run frontend lint/build."
+  },
+  {
+    "id": "182-phase6-cors-and-deployment-config",
+    "title": "Finalize CORS and deployment config",
+    "scope": "phase6-deployment",
+    "target": "backend frontend deployment readiness",
+    "allowLandingChanges": false,
+    "prompt": "Finalize minimal deployment configuration. Do not touch landing page or GFF AI tools. Backend must read CORS_ORIGINS from env and allow the frontend domain. Update docs with backend start command, frontend build command, required env variables, and AWS resource names. Do not add Docker or cloud hosting files unless already required by the current deployment approach. Keep this simple and MVP-ready. Run backend check and frontend build."
+  },
+  {
+    "id": "183-phase6-final-product-qa",
+    "title": "Final product QA",
+    "scope": "phase6-final-qa",
+    "target": "full working MVP product",
+    "allowLandingChanges": false,
+    "prompt": "Perform final QA for the full MVP product. Do not add new features. Verify login works with DynamoDB users. Verify RBAC works for gff_admin, client_admin, and client_member. Verify admin can manage clients, users, projects, AI operations, documents, invoices, support tickets, and governance items. Verify client portal can view its own dashboard, projects, AI operations, documents, billing, support, analytics, and governance. Verify support ticket creation works. Verify document upload/download works through S3. Verify dashboard and analytics use DynamoDB data. Verify invoices are metadata only and no payment exists. Verify GFF AI tools remain frontend-only and hardcoded. Verify no AWS backend is added for Blueprint, ROI, Proposal, Assessment, Sandbox, Marketplace, Foundry Studio, or Talk to Agent. Verify landing page unchanged. Run backend checks and frontend lint/build."
+  },
+  {
+    "id": "184-phase6-final-wrap-up-docs",
+    "title": "Final wrap-up documentation",
+    "scope": "phase6-docs",
+    "target": "final product handoff docs",
+    "allowLandingChanges": false,
+    "prompt": "Create final concise handoff documentation. Do not touch landing page or GFF AI tools. Update docs/FINAL_MVP_HANDOFF.md with AWS tables, S3 bucket, env keys, seed users, local run commands, production run commands, frontend env, backend env, and final scope. Clearly state that GFF AI tools are frontend-only dummy/hardcoded and not backend-connected. Keep the document short and practical. Run build only if docs affect build."
   }
 ]
