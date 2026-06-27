@@ -137,7 +137,8 @@
     "156-phase5-frontend-client-analytics-governance-api",
     "158-phase5-frontend-admin-dashboard-api",
     "159-phase5-frontend-admin-clients-users-api",
-    "160-phase5-frontend-admin-projects-aiops-api"
+    "160-phase5-frontend-admin-projects-aiops-api",
+    "161-phase5-frontend-admin-documents-billing-api"
   ],
   "failed": [
     {
