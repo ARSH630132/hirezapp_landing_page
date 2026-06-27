@@ -28,11 +28,11 @@ From the **root directory** of the project, you can run:
     ```
     *Starts the FastAPI application via Uvicorn on [http://localhost:8000](http://localhost:8000) with hot-reloading enabled.*
 
-*   **Run Backend Security & Dependency Tests**:
+*   **Run Backend Security, RBAC & End-To-End Smoke Tests**:
     ```bash
     npm run backend:check
     ```
-    *Executes the backend verification suite (`test_security_utilities.py`) to validate JWT token parsing, password bcrypt hashing, and role-based access control (RBAC) rules.*
+    *Executes both the security utility suite (`test_security_utilities.py`) and the comprehensive pytest-driven smoke tests (`test_backend_smoke.py`). It validates: JWT parsing, bcrypt hashing, RBAC rules, health endpoints, user profile retrieval (`/auth/me`), multi-tenant data boundaries, client dashboard scoping, projects listing, and support ticket creation isolation.*
 
 ---
 

@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from ...db.session import get_db
 from ...schemas.user import Token, UserCreate, UserResponse
 from ...services.auth import AuthService
+from ...api.deps import get_current_user
 
 router = APIRouter()
 
@@ -46,3 +47,10 @@ def login_access_token(
         access_token=access_token,
         role=user.role
     )
+
+@router.get("/me", response_model=UserResponse)
+def get_me(current_user: UserResponse = Depends(get_current_user)):
+    """
+    Retrieve current authenticated user information.
+    """
+    return current_user

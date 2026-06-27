@@ -11,7 +11,7 @@
     "backend:install": "cd backend && (test -d venv || python3 -m venv venv) && venv/bin/pip install -r requirements.txt && (test -f .env || cp .env.example .env)",
     "backend:dev": "cd backend && venv/bin/uvicorn app.main:app --reload --port 8000",
     "backend:seed": "cd backend && venv/bin/python app/seed.py",
-    "backend:check": "backend/venv/bin/python backend/app/test_security_utilities.py"
+    "backend:check": "backend/venv/bin/python backend/app/test_security_utilities.py && backend/venv/bin/pytest backend/app/test_backend_smoke.py"
   },
   "dependencies": {
     "@fontsource/montserrat": "^5.2.8",
