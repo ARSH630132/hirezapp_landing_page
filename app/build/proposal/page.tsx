@@ -531,8 +531,9 @@ SECTION XI: NEXT STEPS
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-mono text-white/50 uppercase tracking-wide block">Organization Name (Optional)</label>
+                      <label htmlFor="company-name-input" className="text-[10px] font-mono text-white/50 uppercase tracking-wide block cursor-pointer">Organization Name (Optional)</label>
                       <input
+                        id="company-name-input"
                         type="text"
                         value={inputs.companyName}
                         onChange={(e) => setInputs({ ...inputs, companyName: e.target.value })}
@@ -588,8 +589,9 @@ SECTION XI: NEXT STEPS
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-mono text-white/50 uppercase tracking-wide block">Deployment Geography (Optional)</label>
+                      <label htmlFor="geography-input" className="text-[10px] font-mono text-white/50 uppercase tracking-wide block cursor-pointer">Deployment Geography (Optional)</label>
                       <input
+                        id="geography-input"
                         type="text"
                         value={inputs.geography}
                         onChange={(e) => setInputs({ ...inputs, geography: e.target.value })}
@@ -633,8 +635,9 @@ SECTION XI: NEXT STEPS
 
                     {inputs.primaryChallenge === "other" && (
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-mono text-white/50 uppercase block">Specify Custom Obstacle</label>
+                        <label htmlFor="custom-challenge-textarea" className="text-[10px] font-mono text-white/50 uppercase block cursor-pointer">Specify Custom Obstacle</label>
                         <textarea
+                          id="custom-challenge-textarea"
                           rows={2}
                           value={inputs.customChallenge}
                           onChange={(e) => { setInputs({ ...inputs, customChallenge: e.target.value }); setValidationErrors((prev) => ({ ...prev, customChallenge: "" })); }}
@@ -756,8 +759,9 @@ SECTION XI: NEXT STEPS
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-mono text-white/50 uppercase tracking-wide block">Sponsor Stakeholders (Optional)</label>
+                      <label htmlFor="stakeholders-input" className="text-[10px] font-mono text-white/50 uppercase tracking-wide block cursor-pointer">Sponsor Stakeholders (Optional)</label>
                       <input
+                        id="stakeholders-input"
                         type="text"
                         value={inputs.stakeholders}
                         onChange={(e) => setInputs({ ...inputs, stakeholders: e.target.value })}
@@ -913,7 +917,7 @@ SECTION XI: NEXT STEPS
         )}
 
         {step === "preview" && (
-          <motion.div key="preview" className="space-y-6">
+          <motion.div key="preview" className="space-y-6" role="region" aria-live="polite" aria-label="Sovereign AI Proposal SOW Preview">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               {/* INDEX COLUMN (3 columns) */}
               <div className="lg:col-span-3 space-y-4 sticky top-6 print:hidden">
@@ -1010,9 +1014,9 @@ SECTION XI: NEXT STEPS
                       <span className="w-1.5 h-1.5 rounded-full bg-[#00FF9D] print:bg-black" />
                       <span className="text-[8px] font-mono text-[#009DFF] uppercase tracking-widest font-bold print:text-black/60">STATEMENT OF WORK OUTLINE</span>
                     </div>
-                    <h1 className="text-xl lg:text-3xl font-extrabold text-white print:text-black tracking-tight leading-none">
+                    <h2 className="text-xl lg:text-3xl font-extrabold text-white print:text-black tracking-tight leading-none">
                       {pData.org} Sovereign Integration
-                    </h1>
+                    </h2>
                     <p className="text-white/60 text-xs font-light max-w-lg print:text-black/70">
                       Tailored SOW outline and strategic delivery blueprint for <strong className="text-white print:text-black font-semibold">{pData.org}</strong>.
                     </p>
@@ -1342,8 +1346,9 @@ SECTION XI: NEXT STEPS
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-1">
-                          <label className="text-[8px] font-mono text-white/30 uppercase block">Authorized Signatory Name</label>
+                          <label htmlFor="signatory-name-input" className="text-[8px] font-mono text-white/30 uppercase block cursor-pointer">Authorized Signatory Name</label>
                           <input
+                            id="signatory-name-input"
                             type="text"
                             value={signName}
                             onChange={(e) => setSignName(e.target.value)}
@@ -1352,8 +1357,9 @@ SECTION XI: NEXT STEPS
                           />
                         </div>
                         <div className="space-y-1">
-                          <label className="text-[8px] font-mono text-white/30 uppercase block">Corporate Title</label>
+                          <label htmlFor="corporate-title-input" className="text-[8px] font-mono text-white/30 uppercase block cursor-pointer">Corporate Title</label>
                           <input
+                            id="corporate-title-input"
                             type="text"
                             value={signTitle}
                             onChange={(e) => setSignTitle(e.target.value)}

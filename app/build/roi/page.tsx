@@ -969,7 +969,7 @@ Status: MODELLED - ILLUSTRATIVE ONLY
         </div>
 
         {/* RIGHT COLUMN: Results Console */}
-        <div className="lg:col-span-7 space-y-8 text-white">
+        <div className="lg:col-span-7 space-y-8 text-white" role="region" aria-live="polite" aria-label="Sovereign ROI Calculation Results">
           {/* Section A: Main Telemetry Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="p-5 rounded-2xl border border-white/5 bg-[#030306]/95 flex flex-col justify-between relative overflow-hidden group">

@@ -313,8 +313,9 @@ export default function BlueprintGenerator() {
 
           <div className="pt-6 border-t border-white/5 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-[10px] font-mono text-white/50 uppercase tracking-wider block">Target Budget Range (Optional)</label>
+              <label htmlFor="blueprint-budget" className="text-[10px] font-mono text-white/50 uppercase tracking-wider block cursor-pointer">Target Budget Range (Optional)</label>
               <select
+                id="blueprint-budget"
                 value={data.budget || ""}
                 onChange={(e) => onChange({ budget: e.target.value })}
                 className="w-full h-11 rounded-xl border border-white/10 bg-black/50 px-4 text-xs text-white focus:border-[#087DF3] outline-none transition"
@@ -327,8 +328,9 @@ export default function BlueprintGenerator() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-[10px] font-mono text-white/50 uppercase tracking-wider block">Geography / Region (Optional)</label>
+              <label htmlFor="blueprint-geography" className="text-[10px] font-mono text-white/50 uppercase tracking-wider block cursor-pointer">Geography / Region (Optional)</label>
               <select
+                id="blueprint-geography"
                 value={data.geography || ""}
                 onChange={(e) => onChange({ geography: e.target.value })}
                 className="w-full h-11 rounded-xl border border-white/10 bg-black/50 px-4 text-xs text-white focus:border-[#087DF3] outline-none transition"
@@ -488,12 +490,13 @@ export default function BlueprintGenerator() {
 
           <div className="space-y-3 pt-6 border-t border-white/5">
             <div className="flex justify-between items-center">
-              <span className="text-[10px] font-mono text-white/50 uppercase tracking-wider block">
+              <label htmlFor="blueprint-roadblock" className="text-[10px] font-mono text-white/50 uppercase tracking-wider block cursor-pointer">
                 2. Describe Roadblock In Detail <span className="text-[#087DF3]">*</span>
-              </span>
+              </label>
               <span className="text-[9px] font-mono text-white/40">{(data.customChallengeText || "").length} characters (min 10)</span>
             </div>
             <textarea
+              id="blueprint-roadblock"
               value={data.customChallengeText || ""}
               onChange={(e) => onChange({ customChallengeText: e.target.value })}
               placeholder="E.g., We have legacy databases in SQL and SAP, but no unified knowledge graph. We want to automate invoice ingestion but are worried about security and compliance regulations..."
@@ -543,10 +546,11 @@ export default function BlueprintGenerator() {
 
             <div className="space-y-4 pt-2">
               <div className="space-y-1.5">
-                <label className="text-[10px] font-mono text-white/50 uppercase tracking-wider block">
+                <label htmlFor="blueprint-email" className="text-[10px] font-mono text-white/50 uppercase tracking-wider block cursor-pointer">
                   Enterprise Email Address <span className="text-[#087DF3]">*</span>
                 </label>
                 <input
+                  id="blueprint-email"
                   type="email"
                   value={data.email || ""}
                   onChange={(e) => onChange({ email: e.target.value })}
@@ -582,10 +586,11 @@ export default function BlueprintGenerator() {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-mono text-white/50 uppercase tracking-wider block">
+                    <label htmlFor="blueprint-otp" className="text-[10px] font-mono text-white/50 uppercase tracking-wider block cursor-pointer">
                       Enter One-Time PIN (OTP) <span className="text-[#087DF3]">*</span>
                     </label>
                     <input
+                      id="blueprint-otp"
                       type="text"
                       maxLength={6}
                       value={data.enteredOtp || ""}
@@ -637,7 +642,7 @@ export default function BlueprintGenerator() {
 
   const renderResult = (data: WizardData, result: any, onReset: () => void) => {
     return (
-      <div className="space-y-8 anim-slide-up text-white">
+      <div className="space-y-8 anim-slide-up text-white" role="region" aria-live="polite" aria-label="Sovereign Enterprise AI Blueprint Report">
         <div className="p-6 md:p-8 rounded-2xl border border-[#087DF3]/30 bg-gradient-to-r from-[#030d1d] to-[#04060c] flex items-center justify-between shadow-lg">
           <div>
             <span className="text-[10px] font-mono font-bold text-[#087DF3] uppercase tracking-widest">VERIFIED COMPLETED ASSESSMENT</span>

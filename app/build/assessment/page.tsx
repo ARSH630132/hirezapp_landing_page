@@ -831,6 +831,9 @@ CONFIDENTIALITY NOTICE: This report was compiled locally in a zero-retention env
         {showResult && report && !isFlushing && (
           <motion.div
             key="results"
+            role="region"
+            aria-live="polite"
+            aria-label="Sovereign AI Readiness Maturity Report"
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -15 }}

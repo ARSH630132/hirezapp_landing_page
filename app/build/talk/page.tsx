@@ -964,6 +964,9 @@ export default function TalkToAgentPage() {
         {showResults && results && !isFlushing && (
           <motion.div
             key="results"
+            role="region"
+            aria-live="polite"
+            aria-label="Strategy Recommendation Results"
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.98 }}

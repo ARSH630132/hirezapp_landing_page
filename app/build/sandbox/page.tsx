@@ -826,6 +826,8 @@ export default function SandboxPage() {
                   </svg>
                 </div>
                 <input
+                  id="sandbox-search"
+                  aria-label="Search agents by keyword or purpose"
                   type="text"
                   placeholder="Search agents by keyword or purpose..."
                   value={searchQuery}
@@ -848,9 +850,10 @@ export default function SandboxPage() {
               
               {/* INDUSTRY FILTER */}
               <div className="space-y-2">
-                <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest block">RECOMMENDED SECTOR</span>
+                <label htmlFor="sandbox-industry-select" className="text-[10px] font-mono text-white/40 uppercase tracking-widest block cursor-pointer">RECOMMENDED SECTOR</label>
                 <div className="relative">
                   <select
+                    id="sandbox-industry-select"
                     value={selectedIndustry}
                     onChange={(e) => setSelectedIndustry(e.target.value)}
                     className="w-full h-11 px-3 text-xs bg-[#05060c] border border-white/5 rounded-xl text-white/80 focus:outline-none focus:border-[#009DFF]/40 appearance-none cursor-pointer"
@@ -871,9 +874,10 @@ export default function SandboxPage() {
 
               {/* FUNCTION/CATEGORY FILTER */}
               <div className="space-y-2">
-                <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest block">FUNCTIONAL SCOPE</span>
+                <label htmlFor="sandbox-function-select" className="text-[10px] font-mono text-white/40 uppercase tracking-widest block cursor-pointer">FUNCTIONAL SCOPE</label>
                 <div className="relative">
                   <select
+                    id="sandbox-function-select"
                     value={selectedFunction}
                     onChange={(e) => setSelectedFunction(e.target.value)}
                     className="w-full h-11 px-3 text-xs bg-[#05060c] border border-white/5 rounded-xl text-white/80 focus:outline-none focus:border-[#009DFF]/40 appearance-none cursor-pointer"
@@ -894,9 +898,10 @@ export default function SandboxPage() {
 
               {/* AGENT CLASSIFICATION FILTER */}
               <div className="space-y-2">
-                <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest block">AGENT DEPLOYMENT TYPE</span>
+                <label htmlFor="sandbox-agent-type-select" className="text-[10px] font-mono text-white/40 uppercase tracking-widest block cursor-pointer">AGENT DEPLOYMENT TYPE</label>
                 <div className="relative">
                   <select
+                    id="sandbox-agent-type-select"
                     value={selectedAgentType}
                     onChange={(e) => setSelectedAgentType(e.target.value)}
                     className="w-full h-11 px-3 text-xs bg-[#05060c] border border-white/5 rounded-xl text-white/80 focus:outline-none focus:border-[#009DFF]/40 appearance-none cursor-pointer"
@@ -1317,7 +1322,7 @@ export default function SandboxPage() {
                 </div>
 
                 {/* Live Output Log Stream */}
-                <div className="flex-1 p-5 overflow-y-auto font-mono text-[11px] space-y-2 bg-[#020202]">
+                <div className="flex-1 p-5 overflow-y-auto font-mono text-[11px] space-y-2 bg-[#020202]" role="log" aria-live="polite">
                   {isFlushingLogs ? (
                     <div className="h-full flex flex-col items-center justify-center text-white/30 space-y-3 min-h-[120px]">
                       <div className="relative w-8 h-8 flex items-center justify-center">

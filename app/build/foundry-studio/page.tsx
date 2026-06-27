@@ -1092,6 +1092,8 @@ ${stages
 
             <form onSubmit={handleAddSource} className="flex gap-2 mt-2">
               <input
+                id="add-source-input"
+                aria-label="Attach Custom Source Label"
                 type="text"
                 placeholder="Attach Custom Source Label..."
                 value={newSourceInput}
@@ -1122,8 +1124,9 @@ ${stages
 
               <div className="space-y-3 pt-2">
                 <div>
-                  <label className="text-[9px] font-mono text-white/40 uppercase block mb-1">Node Title Label</label>
+                  <label htmlFor="node-title-input" className="text-[9px] font-mono text-white/40 uppercase block mb-1 cursor-pointer">Node Title Label</label>
                   <input
+                    id="node-title-input"
                     type="text"
                     value={nodeLabel}
                     onChange={(e) => handleLabelChange(e.target.value)}
@@ -1132,8 +1135,9 @@ ${stages
                 </div>
 
                 <div>
-                  <label className="text-[9px] font-mono text-white/40 uppercase block mb-1">Execution Role / Process</label>
+                  <label htmlFor="node-role-input" className="text-[9px] font-mono text-white/40 uppercase block mb-1 cursor-pointer">Execution Role / Process</label>
                   <input
+                    id="node-role-input"
                     type="text"
                     value={nodeRole}
                     onChange={(e) => handleRoleChange(e.target.value)}
@@ -1143,8 +1147,9 @@ ${stages
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-[9px] font-mono text-white/40 uppercase block mb-1">Delay Target</label>
+                    <label htmlFor="node-delay-input" className="text-[9px] font-mono text-white/40 uppercase block mb-1 cursor-pointer">Delay Target</label>
                     <input
+                      id="node-delay-input"
                       type="text"
                       value={nodeLatency}
                       onChange={(e) => handleLatencyChange(e.target.value)}
