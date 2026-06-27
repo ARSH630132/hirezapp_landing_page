@@ -250,6 +250,10 @@
     {
       "id": "139-phase5-api-support-tickets-crud",
       "reason": "failed after review"
+    },
+    {
+      "id": "145-phase5-backend-error-handling-and-pagination",
+      "reason": "failed after review"
     }
   ]
 }
