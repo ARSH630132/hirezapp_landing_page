@@ -119,7 +119,8 @@
     "136-phase5-api-ai-operations-crud",
     "138-phase5-api-billing-invoices-crud",
     "140-phase5-api-governance-crud",
-    "143-phase5-api-dashboard-summary"
+    "143-phase5-api-dashboard-summary",
+    "144-phase5-api-analytics-summary"
   ],
   "failed": [
     {
