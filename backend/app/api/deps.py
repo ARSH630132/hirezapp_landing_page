@@ -7,7 +7,7 @@ from ..core.config import settings
 from ..core.security import decode_access_token
 from ..core.rbac import UserRole, PermissionGroup, ROLE_PERMISSIONS
 from ..db.session import get_db
-from ..models.user import User
+from ..repositories.users import users_repo, DynamoUser as User
 
 reusable_oauth2 = OAuth2PasswordBearer(
     tokenUrl=f"{settings.API_V1_STR}/auth/login"
@@ -30,7 +30,7 @@ def get_current_user(
     if email is None:
         raise credentials_exception
         
-    user = db.query(User).filter(User.email == email).first()
+    user = users_repo.get_by_email(email)
     if user is None:
         raise credentials_exception
         

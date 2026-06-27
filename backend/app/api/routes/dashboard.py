@@ -1,19 +1,17 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Query, Request
-from sqlalchemy.orm import Session
 from typing import Dict, Any, Optional
 
 from ...db.session import get_db
-from ...models.project import Project
-from ...models.support_ticket import SupportTicket
 from ...models.user import User
 from ...api.deps import get_current_user
+from ...repositories.portal_items import portal_items_repo
 
 router = APIRouter()
 
 @router.get("/client", response_model=Dict[str, Any])
 def get_client_dashboard(
     client_id: Optional[int] = Query(None, description="The client ID to query dashboard metrics for"),
-    db: Session = Depends(get_db),
+    db = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
     """
@@ -37,8 +35,8 @@ def get_client_dashboard(
         if target_client_id is None:
             target_client_id = 1
 
-    projects_count = db.query(Project).filter(Project.client_id == target_client_id).count()
-    tickets_count = db.query(SupportTicket).filter(SupportTicket.client_id == target_client_id).count()
+    projects_count = len(portal_items_repo.list_items("PROJECT", client_id=str(target_client_id)))
+    tickets_count = len(portal_items_repo.list_items("SUPPORT", client_id=str(target_client_id)))
 
     return {
         "success": True,
@@ -48,3 +46,4 @@ def get_client_dashboard(
             "tickets_count": tickets_count
         }
     }
+
