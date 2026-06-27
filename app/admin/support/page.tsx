@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useEffect, useRef } from "react";
+import React, { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { 
   Search, Plus, X, Check, Clock, Radio, Shield, 
   MessageSquare, Send, User, Folder, FileText, 
@@ -46,65 +46,22 @@ const MOCK_DOCUMENTS = [
   { id: "DOC-802", title: "ISO-27001 Compliance Statement", fileSize: "1.8 MB", type: "JSON", sha256: "0xDF1183C902ADFE33100BCCF29A8871" }
 ];
 
-const INITIAL_TICKETS: Ticket[] = [
-  {
-    id: "T-882",
-    subject: "London core node replication delay above SLA threshold",
-    client: "Apex Sovereign Group [Preview Client]",
-    priority: "P1",
-    category: "Infrastructure",
-    status: "INVESTIGATING",
-    assignedAgent: "Dr. Sarah Vance",
-    linkedProjectId: "PROJ-201",
-    linkedDocId: "DOC-801",
-    slaSeconds: 862,
-    description: "High-throughput isolated core loop with secure localized kernel telemetry in the London node cluster is showing a replication latency of 145ms, which exceeds the 50ms SLA maximum limit.",
-    createdDate: "2026-06-27T14:30:00Z",
-    wireFeed: [
-      { id: "w1", sender: "client", senderName: "Apex Sovereign Core Dev", text: "We are seeing alerts on our London nodes. Replication delay spiked to 145ms.", timestamp: "14:30" },
-      { id: "w2", sender: "system", senderName: "SLA MONITOR", text: "Warning: SLA response threshold exceeded 50ms on Node LON-01.", timestamp: "14:31" },
-      { id: "w3", sender: "agent", senderName: "Dr. Sarah Vance", text: "I have established a secure dual-layer TLS handshake. Analyzing eBPF events stream.", timestamp: "14:35" }
-    ]
-  },
-  {
-    id: "T-881",
-    subject: "Request for specialized auto-scaling GPU limits",
-    client: "Global Retail Enclave [Preview Client]",
-    priority: "P2",
-    category: "Enclave Security",
-    status: "OPEN",
-    assignedAgent: "Alexander Mercer",
-    linkedProjectId: "PROJ-202",
-    linkedDocId: "None",
-    slaSeconds: 11460,
-    description: "Client requests temporary override of AWS Nitro Enclave thermal boundary and memory bounds to allocate additional sparse GPU clusters during end-of-quarter auditing.",
-    createdDate: "2026-06-27T11:00:00Z",
-    wireFeed: [
-      { id: "w1", sender: "client", senderName: "Global Retail SecOps", text: "We are running a massive continuous model alignment sandbox simulation.", timestamp: "11:00" },
-      { id: "w2", sender: "system", senderName: "GATEWAY", text: "Request logged under secure sandbox override protocols.", timestamp: "11:02" }
-    ]
-  },
-  {
-    id: "T-880",
-    subject: "Cryptographic verification failure on Ledger Node 4",
-    client: "Federal Treasury Division [Preview Client]",
-    priority: "P1",
-    category: "Compliance Audit",
-    status: "OPEN",
-    assignedAgent: "Unassigned",
-    linkedProjectId: "None",
-    linkedDocId: "DOC-802",
-    slaSeconds: 345,
-    description: "Enclave telemetry reported a dual-layer TLS 1.3 socket handshake failure on node GOV-SYSTEM-G2. Continuous compliance auto-scan is currently blocking active consensus blocks.",
-    createdDate: "2026-06-27T15:22:00Z",
-    wireFeed: [
-      { id: "w1", sender: "system", senderName: "SECURE KERNEL", text: "CRITICAL: SHA-256 verification failed on node GOV-SYSTEM-G2. Isolation triggered.", timestamp: "15:22" }
-    ]
+const getClientNameFromId = (clientId: string): string => {
+  switch (clientId) {
+    case "client-001": return "Apex Sovereign Group [Preview Client]";
+    case "client-002": return "Global Retail Enclave [Preview Client]";
+    case "client-003": return "Sovereign Logistics Unit [Preview Client]";
+    case "client-004": return "Federal Treasury Division [Preview Client]";
+    default: return "Apex Sovereign Group [Preview Client]";
   }
-];
+};
 
 export default function AdminSupportPage() {
-  const [tickets, setTickets] = useState<Ticket[]>(INITIAL_TICKETS);
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [currentUser, setCurrentUser] = useState<any>(null);
+
   const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
   const [copiedTicketId, setCopiedTicketId] = useState<string | null>(null);
   const [drawerTab, setDrawerTab] = useState<"wire" | "assets" | "diagnostic">("wire");
@@ -238,19 +195,103 @@ export default function AdminSupportPage() {
     return tickets.length ? Math.round((assigned / tickets.length) * 100) : 0;
   }, [tickets]);
 
-  const filteredTickets = useMemo(() => {
-    return tickets.filter((t) => {
-      if (searchQuery.trim() !== "") {
-        const q = searchQuery.toLowerCase();
-        if (!t.id.toLowerCase().includes(q) && !t.subject.toLowerCase().includes(q) && !t.client.toLowerCase().includes(q)) return false;
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      let token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") || localStorage.getItem("gff_api_token") : null;
+      if (!token) {
+        const loginRes = await fetch("/api/v1/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: "s.vance@governance.gff.ai", password: "VanceSecure2026!" })
+        });
+        if (loginRes.ok) {
+          const authData = await loginRes.json();
+          if (authData.accessToken) {
+            token = authData.accessToken;
+            localStorage.setItem("gff_ai_access_token", authData.accessToken);
+          }
+        }
       }
-      if (filterClient && t.client !== filterClient) return false;
-      if (filterPriority && t.priority !== filterPriority) return false;
-      if (filterCategory && t.category !== filterCategory) return false;
-      if (filterStatus && t.status !== filterStatus) return false;
-      return true;
-    });
-  }, [tickets, searchQuery, filterClient, filterPriority, filterCategory, filterStatus]);
+
+      if (!token) throw new Error("Authentication token missing.");
+
+      // Fetch profile
+      const meRes = await fetch("/api/v1/auth/me", { headers: { "Authorization": `Bearer ${token}` } });
+      if (meRes.ok) {
+        const meData = await meRes.json();
+        setCurrentUser(meData.user);
+      }
+
+      // Fetch tickets list with parameters
+      let url = "/api/v1/support";
+      const params = new URLSearchParams();
+      if (filterClient) {
+        let cid = "";
+        if (filterClient.includes("Apex")) cid = "client-001";
+        else if (filterClient.includes("Global") || filterClient.includes("Retail")) cid = "client-002";
+        else if (filterClient.includes("Logistics")) cid = "client-003";
+        else if (filterClient.includes("Treasury") || filterClient.includes("Federal")) cid = "client-004";
+        if (cid) params.append("client_id", cid);
+      }
+      if (filterPriority) {
+        params.append("priority", filterPriority);
+      }
+      if (filterCategory) {
+        params.append("category", filterCategory);
+      }
+      if (filterStatus) {
+        params.append("status", filterStatus);
+      }
+      if (searchQuery.trim() !== "") {
+        params.append("search", searchQuery);
+      }
+      if (params.toString()) {
+        url += `?${params.toString()}`;
+      }
+
+      const res = await fetch(url, { headers: { "Authorization": `Bearer ${token}` } });
+      const data = await res.json();
+      if (data.success) {
+        const mapped = data.tickets.map((t: any) => ({
+          id: t.id,
+          subject: t.subject || t.title || "No Subject",
+          client: t.client_name || getClientNameFromId(t.client_id) || "Apex Sovereign Group [Preview Client]",
+          priority: t.priority || "P2",
+          category: t.category || "Infrastructure",
+          status: t.status || "OPEN",
+          assignedAgent: t.assignedAgent || t.assigned_to || "Unassigned",
+          linkedProjectId: t.linkedProjectId || t.project_id || "None",
+          linkedDocId: t.linkedDocId || "None",
+          slaSeconds: typeof t.slaSeconds === "number" ? t.slaSeconds : 14400,
+          description: t.description || t.desc || "No Description",
+          createdDate: t.createdDate || new Date().toISOString(),
+          wireFeed: t.wireFeed || []
+        }));
+        setTickets(mapped);
+        
+        // Auto-select first ticket if none selected
+        if (mapped.length > 0 && !selectedTicketId) {
+          setSelectedTicketId(mapped[0].id);
+        }
+      } else {
+        throw new Error(data.message || "Failed to fetch support tickets.");
+      }
+    } catch (err: any) {
+      setError(err.message || "Connection to support desk offline.");
+    } finally {
+      setLoading(false);
+    }
+  }, [filterClient, filterPriority, filterCategory, filterStatus, searchQuery, selectedTicketId]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const filteredTickets = useMemo(() => {
+    return tickets;
+  }, [tickets]);
 
   const handleCopyId = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
@@ -259,50 +300,82 @@ export default function AdminSupportPage() {
     setTimeout(() => setCopiedTicketId(null), 1500);
   };
 
-  const handleUpdateStatus = (id: string, status: Ticket["status"]) => {
-    setTickets((prev) =>
-      prev.map((t) => {
-        if (t.id === id) {
-          const msg = { id: `sys-${Date.now()}`, sender: "system" as const, senderName: "KERNEL", text: `Channel state set to ${status}.`, timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) };
-          return { ...t, status, wireFeed: [...t.wireFeed, msg] };
-        }
-        return t;
-      })
-    );
-    triggerBanner(`Status updated to ${status}`);
+  const handleUpdateStatus = async (id: string, status: Ticket["status"]) => {
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") : null;
+      if (!token) throw new Error("Unauthenticated");
+
+      const res = await fetch(`/api/v1/support/${id}/status`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ status })
+      });
+      const data = await res.json();
+      if (data.success) {
+        triggerBanner(`Status updated to ${status}`);
+        fetchData();
+      } else {
+        triggerBanner(`Failed to update status: ${data.message || "Error"}`);
+      }
+    } catch (err: any) {
+      triggerBanner(`Failed: ${err.message}`);
+    }
   };
 
-  const handleAssignAgent = (id: string, agent: string) => {
-    setTickets((prev) =>
-      prev.map((t) => {
-        if (t.id === id) {
-          const msg = { id: `sys-${Date.now()}`, sender: "system" as const, senderName: "KERNEL", text: `Assigned lead updated to ${agent}.`, timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) };
-          return { ...t, assignedAgent: agent, wireFeed: [...t.wireFeed, msg] };
-        }
-        return t;
-      })
-    );
-    triggerBanner(`Assigned to ${agent}`);
+  const handleAssignAgent = async (id: string, agent: string) => {
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") : null;
+      if (!token) throw new Error("Unauthenticated");
+
+      const res = await fetch(`/api/v1/support/${id}/assign`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ assigned_to: agent })
+      });
+      const data = await res.json();
+      if (data.success) {
+        triggerBanner(`Assigned to ${agent}`);
+        fetchData();
+      } else {
+        triggerBanner(`Failed to assign: ${data.message || "Error"}`);
+      }
+    } catch (err: any) {
+      triggerBanner(`Failed: ${err.message}`);
+    }
   };
 
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!chatInput.trim() || !selectedTicketId) return;
-    setTickets((prev) =>
-      prev.map((t) => {
-        if (t.id === selectedTicketId) {
-          return {
-            ...t,
-            wireFeed: [
-              ...t.wireFeed,
-              { id: `msg-${Date.now()}`, sender: "agent", senderName: "Dr. Sarah Vance (Admin)", text: chatInput.trim(), timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) }
-            ]
-          };
-        }
-        return t;
-      })
-    );
-    setChatInput("");
+
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") : null;
+      if (!token) throw new Error("Unauthenticated");
+
+      const res = await fetch(`/api/v1/support/${selectedTicketId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ text: chatInput.trim() })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setChatInput("");
+        fetchData();
+      } else {
+        triggerBanner(`Failed to send message: ${data.message || "Error"}`);
+      }
+    } catch (err: any) {
+      triggerBanner(`Failed: ${err.message}`);
+    }
   };
 
   const triggerBanner = (msg: string) => {
@@ -310,34 +383,81 @@ export default function AdminSupportPage() {
     setTimeout(() => setBanner(null), 3000);
   };
 
-  const handleCreateTicket = (e: React.FormEvent) => {
+  const handleCreateTicket = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newSubject.trim() || !newDescription.trim()) return;
-    const maxNum = tickets.reduce((m, t) => {
-      const n = parseInt(t.id.split("-")[1]) || 800;
-      return n > m ? n : m;
-    }, 800);
-    const newId = `T-${maxNum + 1}`;
-    const newTicket: Ticket = {
-      id: newId,
-      subject: newSubject.trim(),
-      client: newClient,
-      priority: newPriority,
-      category: newCategory,
-      status: "OPEN",
-      assignedAgent: newAgent,
-      linkedProjectId: newProject,
-      linkedDocId: newDoc,
-      slaSeconds: (parseInt(newSlaHours) || 4) * 3600,
-      description: newDescription.trim(),
-      createdDate: new Date().toISOString(),
-      wireFeed: [{ id: "w-sys", sender: "system", senderName: "INTEGRITY", text: `Secure wire initialized. ID: ${newId}`, timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) }]
-    };
-    setTickets([newTicket, ...tickets]);
-    setIsNewModalOpen(false);
-    triggerBanner(`Support wire ${newId} securely provisioned.`);
-    setNewSubject("");
-    setNewDescription("");
+
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") : null;
+      if (!token) throw new Error("Unauthenticated");
+
+      let client_id = "client-001";
+      if (newClient.includes("Apex")) client_id = "client-001";
+      else if (newClient.includes("Global") || newClient.includes("Retail")) client_id = "client-002";
+      else if (newClient.includes("Logistics")) client_id = "client-003";
+      else if (newClient.includes("Treasury") || newClient.includes("Federal")) client_id = "client-004";
+
+      const payload = {
+        subject: newSubject.trim(),
+        client_id,
+        priority: newPriority,
+        category: newCategory,
+        assigned_to: newAgent,
+        status: "OPEN",
+        description: newDescription.trim(),
+        linkedProjectId: newProject !== "None" ? newProject : undefined,
+        linkedDocId: newDoc !== "None" ? newDoc : undefined,
+        slaSeconds: (parseInt(newSlaHours) || 4) * 3600,
+      };
+
+      const res = await fetch("/api/v1/support", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (data.success) {
+        triggerBanner(`Support wire ${data.ticket.id} securely provisioned.`);
+        setIsNewModalOpen(false);
+        setNewSubject("");
+        setNewDescription("");
+        fetchData();
+      } else {
+        triggerBanner(`Failed to create: ${data.message || "Error"}`);
+      }
+    } catch (err: any) {
+      triggerBanner(`Failed: ${err.message}`);
+    }
+  };
+
+  const handleDeleteTicket = async (id: string) => {
+    if (!window.confirm(`Are you sure you want to permanently delete support wire ${id}?`)) {
+      return;
+    }
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") : null;
+      if (!token) throw new Error("Unauthenticated");
+
+      const res = await fetch(`/api/v1/support/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+      if (data.success) {
+        triggerBanner(`Support wire ${id} permanently deleted.`);
+        setSelectedTicketId(null);
+        fetchData();
+      } else {
+        triggerBanner(`Failed to delete support wire: ${data.message || "Error"}`);
+      }
+    } catch (err: any) {
+      triggerBanner(`Failed: ${err.message}`);
+    }
   };
 
   const connectedProject = useMemo(() => selectedTicket && MOCK_PROJECTS.find((p) => p.id === selectedTicket.linkedProjectId), [selectedTicket]);
@@ -433,22 +553,44 @@ export default function AdminSupportPage() {
         </div>
       </div>
 
-      <div className="hidden md:block border border-white/5 rounded-xl bg-[#050505]/20 overflow-hidden">
-        <table className="w-full text-left border-collapse font-mono text-[11px]">
-          <thead>
-            <tr className="border-b border-white/5 bg-white/[0.01] text-[9.5px] text-white/40 uppercase tracking-wider">
-              <th className="py-3 px-4 font-semibold">ID</th>
-              <th className="py-3 px-4 font-semibold">Subject & Client</th>
-              <th className="py-3 px-4 font-semibold">Priority</th>
-              <th className="py-3 px-4 font-semibold">Category</th>
-              <th className="py-3 px-4 font-semibold">Status</th>
-              <th className="py-3 px-4 font-semibold">Assigned Engineer</th>
-              <th className="py-3 px-4 font-semibold">Assets</th>
-              <th className="py-3 px-4 font-semibold text-right">SLA countdown</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredTickets.map((t) => (
+      {loading && tickets.length === 0 ? (
+        <div className="p-10 border border-white/5 rounded-xl bg-black/25 flex flex-col items-center justify-center space-y-3 font-mono">
+          <Clock className="w-6 h-6 text-[#009DFF] animate-spin" />
+          <span className="text-white/40 text-[10px] uppercase">Decrypting active SLA support wires...</span>
+        </div>
+      ) : error ? (
+        <div className="p-10 border border-red-500/10 rounded-xl bg-red-500/[0.01] flex flex-col items-center justify-center space-y-3 font-mono text-center">
+          <AlertTriangle className="w-6 h-6 text-red-500" />
+          <span className="text-red-400 text-[10px] uppercase font-bold">Secure connection failure</span>
+          <p className="text-white/40 text-[9.5px] max-w-xs">{error}</p>
+          <button onClick={fetchData} className="px-3 py-1.5 rounded border border-red-500/20 text-red-400 hover:bg-red-500/5 transition-colors cursor-pointer uppercase text-[9px] font-bold">
+            Retry Secure Bridge
+          </button>
+        </div>
+      ) : filteredTickets.length === 0 ? (
+        <div className="p-10 border border-dashed border-white/5 rounded-xl text-center space-y-2">
+          <MessageSquare className="w-6 h-6 text-white/15 mx-auto" />
+          <p className="text-[10px] uppercase font-bold text-white/45">No support wires found</p>
+          <p className="text-[9.5px] max-w-xs mx-auto text-white/20">All communication lines are clear or filters yielded no active handshakes.</p>
+        </div>
+      ) : (
+        <>
+          <div className="hidden md:block border border-white/5 rounded-xl bg-[#050505]/20 overflow-hidden">
+          <table className="w-full text-left border-collapse font-mono text-[11px]">
+            <thead>
+              <tr className="border-b border-white/5 bg-white/[0.01] text-[9.5px] text-white/40 uppercase tracking-wider">
+                <th className="py-3 px-4 font-semibold">ID</th>
+                <th className="py-3 px-4 font-semibold">Subject & Client</th>
+                <th className="py-3 px-4 font-semibold">Priority</th>
+                <th className="py-3 px-4 font-semibold">Category</th>
+                <th className="py-3 px-4 font-semibold">Status</th>
+                <th className="py-3 px-4 font-semibold">Assigned Engineer</th>
+                <th className="py-3 px-4 font-semibold">Assets</th>
+                <th className="py-3 px-4 font-semibold text-right">SLA countdown</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredTickets.map((t) => (
               <tr 
                 key={t.id}
                 onClick={() => setSelectedTicketId(t.id)}
@@ -553,6 +695,8 @@ export default function AdminSupportPage() {
           </div>
         ))}
       </div>
+        </>
+      )}
 
       {selectedTicket && (
         <>
@@ -731,8 +875,9 @@ export default function AdminSupportPage() {
                 </div>
               </div>
               <div className="flex gap-2 pt-1.5">
-                <button onClick={() => handleUpdateStatus(selectedTicket.id, "RESOLVED")} disabled={selectedTicket.status === "RESOLVED"} className="flex-grow h-8 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-bold uppercase transition-all disabled:opacity-45 cursor-pointer">Resolve wire</button>
-                <button onClick={() => setSelectedTicketId(null)} className="px-3 h-8 rounded border border-white/10 text-white hover:bg-white/[0.02] transition-all cursor-pointer font-bold uppercase">Close</button>
+                <button onClick={() => handleUpdateStatus(selectedTicket.id, "RESOLVED")} disabled={selectedTicket.status === "RESOLVED"} className="flex-grow h-8 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-bold uppercase transition-all disabled:opacity-45 cursor-pointer text-[10px]">Resolve wire</button>
+                <button onClick={() => handleDeleteTicket(selectedTicket.id)} className="px-2 h-8 rounded bg-rose-950/40 hover:bg-rose-900/50 text-rose-400 border border-rose-500/20 transition-all cursor-pointer font-bold uppercase text-[10px]">Delete wire</button>
+                <button onClick={() => setSelectedTicketId(null)} className="px-3 h-8 rounded border border-white/10 text-white hover:bg-white/[0.02] transition-all cursor-pointer font-bold uppercase text-[10px]">Close</button>
               </div>
             </div>
           </div>

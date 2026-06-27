@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { 
   ShieldAlert, ShieldCheck, CheckCircle, AlertCircle, FileText, Copy, Search, 
   X, ChevronRight, Download, Lock, RefreshCw, UserCheck, 
   Layers, Cpu, SlidersHorizontal, ExternalLink, RotateCcw, Info,
-  Globe, Terminal, Settings, Check, Play, Shield
+  Globe, Terminal, Settings, Check, Play, Shield, Plus
 } from "lucide-react";
 import { 
   WorkspaceCard, 
@@ -40,89 +40,15 @@ interface GuardrailPolicy {
   enforced: boolean;
 }
 
-const INITIAL_ALERTS: GovernanceAlert[] = [
-  {
-    id: "GOV-091",
-    title: "Sovereign Packet Leakage",
-    client: "Apex Group",
-    project: "Sovereign Core Sandbox 02",
-    nodeId: "APEX-SEC-G4",
-    standard: "ISO-27001",
-    sev: "Critical",
-    status: "Under Review",
-    owner: "Alexander Mercer",
-    dueDate: "2026-07-01",
-    desc: "Anomalous outbound socket attempt detected bypassing the primary encrypted gRPC proxy. Isolation boundary successfully clamped.",
-    hash: "0x7F9B1E22D4A3C8F",
-    logs: [
-      "[12:15:33] initializing eBPF socket listener on enclave APEX-SEC-G4...",
-      "[12:15:35] OUTBOUND PACKET DETECTED: payload 4.8MB towards external_ip (unauthorized IP range).",
-      "[12:15:36] WARNING: Outbound socket bypassed primary gRPC enclave proxy.",
-      "[12:15:36] ACTION TRIGGERED: Enclave boundary isolated. Port clamped.",
-      "[12:15:37] Policy ENFORCE_ISOLATION triggered alert GOV-091."
-    ]
-  },
-  {
-    id: "GOV-092",
-    title: "eBPF Telemetry Decoupled",
-    client: "National Health Enclave",
-    project: "Clinical AI Patient Vault",
-    nodeId: "MED-CLINIC-H9",
-    standard: "HIPAA",
-    sev: "High",
-    status: "Flagged",
-    owner: "Medical Ops Lead",
-    dueDate: "2026-07-03",
-    desc: "Kernel-level auditing probe detached unexpectedly during hot model re-allocation. Real-time telemetry feed paused.",
-    hash: "0xBC3E491A2E385D9",
-    logs: [
-      "[10:04:12] Performing multi-agent re-allocation on node MED-CLINIC-H9...",
-      "[10:04:14] System telemetry probe lost connection with kernel ring buffer.",
-      "[10:04:15] CRITICAL WARNING: Enclave tracing decoupled. Zero-knowledge logging offline.",
-      "[10:04:16] System flag: Telemetry missing. Policy eBPF_HEARTBEAT breached."
-    ]
-  },
-  {
-    id: "GOV-093",
-    title: "HIPAA Key Rotation Delay",
-    client: "National Health Enclave",
-    project: "Surgical Pathfinding Mesh",
-    nodeId: "MED-CLINIC-H12",
-    standard: "HIPAA",
-    sev: "Medium",
-    status: "Flagged",
-    owner: "Sophia Lin",
-    dueDate: "2026-07-05",
-    desc: "Automated cryptographic handshake postponed due to cluster lock. Needs manual administrative rollover trigger.",
-    hash: "0xDE8911C400AA38B",
-    logs: [
-      "[08:00:00] Triggering 30-day key rotation handshake on MED-CLINIC-H12...",
-      "[08:00:02] Rotation aborted: Enclave memory locked by surgical run.",
-      "[08:00:03] HANDSHAKE DELAYED. System continues with stale key-seal.",
-      "[08:00:04] Policy KEY_ROT_AGE breached. Alert logged."
-    ]
-  },
-  {
-    id: "GOV-094",
-    title: "Memory Boundary Shift",
-    client: "Sovereign Retail Group",
-    project: "Sovereign Supply Matrix",
-    nodeId: "RETAIL-CORE-A1",
-    standard: "SOC2 Type II",
-    sev: "Critical",
-    status: "Suppressed",
-    owner: "Alexander Mercer",
-    dueDate: "2026-06-30",
-    desc: "Sovereign model thread requested high-clearance cache inspect block. Denied by hardware gate.",
-    hash: "0x99AA18CCBFF002E",
-    logs: [
-      "[14:22:10] Model agent requested access to host shared L3 cache block...",
-      "[14:22:11] SECURE ENCLAVE DENIED: Memory address space outside assigned page registry.",
-      "[14:22:12] Sandboxed memory boundary defended successfully.",
-      "[14:22:13] Policy SEGREGATION_OF_DUTIES logged warning."
-    ]
+const getClientNameFromId = (clientId: string): string => {
+  switch (clientId) {
+    case "client-001": return "Apex Sovereign Group [Preview Client]";
+    case "client-002": return "Global Retail Enclave [Preview Client]";
+    case "client-003": return "Sovereign Logistics Unit [Preview Client]";
+    case "client-004": return "Federal Treasury Division [Preview Client]";
+    default: return "Apex Sovereign Group [Preview Client]";
   }
-];
+};
 
 const INITIAL_POLICIES: GuardrailPolicy[] = [
   {
@@ -171,7 +97,21 @@ const generateToastId = () => {
 };
 
 export default function AdminGovernancePage() {
-  const [alerts, setAlerts] = useState<GovernanceAlert[]>(INITIAL_ALERTS);
+  const [alerts, setAlerts] = useState<GovernanceAlert[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [currentUser, setCurrentUser] = useState<any>(null);
+
+  // Create Modal State
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [createTitle, setCreateTitle] = useState("");
+  const [createClient, setCreateClient] = useState("client-001");
+  const [createProject, setCreateProject] = useState("");
+  const [createSeverity, setCreateSeverity] = useState("Low");
+  const [createStandard, setCreateStandard] = useState("ISO-27001");
+  const [createNodeId, setCreateNodeId] = useState("");
+  const [createDescription, setCreateDescription] = useState("");
+
   const [policies, setPolicies] = useState<GuardrailPolicy[]>(INITIAL_POLICIES);
   const [selectedAlert, setSelectedAlert] = useState<GovernanceAlert | null>(null);
   const [activeTab, setActiveTab] = useState<"alert-ledger" | "guardrail-matrix" | "hardware-hsm">("alert-ledger");
@@ -191,23 +131,211 @@ export default function AdminGovernancePage() {
   interface Toast { id: string; msg: string; type: "success" | "warning" | "info" }
   const [toasts, setToasts] = useState<Toast[]>([]);
 
-  const triggerToast = (msg: string, type: "success" | "warning" | "info" = "info") => {
+  const triggerToast = useCallback((msg: string, type: "success" | "warning" | "info" = "info") => {
     const id = generateToastId();
     setToasts(p => [...p, { id, msg, type }]);
     setTimeout(() => setToasts(p => p.filter(t => t.id !== id)), 4000);
-  };
+  }, []);
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      let token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") || localStorage.getItem("gff_api_token") : null;
+      if (!token) {
+        const loginRes = await fetch("/api/v1/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: "s.vance@governance.gff.ai", password: "VanceSecure2026!" })
+        });
+        if (loginRes.ok) {
+          const authData = await loginRes.json();
+          if (authData.accessToken) {
+            token = authData.accessToken;
+            localStorage.setItem("gff_ai_access_token", authData.accessToken);
+          }
+        }
+      }
+
+      if (!token) throw new Error("Authentication token missing.");
+
+      // Fetch profile
+      const meRes = await fetch("/api/v1/auth/me", { headers: { "Authorization": `Bearer ${token}` } });
+      if (meRes.ok) {
+        const meData = await meRes.json();
+        setCurrentUser(meData.user);
+      }
+
+      // Fetch governance items with parameters
+      let url = "/api/v1/governance";
+      const params = new URLSearchParams();
+      if (clientFilter && clientFilter !== "All") {
+        let cid = "";
+        if (clientFilter.includes("Apex")) cid = "client-001";
+        else if (clientFilter.includes("Global") || clientFilter.includes("Retail")) cid = "client-002";
+        else if (clientFilter.includes("Logistics")) cid = "client-003";
+        else if (clientFilter.includes("Treasury") || clientFilter.includes("Federal")) cid = "client-004";
+        if (cid) params.append("client_id", cid);
+      }
+      if (sevFilter && sevFilter !== "All") {
+        params.append("severity", sevFilter);
+      }
+      if (statusFilter && statusFilter !== "All") {
+        params.append("status", statusFilter);
+      }
+      if (searchQuery.trim() !== "") {
+        params.append("search", searchQuery);
+      }
+      if (params.toString()) {
+        url += `?${params.toString()}`;
+      }
+
+      const res = await fetch(url, { headers: { "Authorization": `Bearer ${token}` } });
+      const data = await res.json();
+      if (data.success) {
+        const mapped = data.governance.map((item: any) => ({
+          id: item.id,
+          title: item.title,
+          client: item.client_name || getClientNameFromId(item.client_id) || "Apex Sovereign Group [Preview Client]",
+          project: item.project_name || item.project_id || "None",
+          nodeId: item.nodeId || "N/A",
+          standard: item.standard || "ISO-27001",
+          sev: item.severity || "Low",
+          status: item.status || "Flagged",
+          owner: item.owner || "Unassigned",
+          dueDate: item.due_date || "",
+          desc: item.description || "",
+          hash: item.hash || "0x7F9B1E22D4A3C8F",
+          logs: item.logs || []
+        }));
+        setAlerts(mapped);
+      } else {
+        throw new Error(data.message || "Failed to fetch governance ledger.");
+      }
+    } catch (err: any) {
+      setError(err.message || "Connection to secure compliance gateway offline.");
+    } finally {
+      setLoading(false);
+    }
+  }, [clientFilter, sevFilter, statusFilter, searchQuery]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
   const handleSelectAlert = (a: GovernanceAlert) => {
     setSelectedAlert(a);
     setReviewerVal(a.owner);
     setStatusVal(a.status);
   };
-  const handleApplyOverrides = (e: React.FormEvent) => {
+
+  const handleApplyOverrides = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedAlert) return;
-    setAlerts(p => p.map(a => a.id === selectedAlert.id ? { ...a, owner: reviewerVal, status: statusVal } : a));
-    triggerToast(`Alert ${selectedAlert.id} override applied successfully.`, "success");
-    setSelectedAlert(null);
+
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") : null;
+      if (!token) throw new Error("Unauthenticated");
+
+      const payload = {
+        owner: reviewerVal,
+        status: statusVal
+      };
+
+      const res = await fetch(`/api/v1/governance/${selectedAlert.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (data.success) {
+        triggerToast(`Alert ${selectedAlert.id} override applied successfully.`, "success");
+        setSelectedAlert(null);
+        fetchData();
+      } else {
+        triggerToast(`Failed to apply override: ${data.message || "Error"}`, "warning");
+      }
+    } catch (err: any) {
+      triggerToast(`Failed: ${err.message}`, "warning");
+    }
   };
+
+  const handleDeleteAlert = async (id: string) => {
+    if (!window.confirm(`Are you sure you want to permanently delete governance alert ${id}?`)) {
+      return;
+    }
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") : null;
+      if (!token) throw new Error("Unauthenticated");
+
+      const res = await fetch(`/api/v1/governance/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+      if (data.success) {
+        triggerToast(`Governance alert ${id} deleted successfully.`, "success");
+        setSelectedAlert(null);
+        fetchData();
+      } else {
+        triggerToast(`Failed to delete alert: ${data.message || "Error"}`, "warning");
+      }
+    } catch (err: any) {
+      triggerToast(`Failed: ${err.message}`, "warning");
+    }
+  };
+
+  const handleCreateGovernance = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!createTitle.trim() || !createDescription.trim()) return;
+
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") : null;
+      if (!token) throw new Error("Unauthenticated");
+
+      const payload = {
+        title: createTitle.trim(),
+        client_id: createClient,
+        project_id: createProject || undefined,
+        severity: createSeverity,
+        status: "Flagged",
+        standard: createStandard || "ISO-27001",
+        nodeId: createNodeId || "GEN-NODE-X",
+        description: createDescription.trim(),
+        logs: [
+          `[${new Date().toLocaleTimeString()}] Governance Alert Ledger Provisioned.`,
+          `[${new Date().toLocaleTimeString()}] Secure telemetry eBPF filter established.`
+        ]
+      };
+
+      const res = await fetch("/api/v1/governance", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (data.success) {
+        triggerToast(`Alert ${data.governance.id} provisioned successfully.`, "success");
+        setIsCreateModalOpen(false);
+        setCreateTitle("");
+        setCreateDescription("");
+        setCreateNodeId("");
+        fetchData();
+      } else {
+        triggerToast(`Failed to create alert: ${data.message || "Error"}`, "warning");
+      }
+    } catch (err: any) {
+      triggerToast(`Failed: ${err.message}`, "warning");
+    }
+  };
+
   const handleTogglePolicy = (policyId: string) => {
     let pName = "";
     let state = false;
@@ -317,10 +445,16 @@ export default function AdminGovernancePage() {
             <span className="text-white/60">Monitors cryptographic sandboxes. Altering policies impacts boundaries instantly.</span>
           </div>
         </div>
-        <button onClick={triggerSystemScan} disabled={isScanning} className="h-7.5 px-3 rounded bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/20 font-bold uppercase text-[9px] transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50 shrink-0">
-          {isScanning ? <RefreshCw className="w-3 h-3 animate-spin" /> : <Play className="w-3 h-3" />}
-          {isScanning ? "Scanning..." : "Scan Compliance Matrix"}
-        </button>
+        <div className="flex gap-2 items-center shrink-0">
+          <button onClick={() => setIsCreateModalOpen(true)} className="h-7.5 px-3 rounded bg-[#009DFF] hover:bg-[#0082d4] text-black font-bold uppercase text-[9px] transition-colors flex items-center gap-1.5 cursor-pointer shrink-0">
+            <Plus className="w-3 h-3 text-black font-bold" />
+            <span>Create Alert Ledger</span>
+          </button>
+          <button onClick={triggerSystemScan} disabled={isScanning} className="h-7.5 px-3 rounded bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/20 font-bold uppercase text-[9px] transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50 shrink-0">
+            {isScanning ? <RefreshCw className="w-3 h-3 animate-spin" /> : <Play className="w-3 h-3" />}
+            {isScanning ? "Scanning..." : "Scan Compliance Matrix"}
+          </button>
+        </div>
       </div>
 
       {/* Scan Drawer */}
@@ -458,7 +592,21 @@ export default function AdminGovernancePage() {
 
               {/* Alert Items */}
               <div className="space-y-2">
-                {filteredAlerts.length === 0 ? (
+                {loading && alerts.length === 0 ? (
+                  <div className="p-10 border border-white/5 rounded-xl bg-black/25 flex flex-col items-center justify-center space-y-3 font-mono">
+                    <RefreshCw className="w-6 h-6 text-[#009DFF] animate-spin" />
+                    <span className="text-white/40 text-[10px] uppercase">Decrypting active alert ledger...</span>
+                  </div>
+                ) : error ? (
+                  <div className="p-10 border border-red-500/10 rounded-xl bg-red-500/[0.01] flex flex-col items-center justify-center space-y-3 font-mono text-center">
+                    <ShieldAlert className="w-6 h-6 text-red-500" />
+                    <span className="text-red-400 text-[10px] uppercase font-bold">Secure ledger failure</span>
+                    <p className="text-white/40 text-[9.5px] max-w-xs">{error}</p>
+                    <button onClick={fetchData} className="px-3 py-1.5 rounded border border-red-500/20 text-red-400 hover:bg-red-500/5 transition-colors cursor-pointer uppercase text-[9px] font-bold">
+                      Retry Connection
+                    </button>
+                  </div>
+                ) : filteredAlerts.length === 0 ? (
                   <div className="p-10 border border-dashed border-white/5 rounded-xl text-center max-w-sm mx-auto space-y-2">
                     <ShieldCheck className="w-6 h-6 text-emerald-400/30 mx-auto" />
                     <p className="text-white font-bold text-[10px] uppercase">No Alerts Active</p>
@@ -729,9 +877,14 @@ export default function AdminGovernancePage() {
                       <option value="Suppressed">Suppressed</option>
                     </select>
                   </div>
-                  <button type="submit" className="w-full h-8 bg-[#009DFF] hover:bg-[#0082d4] text-black uppercase font-bold text-[9.5px] rounded flex items-center justify-center gap-1 cursor-pointer transition-colors">
-                    <span>Apply Enclave Overrides</span><Check className="w-3 h-3" />
-                  </button>
+                  <div className="flex gap-2">
+                    <button type="submit" className="flex-grow h-8 bg-[#009DFF] hover:bg-[#0082d4] text-black uppercase font-bold text-[9.5px] rounded flex items-center justify-center gap-1 cursor-pointer transition-colors">
+                      <span>Apply Overrides</span><Check className="w-3 h-3" />
+                    </button>
+                    <button type="button" onClick={() => handleDeleteAlert(selectedAlert.id)} className="px-3 h-8 rounded bg-rose-950/40 hover:bg-rose-900/50 text-rose-400 border border-rose-500/20 transition-all cursor-pointer font-bold uppercase text-[9px]">
+                      <span>Delete Entry</span>
+                    </button>
+                  </div>
                 </form>
               </motion.div>
             ) : (
@@ -763,6 +916,74 @@ export default function AdminGovernancePage() {
           `}} />
         </div>
       </div>
+
+      {isCreateModalOpen && (
+        <div className="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="relative max-w-md w-full bg-[#070708] border border-white/10 rounded-xl p-5 shadow-2xl space-y-4 font-mono text-[10px]">
+            <button onClick={() => setIsCreateModalOpen(false)} className="absolute right-4 top-4 text-white/40 hover:text-white cursor-pointer"><X className="w-5 h-5" /></button>
+            <div className="flex items-center gap-1.5 border-b border-white/5 pb-2">
+              <Shield className="w-4 h-4 text-[#009DFF]" />
+              <h3 className="text-xs font-bold text-white uppercase font-mono">Provision Governance Alert Ledger</h3>
+            </div>
+            <form onSubmit={handleCreateGovernance} className="space-y-3">
+              <div className="space-y-0.5">
+                <label className="text-[8.5px] text-white/30 uppercase block font-semibold">Alert Title</label>
+                <input type="text" required placeholder="e.g. Memory Boundary Shift" value={createTitle} onChange={(e) => setCreateTitle(e.target.value)} className="w-full h-8 rounded border border-white/5 bg-white/[0.01] px-3.5 text-[11px] text-white placeholder-white/30 outline-none focus:border-[#009DFF]/40" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-0.5">
+                  <span className="text-[8.5px] text-white/30 uppercase block font-semibold">Client Group</span>
+                  <select value={createClient} onChange={(e) => setCreateClient(e.target.value)} className="h-8 w-full rounded border border-white/5 bg-[#0c0c0e] px-2 text-[10px] text-white outline-none cursor-pointer">
+                    <option value="client-001">APEX SOVEREIGN (client-001)</option>
+                    <option value="client-002">GLOBAL RETAIL (client-002)</option>
+                    <option value="client-003">SOVEREIGN LOGISTICS (client-003)</option>
+                    <option value="client-004">FEDERAL TREASURY (client-004)</option>
+                  </select>
+                </div>
+                <div className="space-y-0.5">
+                  <span className="text-[8.5px] text-white/30 uppercase block font-semibold">Severity</span>
+                  <select value={createSeverity} onChange={(e) => setCreateSeverity(e.target.value)} className="h-8 w-full rounded border border-white/5 bg-[#0c0c0e] px-2 text-[10px] text-white outline-none cursor-pointer">
+                    <option value="Low">LOW</option>
+                    <option value="Medium">MEDIUM</option>
+                    <option value="High">HIGH</option>
+                    <option value="Critical">CRITICAL</option>
+                  </select>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-0.5">
+                  <span className="text-[8.5px] text-white/30 uppercase block font-semibold">Project Association</span>
+                  <select value={createProject} onChange={(e) => setCreateProject(e.target.value)} className="h-8 w-full rounded border border-white/5 bg-[#0c0c0e] px-2 text-[10px] text-white outline-none cursor-pointer">
+                    <option value="">NONE / UNASSOCIATED</option>
+                    <option value="proj-001">proj-001 (APEX SOVEREIGN)</option>
+                    <option value="proj-002">proj-002 (GLOBAL RETAIL)</option>
+                    <option value="proj-003">proj-003 (SOVEREIGN LOGISTICS)</option>
+                    <option value="proj-004">proj-004 (FEDERAL TREASURY)</option>
+                  </select>
+                </div>
+                <div className="space-y-0.5">
+                  <span className="text-[8.5px] text-white/30 uppercase block font-semibold">Standard Reference</span>
+                  <input type="text" placeholder="e.g. SOC2 Type II" value={createStandard} onChange={(e) => setCreateStandard(e.target.value)} className="w-full h-8 rounded border border-white/5 bg-white/[0.01] px-2.5 text-[11px] text-white outline-none focus:border-[#009DFF]/40" />
+                </div>
+              </div>
+              <div className="space-y-0.5">
+                <label className="text-[8.5px] text-white/30 uppercase block font-semibold">Enclave Node ID</label>
+                <input type="text" placeholder="e.g. SEC-NODE-A4" value={createNodeId} onChange={(e) => setCreateNodeId(e.target.value)} className="w-full h-8 rounded border border-white/5 bg-white/[0.01] px-2.5 text-[11px] text-white outline-none focus:border-[#009DFF]/40" />
+              </div>
+              <div className="space-y-0.5">
+                <span className="text-[8.5px] text-white/30 uppercase block font-semibold">Incident/Alert Description</span>
+                <textarea required rows={3} placeholder="Provide details of compliance drift..." value={createDescription} onChange={(e) => setCreateDescription(e.target.value)} className="w-full rounded border border-white/5 bg-[#0c0c0e] p-2 text-[11px] text-white placeholder-white/30 outline-none focus:border-[#009DFF]/40 resize-none" />
+              </div>
+              <div className="flex gap-2 pt-2">
+                <button type="submit" className="flex-grow h-8 rounded bg-[#009DFF] hover:bg-[#0082d4] text-black font-bold uppercase transition-all flex items-center justify-center gap-1 cursor-pointer font-mono text-[9.5px]">
+                  <CheckCircle className="w-3.5 h-3.5" /><span>Enforce Ledger Entry</span>
+                </button>
+                <button type="button" onClick={() => setIsCreateModalOpen(false)} className="px-3 h-8 rounded border border-white/10 text-white font-bold uppercase transition-all cursor-pointer font-mono">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
