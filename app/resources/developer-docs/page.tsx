@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { DYNAMODB_SCHEMAS } from "./dynamodb-schemas";
+import DynamoDbModelingSection from "./DynamoDbModelingSection";
 import InnerPageShell from "@/components/inner-pages/InnerPageShell";
 import InnerPageHero from "@/components/inner-pages/InnerPageHero";
 import PremiumCTA from "@/components/inner-pages/PremiumCTA";
@@ -99,7 +101,7 @@ const BOUNDARIES = [
     color: "from-blue-500/10 to-cyan-500/5",
     border: "border-blue-500/20",
     text: "SQLite database storage mapped directly to local 'dev.db' with no cloud database setups required. Fast, direct, and simple.",
-    prod: "PostgreSQL / Enterprise Cloud RDS Clusters"
+    prod: "Amazon DynamoDB Single-Table Design Cluster"
   },
   {
     title: "Standard JWT Sandbox",
@@ -174,6 +176,8 @@ export default function DeveloperDocsPage() {
   const [selectedNode, setSelectedNode] = useState<DiagramKey>("api");
   const [copied, setCopied] = useState(false);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
+  const [selectedSchemaTable, setSelectedSchemaTable] = useState<"gff_users" | "gff_clients" | "gff_portal_items">("gff_portal_items");
+  const [selectedEntity, setSelectedEntity] = useState<"projects" | "ai_ops" | "documents" | "invoices" | "support_tickets" | "governance">("projects");
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -457,11 +461,15 @@ export default function DeveloperDocsPage() {
             </div>
 
 
+            {/* DynamoDB Production Schema Section */}
+            <DynamoDbModelingSection />
+
+
             {/* Troubleshooting Panel */}
             <div className="flex flex-col gap-6">
               <div>
                 <h2 className="text-[20px] font-bold text-white tracking-tight uppercase tracking-wider font-mono">
-                  4. Sandbox Troubleshooting Protocol
+                  5. Sandbox Troubleshooting Protocol
                 </h2>
                 <p className="text-[12px] text-white/50 font-light mt-1">
                   Common diagnostic scenarios encountered when configuring the local SQLite & FastAPI state managers.
