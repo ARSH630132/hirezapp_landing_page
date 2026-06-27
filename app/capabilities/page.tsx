@@ -8,15 +8,15 @@ import { Network, Cpu, Shield, Database, Workflow, Activity, GraduationCap, Laye
 
 const capabilities = [
   { id: "strategy", title: "AI Strategy", href: "/capabilities/strategy", tag: "INCEPTION", icon: <Compass className="w-4 h-4 text-[#E4000F]" />, desc: "Feasibility studies, readiness, and strategic ROI simulations." },
-  { id: "engineering", title: "Core Engineering", href: "/capabilities/engineering", tag: "SYSTEMS", icon: <Settings className="w-4 h-4 text-[#009DFF]" />, desc: "Low-latency microservices, API layers, and model hosting." },
-  { id: "agents", title: "Autonomous Agents", href: "/capabilities/agents", tag: "COGNITIVE", icon: <Cpu className="w-4 h-4 text-purple-400" />, desc: "Goal-directed multi-agent frameworks running complex workflows." },
-  { id: "governance", title: "Governance & Safety", href: "/capabilities/governance", tag: "COMPLIANCE", icon: <Shield className="w-4 h-4 text-emerald-400" />, desc: "Real-time safety guardrails and immutable audit logs." },
-  { id: "data", title: "Enterprise Data", href: "/capabilities/data", tag: "RECON", icon: <Database className="w-4 h-4 text-amber-400" />, desc: "Real-time CDC syncing and hybrid vector database layouts." },
-  { id: "labs", title: "Labs & Prototypes", href: "/capabilities/labs", tag: "SANDBOX", icon: <FlaskConical className="w-4 h-4 text-pink-400" />, desc: "Rapid prototyping sandbox to stress-test frontier agents." },
-  { id: "operations", title: "AI Operations (AIOps)", href: "/capabilities/operations", tag: "TELEMETRY", icon: <Activity className="w-4 h-4 text-cyan-400" />, desc: "Monitor semantic latencies, token consumption, and failovers." },
-  { id: "twins", title: "Cognitive Twins", href: "/capabilities/twins", tag: "SIMULATION", icon: <Layers className="w-4 h-4 text-indigo-400" />, desc: "High-fidelity digital replicas of operational business assets." },
-  { id: "universities", title: "AI Enablement", href: "/capabilities/universities", tag: "ACADEMY", icon: <GraduationCap className="w-4 h-4 text-teal-400" />, desc: "Corporate AI developer academies and executive upskilling." },
-  { id: "knowledge-graph", title: "Knowledge Graphs", href: "/capabilities/knowledge-graph", tag: "SEMANTIC", icon: <Network className="w-4 h-4 text-violet-400" />, desc: "Multi-hop relational entity networks and semantic search layers." },
+  { id: "engineering", title: "AI Engineering", href: "/capabilities/engineering", tag: "SYSTEMS", icon: <Settings className="w-4 h-4 text-[#009DFF]" />, desc: "Low-latency microservices, API layers, and model hosting." },
+  { id: "agents", title: "Agentic AI", href: "/capabilities/agents", tag: "COGNITIVE", icon: <Cpu className="w-4 h-4 text-purple-400" />, desc: "Goal-directed multi-agent frameworks running complex workflows." },
+  { id: "governance", title: "AI Governance", href: "/capabilities/governance", tag: "COMPLIANCE", icon: <Shield className="w-4 h-4 text-emerald-400" />, desc: "Real-time safety guardrails and immutable audit logs." },
+  // { id: "data", title: "Enterprise Data", href: "/capabilities/data", tag: "RECON", icon: <Database className="w-4 h-4 text-amber-400" />, desc: "Real-time CDC syncing and hybrid vector database layouts." },
+  { id: "labs", title: "AI Labs", href: "/capabilities/labs", tag: "SANDBOX", icon: <FlaskConical className="w-4 h-4 text-pink-400" />, desc: "Rapid prototyping sandbox to stress-test frontier agents." },
+  { id: "operations", title: "AI Operations", href: "/capabilities/operations", tag: "TELEMETRY", icon: <Activity className="w-4 h-4 text-cyan-400" />, desc: "Monitor semantic latencies, token consumption, and failovers." },
+  // { id: "twins", title: "Cognitive Twins", href: "/capabilities/twins", tag: "SIMULATION", icon: <Layers className="w-4 h-4 text-indigo-400" />, desc: "High-fidelity digital replicas of operational business assets." },
+  // { id: "universities", title: "AI Enablement", href: "/capabilities/universities", tag: "ACADEMY", icon: <GraduationCap className="w-4 h-4 text-teal-400" />, desc: "Corporate AI developer academies and executive upskilling." },
+  { id: "knowledge-graph", title: "Knowledge Graph", href: "/capabilities/knowledge-graph", tag: "SEMANTIC", icon: <Network className="w-4 h-4 text-violet-400" />, desc: "Multi-hop relational entity networks and semantic search layers." },
   { id: "managed-services", title: "Managed Services", href: "/capabilities/managed-services", tag: "OPERATIONS", icon: <Workflow className="w-4 h-4 text-[#E4000F]" />, desc: "Continuous model tuning, latency SLA, and 24/7 support." }
 ];
 
