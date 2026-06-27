@@ -52,7 +52,7 @@ const steps = [
   },
   {
     name: "Scale",
-    href: "/platforms/factory",
+    href: "/platforms/scale",
     color: "#dd2531",
     icon: "/intellegent_enterprise/industry.svg",
     desc: "Propagate proven templates across departments, geos, and hybrid clouds.",
