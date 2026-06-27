@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, Text
 import datetime
-from .database import Base
+from ..db.base_class import Base
 
 class SystemLog(Base):
     __tablename__ = "system_logs"

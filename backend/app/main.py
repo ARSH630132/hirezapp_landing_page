@@ -4,9 +4,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from contextlib import asynccontextmanager
 
-from .config import settings
-from .database import engine, Base
-from .api import router as api_router
+from .core.config import settings
+from .db.session import engine
+from .db.base import Base
+from .api.routes import api_router
 
 # Lifespan for FastAPI (creates DB tables on startup)
 @asynccontextmanager
@@ -42,7 +43,7 @@ async def add_process_time_header(request: Request, call_next):
     response.headers["X-Process-Time"] = f"{process_time:.4f}s"
     return response
 
-# Include all V1 API endpoints
+# Include all V1 API endpoints under settings.API_V1_STR (e.g. /api/v1)
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
 @app.get("/", include_in_schema=False)
@@ -51,3 +52,4 @@ def root():
     Redirect root path to interactive OpenAPI documentation interface.
     """
     return RedirectResponse(url="/docs")
+
