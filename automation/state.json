@@ -110,7 +110,8 @@
     "127-phase5-pydantic-schemas",
     "128-phase5-password-hashing-and-jwt-security",
     "129-phase5-rbac-permissions",
-    "130-phase5-auth-endpoints"
+    "130-phase5-auth-endpoints",
+    "131-phase5-seed-data-and-dev-users"
   ],
   "failed": [
     {
