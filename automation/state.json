@@ -87,7 +87,8 @@
     "95-phase4-admin-clients-list",
     "97-phase4-admin-projects",
     "100-phase4-admin-ai-operations",
-    "101-phase4-admin-documents"
+    "101-phase4-admin-documents",
+    "94-phase4-admin-dashboard"
   ],
   "failed": [
     {
