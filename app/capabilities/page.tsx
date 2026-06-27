@@ -133,7 +133,7 @@ export default function CapabilitiesPage() {
       </section>
 
       {/* SECTION 3: FACTORIES */}
-      <section className="relative w-full px-6 lg:px-16 pb-20 border-t border-white/5 pt-16">
+      {/* <section className="relative w-full px-6 lg:px-16 pb-20 border-t border-white/5 pt-16">
         <div className="max-w-[1795px] mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="rounded-2xl border border-white/5 bg-[#030304]/60 p-6 flex flex-col justify-between relative overflow-hidden">
@@ -171,7 +171,7 @@ export default function CapabilitiesPage() {
           </div>
         </div>
       </section>
-
+ */}
       {/* SECTION 4: GARAGE TO FACTORY */}
       <section className="relative w-full px-6 lg:px-16 pb-20 border-t border-white/5 pt-16">
         <div className="max-w-[1795px] mx-auto">
@@ -201,7 +201,7 @@ export default function CapabilitiesPage() {
       </section>
 
       {/* SECTION 5: RELATED PLATFORMS */}
-      <section className="relative w-full px-6 lg:px-16 pb-20 border-t border-white/5 pt-16">
+      {/* <section className="relative w-full px-6 lg:px-16 pb-20 border-t border-white/5 pt-16">
         <div className="max-w-[1795px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <a href="/platforms" className="p-5 rounded-2xl border border-white/5 bg-[#030304]/60 hover:border-[#009DFF]/30 transition-all">
@@ -227,7 +227,7 @@ export default function CapabilitiesPage() {
             </a>
           </div>
         </div>
-      </section>
+      </section> */}
 
       <div className="max-w-[1795px] mx-auto px-6 lg:px-16 pb-16">
         <PremiumCTA
