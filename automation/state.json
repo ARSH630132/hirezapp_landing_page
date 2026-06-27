@@ -131,7 +131,8 @@
     "153-phase5-frontend-client-documents-api",
     "154-phase5-frontend-client-billing-api",
     "155-phase5-frontend-client-support-api",
-    "137-phase5-api-documents-metadata-crud"
+    "137-phase5-api-documents-metadata-crud",
+    "139-phase5-api-support-tickets-crud"
   ],
   "failed": [
     {
