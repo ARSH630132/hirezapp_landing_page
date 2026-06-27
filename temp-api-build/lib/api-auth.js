@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.API_MOCK_AI_OPERATIONS = exports.DEFAULT_API_MOCK_AI_OPERATIONS = exports.API_MOCK_PROJECTS = exports.DEFAULT_API_MOCK_PROJECTS = exports.API_MOCK_USERS = exports.DEFAULT_API_MOCK_USERS = void 0;
+exports.API_MOCK_INVOICES = exports.DEFAULT_API_MOCK_INVOICES = exports.API_MOCK_AI_OPERATIONS = exports.DEFAULT_API_MOCK_AI_OPERATIONS = exports.API_MOCK_PROJECTS = exports.DEFAULT_API_MOCK_PROJECTS = exports.API_MOCK_USERS = exports.DEFAULT_API_MOCK_USERS = void 0;
 exports.base64UrlEncode = base64UrlEncode;
 exports.base64UrlDecode = base64UrlDecode;
 exports.signJwt = signJwt;
@@ -15,6 +15,7 @@ exports.getNextProjectId = getNextProjectId;
 exports.getClientNameFromId = getClientNameFromId;
 exports.getClientIdFromAssociation = getClientIdFromAssociation;
 exports.getNextAiOperationId = getNextAiOperationId;
+exports.getNextInvoiceId = getNextInvoiceId;
 const crypto_1 = __importDefault(require("crypto"));
 const JWT_SECRET = process.env.JWT_SECRET || "gff-ai-sovereign-secure-access-token-secret-2026";
 function base64UrlEncode(str) {
@@ -352,4 +353,94 @@ function getNextAiOperationId() {
         .filter(id => id > 0);
     const maxId = ids.length > 0 ? Math.max(...ids) : 4;
     return `op-${String(maxId + 1).padStart(3, "0")}`;
+}
+exports.DEFAULT_API_MOCK_INVOICES = {
+    "inv-001": {
+        id: "inv-001",
+        invoice_number: "GFF-2026-0899",
+        client_id: "client-002",
+        client_name: "Global Retail Enclave [Preview Client]",
+        project_id: "proj-001",
+        project_name: "Retail Mesh Core A1",
+        amount: 14820.00,
+        currency: "USD",
+        status: "paid",
+        issue_date: "2026-06-01",
+        due_date: "2026-06-15",
+        category: "Compute Epoch",
+        hash: "0xDE897FF021BC8102C019FFAD998E1256E3B890CC7FFADE138EE87A02FF90A11B",
+        signature: "SHA_992ADF93EE",
+        description: "Continuous Real-Time POS Edge Synchronization and Sovereign Node Epoch Compute Hours.",
+        lastUpdated: "2026-06-27T12:00:00Z"
+    },
+    "inv-002": {
+        id: "inv-002",
+        invoice_number: "GFF-2026-0914",
+        client_id: "client-003",
+        client_name: "Sovereign Logistics Unit [Preview Client]",
+        project_id: "proj-003",
+        project_name: "Sovereign Logistics AI Route Optimizer",
+        amount: 3500.00,
+        currency: "USD",
+        status: "paid",
+        issue_date: "2026-06-15",
+        due_date: "2026-06-30",
+        category: "SLA Support",
+        hash: "0x11B8A02FEE907C10BDE8267FEE10BC91A23D4FFA289F02ECBC12A349CDE150FA",
+        signature: "SHA_881BCF12DD",
+        description: "SLA Support Priority Response Tier 3 License & Cryptographic Vault Ledger Custody.",
+        lastUpdated: "2026-06-27T14:10:00Z"
+    },
+    "inv-003": {
+        id: "inv-003",
+        invoice_number: "GFF-2026-0945",
+        client_id: "client-001",
+        client_name: "Apex Sovereign Group [Preview Client]",
+        project_id: "proj-002",
+        project_name: "Sovereign Isolation Sandbox Enclave",
+        amount: 24900.00,
+        currency: "USD",
+        status: "processing",
+        issue_date: "2026-06-25",
+        due_date: "2026-07-10",
+        category: "Telemetry Stream",
+        hash: "0x8FDE3102C130D7B2D26788AB0E8A850CE3207FFCDE10B74E824A45B12A4F23AA",
+        signature: "SHA_002ECA9291",
+        description: "High-Inference LLM Sandbox Core Allocation and Sovereign Isolation Sandbox Zone B Infrastructure.",
+        lastUpdated: "2026-06-26T18:05:00Z"
+    },
+    "inv-004": {
+        id: "inv-004",
+        invoice_number: "GFF-2026-0988",
+        client_id: "client-001",
+        client_name: "Apex Sovereign Group [Preview Client]",
+        project_id: "proj-001",
+        project_name: "Multi-Agent Sovereign Consensus Cluster",
+        amount: 8250.00,
+        currency: "USD",
+        status: "unpaid",
+        issue_date: "2026-06-27",
+        due_date: "2026-07-15",
+        category: "Compute Epoch",
+        hash: "0x3FBC128EE809FF9CC9810A88AA11B8FFFA02CE8274A08B0192A45C89FBC10492",
+        signature: "SHA_773BCDE88E",
+        description: "Multi-Agent Routing Quota (4 Cores Dedicated) and Distributed eBPF Profiling Logs Stream.",
+        lastUpdated: "2026-06-27T09:30:00Z"
+    }
+};
+// Initialize globally to persist edits in memory across hot-reloads
+if (!global._apiMockInvoices) {
+    global._apiMockInvoices = { ...exports.DEFAULT_API_MOCK_INVOICES };
+}
+exports.API_MOCK_INVOICES = global._apiMockInvoices;
+function getNextInvoiceId() {
+    const invoices = Object.values(exports.API_MOCK_INVOICES);
+    const ids = invoices
+        .map(inv => {
+        const match = inv.id.match(/^inv-(\d+)$/);
+        return match ? parseInt(match[1], 10) : 0;
+    })
+        .filter(id => id > 0);
+    const maxId = ids.length > 0 ? Math.max(...ids) : 4;
+    return `inv-${String(maxId + 1).padStart(3, "0")}`;
 }
