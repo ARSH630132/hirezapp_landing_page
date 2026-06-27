@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { 
   Search, 
   X, 
@@ -203,11 +204,139 @@ const PREVIEW_DOCUMENTS: PortalDocument[] = [
 
 // Available filter choices
 const CATEGORIES = ["Proposals", "SOW", "Architecture", "Reports", "Invoices", "Governance", "Meeting Notes", "Delivery Assets"];
-const PROJECTS = ["Sovereign Core Sandbox 02", "Model Guardrail Sandbox 04", "Federal Ledger Enclave Alpha", "Global Platform (No Project)"];
+const PROJECTS = [
+  "Apex Sovereign Group [Preview Client]",
+  "Global Retail Enclave [Preview Client]",
+  "Sovereign Logistics Unit [Preview Client]",
+  "Federal Treasury Division [Preview Client]",
+  "Global Platform (No Project)"
+];
 const FORMATS = ["PDF", "JSON", "YAML", "CSV", "DOCX", "ZIP", "PPTX"];
 const STATUSES = ["Approved", "Signed", "In Review", "Pending Review", "Active", "Archived"];
 
+function mapApiDocToPortalDoc(apiDoc: any): PortalDocument {
+  // Map formats
+  const format: any = apiDoc.type || "PDF";
+  
+  // Map categories based on name keywords
+  let category: any = "Reports";
+  const titleLower = (apiDoc.title || apiDoc.name || "").toLowerCase();
+  if (titleLower.includes("proposal")) {
+    category = "Proposals";
+  } else if (titleLower.includes("sow") || titleLower.includes("statement of work") || titleLower.includes("contract")) {
+    category = "SOW";
+  } else if (titleLower.includes("blueprint") || titleLower.includes("architecture") || titleLower.includes("topology")) {
+    category = "Architecture";
+  } else if (titleLower.includes("ruleset") || titleLower.includes("governance") || titleLower.includes("directive") || titleLower.includes("compliance")) {
+    category = "Governance";
+  } else if (titleLower.includes("audit") || titleLower.includes("report")) {
+    category = "Reports";
+  } else if (titleLower.includes("invoice") || titleLower.includes("billing")) {
+    category = "Invoices";
+  } else if (titleLower.includes("meeting") || titleLower.includes("notes")) {
+    category = "Meeting Notes";
+  } else if (apiDoc.type === "ZIP" || titleLower.includes("asset") || titleLower.includes("config")) {
+    category = "Delivery Assets";
+  }
+
+  // Map status
+  let status: any = "Approved";
+  if (apiDoc.status === "Verified") {
+    status = "Approved";
+  } else if (apiDoc.status === "Under Review") {
+    status = "In Review";
+  } else if (apiDoc.status === "Action Required") {
+    status = "Pending Review";
+  } else if (apiDoc.status === "Superseded") {
+    status = "Archived";
+  } else {
+    status = apiDoc.status || "Approved";
+  }
+
+  return {
+    id: apiDoc.id,
+    name: apiDoc.title || apiDoc.name,
+    category: category,
+    format: format,
+    size: apiDoc.fileSize || "1.0 MB",
+    hash: apiDoc.sha256 || "0xHASH",
+    uploadedAt: apiDoc.lastUpdated || new Date().toISOString(),
+    project: apiDoc.client_name || "Global Platform (No Project)",
+    status: status,
+    version: apiDoc.version || "v1.0",
+    owner: apiDoc.owner || "Dr. Sarah Vance",
+    visibility: apiDoc.client_id === "client-001" ? "LEVEL_IV (Restricted)" : "LEVEL_I (Client View)",
+    desc: apiDoc.description || apiDoc.desc || "Cryptographically secured enclave system documentation."
+  };
+}
+
+
+function DocumentsSkeleton() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      {[1, 2, 3, 4, 5, 6].map((n) => (
+        <WorkspaceCard key={n} className="flex flex-col h-[280px] justify-between border-white/[0.03] bg-[#050505]/20 p-5 rounded-2xl relative animate-pulse">
+          <div className="space-y-3">
+            <div className="flex justify-between items-start">
+              <div className="flex items-center gap-2">
+                <div className="h-4 bg-white/5 rounded w-16 animate-pulse" />
+                <div className="h-4 bg-white/5 rounded w-12 animate-pulse" />
+              </div>
+              <div className="h-4 bg-white/5 rounded w-10 animate-pulse" />
+            </div>
+            <div className="space-y-2 pt-2">
+              <div className="h-5 bg-white/5 rounded w-5/6 animate-pulse" />
+              <div className="h-3 bg-white/5 rounded w-full animate-pulse" />
+              <div className="h-3 bg-white/5 rounded w-4/5 animate-pulse" />
+            </div>
+          </div>
+          <div className="border-t border-white/5 pt-3 mt-4 space-y-3">
+            <div className="grid grid-cols-2 gap-2 text-[10px] font-mono text-white/35">
+              <div className="h-3 bg-white/5 rounded w-12 animate-pulse" />
+              <div className="h-3 bg-white/5 rounded w-12 ml-auto animate-pulse" />
+            </div>
+            <div className="grid grid-cols-2 gap-2 pt-1">
+              <div className="h-8 bg-white/5 rounded animate-pulse" />
+              <div className="h-8 bg-white/5 rounded animate-pulse" />
+            </div>
+          </div>
+        </WorkspaceCard>
+      ))}
+    </div>
+  );
+}
+
+function DocumentsErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
+  return (
+    <div className="p-12 text-center rounded-2xl border border-red-500/10 bg-red-950/5 backdrop-blur-sm max-w-xl mx-auto space-y-4">
+      <div className="p-4 rounded-full bg-red-500/10 border border-red-500/20 inline-flex text-red-400">
+        <Shield className="w-8 h-8" />
+      </div>
+      <div className="space-y-1">
+        <h3 className="text-sm font-bold text-white font-mono uppercase tracking-wider">HSM Verification Failed</h3>
+        <p className="text-[12.5px] text-white/50 max-w-sm mx-auto font-sans leading-relaxed">
+          {message}
+        </p>
+      </div>
+      <button 
+        onClick={onRetry}
+        className="h-9 px-4 rounded-lg bg-red-600 hover:bg-red-500 text-[11px] font-mono font-bold uppercase text-white transition-all cursor-pointer shadow-[0_0_15px_rgba(239,68,68,0.2)] inline-flex items-center gap-1.5"
+      >
+        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+        <span>RETRY VERIFICATION</span>
+      </button>
+    </div>
+  );
+}
+
 export default function ClientDocumentsPage() {
+  const router = useRouter();
+
+  // Dynamic API Fetching States
+  const [documents, setDocuments] = useState<PortalDocument[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   // Filter States
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -215,6 +344,47 @@ export default function ClientDocumentsPage() {
   const [selectedFormat, setSelectedFormat] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
   
+  const fetchDocuments = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") : null;
+      if (!token) {
+        setError("AUTHENTICATION EXPIRED. PLEASE RE-LOG IN.");
+        router.push("/portal/login");
+        return;
+      }
+
+      const res = await fetch("/api/v1/documents", {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (!res.ok) {
+        throw new Error(`Enclave sync failed with status ${res.status}`);
+      }
+
+      const data = await res.json();
+      if (data.success && Array.isArray(data.documents)) {
+        const mapped = data.documents.map((d: any) => mapApiDocToPortalDoc(d));
+        setDocuments(mapped);
+      } else {
+        throw new Error("Handshake returned malformed enclave register.");
+      }
+    } catch (err: any) {
+      console.error("Error fetching documents:", err);
+      setError(err.message || "Decentralized ledger handshake timed out.");
+    } finally {
+      setLoading(false);
+    }
+  }, [router]);
+
+  useEffect(() => {
+    fetchDocuments();
+  }, [fetchDocuments]);
+
   // Layout States
   const [layoutMode, setLayoutMode] = useState<"grid" | "list">("grid");
 
@@ -307,7 +477,7 @@ export default function ClientDocumentsPage() {
   };
 
   // Filtering Logic
-  const filteredDocuments = PREVIEW_DOCUMENTS.filter((doc) => {
+  const filteredDocuments = documents.filter((doc) => {
     // 1. Text Search query (checks title, hash, id, owner)
     if (searchQuery.trim() !== "") {
       const query = searchQuery.toLowerCase();
@@ -332,10 +502,10 @@ export default function ClientDocumentsPage() {
   });
 
   // Calculate quick document statistics
-  const totalSeals = PREVIEW_DOCUMENTS.length;
-  const activeSows = PREVIEW_DOCUMENTS.filter(d => d.category === "SOW").length;
-  const auditReports = PREVIEW_DOCUMENTS.filter(d => d.category === "Reports" || d.category === "Architecture").length;
-  const pendingReviews = PREVIEW_DOCUMENTS.filter(d => d.status === "Pending Review" || d.status === "In Review").length;
+  const totalSeals = documents.length;
+  const activeSows = documents.filter(d => d.category === "SOW").length;
+  const auditReports = documents.filter(d => d.category === "Reports" || d.category === "Architecture").length;
+  const pendingReviews = documents.filter(d => d.status === "Pending Review" || d.status === "In Review").length;
 
   const getStatusColor = (status: string) => {
     const s = status.toLowerCase();
@@ -565,7 +735,11 @@ export default function ClientDocumentsPage() {
       </div>
 
       {/* 6. CONTENT VIEWS (CARD OR TABLE) */}
-      {filteredDocuments.length === 0 ? (
+      {loading ? (
+        <DocumentsSkeleton />
+      ) : error ? (
+        <DocumentsErrorState message={error} onRetry={fetchDocuments} />
+      ) : filteredDocuments.length === 0 ? (
         
         /* Empty Search Results state */
         <div className="p-12 text-center rounded-2xl border border-white/5 bg-[#050505]/20 backdrop-blur-sm max-w-xl mx-auto space-y-4">
@@ -725,7 +899,7 @@ export default function ClientDocumentsPage() {
           
           {/* Table pagination stats footer */}
           <div className="p-3 border-t border-white/5 bg-black/[0.15] flex flex-col sm:flex-row items-center justify-between gap-2 font-mono text-[10px] text-white/40">
-            <span>SHOWING <strong className="text-white/60">{filteredDocuments.length}</strong> OF <strong className="text-white/60">{PREVIEW_DOCUMENTS.length}</strong> DETERMINISTIC SECURITY SEALS</span>
+            <span>SHOWING <strong className="text-white/60">{filteredDocuments.length}</strong> OF <strong className="text-white/60">{documents.length}</strong> DETERMINISTIC SECURITY SEALS</span>
             <span className="text-[#00FFC2] flex items-center gap-1 bg-[#00FFC2]/5 border border-[#00FFC2]/15 px-2 py-0.5 rounded uppercase">
               <ShieldCheck className="w-3.5 h-3.5" /> HSM MEMORY BUS COMPLIANT
             </span>
