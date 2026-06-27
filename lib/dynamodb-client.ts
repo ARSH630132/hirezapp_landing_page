@@ -1,5 +1,6 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, GetCommand } from "@aws-sdk/lib-dynamodb";
+import { PutCommand, ScanCommand, DeleteCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 
@@ -167,3 +168,124 @@ export function mapDynamoUserToApiUser(dbUser: DynamoDbUser): any {
     permissions,
   };
 }
+
+const ENTITY_PREFIXES: Record<string, string> = { PROJECT: "PROJ#", AI_OPERATION: "AIOPS#", DOCUMENT: "DOC#", INVOICE: "INV#", SUPPORT: "TICKET#", GOVERNANCE: "GOV#" };
+const DYNAMODB_CLIENTS_TABLE = process.env.DYNAMODB_CLIENTS_TABLE || "GFF_CLIENTS";
+const DYNAMODB_ITEMS_TABLE = process.env.DYNAMODB_ITEMS_TABLE || "GFF_PORTAL_ITEMS";
+
+export async function dynamoDbGetClient(clientId: string): Promise<any> {
+  if (docClient) {
+    try {
+      const res = await docClient.send(new GetCommand({ TableName: DYNAMODB_CLIENTS_TABLE, Key: { client_id: clientId } }));
+      return res.Item || null;
+    } catch (err) { return null; }
+  }
+  return ((global as any)._apiMockClients || {})[clientId] || null;
+}
+
+export async function dynamoDbListClients(): Promise<any[]> {
+  if (docClient) {
+    try {
+      const res = await docClient.send(new ScanCommand({ TableName: DYNAMODB_CLIENTS_TABLE }));
+      return res.Items || [];
+    } catch (err) { return []; }
+  }
+  return Object.values((global as any)._apiMockClients || {});
+}
+
+export async function dynamoDbPutClient(client: any): Promise<any> {
+  if (docClient) {
+    try {
+      await docClient.send(new PutCommand({ TableName: DYNAMODB_CLIENTS_TABLE, Item: client }));
+      return client;
+    } catch (err) { return null; }
+  }
+  ((global as any)._apiMockClients || {})[client.id || client.client_id] = client;
+  return client;
+}
+
+export async function dynamoDbDeleteClient(clientId: string): Promise<boolean> {
+  if (docClient) {
+    try {
+      await docClient.send(new DeleteCommand({ TableName: DYNAMODB_CLIENTS_TABLE, Key: { client_id: clientId } }));
+      return true;
+    } catch (err) { return false; }
+  }
+  const mock = (global as any)._apiMockClients || {};
+  if (mock[clientId]) { delete mock[clientId]; return true; }
+  return false;
+}
+
+export async function dynamoDbGetPortalItem(clientId: string, itemId: string, entityType: string): Promise<any> {
+  const pk = `CLIENT#${clientId}`, sk = `${ENTITY_PREFIXES[entityType] || ""}${itemId}`;
+  if (docClient) {
+    try {
+      const res = await docClient.send(new GetCommand({ TableName: DYNAMODB_ITEMS_TABLE, Key: { PK: pk, SK: sk } }));
+      return res.Item || null;
+    } catch (err) { return null; }
+  }
+  return getMockStore(entityType)[itemId] || null;
+}
+
+export async function dynamoDbListPortalItems(entityType: string, clientId?: string): Promise<any[]> {
+  if (docClient) {
+    try {
+      if (clientId) {
+        const res = await docClient.send(new QueryCommand({
+          TableName: DYNAMODB_ITEMS_TABLE,
+          KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk_prefix)",
+          ExpressionAttributeValues: { ":pk": `CLIENT#${clientId}`, ":sk_prefix": ENTITY_PREFIXES[entityType] || "" }
+        }));
+        return res.Items || [];
+      } else {
+        const res = await docClient.send(new ScanCommand({
+          TableName: DYNAMODB_ITEMS_TABLE,
+          FilterExpression: "entity_type = :entity_type",
+          ExpressionAttributeValues: { ":entity_type": entityType }
+        }));
+        return res.Items || [];
+      }
+    } catch (err) { return []; }
+  }
+  const items = Object.values(getMockStore(entityType));
+  return clientId ? items.filter((item: any) => item.client_id === clientId) : items;
+}
+
+export async function dynamoDbPutPortalItem(entityType: string, clientId: string, item: any): Promise<any> {
+  const pk = `CLIENT#${clientId}`, sk = `${ENTITY_PREFIXES[entityType] || ""}${item.id}`;
+  const dbItem = { ...item, PK: pk, SK: sk, entity_type: entityType, client_id: clientId };
+  if (docClient) {
+    try {
+      await docClient.send(new PutCommand({ TableName: DYNAMODB_ITEMS_TABLE, Item: dbItem }));
+      return item;
+    } catch (err) { return null; }
+  }
+  getMockStore(entityType)[item.id] = item;
+  return item;
+}
+
+export async function dynamoDbDeletePortalItem(entityType: string, clientId: string, itemId: string): Promise<boolean> {
+  const pk = `CLIENT#${clientId}`, sk = `${ENTITY_PREFIXES[entityType] || ""}${itemId}`;
+  if (docClient) {
+    try {
+      await docClient.send(new DeleteCommand({ TableName: DYNAMODB_ITEMS_TABLE, Key: { PK: pk, SK: sk } }));
+      return true;
+    } catch (err) { return false; }
+  }
+  const store = getMockStore(entityType);
+  if (store[itemId]) { delete store[itemId]; return true; }
+  return false;
+}
+
+function getMockStore(entityType: string): any {
+  switch (entityType) {
+    case "PROJECT": return (global as any)._apiMockProjects || {};
+    case "AI_OPERATION": return (global as any)._apiMockAiOperations || {};
+    case "DOCUMENT": return (global as any)._apiMockDocuments || {};
+    case "INVOICE": return (global as any)._apiMockInvoices || {};
+    case "SUPPORT": return (global as any)._apiMockSupportTickets || {};
+    case "GOVERNANCE": return (global as any)._apiMockGovernance || {};
+    default: return {};
+  }
+}
+

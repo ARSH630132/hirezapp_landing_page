@@ -5,6 +5,7 @@ exports.GET = GET;
 exports.POST = POST;
 const server_1 = require("next/server");
 const api_auth_1 = require("../../../../lib/api-auth");
+const dynamodb_client_1 = require("../../../../lib/dynamodb-client");
 exports.runtime = "nodejs";
 function getAuthCaller(req) {
     const auth = req.headers.get("authorization");
@@ -38,11 +39,11 @@ async function GET(req) {
         const healthFilter = searchParams.get("health");
         const ownerFilter = searchParams.get("owner");
         const searchQuery = searchParams.get("search");
-        let projects = Object.values(api_auth_1.API_MOCK_PROJECTS);
+        let projects = [];
         // RBAC policy logic
         if (caller.role !== "gff_admin") {
             const callerClientId = (0, api_auth_1.getClientIdFromAssociation)(caller.clientAssociation);
-            projects = projects.filter(p => p.client_id === callerClientId);
+            projects = await (0, dynamodb_client_1.dynamoDbListPortalItems)("PROJECT", callerClientId);
             // Enforce client boundaries
             if (clientIdFilter && clientIdFilter !== callerClientId) {
                 return server_1.NextResponse.json({ success: false, error: "Forbidden", message: "Access denied to requested client's projects." }, { status: 403 });
@@ -51,7 +52,10 @@ async function GET(req) {
         else {
             // Admin filter
             if (clientIdFilter) {
-                projects = projects.filter(p => p.client_id === clientIdFilter);
+                projects = await (0, dynamodb_client_1.dynamoDbListPortalItems)("PROJECT", clientIdFilter);
+            }
+            else {
+                projects = await (0, dynamodb_client_1.dynamoDbListPortalItems)("PROJECT");
             }
         }
         // Apply specific filters
@@ -130,7 +134,7 @@ async function POST(req) {
             desc: desc || "",
             lastUpdated: new Date().toISOString()
         };
-        api_auth_1.API_MOCK_PROJECTS[newProjId] = newProj;
+        await (0, dynamodb_client_1.dynamoDbPutPortalItem)("PROJECT", client_id, newProj);
         return server_1.NextResponse.json({ success: true, project: newProj }, { status: 201 });
     }
     catch (err) {

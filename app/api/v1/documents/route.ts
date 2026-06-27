@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { 
   API_MOCK_USERS, 
-  API_MOCK_DOCUMENTS, 
   verifyJwt, 
   MockUserDbEntry, 
   ApiDocumentItem, 
@@ -10,6 +9,10 @@ import {
   getNextDocumentId,
   getClientNameFromId
 } from "../../../../lib/api-auth";
+import {
+  dynamoDbListPortalItems,
+  dynamoDbPutPortalItem
+} from "../../../../lib/dynamodb-client";
 
 export const runtime = "nodejs";
 
@@ -48,14 +51,13 @@ export async function GET(req: Request) {
     const visibilityFilter = searchParams.get("visibility");
     const searchQuery = searchParams.get("search");
 
-    let documents = Object.values(API_MOCK_DOCUMENTS) as ApiDocumentItem[];
+    let documents: any[] = [];
 
     // RBAC policy logic
     if (caller.role !== "gff_admin") {
       const callerClientId = getClientIdFromAssociation(caller.clientAssociation);
+      documents = await dynamoDbListPortalItems("DOCUMENT", callerClientId);
       documents = documents.filter(d => {
-        if (d.client_id !== callerClientId) return false;
-        
         // Hide GFF internal/sovereign-only or strictly confidential from client roles
         if (d.visibility) {
           const visLower = d.visibility.toLowerCase();
@@ -76,7 +78,9 @@ export async function GET(req: Request) {
     } else {
       // Admin filter
       if (clientIdFilter) {
-        documents = documents.filter(d => d.client_id === clientIdFilter);
+        documents = await dynamoDbListPortalItems("DOCUMENT", clientIdFilter);
+      } else {
+        documents = await dynamoDbListPortalItems("DOCUMENT");
       }
     }
 
@@ -205,7 +209,7 @@ export async function POST(req: Request) {
       governanceChecks: body.governanceChecks || []
     };
 
-    (API_MOCK_DOCUMENTS as Record<string, ApiDocumentItem>)[newDocId.toLowerCase()] = newDoc;
+    await dynamoDbPutPortalItem("DOCUMENT", client_id, newDoc);
 
     return NextResponse.json({ success: true, document: newDoc }, { status: 201 });
   } catch (err) {

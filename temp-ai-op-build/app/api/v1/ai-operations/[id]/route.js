@@ -6,6 +6,7 @@ exports.PATCH = PATCH;
 exports.DELETE = DELETE;
 const server_1 = require("next/server");
 const api_auth_1 = require("../../../../../lib/api-auth");
+const dynamodb_client_1 = require("../../../../../lib/dynamodb-client");
 exports.runtime = "nodejs";
 function getAuthCaller(req) {
     const auth = req.headers.get("authorization");
@@ -23,7 +24,8 @@ async function GET(req, { params }) {
         if (!caller)
             return server_1.NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
         const { id } = await params;
-        const op = api_auth_1.API_MOCK_AI_OPERATIONS[id];
+        const ops = await (0, dynamodb_client_1.dynamoDbListPortalItems)("AI_OPERATION");
+        const op = ops.find(o => o.id === id);
         if (!op)
             return server_1.NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
         if (caller.role !== "gff_admin") {
@@ -46,7 +48,8 @@ async function PATCH(req, { params }) {
         if (caller.role !== "gff_admin")
             return server_1.NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
         const { id } = await params;
-        const op = api_auth_1.API_MOCK_AI_OPERATIONS[id];
+        const ops = await (0, dynamodb_client_1.dynamoDbListPortalItems)("AI_OPERATION");
+        const op = ops.find(o => o.id === id);
         if (!op)
             return server_1.NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
         const body = await req.json().catch(() => null);
@@ -72,7 +75,7 @@ async function PATCH(req, { params }) {
             }
         }
         op.lastUpdated = new Date().toISOString();
-        api_auth_1.API_MOCK_AI_OPERATIONS[id] = op;
+        await (0, dynamodb_client_1.dynamoDbPutPortalItem)("AI_OPERATION", op.client_id, op);
         return server_1.NextResponse.json({ success: true, operation: op });
     }
     catch (err) {
@@ -87,10 +90,11 @@ async function DELETE(req, { params }) {
         if (caller.role !== "gff_admin")
             return server_1.NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
         const { id } = await params;
-        if (!api_auth_1.API_MOCK_AI_OPERATIONS[id]) {
+        const ops = await (0, dynamodb_client_1.dynamoDbListPortalItems)("AI_OPERATION");
+        const op = ops.find(o => o.id === id);
+        if (!op)
             return server_1.NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
-        }
-        delete api_auth_1.API_MOCK_AI_OPERATIONS[id];
+        await (0, dynamodb_client_1.dynamoDbDeletePortalItem)("AI_OPERATION", op.client_id, id);
         return server_1.NextResponse.json({ success: true, message: "AI Operation deleted." });
     }
     catch (err) {

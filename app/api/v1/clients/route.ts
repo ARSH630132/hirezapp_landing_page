@@ -1,12 +1,15 @@
 import { NextResponse } from "next/server";
 import { 
   API_MOCK_USERS, 
-  API_MOCK_CLIENTS, 
   verifyJwt, 
   getNextClientId, 
   ApiClient, 
   MockUserDbEntry 
 } from "../../../../lib/api-auth";
+import {
+  dynamoDbListClients,
+  dynamoDbPutClient
+} from "../../../../lib/dynamodb-client";
 
 export const runtime = "nodejs";
 
@@ -37,7 +40,7 @@ export async function GET(req: Request) {
     const tierFilter = searchParams.get("tier");
     const searchQuery = searchParams.get("search");
 
-    let clients = Object.values(API_MOCK_CLIENTS) as ApiClient[];
+    let clients = await dynamoDbListClients();
 
     if (caller.role === "client_admin") {
       // client_admin can only view their own associated client
@@ -107,7 +110,8 @@ export async function POST(req: Request) {
 
     // Ensure uniqueness of domain or name
     const domainNorm = domain.toLowerCase().trim();
-    const domainExists = Object.values(API_MOCK_CLIENTS).some(c => c.domain.toLowerCase() === domainNorm);
+    const clients = await dynamoDbListClients();
+    const domainExists = clients.some(c => c.domain.toLowerCase() === domainNorm);
     if (domainExists) {
       return NextResponse.json({ success: false, error: "Conflict", message: "A client with this domain already exists." }, { status: 409 });
     }
@@ -130,7 +134,7 @@ export async function POST(req: Request) {
       healthStatus: healthStatus || "Healthy"
     };
 
-    (API_MOCK_CLIENTS as Record<string, ApiClient>)[newClientId] = newClient;
+    await dynamoDbPutClient(newClient);
     return NextResponse.json({ success: true, client: newClient }, { status: 201 });
   } catch (err) {
     return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });

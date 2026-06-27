@@ -106,6 +106,7 @@ def delete_client(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Client account not found")
     if hard_delete:
         clients_repo.delete(str(client_id))
+        client.status = "deleted"
         SystemLoggerService.create_log(
             db,
             SystemLogCreate(

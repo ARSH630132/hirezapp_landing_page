@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server";
 import { 
   API_MOCK_USERS, 
-  API_MOCK_CLIENTS, 
   verifyJwt, 
   ApiClient, 
   MockUserDbEntry 
 } from "../../../../../lib/api-auth";
+import {
+  dynamoDbGetClient,
+  dynamoDbPutClient
+} from "../../../../../lib/dynamodb-client";
 
 export const runtime = "nodejs";
 
@@ -26,7 +29,7 @@ export async function GET(req: Request, { params }: { params: any }) {
     }
 
     const { id } = await params;
-    const client = (API_MOCK_CLIENTS as Record<string, ApiClient>)[id];
+    const client = await dynamoDbGetClient(id);
     if (!client) return NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
 
     if (caller.role === "client_admin") {
@@ -51,7 +54,7 @@ export async function PATCH(req: Request, { params }: { params: any }) {
     if (caller.role !== "gff_admin") return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
 
     const { id } = await params;
-    const client = (API_MOCK_CLIENTS as Record<string, ApiClient>)[id];
+    const client = await dynamoDbGetClient(id);
     if (!client) return NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
 
     const body = await req.json().catch(() => null);
@@ -87,7 +90,7 @@ export async function PATCH(req: Request, { params }: { params: any }) {
     if (billingStatus !== undefined) updated.billingStatus = billingStatus;
     if (healthStatus !== undefined) updated.healthStatus = healthStatus;
 
-    (API_MOCK_CLIENTS as Record<string, ApiClient>)[id] = updated;
+    await dynamoDbPutClient(updated);
 
     return NextResponse.json({ success: true, client: updated });
   } catch (err) {
@@ -102,20 +105,13 @@ export async function DELETE(req: Request, { params }: { params: any }) {
     if (caller.role !== "gff_admin") return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
 
     const { id } = await params;
-    if (!(API_MOCK_CLIENTS as Record<string, ApiClient>)[id]) {
+    const client = await dynamoDbGetClient(id);
+    if (!client) {
       return NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
     }
 
-    // Instead of completely deleting, we can archive/suspend, or delete. Let's do archive/suspend or deletion.
-    // The requirement says "archive if API supports it".
-    // Let's change status to archived/suspended.
-    const client = (API_MOCK_CLIENTS as Record<string, ApiClient>)[id];
-    client.status = "suspended"; // or "archived"
-    
-    // We can also delete it if we want, but changing status is safer, or we can just support both.
-    // Let's set status to archived/suspended as it preserves references in projects/billing, 
-    // which is more robust for enterprise grade software.
-    (API_MOCK_CLIENTS as Record<string, ApiClient>)[id] = client;
+    client.status = "suspended";
+    await dynamoDbPutClient(client);
 
     return NextResponse.json({ success: true, message: "Client archived successfully.", client });
   } catch (err) {

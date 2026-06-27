@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { 
   API_MOCK_USERS, 
-  API_MOCK_PROJECTS, 
   verifyJwt, 
   MockUserDbEntry, 
   ApiProject, 
@@ -9,6 +8,10 @@ import {
   getClientNameFromId, 
   getClientIdFromAssociation 
 } from "../../../../lib/api-auth";
+import {
+  dynamoDbListPortalItems,
+  dynamoDbPutPortalItem
+} from "../../../../lib/dynamodb-client";
 
 export const runtime = "nodejs";
 
@@ -47,12 +50,12 @@ export async function GET(req: Request) {
     const ownerFilter = searchParams.get("owner");
     const searchQuery = searchParams.get("search");
 
-    let projects = Object.values(API_MOCK_PROJECTS) as ApiProject[];
+    let projects: any[] = [];
 
     // RBAC policy logic
     if (caller.role !== "gff_admin") {
       const callerClientId = getClientIdFromAssociation(caller.clientAssociation);
-      projects = projects.filter(p => p.client_id === callerClientId);
+      projects = await dynamoDbListPortalItems("PROJECT", callerClientId);
 
       // Enforce client boundaries
       if (clientIdFilter && clientIdFilter !== callerClientId) {
@@ -64,7 +67,9 @@ export async function GET(req: Request) {
     } else {
       // Admin filter
       if (clientIdFilter) {
-        projects = projects.filter(p => p.client_id === clientIdFilter);
+        projects = await dynamoDbListPortalItems("PROJECT", clientIdFilter);
+      } else {
+        projects = await dynamoDbListPortalItems("PROJECT");
       }
     }
 
@@ -160,7 +165,7 @@ export async function POST(req: Request) {
       lastUpdated: new Date().toISOString()
     };
 
-    (API_MOCK_PROJECTS as Record<string, ApiProject>)[newProjId] = newProj;
+    await dynamoDbPutPortalItem("PROJECT", client_id, newProj);
 
     return NextResponse.json({ success: true, project: newProj }, { status: 201 });
   } catch (err) {

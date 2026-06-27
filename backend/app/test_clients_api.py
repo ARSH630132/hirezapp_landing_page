@@ -5,6 +5,7 @@ from fastapi import HTTPException
 from app.db.session import SessionLocal
 from app.models.client_account import ClientAccount
 from app.schemas.client_account import ClientAccountCreate, ClientAccountUpdate
+from app.repositories.clients import clients_repo
 from app.api.routes.clients import (
     list_clients, get_client, create_client, update_client, delete_client
 )
@@ -62,12 +63,12 @@ def run_api_tests():
     print("Testing delete_client (soft archive)...")
     soft = delete_client(client_id=c1.id, hard_delete=False, db=db, current_user=usr)
     assert soft.status == "archived"
-    assert db.query(ClientAccount).filter(ClientAccount.id == c1.id).first().status == "archived"
+    assert clients_repo.get_by_id(str(c1.id)).status == "archived"
     
     print("Testing delete_client (hard delete)...")
     hard = delete_client(client_id=c1.id, hard_delete=True, db=db, current_user=usr)
     assert hard.status == "deleted"
-    assert db.query(ClientAccount).filter(ClientAccount.id == c1.id).first() is None
+    assert clients_repo.get_by_id(str(c1.id)) is None
     
     delete_client(client_id=c2.id, hard_delete=True, db=db, current_user=usr)
     db.close()

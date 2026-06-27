@@ -1,8 +1,13 @@
 import { NextResponse } from "next/server";
 import { 
-  API_MOCK_USERS, API_MOCK_AI_OPERATIONS, verifyJwt, 
+  API_MOCK_USERS, verifyJwt, 
   MockUserDbEntry, ApiAiOperation, getClientNameFromId, getClientIdFromAssociation 
 } from "../../../../../lib/api-auth";
+import {
+  dynamoDbListPortalItems,
+  dynamoDbPutPortalItem,
+  dynamoDbDeletePortalItem
+} from "../../../../../lib/dynamodb-client";
 
 export const runtime = "nodejs";
 
@@ -20,7 +25,9 @@ export async function GET(req: Request, { params }: { params: any }) {
     const caller = getAuthCaller(req);
     if (!caller) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     const { id } = await params;
-    const op = (API_MOCK_AI_OPERATIONS as Record<string, ApiAiOperation>)[id];
+    
+    const ops = await dynamoDbListPortalItems("AI_OPERATION");
+    const op = ops.find(o => o.id === id);
     if (!op) return NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
     
     if (caller.role !== "gff_admin") {
@@ -42,7 +49,8 @@ export async function PATCH(req: Request, { params }: { params: any }) {
     if (caller.role !== "gff_admin") return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
     
     const { id } = await params;
-    const op = (API_MOCK_AI_OPERATIONS as Record<string, ApiAiOperation>)[id];
+    const ops = await dynamoDbListPortalItems("AI_OPERATION");
+    const op = ops.find(o => o.id === id);
     if (!op) return NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
     
     const body = await req.json().catch(() => null);
@@ -67,7 +75,8 @@ export async function PATCH(req: Request, { params }: { params: any }) {
       }
     }
     op.lastUpdated = new Date().toISOString();
-    (API_MOCK_AI_OPERATIONS as Record<string, ApiAiOperation>)[id] = op;
+    
+    await dynamoDbPutPortalItem("AI_OPERATION", op.client_id, op);
     return NextResponse.json({ success: true, operation: op });
   } catch (err) {
     return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
@@ -81,10 +90,11 @@ export async function DELETE(req: Request, { params }: { params: any }) {
     if (caller.role !== "gff_admin") return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
     
     const { id } = await params;
-    if (!(API_MOCK_AI_OPERATIONS as Record<string, ApiAiOperation>)[id]) {
-      return NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
-    }
-    delete (API_MOCK_AI_OPERATIONS as Record<string, ApiAiOperation>)[id];
+    const ops = await dynamoDbListPortalItems("AI_OPERATION");
+    const op = ops.find(o => o.id === id);
+    if (!op) return NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
+    
+    await dynamoDbDeletePortalItem("AI_OPERATION", op.client_id, id);
     return NextResponse.json({ success: true, message: "AI Operation deleted." });
   } catch (err) {
     return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });

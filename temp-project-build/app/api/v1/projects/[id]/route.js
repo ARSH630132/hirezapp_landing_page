@@ -6,6 +6,7 @@ exports.PATCH = PATCH;
 exports.DELETE = DELETE;
 const server_1 = require("next/server");
 const api_auth_1 = require("../../../../../lib/api-auth");
+const dynamodb_client_1 = require("../../../../../lib/dynamodb-client");
 exports.runtime = "nodejs";
 function getAuthCaller(req) {
     const auth = req.headers.get("authorization");
@@ -23,7 +24,8 @@ async function GET(req, { params }) {
         if (!caller)
             return server_1.NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
         const { id } = await params;
-        const project = api_auth_1.API_MOCK_PROJECTS[id];
+        const projects = await (0, dynamodb_client_1.dynamoDbListPortalItems)("PROJECT");
+        const project = projects.find(p => p.id === id);
         if (!project)
             return server_1.NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
         if (caller.role !== "gff_admin") {
@@ -45,12 +47,14 @@ async function PATCH(req, { params }) {
         if (caller.role !== "gff_admin")
             return server_1.NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
         const { id } = await params;
-        const project = api_auth_1.API_MOCK_PROJECTS[id];
+        const projects = await (0, dynamodb_client_1.dynamoDbListPortalItems)("PROJECT");
+        const project = projects.find(p => p.id === id);
         if (!project)
             return server_1.NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
         const body = await req.json().catch(() => null);
         if (!body)
             return server_1.NextResponse.json({ success: false, error: "Bad Request" }, { status: 400 });
+        const updated = { ...project };
         const fields = ["name", "phase", "status", "health", "owner", "nodesCount", "enclaveType", "desc", "client_id"];
         for (const key of fields) {
             if (body[key] !== undefined) {
@@ -62,22 +66,22 @@ async function PATCH(req, { params }) {
                     if (!valids.includes(body.client_id)) {
                         return server_1.NextResponse.json({ success: false, error: "Bad Request", message: "Invalid client_id" }, { status: 400 });
                     }
-                    project.client_id = body.client_id;
-                    project.client_name = (0, api_auth_1.getClientNameFromId)(body.client_id);
+                    updated.client_id = body.client_id;
+                    updated.client_name = (0, api_auth_1.getClientNameFromId)(body.client_id);
                 }
                 else if (key === "nodesCount") {
                     if (typeof body.nodesCount !== "number")
                         return server_1.NextResponse.json({ success: false, error: "Bad Request" }, { status: 400 });
-                    project.nodesCount = body.nodesCount;
+                    updated.nodesCount = body.nodesCount;
                 }
                 else {
-                    project[key] = typeof body[key] === "string" ? body[key].trim() : body[key];
+                    updated[key] = typeof body[key] === "string" ? body[key].trim() : body[key];
                 }
             }
         }
-        project.lastUpdated = new Date().toISOString();
-        api_auth_1.API_MOCK_PROJECTS[id] = project;
-        return server_1.NextResponse.json({ success: true, project });
+        updated.lastUpdated = new Date().toISOString();
+        await (0, dynamodb_client_1.dynamoDbPutPortalItem)("PROJECT", updated.client_id, updated);
+        return server_1.NextResponse.json({ success: true, project: updated });
     }
     catch (err) {
         return server_1.NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
@@ -91,10 +95,11 @@ async function DELETE(req, { params }) {
         if (caller.role !== "gff_admin")
             return server_1.NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
         const { id } = await params;
-        if (!api_auth_1.API_MOCK_PROJECTS[id]) {
+        const projects = await (0, dynamodb_client_1.dynamoDbListPortalItems)("PROJECT");
+        const project = projects.find(p => p.id === id);
+        if (!project)
             return server_1.NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
-        }
-        delete api_auth_1.API_MOCK_PROJECTS[id];
+        await (0, dynamodb_client_1.dynamoDbDeletePortalItem)("PROJECT", project.client_id, id);
         return server_1.NextResponse.json({ success: true, message: "Project deleted." });
     }
     catch (err) {

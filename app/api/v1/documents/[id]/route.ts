@@ -1,12 +1,16 @@
 import { NextResponse } from "next/server";
 import { 
   API_MOCK_USERS, 
-  API_MOCK_DOCUMENTS, 
   verifyJwt, 
   MockUserDbEntry, 
   ApiDocumentItem, 
   getClientIdFromAssociation 
 } from "../../../../../lib/api-auth";
+import {
+  dynamoDbListPortalItems,
+  dynamoDbPutPortalItem,
+  dynamoDbDeletePortalItem
+} from "../../../../../lib/dynamodb-client";
 
 export const runtime = "nodejs";
 
@@ -41,12 +45,10 @@ export async function GET(req: Request, { params }: { params: any }) {
     if (!id) return NextResponse.json({ success: false, error: "Bad Request" }, { status: 400 });
 
     const docKey = id.toLowerCase();
-    let document: ApiDocumentItem | undefined = (API_MOCK_DOCUMENTS as Record<string, ApiDocumentItem>)[docKey];
-    if (!document) {
-      document = Object.values(API_MOCK_DOCUMENTS).find(
-        d => d.id.toLowerCase() === docKey
-      );
-    }
+    const documents = await dynamoDbListPortalItems("DOCUMENT");
+    const document = documents.find(
+      d => d.id.toLowerCase() === docKey || d.id === id
+    );
 
     if (!document) return NextResponse.json({ success: false, error: "Not Found", message: "Document not found." }, { status: 404 });
     
@@ -101,17 +103,10 @@ export async function PATCH(req: Request, { params }: { params: any }) {
     if (!id) return NextResponse.json({ success: false, error: "Bad Request" }, { status: 400 });
 
     const docKey = id.toLowerCase();
-    let document: ApiDocumentItem | undefined = (API_MOCK_DOCUMENTS as Record<string, ApiDocumentItem>)[docKey];
-    let keyToUpdate = docKey;
-    if (!document) {
-      const entry = Object.entries(API_MOCK_DOCUMENTS).find(
-        ([k, d]) => d.id.toLowerCase() === docKey
-      );
-      if (entry) {
-        keyToUpdate = entry[0];
-        document = entry[1];
-      }
-    }
+    const documents = await dynamoDbListPortalItems("DOCUMENT");
+    const document = documents.find(
+      d => d.id.toLowerCase() === docKey || d.id === id
+    );
 
     if (!document) return NextResponse.json({ success: false, error: "Not Found", message: "Document not found." }, { status: 404 });
 
@@ -123,40 +118,42 @@ export async function PATCH(req: Request, { params }: { params: any }) {
     // Permitted fields to update
     const { title, status, version, owner, project_id, projectId, document_type, type, visibility, description, fileSize, sha256, governanceChecks } = body;
 
-    if (title !== undefined) document.title = title;
-    if (status !== undefined) document.status = status;
-    if (version !== undefined) document.version = version;
-    if (owner !== undefined) document.owner = owner;
-    if (description !== undefined) document.description = description;
-    if (fileSize !== undefined) document.fileSize = fileSize;
-    if (sha256 !== undefined) document.sha256 = sha256;
-    if (governanceChecks !== undefined) document.governanceChecks = governanceChecks;
-    if (visibility !== undefined) document.visibility = visibility;
+    const updated = { ...document };
+
+    if (title !== undefined) updated.title = title;
+    if (status !== undefined) updated.status = status;
+    if (version !== undefined) updated.version = version;
+    if (owner !== undefined) updated.owner = owner;
+    if (description !== undefined) updated.description = description;
+    if (fileSize !== undefined) updated.fileSize = fileSize;
+    if (sha256 !== undefined) updated.sha256 = sha256;
+    if (governanceChecks !== undefined) updated.governanceChecks = governanceChecks;
+    if (visibility !== undefined) updated.visibility = visibility;
 
     const updatedDocType = document_type || type;
     if (updatedDocType !== undefined) {
-      document.document_type = updatedDocType;
-      document.type = updatedDocType;
+      updated.document_type = updatedDocType;
+      updated.type = updatedDocType;
     }
 
     const updatedProjectId = project_id || projectId;
     if (updatedProjectId !== undefined) {
-      document.project_id = updatedProjectId;
-      document.projectId = updatedProjectId;
+      updated.project_id = updatedProjectId;
+      updated.projectId = updatedProjectId;
     }
 
-    document.lastUpdated = new Date().toISOString();
+    updated.lastUpdated = new Date().toISOString();
 
     // Ensure synchronized fields are set
-    document.project_id = document.project_id || document.projectId || "";
-    document.projectId = document.projectId || document.project_id || "";
-    document.document_type = document.document_type || document.type || "PDF";
-    document.type = document.type || document.document_type || "PDF";
-    document.visibility = document.visibility || (document.client_id === "client-001" ? "LEVEL_IV (Restricted)" : "LEVEL_I (Client View)");
+    updated.project_id = updated.project_id || updated.projectId || "";
+    updated.projectId = updated.projectId || updated.project_id || "";
+    updated.document_type = updated.document_type || updated.type || "PDF";
+    updated.type = updated.type || updated.document_type || "PDF";
+    updated.visibility = updated.visibility || (updated.client_id === "client-001" ? "LEVEL_IV (Restricted)" : "LEVEL_I (Client View)");
 
-    (API_MOCK_DOCUMENTS as Record<string, ApiDocumentItem>)[keyToUpdate] = document;
+    await dynamoDbPutPortalItem("DOCUMENT", updated.client_id, updated);
 
-    return NextResponse.json({ success: true, document });
+    return NextResponse.json({ success: true, document: updated });
   } catch (err) {
     return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
   }
@@ -182,21 +179,14 @@ export async function DELETE(req: Request, { params }: { params: any }) {
     if (!id) return NextResponse.json({ success: false, error: "Bad Request" }, { status: 400 });
 
     const docKey = id.toLowerCase();
-    let keyToDelete: string | null = null;
-    if ((API_MOCK_DOCUMENTS as Record<string, ApiDocumentItem>)[docKey]) {
-      keyToDelete = docKey;
-    } else {
-      const entry = Object.entries(API_MOCK_DOCUMENTS).find(
-        ([k, d]) => d.id.toLowerCase() === docKey
-      );
-      if (entry) {
-        keyToDelete = entry[0];
-      }
-    }
+    const documents = await dynamoDbListPortalItems("DOCUMENT");
+    const document = documents.find(
+      d => d.id.toLowerCase() === docKey || d.id === id
+    );
 
-    if (!keyToDelete) return NextResponse.json({ success: false, error: "Not Found", message: "Document not found." }, { status: 404 });
+    if (!document) return NextResponse.json({ success: false, error: "Not Found", message: "Document not found." }, { status: 404 });
 
-    delete (API_MOCK_DOCUMENTS as Record<string, ApiDocumentItem>)[keyToDelete];
+    await dynamoDbDeletePortalItem("DOCUMENT", document.client_id, document.id);
 
     return NextResponse.json({ success: true, message: "Document deleted successfully." });
   } catch (err) {

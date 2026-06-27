@@ -5,6 +5,7 @@ exports.GET = GET;
 exports.POST = POST;
 const server_1 = require("next/server");
 const api_auth_1 = require("../../../../lib/api-auth");
+const dynamodb_client_1 = require("../../../../lib/dynamodb-client");
 exports.runtime = "nodejs";
 function getAuthCaller(req) {
     const auth = req.headers.get("authorization");
@@ -40,16 +41,19 @@ async function GET(req) {
         const gov_status = searchParams.get("governance_status");
         const owner = searchParams.get("owner");
         const search = searchParams.get("search");
-        let ops = Object.values(api_auth_1.API_MOCK_AI_OPERATIONS);
+        let ops = [];
         if (caller.role !== "gff_admin") {
             const callerCid = (0, api_auth_1.getClientIdFromAssociation)(caller.clientAssociation);
-            ops = ops.filter(o => o.client_id === callerCid);
+            ops = await (0, dynamodb_client_1.dynamoDbListPortalItems)("AI_OPERATION", callerCid);
             if (cid && cid !== callerCid) {
                 return server_1.NextResponse.json({ success: false, error: "Forbidden", message: "Access denied." }, { status: 403 });
             }
         }
         else if (cid) {
-            ops = ops.filter(o => o.client_id === cid);
+            ops = await (0, dynamodb_client_1.dynamoDbListPortalItems)("AI_OPERATION", cid);
+        }
+        else {
+            ops = await (0, dynamodb_client_1.dynamoDbListPortalItems)("AI_OPERATION");
         }
         if (pid)
             ops = ops.filter(o => o.project_id.toLowerCase() === pid.toLowerCase().trim());
@@ -115,7 +119,7 @@ async function POST(req) {
             desc: desc || "",
             lastUpdated: new Date().toISOString()
         };
-        api_auth_1.API_MOCK_AI_OPERATIONS[newOpId] = newOp;
+        await (0, dynamodb_client_1.dynamoDbPutPortalItem)("AI_OPERATION", client_id, newOp);
         return server_1.NextResponse.json({ success: true, operation: newOp }, { status: 201 });
     }
     catch (err) {

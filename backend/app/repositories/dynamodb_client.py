@@ -127,7 +127,13 @@ def seed_mock_database():
 seed_mock_database()
 
 
+_sqlite_synced = False
+
 def sync_with_sqlite():
+    global _sqlite_synced
+    if _sqlite_synced:
+        return
+    _sqlite_synced = True
     try:
         from app.db.session import SessionLocal
         from app.models.user import User

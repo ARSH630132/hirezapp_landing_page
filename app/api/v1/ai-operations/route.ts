@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
 import { 
-  API_MOCK_USERS, API_MOCK_AI_OPERATIONS, verifyJwt, MockUserDbEntry, 
+  API_MOCK_USERS, verifyJwt, MockUserDbEntry, 
   ApiAiOperation, getNextAiOperationId, getClientNameFromId, getClientIdFromAssociation 
 } from "../../../../lib/api-auth";
+import {
+  dynamoDbListPortalItems,
+  dynamoDbPutPortalItem
+} from "../../../../lib/dynamodb-client";
 
 export const runtime = "nodejs";
 
@@ -42,16 +46,18 @@ export async function GET(req: Request) {
     const owner = searchParams.get("owner");
     const search = searchParams.get("search");
 
-    let ops = Object.values(API_MOCK_AI_OPERATIONS) as ApiAiOperation[];
+    let ops: any[] = [];
 
     if (caller.role !== "gff_admin") {
       const callerCid = getClientIdFromAssociation(caller.clientAssociation);
-      ops = ops.filter(o => o.client_id === callerCid);
+      ops = await dynamoDbListPortalItems("AI_OPERATION", callerCid);
       if (cid && cid !== callerCid) {
         return NextResponse.json({ success: false, error: "Forbidden", message: "Access denied." }, { status: 403 });
       }
     } else if (cid) {
-      ops = ops.filter(o => o.client_id === cid);
+      ops = await dynamoDbListPortalItems("AI_OPERATION", cid);
+    } else {
+      ops = await dynamoDbListPortalItems("AI_OPERATION");
     }
 
     if (pid) ops = ops.filter(o => o.project_id.toLowerCase() === pid.toLowerCase().trim());
@@ -120,7 +126,7 @@ export async function POST(req: Request) {
       lastUpdated: new Date().toISOString()
     };
 
-    (API_MOCK_AI_OPERATIONS as Record<string, ApiAiOperation>)[newOpId] = newOp;
+    await dynamoDbPutPortalItem("AI_OPERATION", client_id, newOp);
     return NextResponse.json({ success: true, operation: newOp }, { status: 201 });
   } catch (err) {
     return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
