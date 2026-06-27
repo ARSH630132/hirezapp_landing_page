@@ -1,0 +1,48 @@
+## npm run lint
+exit=0
+STDOUT:
+
+> hirezapp_landing_page@0.1.0 lint
+> eslint
+
+
+STDERR:
+
+
+## npm run build
+exit=1
+STDOUT:
+
+> hirezapp_landing_page@0.1.0 build
+> next build
+
+▲ Next.js 16.2.9 (Turbopack)
+- Environments: .env
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 41s
+  Running TypeScript ...
+
+STDERR:
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /Users/ayushbansal/package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * /Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/package-lock.json
+
+Failed to type check.
+
+./app/portal/support/page.tsx:19:7
+Type error: Type '{ id: string; subject: string; slaTimer: string; priority: "P3"; status: string; }' is not assignable to type '{ id: string; subject: string; slaTimer: string; priority: "P1"; status: string; } | { id: string; subject: string; slaTimer: string; priority: "P2"; status: string; }'.
+  Types of property 'priority' are incompatible.
+    Type '"P3"' is not assignable to type '"P1" | "P2"'.
+
+  [90m17 |[0m     [36mif[0m (!newSubject.trim()) [36mreturn[0m;
+  [90m18 |[0m     setTickets([
+[31m[1m>[0m [90m19 |[0m       ...tickets,
+  [90m   |[0m       [31m[1m^[0m
+  [90m20 |[0m       {
+  [90m21 |[0m         id: [32m"T-"[0m + [33mMath[0m.floor([35m100[0m + [33mMath[0m.random() * [35m900[0m),
+  [90m22 |[0m         subject: newSubject,
+Next.js build worker exited with code: 1 and signal: null

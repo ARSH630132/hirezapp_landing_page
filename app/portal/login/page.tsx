@@ -2,6 +2,6 @@
 
 import SecureLogin from "@/components/portal/SecureLogin";
 
-export default function ClientPortalPage() {
+export default function PortalLoginPage() {
   return <SecureLogin defaultRole="Client" />;
 }
