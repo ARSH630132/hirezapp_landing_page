@@ -121,7 +121,8 @@
     "140-phase5-api-governance-crud",
     "143-phase5-api-dashboard-summary",
     "144-phase5-api-analytics-summary",
-    "146-phase5-backend-smoke-tests"
+    "146-phase5-backend-smoke-tests",
+    "147-phase5-frontend-api-client"
   ],
   "failed": [
     {
