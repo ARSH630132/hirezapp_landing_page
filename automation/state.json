@@ -73,7 +73,8 @@
     "70-phase4-private-app-design-system",
     "71-phase4-private-route-map",
     "72-phase4-local-auth-session-rbac-preview",
-    "73-phase4-client-login-landing"
+    "73-phase4-client-login-landing",
+    "74-phase4-login-page"
   ],
   "failed": [
     {
