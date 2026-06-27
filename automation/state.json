@@ -128,7 +128,8 @@
     "150-phase5-frontend-client-dashboard-api",
     "151-phase5-frontend-client-projects-api",
     "152-phase5-frontend-client-ai-operations-api",
-    "153-phase5-frontend-client-documents-api"
+    "153-phase5-frontend-client-documents-api",
+    "154-phase5-frontend-client-billing-api"
   ],
   "failed": [
     {
