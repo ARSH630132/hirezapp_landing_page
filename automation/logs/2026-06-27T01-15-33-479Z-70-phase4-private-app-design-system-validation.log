@@ -1,0 +1,19 @@
+## npm run lint
+exit=1
+STDOUT:
+
+> hirezapp_landing_page@0.1.0 lint
+> eslint
+
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/components/private-app/command-palette.tsx
+  34:9  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/components/private-app/data-tables.tsx
+  36:7  error  'processedData' is never reassigned. Use 'const' instead  prefer-const
+
+✖ 2 problems (1 error, 1 warning)
+  1 error and 0 warnings potentially fixable with the `--fix` option.
+
+
+STDERR:

@@ -552,7 +552,7 @@ async function main() {
     log(task.id, "validation", validation.output || "validation ok");
 
     let attempts = 0;
-    const MAX_FIX_ATTEMPTS = 2;
+    const MAX_FIX_ATTEMPTS = 4;
 
     while ((!guard.ok || !validation.ok) && attempts < MAX_FIX_ATTEMPTS) {
       attempts += 1;
