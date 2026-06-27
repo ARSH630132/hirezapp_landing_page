@@ -36,9 +36,9 @@ export function NotificationBell() {
 
   const unreadCount = notifications.filter(n => n.unread).length;
 
-  const markAllRead = () => {
-    setNotifications(notifications.map(n => ({ ...n, unread: false })));
-  };
+ const markAllRead = () => {
+  setNotifications([]);
+};
 
   const deleteNotification = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
