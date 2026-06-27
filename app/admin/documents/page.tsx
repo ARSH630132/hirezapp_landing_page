@@ -48,7 +48,7 @@ const CLIENTS = [
   "National Health Enclave [Preview Client]"
 ];
 
-const PROJECTS: ProjectItem[] = [
+const STATIC_PROJECTS: ProjectItem[] = [
   { id: "PROJ-201", name: "Apex Sovereign Multi-Agent Lattice", client: "Apex Sovereign Group [Preview Client]" },
   { id: "PROJ-202", name: "Global Retail Real-Time Audit Ring", client: "Global Retail Enclave [Preview Client]" },
   { id: "PROJ-203", name: "Sovereign Logistics AI Route Optimizer", client: "Sovereign Logistics Unit [Preview Client]" },
@@ -199,11 +199,14 @@ const INITIAL_DOCUMENTS: DocumentItem[] = [
 
 export default function AdminDocumentsPage() {
   // ==========================================
-  // 3. REACT STATE MANAGEMENT
+  // 3. REACT STATE MANAGEMENT & BACKEND INTEGRATION
   // ==========================================
   const [documents, setDocuments] = useState<DocumentItem[]>(INITIAL_DOCUMENTS);
+  const [projects, setProjects] = useState<ProjectItem[]>(STATIC_PROJECTS);
   const [selectedDocId, setSelectedDocId] = useState<string | null>(null);
-  
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   // Filter states
   const [searchQuery, setSearchQuery] = useState("");
   const [filterClient, setFilterClient] = useState("all");
@@ -218,6 +221,97 @@ export default function AdminDocumentsPage() {
   const [downloadingDocId, setDownloadingDocId] = useState<string | null>(null);
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [toast, setToast] = useState<{ visible: boolean; message: string }>({ visible: false, message: "" });
+
+  // Helper mapping utilities
+  const getClientIdFromClientName = (name: string): string => {
+    const lower = name.toLowerCase();
+    if (lower.includes("apex")) return "client-001";
+    if (lower.includes("retail")) return "client-002";
+    if (lower.includes("logistics")) return "client-003";
+    if (lower.includes("treasury") || lower.includes("federal")) return "client-004";
+    return "client-001";
+  };
+
+  const getClientNameFromId = (id: string): string => {
+    switch (id) {
+      case "client-001": return "Apex Sovereign Group [Preview Client]";
+      case "client-002": return "Global Retail Enclave [Preview Client]";
+      case "client-003": return "Sovereign Logistics Unit [Preview Client]";
+      case "client-004": return "Federal Treasury Division [Preview Client]";
+      default: return "Apex Sovereign Group [Preview Client]";
+    }
+  };
+  // Synchronize documents and projects with backend CRUD API
+  const fetchData = React.useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      let token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") || localStorage.getItem("gff_api_token") : null;
+      if (!token) {
+        const loginRes = await fetch("/api/v1/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: "s.vance@governance.gff.ai", password: "VanceSecure2026!" })
+        });
+        if (loginRes.ok) {
+          const authData = await loginRes.json();
+          if (authData.accessToken) {
+            token = authData.accessToken;
+            localStorage.setItem("gff_ai_access_token", authData.accessToken);
+          }
+        }
+      }
+      if (!token) throw new Error("Cryptographic token not established.");
+
+      const projRes = await fetch("/api/v1/projects", { headers: { "Authorization": `Bearer ${token}` } });
+      if (projRes.ok) {
+        const projData = await projRes.json();
+        if (projData.success && projData.projects) {
+          const mappedProjects = projData.projects.map((p: any) => ({
+            id: p.id,
+            name: p.name,
+            client: p.client_name || getClientNameFromId(p.client_id)
+          }));
+          setProjects([...mappedProjects, { id: "UNASSIGNED", name: "Unassigned Registry Sandbox Only", client: "N/A" }]);
+        }
+      }
+
+      const docRes = await fetch("/api/v1/documents", { headers: { "Authorization": `Bearer ${token}` } });
+      if (docRes.ok) {
+        const docData = await docRes.json();
+        if (docData.success && docData.documents) {
+          const mappedDocs = docData.documents.map((d: any) => ({
+            id: d.id,
+            title: d.title,
+            fileSize: d.fileSize || "1.0 MB",
+            type: d.type || d.document_type || "PDF",
+            sha256: d.sha256 || "0x...",
+            client: d.client_name || getClientNameFromId(d.client_id),
+            projectId: d.projectId || d.project_id || "UNASSIGNED",
+            status: d.status || "Under Review",
+            owner: d.owner || "Dr. Sarah Vance",
+            version: d.version || "v1.0.0",
+            lastUpdated: d.lastUpdated || new Date().toISOString(),
+            description: d.description || "",
+            governanceChecks: d.governanceChecks || []
+          }));
+          setDocuments(mappedDocs);
+        } else {
+          throw new Error(docData.message || "Failed to parse enclave document index.");
+        }
+      } else {
+        throw new Error("HTTP connection to document vault rejected.");
+      }
+    } catch (err: any) {
+      setError(err.message || "Cryptographic registry sync failed.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   // Document registration form states
   const [newTitle, setNewTitle] = useState("");
@@ -257,31 +351,44 @@ export default function AdminDocumentsPage() {
   };
 
   // ==========================================
-  // 4. ACTION HANDLERS
+  // 4. ACTION HANDLERS WITH BACKEND METADATA CRUD
   // ==========================================
   
-  // Assign Document to Project
-  const handleAssignProject = (docId: string, projectId: string) => {
-    setDocuments(prevDocs => 
-      prevDocs.map(doc => {
-        if (doc.id === docId) {
-          const targetProj = PROJECTS.find(p => p.id === projectId);
-          const updatedClient = targetProj && targetProj.id !== "UNASSIGNED" ? targetProj.client : doc.client;
-          return { 
-            ...doc, 
-            projectId, 
-            client: updatedClient,
-            lastUpdated: new Date().toISOString()
-          };
-        }
-        return doc;
-      })
-    );
-    const projName = PROJECTS.find(p => p.id === projectId)?.name || "Unassigned Registry";
-    showToast(`Cryptographic association established: Document bound to ${projName}`);
+  // Assign Document to Project (PATCH metadata)
+  const handleAssignProject = async (docId: string, projectId: string) => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("gff_ai_access_token");
+      const targetProj = projects.find(p => p.id === projectId);
+      const targetClientId = targetProj && targetProj.id !== "UNASSIGNED" ? getClientIdFromClientName(targetProj.client) : undefined;
+
+      const res = await fetch(`/api/v1/documents/${docId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          project_id: projectId === "UNASSIGNED" ? "" : projectId,
+          projectId: projectId === "UNASSIGNED" ? "" : projectId,
+          client_id: targetClientId
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast(`Cryptographic association established: Document bound successfully.`);
+        await fetchData();
+      } else {
+        showToast(`Failed to update project re-assignment: ${data.message || "Unknown error"}`);
+      }
+    } catch (err) {
+      showToast(`Error communicating update with secure enclave.`);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Simulate secure administrator download
+  // Simulate secure administrator download (Audit Logs remain mock but logged)
   const handleSimulatedDownload = (docId: string, title: string) => {
     setDownloadingDocId(docId);
     setTimeout(() => {
@@ -291,70 +398,90 @@ export default function AdminDocumentsPage() {
     }, 1500);
   };
 
-  // Toggle checklist inside drawer
-  const handleToggleCheck = (docId: string, checkIndex: number) => {
-    setDocuments(prevDocs => 
-      prevDocs.map(doc => {
-        if (doc.id === docId) {
-          const updatedChecks = [...doc.governanceChecks];
-          updatedChecks[checkIndex] = {
-            ...updatedChecks[checkIndex],
-            checked: !updatedChecks[checkIndex].checked
-          };
-          return {
-            ...doc,
-            governanceChecks: updatedChecks,
-            lastUpdated: new Date().toISOString()
-          };
-        }
-        return doc;
-      })
-    );
-    showToast(`Governance checklist updated. Audit state synchronized locally.`);
+  // Toggle checklist inside drawer (PATCH metadata)
+  const handleToggleCheck = async (docId: string, checkIndex: number) => {
+    const doc = documents.find(d => d.id === docId);
+    if (!doc) return;
+
+    const updatedChecks = [...doc.governanceChecks];
+    updatedChecks[checkIndex] = {
+      ...updatedChecks[checkIndex],
+      checked: !updatedChecks[checkIndex].checked
+    };
+
+    try {
+      const token = localStorage.getItem("gff_ai_access_token");
+      const res = await fetch(`/api/v1/documents/${docId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          governanceChecks: updatedChecks
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast(`Governance checklist updated. Audit state synchronized.`);
+        setDocuments(prevDocs => 
+          prevDocs.map(d => d.id === docId ? { ...d, governanceChecks: updatedChecks } : d)
+        );
+      } else {
+        showToast(`Failed to sync checklist: ${data.message || "Unknown error"}`);
+      }
+    } catch (err) {
+      showToast(`Error syncing checklist with secure enclave.`);
+    }
   };
 
-  // Register New Document Mock Submit
-  const handleRegisterSubmit = (e: React.FormEvent) => {
+  // Register New Document Submit (POST metadata CRUD)
+  const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTitle.trim()) return;
 
-    const randomHex = Array.from({ length: 32 }, () => 
-      Math.floor(Math.random() * 16).toString(16).toUpperCase()
-    ).join("");
-    const mockHash = `0x${randomHex.substring(0, 37)}`;
-    const newDocId = `DOC-${800 + documents.length + 1}`;
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("gff_ai_access_token");
+      const targetClientId = getClientIdFromClientName(newClient);
 
-    const newDocItem: DocumentItem = {
-      id: newDocId,
-      title: newTitle,
-      fileSize: newFileSize || "1.0 MB",
-      type: newType,
-      sha256: mockHash,
-      client: newProject !== "UNASSIGNED" 
-        ? PROJECTS.find(p => p.id === newProject)?.client || newClient
-        : newClient,
-      projectId: newProject,
-      status: newStatus,
-      owner: newOwner,
-      version: newVersion || "v1.0.0",
-      lastUpdated: new Date().toISOString(),
-      description: newDesc || "Custom compliance specification uploaded through interactive admin console.",
-      governanceChecks: [
-        { label: "Hardware Cryptographic Key Attestation", checked: true, framework: "ISO-27001" },
-        { label: "Organization Policy Sign-off validation", checked: newStatus === "Verified", framework: "SOC2 Compliance" },
-        { label: "Continuous Airgapped Event Verification", checked: false, framework: "NIST SP 800" }
-      ]
-    };
-
-    setDocuments(prev => [newDocItem, ...prev]);
-    setIsRegisterModalOpen(false);
-    showToast(`Document Registry expanded: Created ${newDocId}`);
-
-    // Reset fields
-    setNewTitle("");
-    setNewDesc("");
-    setNewFileSize("1.5 MB");
-    setNewVersion("v1.0.0");
+      const res = await fetch("/api/v1/documents", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          title: newTitle.trim(),
+          client_id: targetClientId,
+          project_id: newProject === "UNASSIGNED" ? "" : newProject,
+          projectId: newProject === "UNASSIGNED" ? "" : newProject,
+          document_type: newType,
+          type: newType,
+          status: newStatus,
+          version: newVersion,
+          owner: newOwner,
+          description: newDesc || "Custom compliance specification uploaded through interactive admin console.",
+          fileSize: newFileSize || "1.0 MB"
+        })
+      });
+      const data = await res.json();
+      if (data.success && data.document) {
+        setIsRegisterModalOpen(false);
+        showToast(`Document Registry expanded: Created ${data.document.id}`);
+        setNewTitle("");
+        setNewDesc("");
+        setNewFileSize("1.5 MB");
+        setNewVersion("v1.0.0");
+        await fetchData();
+      } else {
+        showToast(`Failed to register document: ${data.message || "Unknown error"}`);
+      }
+    } catch (err) {
+      showToast(`Error creating document in enclave registry.`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Reset Filters helper
@@ -369,12 +496,31 @@ export default function AdminDocumentsPage() {
     showToast("Filtering workspace cleared. All registry objects displayed.");
   };
 
-  // Delete document preview
-  const handleDeleteDocument = (id: string, title: string) => {
+  // Delete document (DELETE CRUD)
+  const handleDeleteDocument = async (id: string, title: string) => {
     if (confirm(`Deprovision document ${id} ("${title}") from administrative registry?`)) {
-      setDocuments(prev => prev.filter(d => d.id !== id));
-      if (selectedDocId === id) setSelectedDocId(null);
-      showToast(`Document ${id} unlinked and removed from local memory.`);
+      setLoading(true);
+      try {
+        const token = localStorage.getItem("gff_ai_access_token");
+        const res = await fetch(`/api/v1/documents/${id}`, {
+          method: "DELETE",
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(`Document ${id} unlinked and removed successfully.`);
+          if (selectedDocId === id) setSelectedDocId(null);
+          await fetchData();
+        } else {
+          showToast(`Failed to delete document: ${data.message || "Unknown error"}`);
+        }
+      } catch (err) {
+        showToast(`Failed to communicate deprovisioning command.`);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -553,6 +699,31 @@ export default function AdminDocumentsPage() {
         </div>
       </div>
 
+      {loading && documents.length === 0 && (
+        <div className="flex flex-col items-center justify-center p-12 border border-white/5 rounded-xl bg-[#050505]/20 font-mono text-center">
+          <RefreshCw className="w-10 h-10 text-[#009DFF] mb-3 animate-spin" />
+          <h4 className="text-white text-sm font-bold uppercase tracking-wider">Synchronizing Registry Vault...</h4>
+          <p className="text-white/40 text-[11px] max-w-sm mt-1 leading-relaxed">
+            Establishing secure cryptographical tunnel to active enclave compliance indices. Please hold...
+          </p>
+        </div>
+      )}
+
+      {error && (
+        <div className="p-4 rounded-xl border border-rose-500/10 bg-rose-500/5 text-rose-400 text-xs font-mono flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
+            <span><strong>VAULT ERROR:</strong> {error}</span>
+          </div>
+          <button
+            onClick={fetchData}
+            className="px-3 h-7 rounded bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/20 text-[10px] text-white uppercase tracking-wider font-bold transition-all cursor-pointer"
+          >
+            Retry Handshake
+          </button>
+        </div>
+      )}
+
       {/* ============================================================================ */}
       {/* SEARCH & DETAILED FILTER SYSTEM */}
       {/* ============================================================================ */}
@@ -623,7 +794,7 @@ export default function AdminDocumentsPage() {
               className="w-full h-8.5 rounded-lg border border-white/5 bg-[#090909] px-2 text-[11px] text-white outline-none focus:border-[#009DFF]/30 transition-all cursor-pointer font-bold"
             >
               <option value="all">ALL PROJECTS</option>
-              {PROJECTS.map((p) => (
+              {projects.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.id === "UNASSIGNED" ? "UNASSIGNED" : `${p.id}: ${p.name.substring(0, 16)}...`}
                 </option>
@@ -710,7 +881,7 @@ export default function AdminDocumentsPage() {
           </thead>
           <tbody className="divide-y divide-white/5">
             {filteredDocuments.map((doc) => {
-              const matchedProj = PROJECTS.find(p => p.id === doc.projectId);
+              const matchedProj = projects.find(p => p.id === doc.projectId);
               const projectName = matchedProj ? matchedProj.name : "Unassigned Registry";
               const isUnassigned = doc.projectId === "UNASSIGNED";
 
@@ -830,7 +1001,7 @@ export default function AdminDocumentsPage() {
       {/* ============================================================================ */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:hidden">
         {filteredDocuments.map((doc) => {
-          const matchedProj = PROJECTS.find(p => p.id === doc.projectId);
+          const matchedProj = projects.find(p => p.id === doc.projectId);
           const projectName = matchedProj ? matchedProj.name : "Unassigned Registry";
           const isUnassigned = doc.projectId === "UNASSIGNED";
 
@@ -1049,7 +1220,7 @@ export default function AdminDocumentsPage() {
                     <div className="px-2.5 py-2 rounded border border-white/10 bg-white/5 text-[11px] text-white font-mono truncate font-bold" title={selectedDoc.client}>
                       {selectedDoc.projectId === "UNASSIGNED" 
                         ? "Unassigned (Archive Registry)"
-                        : PROJECTS.find(p => p.id === selectedDoc.projectId)?.name || "Target Enclave"}
+                        : projects.find(p => p.id === selectedDoc.projectId)?.name || "Target Enclave"}
                     </div>
                   </div>
                   
@@ -1060,7 +1231,7 @@ export default function AdminDocumentsPage() {
                       onChange={(e) => setAssigningProjectId(e.target.value)}
                       className="w-full h-8.5 rounded border border-white/10 bg-[#0c0c0c] px-2.5 text-[11px] text-white font-mono outline-none focus:border-[#009DFF]/30 transition-all cursor-pointer font-bold"
                     >
-                      {PROJECTS.map((p) => (
+                      {projects.map((p) => (
                         <option key={p.id} value={p.id}>
                           {p.id === "UNASSIGNED" 
                             ? "Registry Only (Unassign)" 
@@ -1254,7 +1425,7 @@ export default function AdminDocumentsPage() {
                     onChange={(e) => setNewProject(e.target.value)}
                     className="w-full h-9 rounded border border-white/10 bg-[#090909] px-2 text-white outline-none focus:border-[#009DFF]/30 transition-all cursor-pointer font-bold"
                   >
-                    {PROJECTS.map(p => (
+                    {projects.map(p => (
                       <option key={p.id} value={p.id}>
                         {p.id === "UNASSIGNED" ? "UNASSIGNED" : `${p.id}: ${p.name.substring(0, 16)}...`}
                       </option>

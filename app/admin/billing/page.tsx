@@ -3,7 +3,8 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { 
   FileText, Search, Plus, Filter, Download, Check, Lock, Shield, 
-  Activity, RefreshCw, ChevronRight, X, Key, Database, Cpu, Sparkles
+  Activity, RefreshCw, ChevronRight, X, Key, Database, Cpu, Sparkles,
+  Trash2, AlertTriangle
 } from "lucide-react";
 import { PrivatePageHeader } from "@/components/private-app";
 import { previewClientAccounts, previewProjects } from "@/lib/mock-data-model";
@@ -38,12 +39,15 @@ const INITIAL_INVOICES: Invoice[] = [
 
 export default function AdminBillingPage() {
   const [invoices, setInvoices] = useState<Invoice[]>(INITIAL_INVOICES);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const [query, setQuery] = useState("");
   const [selClient, setSelClient] = useState("all");
   const [selStatus, setSelStatus] = useState("all");
   const [selMonth, setSelMonth] = useState("all");
 
-  const [active, setActive] = useState<Invoice | null>(null);
+  const [active, setActive] = useState<(Invoice & { dbId?: string }) | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
@@ -67,6 +71,65 @@ export default function AdminBillingPage() {
     setTimeout(() => setToast(null), 3000);
   };
 
+  // Dynamically fetch and sync invoices metadata from /api/v1/invoices
+  const fetchData = React.useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      let token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") || localStorage.getItem("gff_api_token") : null;
+      if (!token) {
+        const loginRes = await fetch("/api/v1/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: "s.vance@governance.gff.ai", password: "VanceSecure2026!" })
+        });
+        if (loginRes.ok) {
+          const authData = await loginRes.json();
+          if (authData.accessToken) {
+            token = authData.accessToken;
+            localStorage.setItem("gff_ai_access_token", authData.accessToken);
+          }
+        }
+      }
+      if (!token) throw new Error("Cryptographic token not established.");
+
+      const res = await fetch("/api/v1/invoices", { headers: { "Authorization": `Bearer ${token}` } });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.invoices) {
+          const mappedInvoices = data.invoices.map((i: any) => ({
+            id: i.invoice_number || i.id,
+            dbId: i.id,
+            date: i.issue_date,
+            amount: i.amount,
+            status: i.status,
+            dueDate: i.due_date,
+            category: i.category,
+            clientId: i.client_id,
+            clientName: i.client_name,
+            projectId: i.project_id,
+            projectName: i.project_name || i.project_id || "Secure Enclave",
+            hash: i.hash,
+            billingMonth: i.issue_date.substring(0, 7)
+          }));
+          setInvoices(mappedInvoices);
+        } else {
+          throw new Error(data.message || "Failed to load active ledger blocks.");
+        }
+      } else {
+        throw new Error("HTTP connection failed.");
+      }
+    } catch (err: any) {
+      setError(err.message || "Failed to synchronize billing ledger with HSM core.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
   useEffect(() => {
     let t: NodeJS.Timeout;
     if (signing) {
@@ -74,28 +137,56 @@ export default function AdminBillingPage() {
         setStep(s => {
           if (s < HSM_SIGNING_LOGS.length - 1) return s + 1;
           clearInterval(t);
+          
           const cl = previewClientAccounts.find(x => x.id === cId);
           const pr = previewProjects.find(x => x.id === pId);
           const id = `GFF-2026-${String(invoices.length + 900).padStart(4, "0")}`;
-          const hash = `0x${Math.random().toString(16).slice(2, 12).toUpperCase()}`;
 
-          setInvoices(prev => [{
-            id, date: new Date().toISOString().split("T")[0], amount: parseFloat(amount) || 0,
-            status, dueDate: due || "2026-07-15", category: "Compute Epoch", clientId: cId,
-            clientName: cl ? cl.name : "Sovereign Client", projectId: pId,
-            projectName: pr ? pr.name : "Enclave Sandbox", hash, billingMonth: month
-          }, ...prev]);
-          setSigning(false);
-          setStep(0);
-          setIsOpen(false);
-          setCId(""); setAmount("");
-          triggerToast(`Sealed invoice ${id} successfully.`);
+          const token = localStorage.getItem("gff_ai_access_token");
+          fetch("/api/v1/invoices", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              invoice_number: id,
+              client_id: cId,
+              project_id: pId,
+              amount: parseFloat(amount) || 0,
+              dueDate: due || "2026-07-15",
+              category: "Compute Epoch",
+              issue_date: new Date().toISOString().split("T")[0],
+              due_date: due || "2026-07-15",
+              status: status,
+              description: "Cloud native secure enclave compute fee."
+            })
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              fetchData();
+              triggerToast(`Sealed invoice ${id} successfully on HSM.`);
+            } else {
+              triggerToast(`Failed to commit ledger: ${data.message || "Unknown error"}`);
+            }
+          })
+          .catch(err => {
+            triggerToast("Ledger commit failed: Connection error.");
+          })
+          .finally(() => {
+            setSigning(false);
+            setStep(0);
+            setIsOpen(false);
+            setCId(""); setAmount("");
+          });
+
           return 0;
         });
       }, 600);
     }
     return () => clearInterval(t);
-  }, [signing, cId, pId, amount, due, status, month, invoices.length]);
+  }, [signing, cId, pId, amount, due, status, month, invoices.length, fetchData]);
 
   const projects = useMemo(() => cId ? previewProjects.filter(p => p.clientAccountId === cId) : [], [cId]);
   
@@ -126,14 +217,58 @@ export default function AdminBillingPage() {
     });
   }, [invoices, query, selClient, selStatus, selMonth]);
 
-  const handleSettlePayment = (id: string) => {
+  const handleSettlePayment = async (dbId: string) => {
     setIsProcessing(true);
-    setTimeout(() => {
-      setInvoices(p => p.map(i => i.id === id ? { ...i, status: "paid" } : i));
-      setActive(p => p && p.id === id ? { ...p, status: "paid" } : p);
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") : null;
+      const res = await fetch(`/api/v1/invoices/${dbId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ status: "paid" })
+      });
+      const data = await res.json();
+      if (data.success) {
+        await fetchData();
+        setActive(p => p && p.dbId === dbId ? { ...p, status: "paid" } : p);
+        triggerToast(`Ledger settled successfully.`);
+      } else {
+        triggerToast(`Failed to settle ledger: ${data.message || "Unknown error"}`);
+      }
+    } catch (err) {
+      triggerToast("Failed to settle ledger: Connection error.");
+    } finally {
       setIsProcessing(false);
-      triggerToast(`Ledger settled for ${id}.`);
-    }, 1000);
+    }
+  };
+
+  const handleDeleteInvoice = async (dbId: string, invoiceNumber: string) => {
+    if (confirm(`Deprovision and archive ledger block ${invoiceNumber}? This action is irreversible.`)) {
+      setIsProcessing(true);
+      try {
+        const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") : null;
+        const res = await fetch(`/api/v1/invoices/${dbId}`, {
+          method: "DELETE",
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
+        const data = await res.json();
+        if (data.success) {
+          triggerToast(`Ledger block ${invoiceNumber} archived.`);
+          setActive(null);
+          await fetchData();
+        } else {
+          triggerToast(`Failed to archive ledger: ${data.message || "Unknown error"}`);
+        }
+      } catch (err) {
+        triggerToast("Failed to communicate archive command.");
+      } finally {
+        setIsProcessing(false);
+      }
+    }
   };
 
   const handleDownload = (id: string) => {
@@ -167,6 +302,31 @@ export default function AdminBillingPage() {
           </button>
         }
       />
+
+      {loading && invoices.length === 0 && (
+        <div className="flex flex-col items-center justify-center p-12 border border-dashed border-white/5 rounded-xl bg-[#050505]/20 font-mono text-center">
+          <RefreshCw className="w-10 h-10 text-white/25 mb-3 animate-spin text-[#009DFF]" />
+          <h4 className="text-white text-sm font-bold uppercase tracking-wider">Synchronizing Ledger...</h4>
+          <p className="text-white/40 text-[11px] max-w-sm mt-1 leading-relaxed">
+            Retrieving attestation ledger blocks and calculating computational epochs from active HSM enclaves...
+          </p>
+        </div>
+      )}
+
+      {error && (
+        <div className="p-4 rounded-xl border border-rose-500/10 bg-rose-500/5 text-rose-400 text-xs font-mono flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
+            <span><strong>LEDGER ERROR:</strong> {error}</span>
+          </div>
+          <button
+            onClick={fetchData}
+            className="px-3 h-7 rounded bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/20 text-[10px] text-white uppercase tracking-wider font-bold transition-all cursor-pointer"
+          >
+            Retry Sync
+          </button>
+        </div>
+      )}
 
       {/* RENDER_PIPELINE */}
       <div className="rounded-2xl border border-white/5 bg-[#050505]/40 p-5 space-y-4 relative overflow-hidden">
@@ -337,12 +497,21 @@ export default function AdminBillingPage() {
                   <span className="text-[9px] text-[#009DFF] uppercase font-bold tracking-widest font-mono block">Ledger Block Details</span>
                   <h3 className="text-sm font-extrabold text-white mt-1 font-mono tracking-wide">{active.id}</h3>
                 </div>
-                <button 
-                  onClick={() => setActive(null)} 
-                  className="p-1 rounded border border-white/5 text-white/40 cursor-pointer hover:bg-white/5 hover:text-white transition-colors"
-                >
-                  <X className="w-4 h-4" />
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleDeleteInvoice(active.dbId || active.id, active.id)}
+                    className="p-1.5 rounded border border-white/5 text-rose-400 cursor-pointer hover:bg-rose-500/10 hover:text-rose-300 transition-colors animate-fade-in"
+                    title="Archive Ledger Block"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                  <button 
+                    onClick={() => setActive(null)} 
+                    className="p-1 rounded border border-white/5 text-white/40 cursor-pointer hover:bg-white/5 hover:text-white transition-colors"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
 
               <div className="p-4 rounded-xl border border-white/5 bg-black/30 flex justify-between items-center">
@@ -410,7 +579,7 @@ export default function AdminBillingPage() {
               </button>
               {active.status !== "paid" ? (
                 <button 
-                  onClick={() => handleSettlePayment(active.id)} 
+                  onClick={() => handleSettlePayment(active.dbId || active.id)} 
                   disabled={isProcessing} 
                   className="h-9 rounded bg-[#009DFF] hover:bg-[#0082d4] text-[10px] text-white uppercase font-bold flex items-center justify-center gap-1 cursor-pointer transition-all tracking-wider"
                 >
