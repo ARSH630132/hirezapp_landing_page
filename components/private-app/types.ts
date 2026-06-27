@@ -77,3 +77,8 @@ export interface SidebarLink {
 
 export type BadgeState = "active" | "warning" | "error" | "stable" | "decoupled";
 
+
+
+// Re-export GFF AI Centralized Preview Mock Data Model and types
+export * from "@/lib/mock-data-model";
+
