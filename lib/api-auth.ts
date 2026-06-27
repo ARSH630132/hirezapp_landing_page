@@ -312,3 +312,98 @@ export function getClientIdFromAssociation(association: string): string {
   return "client-unknown";
 }
 
+// --- AI OPERATIONS CRUD API MODELS & SEED DATA ---
+
+export interface ApiAiOperation {
+  id: string;
+  name: string;
+  client_id: string;
+  client_name: string;
+  project_id: string;
+  status: string; // e.g. "active" | "completed" | "paused" | "archived"
+  health: string; // e.g. "healthy" | "warning" | "critical" | "offline"
+  agent_type: string; // e.g. "autonomous" | "human-in-the-loop" | "validator"
+  governance_status: string; // e.g. "compliant" | "under_review" | "flagged"
+  owner: string;
+  desc: string;
+  lastUpdated: string;
+}
+
+export const DEFAULT_API_MOCK_AI_OPERATIONS: Record<string, ApiAiOperation> = {
+  "op-001": {
+    id: "op-001",
+    name: "Sovereign Audit Loop",
+    client_id: "client-001",
+    client_name: "Apex Sovereign Group [Preview Client]",
+    project_id: "proj-001",
+    status: "active",
+    health: "healthy",
+    agent_type: "autonomous",
+    governance_status: "compliant",
+    owner: "Alexander Mercer",
+    desc: "Autonomous trade verification loop validating ledger entries in real-time inside Intel SGX.",
+    lastUpdated: "2026-06-27T12:00:00Z"
+  },
+  "op-002": {
+    id: "op-002",
+    name: "Prompt Injection Filter",
+    client_id: "client-001",
+    client_name: "Apex Sovereign Group [Preview Client]",
+    project_id: "proj-002",
+    status: "active",
+    health: "warning",
+    agent_type: "human-in-the-loop",
+    governance_status: "under_review",
+    owner: "Alexander Mercer",
+    desc: "Continuous prompt injection filtering alignment sandbox.",
+    lastUpdated: "2026-06-27T14:10:00Z"
+  },
+  "op-003": {
+    id: "op-003",
+    name: "Sovereign Logistics Route Auditor",
+    client_id: "client-003",
+    client_name: "Sovereign Logistics Unit [Preview Client]",
+    project_id: "proj-003",
+    status: "paused",
+    health: "offline",
+    agent_type: "validator",
+    governance_status: "compliant",
+    owner: "Marcus Vance",
+    desc: "Airgapped route optimization compliance audit runner.",
+    lastUpdated: "2026-06-26T18:05:00Z"
+  },
+  "op-004": {
+    id: "op-004",
+    name: "Federal Ledger Validator",
+    client_id: "client-004",
+    client_name: "Federal Treasury Division [Preview Client]",
+    project_id: "proj-004",
+    status: "active",
+    health: "critical",
+    agent_type: "validator",
+    governance_status: "flagged",
+    owner: "Evelyn Carter",
+    desc: "Federal ledger validation system checking multi-enclave signature compliance.",
+    lastUpdated: "2026-06-27T09:30:00Z"
+  }
+};
+
+// Initialize globally to persist edits in memory across hot-reloads
+if (!(global as any)._apiMockAiOperations) {
+  (global as any)._apiMockAiOperations = { ...DEFAULT_API_MOCK_AI_OPERATIONS };
+}
+
+export const API_MOCK_AI_OPERATIONS: Record<string, ApiAiOperation> = (global as any)._apiMockAiOperations;
+
+export function getNextAiOperationId(): string {
+  const operations = Object.values(API_MOCK_AI_OPERATIONS);
+  const ids = operations
+    .map(o => {
+      const match = o.id.match(/^op-(\d+)$/);
+      return match ? parseInt(match[1], 10) : 0;
+    })
+    .filter(id => id > 0);
+  const maxId = ids.length > 0 ? Math.max(...ids) : 4;
+  return `op-${String(maxId + 1).padStart(3, "0")}`;
+}
+
