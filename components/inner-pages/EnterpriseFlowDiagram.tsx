@@ -60,7 +60,7 @@ export default function EnterpriseFlowDiagram() {
             <h4 className="text-[16px] font-semibold text-white mt-1">{node.title}</h4>
             <p className="text-[12.5px] leading-[1.45] text-white/60 mt-1.5 font-light">{node.desc}</p>
           </div>
-          <div className="mt-3 pt-2 border-t border-white/5 text-[9px] text-white/30 font-mono">FLOW STATUS: ONLINE</div>
+          {/* <div className="mt-3 pt-2 border-t border-white/5 text-[9px] text-white/30 font-mono">FLOW STATUS: ONLINE</div> */}
         </div>
 
       </div>

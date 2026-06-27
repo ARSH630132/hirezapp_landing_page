@@ -41,7 +41,7 @@ export default function FoundryPage() {
           </div>
         </MotionReveal>
 
-        <MotionReveal className="space-y-6">
+        {/* <MotionReveal className="space-y-6">
           <h2 className="text-2xl font-bold text-white text-center">Interactive Workspace</h2>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-4xl mx-auto items-stretch">
             <div className="lg:col-span-7 h-[200px] rounded-2xl border border-white/10 bg-black/60 relative flex items-center justify-around overflow-hidden p-4">
@@ -69,7 +69,7 @@ export default function FoundryPage() {
               </button>
             </div>
           </div>
-        </MotionReveal>
+        </MotionReveal> */}
 
         <MotionReveal className="space-y-6">
           <h2 className="text-2xl font-bold text-white text-center">Foundry Capabilities</h2>
