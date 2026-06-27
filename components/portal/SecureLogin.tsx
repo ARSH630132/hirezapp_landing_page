@@ -325,10 +325,23 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
         }
       }
     } catch (err) {
-      logTelemetry("[SYS] API gateway unreachable. Activating cryptographic preview fallback...");
+      logTelemetry("[SYS] API gateway unreachable.");
+      if (process.env.NEXT_PUBLIC_APP_ENV === "production") {
+        setError("API gateway unreachable. Real-time sovereign login required in production.");
+        setScanning(false);
+        return;
+      } else {
+        logTelemetry("[SYS] Activating cryptographic preview fallback...");
+      }
     }
 
     // --- PRESERVE ROLE PREVIEW FALLBACK ---
+    if (process.env.NEXT_PUBLIC_APP_ENV === "production") {
+      setError("Unauthorized credentials. Real-time sovereign login required in production.");
+      setScanning(false);
+      return;
+    }
+
     logTelemetry(`[FALLBACK] Initializing dev preview session for ${selectedRole} [DEV FALLBACK]`);
     setPreviewSession(selectedRole);
     

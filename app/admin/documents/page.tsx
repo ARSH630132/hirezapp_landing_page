@@ -198,6 +198,7 @@ const INITIAL_DOCUMENTS: DocumentItem[] = [
 ];
 
 export default function AdminDocumentsPage() {
+  const isUploadsEnabled = process.env.NEXT_PUBLIC_PORTAL_UPLOADS_ENABLED === "true";
   // ==========================================
   // 3. REACT STATE MANAGEMENT & BACKEND INTEGRATION
   // ==========================================
@@ -699,13 +700,15 @@ export default function AdminDocumentsPage() {
           </p>
         </div>
         <div className="shrink-0 flex items-center gap-3">
-          <button
-            onClick={() => setIsRegisterModalOpen(true)}
-            className="h-9 px-4 rounded bg-[#009DFF] hover:bg-[#0082d4] text-[11px] font-mono font-bold uppercase tracking-wider text-white flex items-center gap-1.5 transition-all cursor-pointer shadow-[0_0_20px_rgba(0,157,255,0.2)]"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Register Asset</span>
-          </button>
+          {isUploadsEnabled && (
+            <button
+              onClick={() => setIsRegisterModalOpen(true)}
+              className="h-9 px-4 rounded bg-[#009DFF] hover:bg-[#0082d4] text-[11px] font-mono font-bold uppercase tracking-wider text-white flex items-center gap-1.5 transition-all cursor-pointer shadow-[0_0_20px_rgba(0,157,255,0.2)]"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Register Asset</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -1413,7 +1416,7 @@ export default function AdminDocumentsPage() {
       {/* ============================================================================ */}
       {/* MODAL: REGISTER DOCUMENT PREVIEW */}
       {/* ============================================================================ */}
-      {isRegisterModalOpen && (
+      {isRegisterModalOpen && isUploadsEnabled && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
           <div className="w-full max-w-lg rounded-xl border border-white/10 bg-[#090909] shadow-[0_10px_50px_rgba(0,157,255,0.15)] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             <div className="p-5 border-b border-white/5 flex items-center justify-between bg-white/[0.01]">

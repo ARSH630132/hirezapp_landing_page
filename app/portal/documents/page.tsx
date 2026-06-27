@@ -331,6 +331,7 @@ function DocumentsErrorState({ message, onRetry }: { message: string; onRetry: (
 
 export default function ClientDocumentsPage() {
   const router = useRouter();
+  const isUploadsEnabled = process.env.NEXT_PUBLIC_PORTAL_UPLOADS_ENABLED === "true";
 
   // Dynamic API Fetching States
   const [documents, setDocuments] = useState<PortalDocument[]>([]);
@@ -745,13 +746,15 @@ export default function ClientDocumentsPage() {
         desc="Access cryptographically sealed Master Service Agreements, Statements of Work, and Sovereign System Architecture Reports."
         badgeLabel="SECURE_VAULT_v2.6"
         actions={
-          <button 
-            onClick={handleSimulatedUploadClick}
-            className="h-9 px-4 rounded border border-white/10 hover:border-[#009DFF]/30 hover:bg-[#009DFF]/5 text-[11px] font-mono font-bold uppercase text-white transition-all flex items-center justify-center gap-2 cursor-pointer bg-white/[0.01]"
-          >
-            <UploadCloud className="w-4 h-4 text-[#009DFF]" />
-            <span>Upload Document</span>
-          </button>
+          isUploadsEnabled && (
+            <button 
+              onClick={handleSimulatedUploadClick}
+              className="h-9 px-4 rounded border border-white/10 hover:border-[#009DFF]/30 hover:bg-[#009DFF]/5 text-[11px] font-mono font-bold uppercase text-white transition-all flex items-center justify-center gap-2 cursor-pointer bg-white/[0.01]"
+            >
+              <UploadCloud className="w-4 h-4 text-[#009DFF]" />
+              <span>Upload Document</span>
+            </button>
+          )
         }
       />
 
@@ -1081,23 +1084,25 @@ export default function ClientDocumentsPage() {
       )}
 
       {/* 7. HIGH-FIDELITY SIMULATED DRAG-AND-DROP SECURE UPLOAD */}
-      <div className="p-6 rounded-2xl border border-dashed border-white/10 bg-[#050505]/10 hover:bg-[#050505]/20 hover:border-white/20 transition-all duration-300 max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-6 select-none mt-4">
-        <div className="p-4 rounded-xl bg-[#009DFF]/5 border border-[#009DFF]/10 text-[#009DFF] shrink-0">
-          <UploadCloud className="w-8 h-8 animate-pulse" />
+      {isUploadsEnabled && (
+        <div className="p-6 rounded-2xl border border-dashed border-white/10 bg-[#050505]/10 hover:bg-[#050505]/20 hover:border-white/20 transition-all duration-300 max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-6 select-none mt-4">
+          <div className="p-4 rounded-xl bg-[#009DFF]/5 border border-[#009DFF]/10 text-[#009DFF] shrink-0">
+            <UploadCloud className="w-8 h-8 animate-pulse" />
+          </div>
+          <div className="flex-grow space-y-1 text-center md:text-left">
+            <h4 className="text-[13px] font-bold font-mono text-white uppercase tracking-wider">Simulated Encrypted Client Dropzone</h4>
+            <p className="text-[12px] text-white/45 font-sans leading-relaxed">
+              Drag files here to simulate sovereign ingestion. Files will be parsed locally, locked inside virtual enclaves, and sealed with deterministic SHA-256 signatures. No data leaves your machine.
+            </p>
+          </div>
+          <button 
+            onClick={handleSimulatedUploadClick}
+            className="h-9 px-4 rounded bg-white text-black hover:bg-white/90 text-[11px] font-mono font-bold uppercase transition-all shrink-0 cursor-pointer shadow-[0_0_15px_rgba(255,255,255,0.1)]"
+          >
+            Select File
+          </button>
         </div>
-        <div className="flex-grow space-y-1 text-center md:text-left">
-          <h4 className="text-[13px] font-bold font-mono text-white uppercase tracking-wider">Simulated Encrypted Client Dropzone</h4>
-          <p className="text-[12px] text-white/45 font-sans leading-relaxed">
-            Drag files here to simulate sovereign ingestion. Files will be parsed locally, locked inside virtual enclaves, and sealed with deterministic SHA-256 signatures. No data leaves your machine.
-          </p>
-        </div>
-        <button 
-          onClick={handleSimulatedUploadClick}
-          className="h-9 px-4 rounded bg-white text-black hover:bg-white/90 text-[11px] font-mono font-bold uppercase transition-all shrink-0 cursor-pointer shadow-[0_0_15px_rgba(255,255,255,0.1)]"
-        >
-          Select File
-        </button>
-      </div>
+      )}
 
       {/* 8. DOCUMENT DETAILED METADATA DRAWER (SLIDING FROM RIGHT) */}
       {selectedDoc && (

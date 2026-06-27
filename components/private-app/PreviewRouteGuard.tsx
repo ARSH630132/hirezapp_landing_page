@@ -167,8 +167,14 @@ export function PreviewRouteGuard({ children, type }: { children: React.ReactNod
       if (!currentSession) {
         const cached = getPreviewSession();
         // Keep Phase 4 preview mode only as fallback if explicitly needed
+        const isProduction = process.env.NEXT_PUBLIC_APP_ENV === "production";
         if (cached && (cached.isMock || token)) {
-          currentSession = cached;
+          if (isProduction && cached.isMock) {
+            // In production, mock preview session is NOT a safe fallback state
+            currentSession = null;
+          } else {
+            currentSession = cached;
+          }
         }
       }
 
