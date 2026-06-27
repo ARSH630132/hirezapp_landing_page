@@ -66,7 +66,7 @@ export const adminLinkToRoute: Record<string, string> = {
   dashboard: "/admin/dashboard",
   clients: "/admin/clients",
   projects: "/admin/projects",
-  users: "/app/admin/users", // we will write matching mapping
+  users: "/admin/users", // we will write matching mapping
   "ai-operations": "/admin/ai-operations",
   documents: "/admin/documents",
   billing: "/admin/billing",

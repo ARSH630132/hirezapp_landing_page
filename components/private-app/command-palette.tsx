@@ -44,12 +44,12 @@ export function CommandPalette({
   }, [isOpen, onClose]);
 
   const items = [
-    { category: "DIAGNOSTICS", label: "Inspect Agent Health Stack", shortcut: "H", tab: "agent_health" },
-    { category: "DIAGNOSTICS", label: "Live Thread CPU Metrics", shortcut: "M", tab: "agent_health" },
-    { category: "OPERATIONS", label: "Continuous Delivery Pipeline", shortcut: "D", tab: "delivery" },
-    { category: "OPERATIONS", label: "Integration Node Endpoint map", shortcut: "E", tab: "adoption" },
-    { category: "FINANCIALS", label: "Cryptographic Invoice Ledger", shortcut: "I", tab: "spend" },
-    { category: "FINANCIALS", label: "Compute and Token Spend parameters", shortcut: "S", tab: "spend" },
+    { category: "DIAGNOSTICS", label: "Inspect Agent Health Stack", shortcut: "H", tab: "ai-operations" },
+    { category: "DIAGNOSTICS", label: "Live Thread CPU Metrics", shortcut: "M", tab: "analytics" },
+    { category: "OPERATIONS", label: "Continuous Delivery Pipeline", shortcut: "D", tab: "projects" },
+    { category: "OPERATIONS", label: "Integration Node Endpoint map", shortcut: "E", tab: "projects" },
+    { category: "FINANCIALS", label: "Cryptographic Invoice Ledger", shortcut: "I", tab: "billing" },
+    { category: "FINANCIALS", label: "Compute and Token Spend parameters", shortcut: "S", tab: "analytics" },
     { category: "COMPLIANCE", label: "ISO-27001 Audit checklist", shortcut: "G", tab: "governance" },
     { category: "COMPLIANCE", label: "Recent eBPF Guardrail Violations", shortcut: "V", tab: "governance" },
     { category: "SUPPORT", label: "Open Secure Messaging Terminal", shortcut: "T", tab: "support" }
