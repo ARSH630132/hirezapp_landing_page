@@ -43,6 +43,8 @@ export async function GET(req: Request) {
     const categoryFilter = searchParams.get("category");
     const priorityFilter = searchParams.get("priority");
     const statusFilter = searchParams.get("status");
+    const projectIdFilter = searchParams.get("project_id") || searchParams.get("linkedProjectId");
+    const assignedToFilter = searchParams.get("assigned_to") || searchParams.get("assignedAgent") || searchParams.get("assigned_agent");
     const searchQuery = searchParams.get("search");
 
     let tickets = Object.values(API_MOCK_SUPPORT_TICKETS) as ApiSupportTicket[];
@@ -60,7 +62,9 @@ export async function GET(req: Request) {
       return ticketWithReplies;
     });
 
-    if (caller.role !== "gff_admin") {
+    const isAdminOrSupport = caller.role === "gff_admin" || caller.role === "support_agent" || caller.role === "admin" || caller.permissions?.includes("read:support");
+
+    if (!isAdminOrSupport) {
       const callerClientId = getClientIdFromAssociation(caller.clientAssociation);
       tickets = tickets.filter(t => t.client_id === callerClientId);
 
@@ -82,18 +86,27 @@ export async function GET(req: Request) {
     }
     if (priorityFilter) {
       const q = priorityFilter.toLowerCase().trim();
-      tickets = tickets.filter(t => t.priority.toLowerCase() === q);
+      tickets = tickets.filter(t => t.priority.toLowerCase() === q || (q === "critical" && t.priority === "P1") || (q === "high" && t.priority === "P2") || (q === "medium" && t.priority === "P3"));
     }
     if (statusFilter) {
       const q = statusFilter.toLowerCase().trim();
       tickets = tickets.filter(t => t.status.toLowerCase() === q);
+    }
+    if (projectIdFilter) {
+      const q = projectIdFilter.toLowerCase().trim();
+      tickets = tickets.filter(t => t.linkedProjectId?.toLowerCase() === q || (t as any).project_id?.toLowerCase() === q);
+    }
+    if (assignedToFilter) {
+      const q = assignedToFilter.toLowerCase().trim();
+      tickets = tickets.filter(t => t.assignedAgent?.toLowerCase() === q || (t as any).assigned_to?.toLowerCase() === q);
     }
     if (searchQuery) {
       const q = searchQuery.toLowerCase().trim();
       tickets = tickets.filter(t => 
         t.subject.toLowerCase().includes(q) || 
         t.description.toLowerCase().includes(q) || 
-        t.id.toLowerCase().includes(q)
+        t.id.toLowerCase().includes(q) ||
+        (t as any).title?.toLowerCase().includes(q)
       );
     }
 
@@ -112,7 +125,7 @@ export async function POST(req: Request) {
     const { caller } = auth;
 
     const body = await req.json();
-    const { subject, title, description, desc, priority, category, projectId, linkedProjectId, linkedDocId } = body;
+    const { subject, title, description, desc, priority, category, projectId, linkedProjectId, linkedDocId, client_id, assigned_to, assignedAgent, created_by } = body;
 
     const finalSubject = subject || title;
     const finalDescription = description || desc;
@@ -124,11 +137,23 @@ export async function POST(req: Request) {
       );
     }
 
-    const client_id = getClientIdFromAssociation(caller.clientAssociation);
-    const client_name = getClientNameFromId(client_id);
+    const callerClientId = getClientIdFromAssociation(caller.clientAssociation);
+    const isAdminOrSupport = caller.role === "gff_admin" || caller.role === "support_agent" || caller.role === "admin" || caller.permissions?.includes("write:support");
+
+    if (!isAdminOrSupport) {
+      if (client_id && client_id !== callerClientId) {
+        return NextResponse.json(
+          { success: false, error: "Forbidden", message: "You can only create tickets for your own client account." },
+          { status: 403 }
+        );
+      }
+    }
+
+    const finalClientId = client_id || callerClientId;
+    const client_name = getClientNameFromId(finalClientId);
     const newId = `T-${Math.floor(800 + Math.random() * 200)}`;
 
-    const finalPriority = (priority === "critical" || priority === "high" ? "P1" : priority === "medium" ? "P2" : "P3");
+    const finalPriority = (priority === "critical" || priority === "high" || priority === "P1" ? "P1" : priority === "medium" || priority === "P2" ? "P2" : "P3");
     const finalCategory = category || "General";
 
     const timestampStr = new Date().toISOString();
@@ -137,17 +162,22 @@ export async function POST(req: Request) {
     const newTicket: any = {
       id: newId,
       subject: finalSubject,
-      client_id,
+      title: finalSubject,
+      client_id: finalClientId,
       client_name,
       priority: finalPriority,
       category: finalCategory,
-      status: "OPEN",
-      assignedAgent: "Unassigned",
+      status: body.status || "OPEN",
+      assignedAgent: assigned_to || assignedAgent || "Unassigned",
+      assigned_to: assigned_to || assignedAgent || "Unassigned",
       linkedProjectId: linkedProjectId || projectId || undefined,
+      project_id: linkedProjectId || projectId || undefined,
       linkedDocId: linkedDocId || undefined,
       slaSeconds: 14400,
       description: finalDescription,
+      desc: finalDescription,
       createdDate: timestampStr,
+      created_by: created_by || caller.email || caller.name,
       wireFeed: [
         {
           id: "w1",

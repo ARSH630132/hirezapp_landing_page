@@ -12,6 +12,7 @@ class SupportTicketBase(BaseModel):
     assigned_to: Optional[str] = None
     created_by: Optional[str] = None
     description: Optional[str] = None
+    comments: Optional[str] = "[]"
 
 class SupportTicketCreate(SupportTicketBase):
     pass
@@ -26,6 +27,7 @@ class SupportTicketUpdate(BaseModel):
     assigned_to: Optional[str] = None
     created_by: Optional[str] = None
     description: Optional[str] = None
+    comments: Optional[str] = None
 
 class SupportTicketResponse(SupportTicketBase):
     id: int
@@ -33,3 +35,4 @@ class SupportTicketResponse(SupportTicketBase):
 
     class Config:
         from_attributes = True
+

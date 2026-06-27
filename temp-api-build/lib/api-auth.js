@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.API_MOCK_INVOICES = exports.DEFAULT_API_MOCK_INVOICES = exports.API_MOCK_AI_OPERATIONS = exports.DEFAULT_API_MOCK_AI_OPERATIONS = exports.API_MOCK_PROJECTS = exports.DEFAULT_API_MOCK_PROJECTS = exports.API_MOCK_USERS = exports.DEFAULT_API_MOCK_USERS = void 0;
+exports.API_MOCK_SUPPORT_TICKETS = exports.DEFAULT_API_MOCK_SUPPORT_TICKETS = exports.API_MOCK_DOCUMENTS = exports.DEFAULT_API_MOCK_DOCUMENTS = exports.API_MOCK_GOVERNANCE = exports.DEFAULT_API_MOCK_GOVERNANCE = exports.API_MOCK_INVOICES = exports.DEFAULT_API_MOCK_INVOICES = exports.API_MOCK_AI_OPERATIONS = exports.DEFAULT_API_MOCK_AI_OPERATIONS = exports.API_MOCK_PROJECTS = exports.DEFAULT_API_MOCK_PROJECTS = exports.API_MOCK_USERS = exports.DEFAULT_API_MOCK_USERS = void 0;
 exports.base64UrlEncode = base64UrlEncode;
 exports.base64UrlDecode = base64UrlDecode;
 exports.signJwt = signJwt;
@@ -16,6 +16,8 @@ exports.getClientNameFromId = getClientNameFromId;
 exports.getClientIdFromAssociation = getClientIdFromAssociation;
 exports.getNextAiOperationId = getNextAiOperationId;
 exports.getNextInvoiceId = getNextInvoiceId;
+exports.getNextGovernanceId = getNextGovernanceId;
+exports.getNextDocumentId = getNextDocumentId;
 const crypto_1 = __importDefault(require("crypto"));
 const JWT_SECRET = process.env.JWT_SECRET || "gff-ai-sovereign-secure-access-token-secret-2026";
 function base64UrlEncode(str) {
@@ -136,6 +138,61 @@ exports.DEFAULT_API_MOCK_USERS = {
         clearance: "CLEARANCE LEVEL I (BASIC VIEW-ONLY)",
         permissions: ["read:telemetry", "read:projects", "read:ai-operations", "read:documents", "write:support"],
         passwordHash: "JenkinsSecure2026!"
+    },
+    "preview-gff-operator@internal.gff.ai": {
+        id: "usr-006",
+        name: "Operator Node 6",
+        email: "preview-gff-operator@internal.gff.ai",
+        role: "gff_operator",
+        clientAssociation: "GFF AI Operations [Internal]",
+        status: "active",
+        clearance: "CLEARANCE LEVEL IV (GFF TECHNICAL OPERATOR)",
+        permissions: [
+            "read:telemetry", "read:projects", "write:projects", "read:ai-operations",
+            "write:ai-operations", "read:documents", "write:documents", "write:support"
+        ],
+        passwordHash: "gff-secure-2026!"
+    },
+    "preview-finance-admin@internal.gff.ai": {
+        id: "usr-007",
+        name: "Finance Controller",
+        email: "preview-finance-admin@internal.gff.ai",
+        role: "finance_admin",
+        clientAssociation: "GFF Corporate Finance [Internal]",
+        status: "active",
+        clearance: "CLEARANCE LEVEL III (GFF FINANCIAL CONTROLLER)",
+        permissions: [
+            "read:telemetry", "read:projects", "read:ai-operations", "read:documents",
+            "read:billing", "write:billing"
+        ],
+        passwordHash: "gff-secure-2026!"
+    },
+    "preview-support-agent@internal.gff.ai": {
+        id: "usr-008",
+        name: "Support Liaison",
+        email: "preview-support-agent@internal.gff.ai",
+        role: "support_agent",
+        clientAssociation: "GFF Client Support [Internal]",
+        status: "active",
+        clearance: "CLEARANCE LEVEL III (GFF SUPPORT WIRE)",
+        permissions: [
+            "read:telemetry", "read:projects", "read:ai-operations", "read:documents",
+            "read:support", "write:support", "read:users", "write:users"
+        ],
+        passwordHash: "gff-secure-2026!"
+    },
+    "preview-viewer@internal.gff.ai": {
+        id: "usr-009",
+        name: "Auditor Node 9",
+        email: "preview-viewer@internal.gff.ai",
+        role: "viewer",
+        clientAssociation: "Global Compliance Auditor [External]",
+        status: "active",
+        clearance: "CLEARANCE LEVEL I (READ-ONLY AUDITOR)",
+        permissions: [
+            "read:telemetry", "read:projects", "read:ai-operations", "read:documents"
+        ],
+        passwordHash: "gff-secure-2026!"
     }
 };
 // Initialize the mock users database globally to persist edits in memory across hot reloads.
@@ -444,3 +501,284 @@ function getNextInvoiceId() {
     const maxId = ids.length > 0 ? Math.max(...ids) : 4;
     return `inv-${String(maxId + 1).padStart(3, "0")}`;
 }
+exports.DEFAULT_API_MOCK_GOVERNANCE = {
+    "gov-001": {
+        id: "gov-001",
+        title: "Sovereign Packet Leakage",
+        client_id: "client-001",
+        client_name: "Apex Sovereign Group [Preview Client]",
+        project_id: "proj-001",
+        project_name: "Apex Sovereign Multi-Agent Lattice",
+        nodeId: "APEX-SEC-G4",
+        standard: "ISO-27001",
+        severity: "Critical",
+        status: "Under Review",
+        owner: "Alexander Mercer",
+        due_date: "2026-07-01",
+        description: "Anomalous outbound socket attempt detected bypassing the primary encrypted gRPC proxy. Isolation boundary successfully clamped.",
+        hash: "0x7F9B1E22D4A3C8F",
+        logs: [
+            "[12:15:33] initializing eBPF socket listener on enclave APEX-SEC-G4...",
+            "[12:15:35] OUTBOUND PACKET DETECTED: payload 4.8MB towards external_ip (unauthorized IP range).",
+            "[12:15:36] WARNING: Outbound socket bypassed primary gRPC enclave proxy.",
+            "[12:15:36] ACTION TRIGGERED: Enclave boundary isolated. Port clamped.",
+            "[12:15:37] Policy ENFORCE_ISOLATION triggered alert GOV-091."
+        ],
+        lastUpdated: "2026-06-27T15:20:00Z"
+    },
+    "gov-002": {
+        id: "gov-002",
+        title: "eBPF Telemetry Decoupled",
+        client_id: "client-001",
+        client_name: "Apex Sovereign Group [Preview Client]",
+        project_id: "proj-002",
+        project_name: "Global Retail Real-Time Audit Ring",
+        nodeId: "MED-CLINIC-H9",
+        standard: "HIPAA",
+        severity: "High",
+        status: "Flagged",
+        owner: "Alexander Mercer",
+        due_date: "2026-07-03",
+        description: "Kernel-level auditing probe detached unexpectedly during hot model re-allocation. Real-time telemetry feed paused.",
+        hash: "0xBC3E491A2E385D9",
+        logs: [
+            "[10:04:12] Performing multi-agent re-allocation on node MED-CLINIC-H9...",
+            "[10:04:14] System telemetry probe lost connection with kernel ring buffer.",
+            "[10:04:15] CRITICAL WARNING: Enclave tracing decoupled. Zero-knowledge logging offline.",
+            "[10:04:16] System flag: Telemetry missing. Policy eBPF_HEARTBEAT breached."
+        ],
+        lastUpdated: "2026-06-27T14:10:00Z"
+    },
+    "gov-003": {
+        id: "gov-003",
+        title: "HIPAA Key Rotation Delay",
+        client_id: "client-004",
+        client_name: "Federal Treasury Division [Preview Client]",
+        project_id: "proj-004",
+        project_name: "Federal Treasury Multi-Enclave Ledger",
+        nodeId: "MED-CLINIC-H12",
+        standard: "HIPAA",
+        severity: "Medium",
+        status: "Flagged",
+        owner: "Evelyn Carter",
+        due_date: "2026-07-05",
+        description: "Automated cryptographic handshake postponed due to cluster lock. Needs manual administrative rollover trigger.",
+        hash: "0xDE8911C400AA38B",
+        logs: [
+            "[08:00:00] Triggering 30-day key rotation handshake on MED-CLINIC-H12...",
+            "[08:00:02] Rotation aborted: Enclave memory locked by surgical run.",
+            "[08:00:03] HANDSHAKE DELAYED. System continues with stale key-seal.",
+            "[08:00:04] Policy KEY_ROT_AGE breached. Alert logged."
+        ],
+        lastUpdated: "2026-06-27T09:30:00Z"
+    },
+    "gov-004": {
+        id: "gov-004",
+        title: "Memory Boundary Shift",
+        client_id: "client-002",
+        client_name: "Global Retail Enclave [Preview Client]",
+        project_id: "proj-002",
+        project_name: "Global Retail Real-Time Audit Ring",
+        nodeId: "RETAIL-CORE-A1",
+        standard: "SOC2 Type II",
+        severity: "Critical",
+        status: "Suppressed",
+        owner: "Alexander Mercer",
+        due_date: "2026-06-30",
+        description: "Sovereign model thread requested high-clearance cache inspect block. Denied by hardware gate.",
+        hash: "0x99AA18CCBFF002E",
+        logs: [
+            "[14:22:10] Model agent requested access to host shared L3 cache block...",
+            "[14:22:11] SECURE ENCLAVE DENIED: Memory address space outside assigned page registry.",
+            "[14:22:12] Sandboxed memory boundary defended successfully.",
+            "[14:22:13] Policy SEGREGATION_OF_DUTIES logged warning."
+        ],
+        lastUpdated: "2026-06-27T14:10:00Z"
+    }
+};
+// Initialize globally to persist edits in memory across hot-reloads
+if (!global._apiMockGovernance) {
+    global._apiMockGovernance = { ...exports.DEFAULT_API_MOCK_GOVERNANCE };
+}
+exports.API_MOCK_GOVERNANCE = global._apiMockGovernance;
+function getNextGovernanceId() {
+    const items = Object.values(exports.API_MOCK_GOVERNANCE);
+    const ids = items
+        .map(g => {
+        const match = g.id.match(/^gov-(\d+)$/);
+        return match ? parseInt(match[1], 10) : 0;
+    })
+        .filter(id => id > 0);
+    const maxId = ids.length > 0 ? Math.max(...ids) : 4;
+    return `gov-${String(maxId + 1).padStart(3, "0")}`;
+}
+exports.DEFAULT_API_MOCK_DOCUMENTS = {
+    "doc-801": {
+        id: "DOC-801",
+        title: "Sovereign Core Architectural Blueprint",
+        fileSize: "12.4 MB",
+        type: "PDF",
+        document_type: "PDF",
+        sha256: "0xAB9811C82FFD201A99E8F3C721A0C5E89812A",
+        client_id: "client-001",
+        client_name: "Apex Sovereign Group [Preview Client]",
+        projectId: "proj-001",
+        project_id: "proj-001",
+        status: "Verified",
+        owner: "Dr. Sarah Vance",
+        version: "v2.4.1",
+        lastUpdated: "2026-06-27T15:20:00Z",
+        description: "Deep-level system-wide architectural layout mapping high-throughput isolated core loop with secure localized kernel telemetry and dual-layer TLS 1.3 socket.",
+        visibility: "LEVEL_IV (Restricted)",
+        governanceChecks: [
+            { label: "Hardware Cryptographic Enclave Key Binding", checked: true, framework: "ISO-27001 Sec A.12" },
+            { label: "Zero-Trust TLS 1.3 Handshake Protocol Verification", checked: true, framework: "SOC2 CC6.3" },
+            { label: "Kernel-Level eBPF Event Stream Telemetry", checked: true, framework: "NIST SP 800-53" },
+            { label: "Continuous Airgapped Workspace Isolation Check", checked: true, framework: "FIPS-140-3" }
+        ]
+    },
+    "doc-802": {
+        id: "DOC-802",
+        title: "SOC2 Compliance Enclave Certificate",
+        fileSize: "4.8 MB",
+        type: "PDF",
+        document_type: "PDF",
+        sha256: "0xFF410D390E8F91B02AA6E8F3C2C77215446C1",
+        client_id: "client-002",
+        client_name: "Global Retail Enclave [Preview Client]",
+        projectId: "proj-002",
+        project_id: "proj-002",
+        status: "Verified",
+        owner: "Alexander Mercer",
+        version: "v1.1.0",
+        lastUpdated: "2026-06-27T14:10:00Z",
+        description: "Verified SOC2 trust services criteria certification covering security, availability, and processing integrity inside target cloud sandboxes.",
+        visibility: "LEVEL_I (Client View)",
+        governanceChecks: [
+            { label: "Third-Party Attestation Key Signing", checked: true, framework: "AICPA TSC 2017" },
+            { label: "Continuous Monitoring & Event Stream Audit", checked: true, framework: "SOC2 CC7.2" },
+            { label: "Threat and Vulnerability Scan Verification", checked: true, framework: "ISO-27001" }
+        ]
+    },
+    "doc-803": {
+        id: "DOC-803",
+        title: "GFF AI Runtime Governance Ruleset",
+        fileSize: "1.2 MB",
+        type: "JSON",
+        document_type: "JSON",
+        sha256: "0x01DE8A88FF4E201B7FF911A3E2298F390D88B",
+        client_id: "client-003",
+        client_name: "Sovereign Logistics Unit [Preview Client]",
+        projectId: "proj-003",
+        project_id: "proj-003",
+        status: "Under Review",
+        owner: "Marcus Vance",
+        version: "v3.0.2",
+        lastUpdated: "2026-06-26T18:05:00Z",
+        description: "Structured policy ruleset defining sensory bounds, alignment tolerances, and real-time model override guardrails applied to agent networks.",
+        visibility: "LEVEL_III (Internal Use)",
+        governanceChecks: [
+            { label: "Static Model Behavioral Rules Match", checked: true, framework: "NIST SP 800" },
+            { label: "Dynamic Runtime Guardrail Policy Validation", checked: false, framework: "EU AI Act" },
+            { label: "Emergency Kill-Switch Interface Enforceability", checked: true, framework: "GFF Gov Core" }
+        ]
+    },
+    "doc-804": {
+        id: "DOC-804",
+        title: "NIST Federal Treasury Integration Schema",
+        fileSize: "750 KB",
+        type: "YAML",
+        document_type: "YAML",
+        sha256: "0x99A1C4E72B7FD40A9D8E3C2C77E1546C1A4B0",
+        client_id: "client-004",
+        client_name: "Federal Treasury Division [Preview Client]",
+        projectId: "proj-004",
+        project_id: "proj-004",
+        status: "Verified",
+        owner: "Evelyn Carter",
+        version: "v1.0.5",
+        lastUpdated: "2026-06-27T09:30:00Z",
+        description: "NIST-compliant hardware enclave schema isolating cryptographic treasury signatures and financial auditing models from general compute networks.",
+        visibility: "LEVEL_I (Client View)",
+        governanceChecks: [
+            { label: "FIPS 140-3 Cryptographic Module Verification", checked: true, framework: "FIPS-140-3" },
+            { label: "Hardware-enforced Security Boundary Isolation", checked: true, framework: "NIST SP 800" },
+            { label: "Dual-Custodian Sign-off Enforcement Logic", checked: true, framework: "Treasury SEC" }
+        ]
+    }
+};
+if (!global._apiMockDocuments) {
+    global._apiMockDocuments = { ...exports.DEFAULT_API_MOCK_DOCUMENTS };
+}
+exports.API_MOCK_DOCUMENTS = global._apiMockDocuments;
+function getNextDocumentId() {
+    const ids = Object.keys(exports.API_MOCK_DOCUMENTS).map(id => {
+        const match = id.match(/doc-(\d+)/i);
+        return match ? parseInt(match[1], 10) : 800;
+    });
+    const max = Math.max(800, ...ids);
+    return `DOC-${max + 1}`;
+}
+exports.DEFAULT_API_MOCK_SUPPORT_TICKETS = {
+    "t-882": {
+        id: "T-882",
+        subject: "London core node replication delay above SLA threshold",
+        client_id: "client-001",
+        client_name: "Apex Sovereign Group [Preview Client]",
+        priority: "P1",
+        category: "Infrastructure",
+        status: "INVESTIGATING",
+        assignedAgent: "Dr. Sarah Vance",
+        linkedProjectId: "proj-001",
+        linkedDocId: "DOC-801",
+        slaSeconds: 862,
+        description: "High-throughput isolated core loop with secure localized kernel telemetry in the London node cluster is showing a replication latency of 145ms, which exceeds the 50ms SLA maximum limit.",
+        createdDate: "2026-06-27T14:30:00Z",
+        wireFeed: [
+            { id: "w1", sender: "client", senderName: "Apex Sovereign Core Dev", text: "We are seeing alerts on our London nodes. Replication delay spiked to 145ms.", timestamp: "14:30" },
+            { id: "w2", sender: "system", senderName: "SLA MONITOR", text: "Warning: SLA response threshold exceeded 50ms on Node LON-01.", timestamp: "14:31" },
+            { id: "w3", sender: "agent", senderName: "Dr. Sarah Vance", text: "I have established a secure dual-layer TLS handshake. Analyzing eBPF events stream.", timestamp: "14:35" }
+        ]
+    },
+    "t-881": {
+        id: "T-881",
+        subject: "Request for specialized auto-scaling GPU limits",
+        client_id: "client-002",
+        client_name: "Global Retail Enclave [Preview Client]",
+        priority: "P2",
+        category: "Enclave Security",
+        status: "OPEN",
+        assignedAgent: "Alexander Mercer",
+        linkedProjectId: "proj-002",
+        linkedDocId: "None",
+        slaSeconds: 11460,
+        description: "Client requests temporary override of AWS Nitro Enclave thermal boundary and memory bounds to allocate additional sparse GPU clusters during end-of-quarter auditing.",
+        createdDate: "2026-06-27T11:00:00Z",
+        wireFeed: [
+            { id: "w1", sender: "client", senderName: "Global Retail SecOps", text: "We are running a massive continuous model alignment sandbox simulation.", timestamp: "11:00" },
+            { id: "w2", sender: "system", senderName: "GATEWAY", text: "Request logged under secure sandbox override protocols.", timestamp: "11:02" }
+        ]
+    },
+    "t-880": {
+        id: "T-880",
+        subject: "Cryptographic verification failure on Ledger Node 4",
+        client_id: "client-004",
+        client_name: "Federal Treasury Division [Preview Client]",
+        priority: "P1",
+        category: "Compliance Audit",
+        status: "OPEN",
+        assignedAgent: "Unassigned",
+        linkedProjectId: "None",
+        linkedDocId: "DOC-802",
+        slaSeconds: 345,
+        description: "Enclave telemetry reported a dual-layer TLS 1.3 socket handshake failure on node GOV-SYSTEM-G2. Continuous compliance auto-scan is currently blocking active consensus blocks.",
+        createdDate: "2026-06-27T15:22:00Z",
+        wireFeed: [
+            { id: "w1", sender: "system", senderName: "SECURE KERNEL", text: "CRITICAL: SHA-256 verification failed on node GOV-SYSTEM-G2. Isolation triggered.", timestamp: "15:22" }
+        ]
+    }
+};
+if (!global._apiMockSupportTickets) {
+    global._apiMockSupportTickets = { ...exports.DEFAULT_API_MOCK_SUPPORT_TICKETS };
+}
+exports.API_MOCK_SUPPORT_TICKETS = global._apiMockSupportTickets;

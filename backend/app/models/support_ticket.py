@@ -16,8 +16,10 @@ class SupportTicket(Base):
     assigned_to = Column(String(255), nullable=True)
     created_by = Column(String(255), nullable=True)
     description = Column(String(2000), nullable=True)
+    comments = Column(String(4000), nullable=True, default="[]")
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
     # Relationships
     client = relationship("ClientAccount", back_populates="support_tickets")
     project = relationship("Project", back_populates="support_tickets")
+

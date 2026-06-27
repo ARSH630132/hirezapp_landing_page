@@ -20,25 +20,27 @@ async function PATCH(req, { params }) {
         const caller = getAuthCaller(req);
         if (!caller)
             return server_1.NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
-        if (caller.role !== "gff_admin") {
-            return server_1.NextResponse.json({ success: false, error: "Forbidden", message: "Only platform administrators can change user status." }, { status: 403 });
-        }
         const { id } = await params;
-        const entry = Object.entries(api_auth_1.API_MOCK_USERS).find(([_, u]) => u.id === id);
-        if (!entry)
+        if (!id)
+            return server_1.NextResponse.json({ success: false, error: "Bad Request" }, { status: 400 });
+        const key = id.toLowerCase();
+        const ticket = api_auth_1.API_MOCK_SUPPORT_TICKETS[key] || Object.values(api_auth_1.API_MOCK_SUPPORT_TICKETS).find((t) => t.id.toLowerCase() === key);
+        if (!ticket)
             return server_1.NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
-        const [emailKey, user] = entry;
+        const isAdminOrSupport = caller.role === "gff_admin" || caller.role === "support_agent" || caller.role === "admin" || caller.permissions?.includes("write:support");
+        if (!isAdminOrSupport) {
+            const cid = (0, api_auth_1.getClientIdFromAssociation)(caller.clientAssociation);
+            if (ticket.client_id !== cid) {
+                return server_1.NextResponse.json({ success: false, error: "Forbidden", message: "You do not have permission to modify this ticket." }, { status: 403 });
+            }
+        }
         const body = await req.json().catch(() => null);
         if (!body || !body.status) {
             return server_1.NextResponse.json({ success: false, error: "Bad Request", message: "Status is required." }, { status: 400 });
         }
-        const { status } = body;
-        if (status !== "active" && status !== "inactive") {
-            return server_1.NextResponse.json({ success: false, error: "Bad Request", message: "Status must be 'active' or 'inactive'." }, { status: 400 });
-        }
-        user.status = status;
-        const { passwordHash, ...userRes } = user;
-        return server_1.NextResponse.json({ success: true, user: userRes });
+        ticket.status = body.status;
+        api_auth_1.API_MOCK_SUPPORT_TICKETS[ticket.id.toLowerCase()] = ticket;
+        return server_1.NextResponse.json({ success: true, ticket });
     }
     catch (err) {
         return server_1.NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });

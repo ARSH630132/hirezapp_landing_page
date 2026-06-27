@@ -30,7 +30,9 @@ export async function GET(req: Request, { params }: { params: any }) {
 
     if (!ticket) return NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
 
-    if (caller.role !== "gff_admin") {
+    const isAdminOrSupport = caller.role === "gff_admin" || caller.role === "support_agent" || caller.role === "admin" || caller.permissions?.includes("read:support");
+
+    if (!isAdminOrSupport) {
       const cid = getClientIdFromAssociation(caller.clientAssociation);
       if (ticket.client_id !== cid) return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
     }
@@ -45,6 +47,81 @@ export async function GET(req: Request, { params }: { params: any }) {
     }
 
     return NextResponse.json({ success: true, ticket: ticketWithReplies });
+  } catch (err) {
+    return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
+  }
+}
+
+export async function PATCH(req: Request, { params }: { params: any }) {
+  try {
+    const caller = getAuthCaller(req);
+    if (!caller) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    const { id } = await params;
+    if (!id) return NextResponse.json({ success: false, error: "Bad Request" }, { status: 400 });
+
+    const key = id.toLowerCase();
+    const ticket = API_MOCK_SUPPORT_TICKETS[key] || Object.values(API_MOCK_SUPPORT_TICKETS).find(t => t.id.toLowerCase() === key);
+
+    if (!ticket) return NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
+
+    const isAdminOrSupport = caller.role === "gff_admin" || caller.role === "support_agent" || caller.role === "admin" || caller.permissions?.includes("write:support");
+
+    if (!isAdminOrSupport) {
+      const cid = getClientIdFromAssociation(caller.clientAssociation);
+      if (ticket.client_id !== cid) {
+        return NextResponse.json({ success: false, error: "Forbidden", message: "You do not have permission to modify this ticket." }, { status: 403 });
+      }
+    }
+
+    const body = await req.json();
+    const { title, subject, description, desc, category, priority, status, client_id, project_id, linkedProjectId, assigned_to, assignedAgent, created_by } = body;
+
+    if (subject !== undefined || title !== undefined) {
+      const finalSubject = subject !== undefined ? subject : title;
+      ticket.subject = finalSubject;
+      (ticket as any).title = finalSubject;
+    }
+    if (description !== undefined || desc !== undefined) {
+      const finalDesc = description !== undefined ? description : desc;
+      ticket.description = finalDesc;
+      (ticket as any).desc = finalDesc;
+    }
+    if (category !== undefined) {
+      ticket.category = category;
+    }
+    if (priority !== undefined) {
+      const finalPriority = (priority === "critical" || priority === "high" || priority === "P1" ? "P1" : priority === "medium" || priority === "P2" ? "P2" : "P3");
+      ticket.priority = finalPriority;
+    }
+    if (status !== undefined) {
+      ticket.status = status;
+    }
+    if (client_id !== undefined) {
+      if (!isAdminOrSupport) {
+        return NextResponse.json({ success: false, error: "Forbidden", message: "Client roles cannot update client_id." }, { status: 403 });
+      }
+      ticket.client_id = client_id;
+    }
+    if (project_id !== undefined || linkedProjectId !== undefined) {
+      const finalProjId = project_id !== undefined ? project_id : linkedProjectId;
+      ticket.linkedProjectId = finalProjId;
+      (ticket as any).project_id = finalProjId;
+    }
+    if (assigned_to !== undefined || assignedAgent !== undefined) {
+      if (!isAdminOrSupport) {
+        return NextResponse.json({ success: false, error: "Forbidden", message: "Client roles cannot assign tickets." }, { status: 403 });
+      }
+      const finalAgent = assigned_to !== undefined ? assigned_to : assignedAgent;
+      ticket.assignedAgent = finalAgent;
+      (ticket as any).assigned_to = finalAgent;
+    }
+    if (created_by !== undefined) {
+      (ticket as any).created_by = created_by;
+    }
+
+    API_MOCK_SUPPORT_TICKETS[ticket.id.toLowerCase()] = ticket;
+
+    return NextResponse.json({ success: true, ticket });
   } catch (err) {
     return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
   }
@@ -138,6 +215,29 @@ export async function POST(req: Request, { params }: { params: any }) {
     API_MOCK_SUPPORT_TICKETS[ticket.id.toLowerCase()] = ticket;
 
     return NextResponse.json({ success: true, ticket: ticketAny });
+  } catch (err) {
+    return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
+  }
+}
+
+export async function DELETE(req: Request, { params }: { params: any }) {
+  try {
+    const caller = getAuthCaller(req);
+    if (!caller) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    const isAdmin = caller.role === "gff_admin" || caller.role === "admin";
+    if (!isAdmin) return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
+    const { id } = await params;
+    if (!id) return NextResponse.json({ success: false, error: "Bad Request" }, { status: 400 });
+
+    const key = id.toLowerCase();
+    const ticket = API_MOCK_SUPPORT_TICKETS[key] || Object.values(API_MOCK_SUPPORT_TICKETS).find(t => t.id.toLowerCase() === key);
+    if (!ticket) return NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
+
+    delete API_MOCK_SUPPORT_TICKETS[ticket.id.toLowerCase()];
+    if (API_MOCK_SUPPORT_TICKETS[key]) {
+      delete API_MOCK_SUPPORT_TICKETS[key];
+    }
+    return NextResponse.json({ success: true, message: "Support ticket deleted." });
   } catch (err) {
     return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
   }
