@@ -329,47 +329,47 @@ export default function LiveDashboardSection() {
       color: "#8E55FF",
       desc: "Tailored neural networks and vertical-specific models running in parallel.",
       iconType: "industries",
-    },
-    {
-      id: "agent-health",
-      label: "Agent Health",
-      status: "Monitoring-ready",
-      color: "#10B981",
-      desc: "System telemetry, token limits, latency controls, and model health status.",
-      iconType: "pulse",
-    },
-    {
-      id: "delivery",
-      label: "Delivery",
-      status: "Frontend preview",
-      color: "#06B6D4",
-      desc: "Model evaluation pipelines and automated assembly loops operational.",
-      iconType: "pipeline",
-    },
-    {
-      id: "spend",
-      label: "Spend",
-      status: "Frontend preview",
-      color: "#F59E0B",
-      desc: "Resource token boundaries, compute budgets, and operational cost management.",
-      iconType: "donut",
-    },
-    {
-      id: "adoption",
-      label: "Adoption",
-      status: "Frontend preview",
-      color: "#EC4899",
-      desc: "Enterprise uptake metrics and multi-department usage telemetry.",
-      iconType: "curve",
-    },
-    {
-      id: "governance",
-      label: "Governance",
-      status: "Governance-ready",
-      color: "#3B82F6",
-      desc: "Real-time compliance guardrails, transparent model auditing, and safety layers.",
-      iconType: "shield",
     }
+    // {
+    //   id: "agent-health",
+    //   label: "Agent Health",
+    //   status: "Monitoring-ready",
+    //   color: "#10B981",
+    //   desc: "System telemetry, token limits, latency controls, and model health status.",
+    //   iconType: "pulse",
+    // },
+    // {
+    //   id: "delivery",
+    //   label: "Delivery",
+    //   status: "Frontend preview",
+    //   color: "#06B6D4",
+    //   desc: "Model evaluation pipelines and automated assembly loops operational.",
+    //   iconType: "pipeline",
+    // },
+    // {
+    //   id: "spend",
+    //   label: "Spend",
+    //   status: "Frontend preview",
+    //   color: "#F59E0B",
+    //   desc: "Resource token boundaries, compute budgets, and operational cost management.",
+    //   iconType: "donut",
+    // },
+    // {
+    //   id: "adoption",
+    //   label: "Adoption",
+    //   status: "Frontend preview",
+    //   color: "#EC4899",
+    //   desc: "Enterprise uptake metrics and multi-department usage telemetry.",
+    //   iconType: "curve",
+    // },
+    // {
+    //   id: "governance",
+    //   label: "Governance",
+    //   status: "Governance-ready",
+    //   color: "#3B82F6",
+    //   desc: "Real-time compliance guardrails, transparent model auditing, and safety layers.",
+    //   iconType: "shield",
+    // }
   ];
 
   const renderVisual = (iconType: string) => {
@@ -413,7 +413,7 @@ export default function LiveDashboardSection() {
         <SectionHeading
           title={
             <h2 className="text-[32px] sm:text-[44px] leading-none font-bold text-center uppercase text-white tracking-widest">
-              MANAGED AI <span className="text-[#009DFF]">OPERATIONS</span>
+              LIVE <span className="text-[#009DFF]">DASHBOARD</span>
             </h2>
           }
           titleClassName="text-center"
