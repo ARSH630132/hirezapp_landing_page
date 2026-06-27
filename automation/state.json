@@ -68,7 +68,8 @@
     "65-phase3-tool-logic-tests-or-verification-script",
     "66-phase3-api-contract-documentation-only",
     "67-phase3-linking-and-cta-integration",
-    "68-phase3-final-interactive-tools-qa"
+    "68-phase3-final-interactive-tools-qa",
+    "69-phase4-preflight-portal-admin-audit"
   ],
   "failed": [
     {
