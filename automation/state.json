@@ -83,7 +83,8 @@
     "78-phase4-data-table-filter-system",
     "84-phase4-client-documents-library",
     "86-phase4-client-billing-overview",
-    "91-phase4-client-governance"
+    "91-phase4-client-governance",
+    "95-phase4-admin-clients-list"
   ],
   "failed": [
     {
