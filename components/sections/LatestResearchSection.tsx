@@ -101,7 +101,7 @@ export default function LatestResearchSection() {
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-stretch">
           
           {/* Left Panel: Verified Specifications */}
-          <div className="xl:col-span-7 flex flex-col justify-between">
+          {/* <div className="xl:col-span-7 flex flex-col justify-between">
             <h3 className="text-xl font-bold tracking-tight uppercase mb-4 text-white/80">Enterprise Specifications</h3>
             <div className="space-y-4">
               {SPECS.map((s) => (
@@ -127,10 +127,10 @@ export default function LatestResearchSection() {
                 </div>
               ))}
             </div>
-          </div>
+          </div> */}
 
           {/* Right Panel: Hub Registry */}
-          <div className="xl:col-span-5">
+          {/* <div className="xl:col-span-5">
             <h3 className="text-xl font-bold tracking-tight uppercase mb-4 text-white/80">Intelligence Channels</h3>
             <div className="grid grid-cols-2 gap-3">
               {CHANNELS.map((ch) => (
@@ -144,7 +144,7 @@ export default function LatestResearchSection() {
                 </button>
               ))}
             </div>
-          </div>
+          </div> */}
 
         </div>
       </div>

@@ -14,14 +14,14 @@ const S_DATA = [
     challenges: ["Legacy system isolation", "Compliance pressure", "Manual document gaps"],
     agents: ["Compliance Assistant", "Risk Review Agent", "Customer Intelligence Agent"]
   },
-  {
-    id: "banking",
-    title: "Banking",
-    path: "/industries/banking",
-    desc: "Unify mainframes with AI interfaces and copilots.",
-    challenges: ["Inquiry bottlenecks", "Fragmented archives", "Manual validation tasks"],
-    agents: ["Banking Knowledge Agent", "Relationship Manager Copilot", "Contract Intelligence Agent"]
-  },
+  // {
+  //   id: "banking",
+  //   title: "Banking",
+  //   path: "/industries/banking",
+  //   desc: "Unify mainframes with AI interfaces and copilots.",
+  //   challenges: ["Inquiry bottlenecks", "Fragmented archives", "Manual validation tasks"],
+  //   agents: ["Banking Knowledge Agent", "Relationship Manager Copilot", "Contract Intelligence Agent"]
+  // },
   {
     id: "insurance",
     title: "Insurance",
@@ -102,14 +102,14 @@ const S_DATA = [
     challenges: ["Policy search latencies", "Case processing backlogs", "Documentation opacity"],
     agents: ["Citizen Service Agent", "Policy Intelligence Agent", "Case Triage Agent"]
   },
-  {
-    id: "public-sector",
-    title: "Public Sector",
-    path: "/industries/public-sector",
-    desc: "Upgrade public administration, citizen service portals, and record intelligence networks.",
-    challenges: ["Citizen service backlogs", "Policy search friction", "Process transparency"],
-    agents: ["Citizen Service Agent", "Policy Intelligence Agent", "Document Intelligence Agent"]
-  },
+  // {
+  //   id: "public-sector",
+  //   title: "Public Sector",
+  //   path: "/industries/public-sector",
+  //   desc: "Upgrade public administration, citizen service portals, and record intelligence networks.",
+  //   challenges: ["Citizen service backlogs", "Policy search friction", "Process transparency"],
+  //   agents: ["Citizen Service Agent", "Policy Intelligence Agent", "Document Intelligence Agent"]
+  // },
   {
     id: "audit",
     title: "Audit",
@@ -133,15 +133,15 @@ const S_DATA = [
     desc: "Deploy corporate memory networks and private legal research workflows.",
     challenges: ["Contract review", "Matter knowledge", "Research workflows"],
     agents: ["Contract Intelligence Agent", "Legal Knowledge Search Agent", "Matter Assistant"]
-  },
-  {
-    id: "advisory",
-    title: "Advisory",
-    path: "/industries/advisory",
-    desc: "Accelerate research, streamline delivery operations, and scale proposal pipelines.",
-    challenges: ["Research acceleration", "Proposal development", "Delivery operations"],
-    agents: ["Advisory Copilot", "Advisory Research Agent", "Proposal Copilot"]
   }
+  // {
+  //   id: "advisory",
+  //   title: "Advisory",
+  //   path: "/industries/advisory",
+  //   desc: "Accelerate research, streamline delivery operations, and scale proposal pipelines.",
+  //   challenges: ["Research acceleration", "Proposal development", "Delivery operations"],
+  //   agents: ["Advisory Copilot", "Advisory Research Agent", "Proposal Copilot"]
+  // }
 ];
 
 export default function IndustriesPage() {
