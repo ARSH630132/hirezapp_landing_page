@@ -61,7 +61,8 @@
     "58-phase3-cross-tool-recommendations",
     "59-phase3-command-center-deep-actions",
     "60-phase3-tool-empty-loading-error-states",
-    "61-phase3-mobile-pass-build-tools"
+    "61-phase3-mobile-pass-build-tools",
+    "62-phase3-accessibility-pass-build-tools"
   ],
   "failed": [
     {
