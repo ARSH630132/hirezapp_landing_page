@@ -1,0 +1,28 @@
+
+
+## npm run lint
+exit=1
+STDOUT:
+
+> hirezapp_landing_page@0.1.0 lint
+> eslint
+
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/app/portal/analytics/page.tsx
+  199:49  error  Error: Cannot call impure function during render
+
+`Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/app/portal/analytics/page.tsx:199:49
+  197 |             {ENCLAVE_NODES.map((node) => {
+  198 |               const isSel = selectedNode.id === node.id;
+> 199 |               const jitter = isSel ? Math.floor(Math.random() * 2) - 1 : 0;
+      |                                                 ^^^^^^^^^^^^^ Cannot call impure function
+  200 |               return (
+  201 |                 <div key={node.id} onClick={() => setSelectedNode(node)} className={`flex justify-between items-center border-b border-white/5 pb-2 last:border-b-0 last:pb-0 cursor-pointer p-1 rounded transition-colors ${isSel ? "bg-white/[0.02] border-l border-l-[#009DFF] pl-1.5" : "hover:bg-white/[0.01]"}`}>
+  202 |                   <div className="min-w-0">  react-hooks/purity
+
+✖ 1 problem (1 error, 0 warnings)
+
+
+STDERR:
