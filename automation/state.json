@@ -109,7 +109,8 @@
     "88-phase4-client-support-center",
     "127-phase5-pydantic-schemas",
     "128-phase5-password-hashing-and-jwt-security",
-    "129-phase5-rbac-permissions"
+    "129-phase5-rbac-permissions",
+    "130-phase5-auth-endpoints"
   ],
   "failed": [
     {
