@@ -79,7 +79,8 @@
     "76-phase4-private-app-shell",
     "77-phase4-private-mock-data-model",
     "79-phase4-client-dashboard",
-    "80-phase4-client-projects-list"
+    "80-phase4-client-projects-list",
+    "78-phase4-data-table-filter-system"
   ],
   "failed": [
     {
