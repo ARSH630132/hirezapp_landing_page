@@ -14,7 +14,7 @@ export interface PreviewSession {
   email: string;
   role: PreviewRole;
   clearance: string;
-  isMock: true;
+  isMock: boolean;
   label: string;
 }
 

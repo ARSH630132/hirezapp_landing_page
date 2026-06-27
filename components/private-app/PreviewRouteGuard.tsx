@@ -115,20 +115,103 @@ export function PreviewRouteGuard({ children, type }: { children: React.ReactNod
 
   useEffect(() => { setMounted(true); }, []);
 
-  // Sync session and access rules
+  // Sync session and access rules using backend auth /api/v1/auth/me and stored MVP token
   useEffect(() => {
     if (!mounted) return;
-    const verify = () => {
-      const s = getPreviewSession();
-      setSession(s);
+
+    let isSubscribed = true;
+
+    const verify = async () => {
+      const token = localStorage.getItem("gff_ai_access_token");
       const sec = pathname.split("/")[2] || "dashboard";
-      setActiveSec(sec);
-      setHasAccess(type === "portal" ? canAccessPortalSection(s?.role || "viewer", sec) : canAccessAdminSection(s?.role || "viewer", sec));
-      setLoading(false);
+      if (isSubscribed) {
+        setActiveSec(sec);
+      }
+
+      let currentSession: PreviewSession | null = null;
+
+      if (token) {
+        try {
+          const res = await fetch("/api/v1/auth/me", {
+            headers: {
+              "Authorization": `Bearer ${token}`,
+              "Content-Type": "application/json"
+            }
+          });
+
+          if (res.ok) {
+            const data = await res.json();
+            if (data.success && data.user) {
+              const u = data.user;
+              currentSession = {
+                name: u.name,
+                email: u.email,
+                role: u.role as PreviewRole,
+                clearance: u.clearance || "CLEARANCE LEVEL III (SANDBOX OPERATOR)",
+                isMock: false,
+                label: `REST-API AUTH: ${u.clientAssociation || "Core"}`
+              };
+              localStorage.setItem("gff_ai_preview_session_v1", JSON.stringify(currentSession));
+            }
+          } else {
+            // Token is invalid or expired
+            localStorage.removeItem("gff_ai_access_token");
+            localStorage.removeItem("gff_api_token");
+          }
+        } catch (err) {
+          console.error("Failed to verify token with /api/v1/auth/me, trying cached session", err);
+        }
+      }
+
+      // Fall back to local preview session if backend auth didn't produce one
+      if (!currentSession) {
+        const cached = getPreviewSession();
+        // Keep Phase 4 preview mode only as fallback if explicitly needed
+        if (cached && (cached.isMock || token)) {
+          currentSession = cached;
+        }
+      }
+
+      if (isSubscribed) {
+        setSession(currentSession);
+
+        if (currentSession) {
+          const role = currentSession.role;
+          const isClient = role === "client_admin" || role === "client_member";
+          const isAdmin = ["gff_admin", "gff_operator", "finance_admin", "support_agent", "viewer"].includes(role);
+
+          let allowed = false;
+          if (type === "portal") {
+            // Client roles can access portal, and gff_admin can access for simulation override
+            if (isClient || role === "gff_admin") {
+              allowed = canAccessPortalSection(role, sec);
+            }
+          } else if (type === "admin") {
+            // Admin roles can access admin
+            if (isAdmin) {
+              allowed = canAccessAdminSection(role, sec);
+            }
+          }
+          setHasAccess(allowed);
+        } else {
+          setHasAccess(false);
+        }
+
+        setLoading(false);
+      }
     };
+
     verify();
-    window.addEventListener("gff_preview_session_changed", verify);
-    return () => window.removeEventListener("gff_preview_session_changed", verify);
+
+    const handleSessionChanged = () => {
+      verify();
+    };
+
+    window.addEventListener("gff_preview_session_changed", handleSessionChanged);
+    return () => {
+      isSubscribed = false;
+      window.removeEventListener("gff_preview_session_changed", handleSessionChanged);
+    };
   }, [pathname, type, mounted]);
 
   // Terminal logging logic for live security console simulation
@@ -214,7 +297,20 @@ export function PreviewRouteGuard({ children, type }: { children: React.ReactNod
       
       const segments = pathname.split("/");
       const sec = segments[2] || "dashboard";
-      const allowed = type === "portal" ? canAccessPortalSection(role, sec) : canAccessAdminSection(role, sec);
+      
+      const isClient = role === "client_admin" || role === "client_member";
+      const isAdmin = ["gff_admin", "gff_operator", "finance_admin", "support_agent", "viewer"].includes(role);
+      
+      let allowed = false;
+      if (type === "portal") {
+        if (isClient || role === "gff_admin") {
+          allowed = canAccessPortalSection(role, sec);
+        }
+      } else if (type === "admin") {
+        if (isAdmin) {
+          allowed = canAccessAdminSection(role, sec);
+        }
+      }
       
       if (allowed) {
         // Refresh or traverse cleanly to the exact page they requested
@@ -228,11 +324,21 @@ export function PreviewRouteGuard({ children, type }: { children: React.ReactNod
 
   // Helper to dynamically calculate which roles are authorized for the blocked section
   const getAuthorizedRoles = (): PreviewRole[] => {
-    return ALL_ROLES.filter(role => 
-      type === "portal" 
-        ? canAccessPortalSection(role, activeSec) 
-        : canAccessAdminSection(role, activeSec)
-    );
+    return ALL_ROLES.filter(role => {
+      const isClient = role === "client_admin" || role === "client_member";
+      const isAdmin = ["gff_admin", "gff_operator", "finance_admin", "support_agent", "viewer"].includes(role);
+      
+      if (type === "portal") {
+        if (isClient || role === "gff_admin") {
+          return canAccessPortalSection(role, activeSec);
+        }
+      } else if (type === "admin") {
+        if (isAdmin) {
+          return canAccessAdminSection(role, activeSec);
+        }
+      }
+      return false;
+    });
   };
 
   if (!mounted) return <div className="min-h-screen bg-[#030303]" />;
