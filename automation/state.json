@@ -145,7 +145,8 @@
     "167-phase5-security-limitations-docs",
     "168-phase5-backend-frontend-smoke-qa",
     "169-phase5-no-gff-tools-backend-regression-audit",
-    "170-phase5-final-mvp-backend-qa"
+    "170-phase5-final-mvp-backend-qa",
+    "171-phase6-aws-preflight-final-scope-audit"
   ],
   "failed": [
     {
