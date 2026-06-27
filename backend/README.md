@@ -75,7 +75,46 @@ The defaults in `.env` are pre-tuned for seamless local development with the Nex
 > ⚠️ **Production Security Warning**:
 > In local development mode, `JWT_SECRET` defaults to a safe developer-only fallback key. However, for any production deployment, you **MUST** override `JWT_SECRET` in your environment variables with a cryptographically secure, high-entropy key (e.g., generated via `openssl rand -hex 32`). Leaving the default key active in production compromises token verification and authentication security.
 
-### 5. Run the Server
+### 5. Seed the Local Database
+Seed the SQLite database with representative GFF AI multi-tenant development data (including 4 client accounts, 4 projects, 4 agent operations, 4 documents, 4 invoices, 3 support tickets, and 3 governance compliance records) and pre-configured role-based development users:
+
+```bash
+python app/seed.py
+```
+
+#### Pre-Configured Developer Accounts & Roles:
+- **GFF Admin Lead** (Global Operations):
+  - Email: `gff_admin@gff.ai`
+  - Role: `gff_admin`
+  - Password: `password123`
+- **Apex Admin Lead** (Client Tenant Admin):
+  - Email: `client_admin@apex.com`
+  - Role: `client_admin`
+  - Tenant: Apex Global
+  - Password: `password123`
+- **Apex Analyst** (Client Tenant Member):
+  - Email: `client_member@apex.com`
+  - Role: `client_member`
+  - Tenant: Apex Global
+  - Password: `password123`
+- **Legacy Fallback Admin**:
+  - Email: `admin@gff.ai`
+  - Role: `admin`
+  - Password: `gff_enterprise_admin_pass_2026`
+- **Legacy Fallback Client**:
+  - Email: `client@chevron.com`
+  - Role: `client`
+  - Tenant: Chevron Corporation
+  - Password: `chevron_secure_pass_2026`
+
+#### Idempotency & Database Resetting:
+- Running `python app/seed.py` repeatedly is perfectly **idempotent**; it checks for existing records before inserting, ensuring no duplicated keys or rows.
+- To safely **wipe all tables and fresh-seed** a clean slate, run with the `--reset` flag:
+  ```bash
+  python app/seed.py --reset
+  ```
+
+### 6. Run the Server
 Launch the development server via Uvicorn:
 ```bash
 uvicorn app.main:app --reload --port 8000
