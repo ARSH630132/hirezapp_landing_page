@@ -1069,20 +1069,104 @@ Status: MODELLED - ILLUSTRATIVE ONLY
                       <line x1="290" y1={b2Y+b2H} x2="380" y2={b3Y+b3H} stroke="rgba(255,255,255,0.2)" strokeWidth="1" strokeDasharray="3,3" />
                       <line x1="460" y1={b3Y} x2="550" y2={b4Y} stroke="rgba(255,255,255,0.2)" strokeWidth="1" strokeDasharray="3,3" />
                       <g>
-                        <rect x="50" y={b1Y} width="70" height={b1H} rx="3" fill="url(#fG)" stroke="rgba(255,255,255,0.05)" />
-                        <text x="85" y={Math.max(b1Y-8,15)} textAnchor="middle" className="fill-white/80 font-mono text-[10px] font-bold">{formatCompactCurrency(addressableCostBaseline)}</text>
+                        <motion.rect 
+                          x="50" 
+                          y={b1Y} 
+                          width="70" 
+                          height={b1H} 
+                          rx="3" 
+                          fill="url(#fG)" 
+                          stroke="rgba(255,255,255,0.05)"
+                          initial={{ height: 0, y: 200 }}
+                          animate={{ height: b1H, y: b1Y }}
+                          transition={{ duration: 0.8, ease: "easeOut" }}
+                        />
+                        <motion.text 
+                          x="85" 
+                          y={Math.max(b1Y-8,15)} 
+                          textAnchor="middle" 
+                          className="fill-white/80 font-mono text-[10px] font-bold"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 0.4, duration: 0.3 }}
+                        >
+                          {formatCompactCurrency(addressableCostBaseline)}
+                        </motion.text>
                       </g>
                       <g>
-                        <rect x="220" y={b2Y} width="70" height={b2H} rx="3" fill="url(#rG)" stroke="rgba(0,255,157,0.15)" />
-                        <text x="255" y={Math.max(b2Y-8,15)} textAnchor="middle" className="fill-[#00FF9D] font-mono text-[10px] font-bold">-{formatCompactCurrency(expectedGrossSavings)}</text>
+                        <motion.rect 
+                          x="220" 
+                          y={b2Y} 
+                          width="70" 
+                          height={b2H} 
+                          rx="3" 
+                          fill="url(#rG)" 
+                          stroke="rgba(0,255,157,0.15)"
+                          initial={{ height: 0, y: b2Y }}
+                          animate={{ height: b2H, y: b2Y }}
+                          transition={{ delay: 0.3, duration: 0.8, ease: "easeOut" }}
+                        />
+                        <motion.text 
+                          x="255" 
+                          y={Math.max(b2Y-8,15)} 
+                          textAnchor="middle" 
+                          className="fill-[#00FF9D] font-mono text-[10px] font-bold"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 0.7, duration: 0.3 }}
+                        >
+                          -{formatCompactCurrency(expectedGrossSavings)}
+                        </motion.text>
                       </g>
                       <g>
-                        <rect x="390" y={b3Y} width="70" height={b3H} rx="3" fill="url(#cG)" stroke="rgba(228,0,15,0.15)" />
-                        <text x="425" y={Math.max(b3Y-8,15)} textAnchor="middle" className="fill-[#E4000F] font-mono text-[10px] font-bold">+{formatCompactCurrency(initialInvestment)}</text>
+                        <motion.rect 
+                          x="390" 
+                          y={b3Y} 
+                          width="70" 
+                          height={b3H} 
+                          rx="3" 
+                          fill="url(#cG)" 
+                          stroke="rgba(228,0,15,0.15)"
+                          initial={{ height: 0, y: b3Y + b3H }}
+                          animate={{ height: b3H, y: b3Y }}
+                          transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
+                        />
+                        <motion.text 
+                          x="425" 
+                          y={Math.max(b3Y-8,15)} 
+                          textAnchor="middle" 
+                          className="fill-[#E4000F] font-mono text-[10px] font-bold"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 1.0, duration: 0.3 }}
+                        >
+                          +{formatCompactCurrency(initialInvestment)}
+                        </motion.text>
                       </g>
                       <g>
-                        <rect x="560" y={b4Y} width="70" height={b4H} rx="3" fill="url(#nG)" stroke="rgba(0,255,157,0.3)" />
-                        <text x="595" y={Math.max(b4Y-8,15)} textAnchor="middle" className="fill-[#00FF9D] font-mono text-[10px] font-bold">{formatCompactCurrency(expectedNetSavings)}</text>
+                        <motion.rect 
+                          x="560" 
+                          y={b4Y} 
+                          width="70" 
+                          height={b4H} 
+                          rx="3" 
+                          fill="url(#nG)" 
+                          stroke="rgba(0,255,157,0.3)"
+                          initial={{ height: 0, y: 200 }}
+                          animate={{ height: b4H, y: b4Y }}
+                          transition={{ delay: 0.9, duration: 0.8, ease: "easeOut" }}
+                        />
+                        <motion.text 
+                          x="595" 
+                          y={Math.max(b4Y-8,15)} 
+                          textAnchor="middle" 
+                          className="fill-[#00FF9D] font-mono text-[10px] font-bold"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 1.3, duration: 0.3 }}
+                        >
+                          {formatCompactCurrency(expectedNetSavings)}
+                        </motion.text>
                       </g>
                     </>
                   );

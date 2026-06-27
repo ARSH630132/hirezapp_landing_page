@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { AnimatePresence } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import InnerPageShell from "@/components/inner-pages/InnerPageShell";
 import InnerPageHero from "@/components/inner-pages/InnerPageHero";
 import PremiumCTA from "@/components/inner-pages/PremiumCTA";
@@ -1113,35 +1113,47 @@ export default function SandboxPage() {
               <div className="border-b border-white/5 bg-black flex text-[10px] font-mono uppercase tracking-widest text-center">
                 <button
                   onClick={() => setActiveTab("blueprint")}
-                  className={`flex-1 py-3.5 border-r border-white/5 hover:text-white transition-colors relative ${
+                  className={`flex-1 py-3.5 border-r border-white/5 hover:text-white transition-colors relative cursor-pointer ${
                     activeTab === "blueprint" ? "text-[#009DFF] font-semibold bg-white/[0.02]" : "text-white/40"
                   }`}
                 >
                   1. Simulation Workflow
                   {activeTab === "blueprint" && (
-                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#009DFF]" />
+                    <motion.div
+                      layoutId="sandboxActiveTabLine"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#009DFF]"
+                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    />
                   )}
                 </button>
                 <button
                   onClick={() => setActiveTab("architecture")}
-                  className={`flex-1 py-3.5 border-r border-white/5 hover:text-white transition-colors relative ${
+                  className={`flex-1 py-3.5 border-r border-white/5 hover:text-white transition-colors relative cursor-pointer ${
                     activeTab === "architecture" ? "text-[#009DFF] font-semibold bg-white/[0.02]" : "text-white/40"
                   }`}
                 >
                   2. Sovereign DAG Map
                   {activeTab === "architecture" && (
-                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#009DFF]" />
+                    <motion.div
+                      layoutId="sandboxActiveTabLine"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#009DFF]"
+                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    />
                   )}
                 </button>
                 <button
                   onClick={() => setActiveTab("security")}
-                  className={`flex-1 py-3.5 hover:text-white transition-colors relative ${
+                  className={`flex-1 py-3.5 hover:text-white transition-colors relative cursor-pointer ${
                     activeTab === "security" ? "text-[#009DFF] font-semibold bg-white/[0.02]" : "text-white/40"
                   }`}
                 >
                   3. Security & Governance
                   {activeTab === "security" && (
-                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#009DFF]" />
+                    <motion.div
+                      layoutId="sandboxActiveTabLine"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#009DFF]"
+                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    />
                   )}
                 </button>
               </div>

@@ -1671,14 +1671,19 @@ function SovereignNodeCard({
   const isSupervisor = selectedPattern === "hierarchical" && stage.type === "reasoning";
 
   return (
-    <div
+    <motion.div
       onClick={() => onSelect(stage.id)}
       style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
-      className={`absolute transform -translate-x-1/2 -translate-y-1/2 w-[13.5rem] p-4 rounded-2xl border transition-all duration-300 cursor-pointer select-none group z-10 ${
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.8 }}
+      whileHover={{ scale: 1.03 }}
+      transition={{ type: "spring", stiffness: 280, damping: 26 }}
+      className={`absolute transform -translate-x-1/2 -translate-y-1/2 w-[13.5rem] p-4 rounded-2xl border cursor-pointer select-none group z-10 ${
         isSelected
-          ? "bg-[#090f1a] border-[#009DFF] shadow-[0_0_20px_rgba(0,157,255,0.15)] scale-[1.02]"
+          ? "bg-[#090f1a] border-[#009DFF] shadow-[0_0_20px_rgba(0,157,255,0.15)]"
           : isNodeActive
-          ? "bg-[#05110f] border-[#00FF9D] shadow-[0_0_20px_rgba(0,255,157,0.2)] scale-[1.02] animate-pulse"
+          ? "bg-[#05110f] border-[#00FF9D] shadow-[0_0_20px_rgba(0,255,157,0.2)] animate-pulse"
           : isNodeCompleted
           ? "bg-[#020603]/90 border-[#00FF9D]/20"
           : "bg-[#05070c]/95 border-white/5 hover:border-white/15"
@@ -1782,7 +1787,7 @@ function SovereignNodeCard({
           ×
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

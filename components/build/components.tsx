@@ -163,26 +163,36 @@ export function ToolSidebarProgress({ steps, currentStepIndex, onStepClick }: To
       </div>
 
       {/* Steps List */}
-      <div className="space-y-4 pt-2">
+      <div className="space-y-4 pt-2 relative">
         {steps.map((step, idx) => {
           const isActive = idx === currentStepIndex;
           const isCompleted = idx < currentStepIndex;
 
           return (
-            <button
+            <motion.button
               key={step.id}
               onClick={() => onStepClick && onStepClick(idx)}
               disabled={!onStepClick || (!isCompleted && !isActive)}
-              className={`w-full text-left flex gap-4 p-3 rounded-xl transition border text-xs group ${
+              whileHover={isCompleted || isActive ? { x: 3 } : {}}
+              transition={{ duration: 0.2 }}
+              className={`w-full text-left flex gap-4 p-3 rounded-xl transition border text-xs group relative ${
                 isActive
-                  ? "bg-white/[0.03] border-white/10 text-white"
+                  ? "text-white border-white/10"
                   : isCompleted
                   ? "bg-transparent border-transparent text-white/50 hover:text-white"
                   : "bg-transparent border-transparent text-white/20 cursor-not-allowed"
               }`}
             >
+              {isActive && (
+                <motion.div
+                  layoutId="sidebarActiveBg"
+                  className="absolute inset-0 bg-white/[0.03] border border-white/10 rounded-xl -z-10"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
+
               {/* Step Marker */}
-              <div className="mt-0.5 shrink-0">
+              <div className="mt-0.5 shrink-0 relative z-10">
                 <div
                   className={`w-5 h-5 rounded-full flex items-center justify-center font-mono text-[9px] border transition ${
                     isActive
@@ -203,7 +213,7 @@ export function ToolSidebarProgress({ steps, currentStepIndex, onStepClick }: To
               </div>
 
               {/* Step Info */}
-              <div className="space-y-1">
+              <div className="space-y-1 relative z-10">
                 <div className="flex items-center gap-2">
                   <span className={`font-semibold ${isActive ? "text-[#009DFF]" : ""}`}>{step.label}</span>
                   {step.duration && (
@@ -218,7 +228,7 @@ export function ToolSidebarProgress({ steps, currentStepIndex, onStepClick }: To
                   </p>
                 )}
               </div>
-            </button>
+            </motion.button>
           );
         })}
       </div>
@@ -452,13 +462,16 @@ export function ToolOptionGrid({ options, selectedId, onChange, multiSelect = fa
         const accent = opt.accentColor || "#009DFF";
 
         return (
-          <button
+          <motion.button
             key={opt.id}
             onClick={() => onChange(opt.id)}
             type="button"
-            className={`text-left p-5 rounded-xl border transition-all duration-300 relative group flex gap-4 ${
+            whileHover={{ scale: 1.01, y: -1 }}
+            whileTap={{ scale: 0.995 }}
+            transition={{ duration: 0.15 }}
+            className={`text-left p-5 rounded-xl border transition-all duration-300 relative group flex gap-4 cursor-pointer ${
               selected
-                ? "bg-white/[0.03] border-white/10"
+                ? "bg-white/[0.03] border-white/15"
                 : "bg-white/[0.01] border-white/5 hover:border-white/10 hover:bg-white/[0.02]"
             }`}
           >
@@ -493,7 +506,7 @@ export function ToolOptionGrid({ options, selectedId, onChange, multiSelect = fa
                 {opt.description}
               </p>
             </div>
-          </button>
+          </motion.button>
         );
       })}
     </div>

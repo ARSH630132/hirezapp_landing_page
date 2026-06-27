@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
 import InnerPageShell from "@/components/inner-pages/InnerPageShell";
 import InnerPageHero from "@/components/inner-pages/InnerPageHero";
@@ -412,47 +413,58 @@ export default function BuildHubPage() {
             </div>
 
             {/* Active Stage Details Panel */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-4">
-              <div className="lg:col-span-8 space-y-4">
-                <div className="flex items-center gap-2 text-[11px] font-mono text-white/50">
-                  <span className="text-[#E4000F] font-bold">PHASE 0{activeStage.n}</span>
-                  <span>|</span>
-                  <span className="text-[#00FF9D] font-semibold">{activeStage.metric}</span>
-                </div>
-                <h3 className="text-xl lg:text-2xl font-bold text-white tracking-tight">
-                  {activeStage.name} Milestone Target
-                </h3>
-                <p className="text-white/70 text-xs leading-relaxed max-w-[720px] font-light">
-                  {activeStage.desc}
-                </p>
-                <div className="pt-2">
-                  <Link 
-                    href={activeStage.tool} 
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-semibold text-white bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#009DFF]/30 transition group"
-                  >
-                    <span>Launch {activeStage.btn} Helper</span>
-                    <svg className="w-3 h-3 group-hover:translate-x-1 transition-transform text-[#009DFF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </Link>
-                </div>
-              </div>
-              
-              <div className="lg:col-span-4 p-5 rounded-2xl bg-white/[0.01] border border-white/5 flex flex-col justify-between">
-                <div>
-                  <h4 className="text-[10px] font-mono text-white/40 uppercase tracking-wider mb-2">EXPECTED PIPELINE OUTCOME</h4>
-                  <p className="text-xs text-white/80 font-light leading-relaxed">
-                    {activeStage.artifact}
-                  </p>
-                </div>
-                <div className="text-[9px] font-mono text-white/30 pt-4 mt-4 border-t border-white/5 flex justify-between items-center">
-                  <span>DEPLOYMENT REGULATION</span>
-                  <span className="text-[#00FF9D] font-bold flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#00FF9D]" />
-                    GUARANTEED SOVEREIGN
-                  </span>
-                </div>
-              </div>
+            <div className="min-h-[200px] relative">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeStage.n}
+                  initial={{ opacity: 0, x: 15 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -15 }}
+                  transition={{ duration: 0.25, ease: "easeInOut" }}
+                  className="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-4 w-full"
+                >
+                  <div className="lg:col-span-8 space-y-4">
+                    <div className="flex items-center gap-2 text-[11px] font-mono text-white/50">
+                      <span className="text-[#E4000F] font-bold">PHASE 0{activeStage.n}</span>
+                      <span>|</span>
+                      <span className="text-[#00FF9D] font-semibold">{activeStage.metric}</span>
+                    </div>
+                    <h3 className="text-xl lg:text-2xl font-bold text-white tracking-tight">
+                      {activeStage.name} Milestone Target
+                    </h3>
+                    <p className="text-white/70 text-xs leading-relaxed max-w-[720px] font-light">
+                      {activeStage.desc}
+                    </p>
+                    <div className="pt-2">
+                      <Link 
+                        href={activeStage.tool} 
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-semibold text-white bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#009DFF]/30 transition group"
+                      >
+                        <span>Launch {activeStage.btn} Helper</span>
+                        <svg className="w-3 h-3 group-hover:translate-x-1 transition-transform text-[#009DFF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </Link>
+                    </div>
+                  </div>
+                  
+                  <div className="lg:col-span-4 p-5 rounded-2xl bg-white/[0.01] border border-white/5 flex flex-col justify-between">
+                    <div>
+                      <h4 className="text-[10px] font-mono text-white/40 uppercase tracking-wider mb-2">EXPECTED PIPELINE OUTCOME</h4>
+                      <p className="text-xs text-white/80 font-light leading-relaxed">
+                        {activeStage.artifact}
+                      </p>
+                    </div>
+                    <div className="text-[9px] font-mono text-white/30 pt-4 mt-4 border-t border-white/5 flex justify-between items-center">
+                      <span>DEPLOYMENT REGULATION</span>
+                      <span className="text-[#00FF9D] font-bold flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#00FF9D]" />
+                        GUARANTEED SOVEREIGN
+                      </span>
+                    </div>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
         </section>
@@ -474,10 +486,13 @@ export default function BuildHubPage() {
                 {SCENARIOS.map((sc, idx) => {
                   const isActive = activeScenarioIdx === idx;
                   return (
-                    <button
+                    <motion.button
                       key={sc.id}
                       onClick={() => setActiveScenarioIdx(idx)}
-                      className={`w-full p-3.5 text-left rounded-xl border transition-all duration-300 flex items-center justify-between gap-4 group relative overflow-hidden focus:outline-none ${
+                      whileHover={{ scale: 1.008, y: -0.5 }}
+                      whileTap={{ scale: 0.995 }}
+                      transition={{ duration: 0.15 }}
+                      className={`w-full p-3.5 text-left rounded-xl border transition-all duration-300 flex items-center justify-between gap-4 group relative overflow-hidden focus:outline-none cursor-pointer ${
                         isActive ? "bg-white/[0.03] border-white/15" : "bg-[#010102] border-white/5 hover:border-white/10"
                       }`}
                     >
@@ -489,36 +504,47 @@ export default function BuildHubPage() {
                       <svg className={`w-3.5 h-3.5 transition-transform duration-300 ${isActive ? "translate-x-1 text-white" : "text-white/20 group-hover:text-white/40"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
-                    </button>
+                    </motion.button>
                   );
                 })}
               </div>
 
-              <div className="lg:col-span-6 flex flex-col justify-between p-5 rounded-xl border border-white/5 bg-[#010102] relative overflow-hidden">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-[9px] font-mono px-2 py-0.5 rounded border font-semibold uppercase" style={{ color: SCENARIOS[activeScenarioIdx].badgeColor, borderColor: `${SCENARIOS[activeScenarioIdx].badgeColor}25`, backgroundColor: `${SCENARIOS[activeScenarioIdx].badgeColor}08` }}>RECOMMENDED STEP</span>
-                    <span className="text-[9px] font-mono text-white/40">Est: {SCENARIOS[activeScenarioIdx].time}</span>
-                  </div>
+              <div className="lg:col-span-6 flex flex-col justify-between p-5 rounded-xl border border-white/5 bg-[#010102] relative overflow-hidden min-h-[300px]">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeScenarioIdx}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.22 }}
+                    className="flex flex-col justify-between h-full w-full"
+                  >
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-[9px] font-mono px-2 py-0.5 rounded border font-semibold uppercase" style={{ color: SCENARIOS[activeScenarioIdx].badgeColor, borderColor: `${SCENARIOS[activeScenarioIdx].badgeColor}25`, backgroundColor: `${SCENARIOS[activeScenarioIdx].badgeColor}08` }}>RECOMMENDED STEP</span>
+                        <span className="text-[9px] font-mono text-white/40">Est: {SCENARIOS[activeScenarioIdx].time}</span>
+                      </div>
 
-                  <div className="space-y-1">
-                    <h3 className="text-base font-bold text-white tracking-tight">Launch {SCENARIOS[activeScenarioIdx].recommendation}</h3>
-                    <p className="text-white/60 text-xs font-light leading-relaxed">{SCENARIOS[activeScenarioIdx].description}</p>
-                  </div>
+                      <div className="space-y-1">
+                        <h3 className="text-base font-bold text-white tracking-tight">Launch {SCENARIOS[activeScenarioIdx].recommendation}</h3>
+                        <p className="text-white/60 text-xs font-light leading-relaxed">{SCENARIOS[activeScenarioIdx].description}</p>
+                      </div>
 
-                  <div className="p-3 rounded-lg bg-white/[0.01] border border-white/5 space-y-1">
-                    <span className="text-[9px] font-mono text-white/40 uppercase tracking-wider block">EXPECTED ARTIFACT</span>
-                    <span className="text-xs text-white/80 font-medium">{SCENARIOS[activeScenarioIdx].artifact}</span>
-                  </div>
-                </div>
+                      <div className="p-3 rounded-lg bg-white/[0.01] border border-white/5 space-y-1">
+                        <span className="text-[9px] font-mono text-white/40 uppercase tracking-wider block">EXPECTED ARTIFACT</span>
+                        <span className="text-xs text-white/80 font-medium">{SCENARIOS[activeScenarioIdx].artifact}</span>
+                      </div>
+                    </div>
 
-                <div className="pt-4 border-t border-white/5 mt-4 flex items-center justify-between gap-4">
-                  <span className="text-[9px] font-mono text-white/35 flex items-center gap-1"><span className="w-1 h-1 rounded-full bg-[#00FF9D] animate-pulse" />READY</span>
-                  <Link href={SCENARIOS[activeScenarioIdx].recHref} className="inline-flex items-center gap-1.5 px-4 py-2 rounded bg-white hover:bg-white/90 text-black text-xs font-bold transition">
-                    <span>Launch Recommendation</span>
-                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-                  </Link>
-                </div>
+                    <div className="pt-4 border-t border-white/5 mt-6 flex items-center justify-between gap-4">
+                      <span className="text-[9px] font-mono text-white/35 flex items-center gap-1"><span className="w-1 h-1 rounded-full bg-[#00FF9D] animate-pulse" />READY</span>
+                      <Link href={SCENARIOS[activeScenarioIdx].recHref} className="inline-flex items-center gap-1.5 px-4 py-2 rounded bg-white hover:bg-white/90 text-black text-xs font-bold transition">
+                        <span>Launch Recommendation</span>
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                      </Link>
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
               </div>
             </div>
           </div>

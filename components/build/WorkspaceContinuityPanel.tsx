@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { motion } from "motion/react";
 import Link from "next/link";
 import {
   getFullWorkspace,
@@ -165,14 +166,38 @@ export default function WorkspaceContinuityPanel() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
+      <motion.div 
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: "-40px" }}
+        variants={{
+          hidden: { opacity: 0 },
+          show: {
+            opacity: 1,
+            transition: {
+              staggerChildren: 0.05
+            }
+          }
+        }}
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10"
+      >
         {TOOLS_META.map((tool, idx) => {
           const isBlueprint = tool.id === "blueprint";
           const isActive = isBlueprint ? blueprintHistory.length > 0 : !!workspace[tool.id];
           return (
-            <div
+            <motion.div
               key={tool.id}
-              className={`p-4 rounded-xl border flex flex-col justify-between min-h-[140px] transition-all duration-300 ${
+              variants={{
+                hidden: { opacity: 0, y: 12 },
+                show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 15 } }
+              }}
+              whileHover={{ 
+                scale: 1.015,
+                y: -2,
+                boxShadow: "0 10px 30px -10px rgba(0,0,0,0.7), 0 0 1px 1px rgba(255,255,255,0.1)",
+                transition: { duration: 0.2, ease: "easeOut" }
+              }}
+              className={`p-4 rounded-xl border flex flex-col justify-between min-h-[140px] transition-colors duration-300 ${
                 isActive
                   ? "bg-white/[0.02] border-white/10 shadow-[0_4px_20px_rgba(255,255,255,0.02)]"
                   : "border-white/5 bg-[#010102]/20"
@@ -206,10 +231,10 @@ export default function WorkspaceContinuityPanel() {
                   <span className="group-hover:translate-x-0.5 transition-transform">→</span>
                 </Link>
               </div>
-            </div>
+            </motion.div>
           );
         })}
-      </div>
+      </motion.div>
     </section>
   );
 }

@@ -311,7 +311,20 @@ export function WizardStepperSystem<T = any>({
                       <h2 className="text-xl font-bold tracking-tight mt-2">{currentStep.label}</h2>
                       <p className="text-white/50 text-xs mt-1 font-light">{currentStep.description}</p>
                     </div>
-                    <div className="py-2 min-h-[140px]">{currentStep.render({ data, onChange: handleDataChange, error })}</div>
+                    <div className="py-2 min-h-[140px] overflow-hidden relative">
+                      <AnimatePresence mode="wait">
+                        <motion.div
+                          key={currentStepIndex}
+                          initial={{ opacity: 0, x: 8 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: -8 }}
+                          transition={{ duration: 0.18, ease: "easeOut" }}
+                          className="w-full"
+                        >
+                          {currentStep.render({ data, onChange: handleDataChange, error })}
+                        </motion.div>
+                      </AnimatePresence>
+                    </div>
                   </div>
                   <div className="space-y-4 border-t border-white/5 pt-6 mt-4">
                     {error && (

@@ -692,11 +692,14 @@ CONFIDENTIALITY NOTICE: This report was compiled locally in a zero-retention env
                             {q.options.map((opt) => {
                               const selected = selectedScore === opt.score;
                               return (
-                                <button
+                                <motion.button
                                   key={opt.score}
                                   type="button"
                                   onClick={() => handleSelectOption(q.id, opt.score)}
-                                  className={`p-3 rounded-xl border text-left transition-all flex items-start gap-3 group relative ${
+                                  whileHover={{ y: -0.5, scale: 1.005 }}
+                                  whileTap={{ scale: 0.995 }}
+                                  transition={{ duration: 0.15 }}
+                                  className={`p-3 rounded-xl border text-left transition-all flex items-start gap-3 group relative cursor-pointer ${
                                     selected 
                                       ? "bg-white/[0.02] text-white" 
                                       : "bg-[#040609] border-white/5 text-white/60 hover:text-white/95 hover:bg-white/[0.005] hover:border-white/10"
@@ -718,7 +721,7 @@ CONFIDENTIALITY NOTICE: This report was compiled locally in a zero-retention env
                                   {selected && (
                                     <div className="absolute left-0 top-3 bottom-3 w-[2px] rounded-r" style={{ backgroundColor: activeDimension.color }} />
                                   )}
-                                </button>
+                                </motion.button>
                               );
                             })}
                           </div>
@@ -898,7 +901,7 @@ CONFIDENTIALITY NOTICE: This report was compiled locally in a zero-retention env
                 <div className="relative w-40 h-40 flex items-center justify-center">
                   <svg className="absolute inset-0 w-full h-full transform -rotate-90">
                     <circle cx="80" cy="80" r="72" stroke="rgba(255,255,255,0.03)" strokeWidth="6" fill="transparent" />
-                    <circle 
+                    <motion.circle 
                       cx="80" 
                       cy="80" 
                       r="72" 
@@ -906,7 +909,9 @@ CONFIDENTIALITY NOTICE: This report was compiled locally in a zero-retention env
                       strokeWidth="6" 
                       fill="transparent" 
                       strokeDasharray={452}
-                      strokeDashoffset={452 - (452 * report.percentage) / 100}
+                      initial={{ strokeDashoffset: 452 }}
+                      animate={{ strokeDashoffset: 452 - (452 * report.percentage) / 100 }}
+                      transition={{ duration: 1.5, ease: "easeOut" }}
                       strokeLinecap="round"
                     />
                     <defs>
@@ -1018,22 +1023,28 @@ CONFIDENTIALITY NOTICE: This report was compiled locally in a zero-retention env
                       />
                     ))}
 
-                    <polygon 
+                    <motion.polygon 
                       points={getRadarCoordinates(report.dimensionBreakdowns).map(c => `${c.x},${c.y}`).join(" ")}
                       fill="rgba(0, 157, 255, 0.12)"
                       stroke="#009DFF"
                       strokeWidth="2.5"
+                      initial={{ opacity: 0, scale: 0.85, originX: "150px", originY: "150px" }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
                     />
 
                     {getRadarCoordinates(report.dimensionBreakdowns).map((c, idx) => {
                       const isHovered = hoveredRadarIdx === idx;
                       return (
                         <g key={idx}>
-                          <circle 
+                          <motion.circle 
                             cx={c.x}
                             cy={c.y}
-                            r={isHovered ? "7" : "3.5"}
+                            r={isHovered ? "7" : "4"}
                             fill={c.color}
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ delay: 0.4 + idx * 0.08, type: "spring", stiffness: 180, damping: 15 }}
                             className="transition-all duration-300 cursor-pointer"
                             onMouseEnter={() => setHoveredRadarIdx(idx)}
                             onMouseLeave={() => setHoveredRadarIdx(null)}
