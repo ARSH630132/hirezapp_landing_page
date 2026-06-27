@@ -67,39 +67,59 @@ export function UserAvatar({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.98 }}
               transition={{ duration: 0.15 }}
-              className="absolute right-0 top-full mt-2 z-50 w-64 rounded-xl border border-white/5 bg-[#0a0a0a] p-4 shadow-[0_10px_40px_rgba(0,0,0,0.8)] backdrop-blur-md"
+              className="absolute right-0 top-full mt-2 z-50 w-72 rounded-xl border border-white/5 bg-[#0c0c0c] p-4 shadow-[0_10px_40px_rgba(0,0,0,0.85)] backdrop-blur-md"
             >
               <div className="border-b border-white/5 pb-3 font-sans">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-[9px] font-mono font-bold tracking-wider text-white/30 uppercase">SECURITY PASS</span>
+                  <span className="inline-flex items-center gap-1.5 rounded bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 text-[8px] font-mono font-bold uppercase text-emerald-400">
+                    ONLINE
+                  </span>
+                </div>
                 <div className="text-[13px] font-bold text-white">{user.name}</div>
                 <div className="text-[11px] text-white/50 font-mono mt-0.5">{user.email}</div>
-                <div className="mt-2 inline-flex items-center gap-1.5 rounded bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 text-[9px] font-mono font-bold uppercase text-emerald-400">
-                  {user.clearance}
-                </div>
-              </div>
-              <div className="py-2 space-y-1 text-[11.5px] font-mono">
-                <div className="flex justify-between items-center px-2 py-1.5 text-white/60">
-                  <span>Authorized:</span>
-                  <span className="text-white font-bold">{user.role}</span>
-                </div>
-                <div className="flex justify-between items-center px-2 py-1.5 text-white/60">
-                  <span>Latency:</span>
-                  <span className="text-emerald-400 font-bold">14ms</span>
-                </div>
-                <div className="flex justify-between items-center px-2 py-1.5 text-white/60">
-                  <span>Enclave:</span>
-                  <span className="text-white/40">GFF_0x7FFA</span>
+                
+                {/* Active Role Preview Indicator */}
+                <div className="mt-2.5 flex items-center justify-between rounded-md bg-white/[0.02] border border-white/5 px-2.5 py-1.5">
+                  <span className="text-[9px] font-mono font-semibold text-white/40">ROLE PREVIEW:</span>
+                  <span className="text-[10.5px] font-mono font-bold text-[#009DFF] uppercase tracking-wide">
+                    {user.role}
+                  </span>
                 </div>
               </div>
 
-              <div className="border-t border-white/5 pt-3 mt-1.5">
+              <div className="py-3 space-y-1 text-[11px] font-mono border-b border-white/5">
+                <div className="flex justify-between items-center px-1 text-white/60">
+                  <span className="text-white/40">Clearance:</span>
+                  <span className="text-white font-bold text-right text-[10px] truncate max-w-[150px]">{user.clearance.replace("CLEARANCE LEVEL ", "L")}</span>
+                </div>
+                <div className="flex justify-between items-center px-1 text-white/60">
+                  <span className="text-white/40">Node Tunnel:</span>
+                  <span className="text-emerald-400 font-bold">14ms Enclave</span>
+                </div>
+                <div className="flex justify-between items-center px-1 text-white/60">
+                  <span className="text-white/40">Sec-Enclave:</span>
+                  <span className="text-white/50">GFF_0x7FFA</span>
+                </div>
+              </div>
+
+              <div className="pt-3">
                 <button
                   onClick={() => {
                     clearPreviewSession();
                     setShowCard(false);
                     router.push("/login");
                   }}
-                  className="w-full h-8 rounded-lg bg-red-950/15 hover:bg-red-950/30 border border-red-500/10 hover:border-red-500/20 text-red-400 font-mono text-[9px] uppercase font-bold tracking-wider transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                  className="w-full h-9 rounded-lg bg-red-950/15 hover:bg-red-950/30 border border-red-500/20 hover:border-red-500/40 text-red-400 font-mono text-[9px] uppercase font-bold tracking-wider transition-all cursor-pointer flex items-center justify-center gap-2 group/btn"
                 >
+                  <svg 
+                    className="w-3.5 h-3.5 text-red-400 group-hover:translate-x-0.5 transition-transform" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
                   Deauthenticate Session
                 </button>
               </div>
