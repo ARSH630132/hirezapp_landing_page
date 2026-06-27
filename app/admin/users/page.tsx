@@ -1,58 +1,65 @@
 "use client";
 
 import React from "react";
-import { UserCheck, ShieldCheck } from "lucide-react";
+import { DataTable, previewUsers, TableColumn, User } from "@/components/private-app";
 
 export default function AdminUsersPage() {
-  const users = [
-    { name: "Dr. Sarah Vance", email: "s.vance@governance.gff.ai", role: "Administrator", clearance: "Level V (Secure Superuser)", keyToken: "ACTIVE" },
-    { name: "Alexander Mercer", email: "a.mercer@apex-sovereign.gff.ai", role: "Client Operator", clearance: "Level III (Sandbox)", keyToken: "ACTIVE" },
-    { name: "Siddharth Mehta", email: "s.mehta@mining.corp.gff.ai", role: "Client Operator", clearance: "Level III (Sandbox)", keyToken: "ACTIVE" }
+  const columns: TableColumn<User>[] = [
+    { key: "id", header: "Operator ID", sortable: true },
+    { key: "name", header: "Full Name", sortable: true },
+    { key: "email", header: "Secure Email", sortable: true },
+    { key: "role", header: "Role", render: (row) => row.role.name, sortable: true },
+    { key: "clearance", header: "Clearance", sortable: true },
+    { key: "status", header: "Session", sortable: true }
   ];
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-xl font-bold text-white tracking-tight font-mono uppercase">System Users</h2>
-          <p className="text-xs text-white/50 mt-1">Audit active administrator and enterprise operator clearance credentials, SSO sessions, and token states.</p>
-        </div>
+      <div>
+        <h2 className="text-xl font-bold text-white tracking-tight font-mono uppercase">System Operator Registry</h2>
+        <p className="text-xs text-white/50 mt-1">Audit active administrator and enterprise operator clearance credentials, security tokens, and SSO session state.</p>
       </div>
 
-      <div className="border border-white/5 rounded-xl bg-[#050505]/40 backdrop-blur-sm overflow-hidden mt-4">
-        <div className="bg-white/[0.02] border-b border-white/5 px-4 py-3 text-[10px] font-mono text-white/40 uppercase font-bold tracking-wider flex items-center gap-2">
-          <UserCheck className="w-4 h-4 text-[#009DFF]" />
-          <span>Active Credentials Registry</span>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[600px] text-left font-mono text-[12px] text-white/70">
-            <thead>
-              <tr className="border-b border-white/5 text-white/40 text-[10px] uppercase">
-                <th className="p-4">User Name</th>
-                <th className="p-4">Email Address</th>
-                <th className="p-4">Role Assigned</th>
-                <th className="p-4">Clearance Level</th>
-                <th className="p-4 text-right">FIDO2 Token</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/5">
-              {users.map(u => (
-                <tr key={u.email} className="hover:bg-white/[0.01]">
-                  <td className="p-4 text-white font-bold">{u.name}</td>
-                  <td className="p-4 text-white/50">{u.email}</td>
-                  <td className="p-4 text-white/60">{u.role}</td>
-                  <td className="p-4 text-white/40">{u.clearance}</td>
-                  <td className="p-4 text-right text-green-400 font-bold">
-                    <span className="px-2 py-0.5 text-[9px] font-bold bg-green-500/10 text-green-400 rounded border border-green-500/20">
-                      {u.keyToken}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <DataTable 
+        columns={columns}
+        data={previewUsers}
+        pageSize={5}
+        searchPlaceholder="Filter operators by name, email, role, or clearance..."
+        searchKeys={["id", "name", "email", "clearance"]}
+        statusField="status"
+        typeField="clearance"
+        categoryLabel="SECURITY USER CLEARANCE"
+        detailTitle={(row) => row.name}
+        renderDetail={(row) => (
+          <div className="space-y-5 font-mono text-[11.5px]">
+            <div className="p-4 rounded-lg border border-white/5 bg-[#020202]/40 space-y-2">
+              <span className="text-white/30 text-[9px] uppercase font-bold">Secure Identity Profile</span>
+              <p className="text-white font-bold text-[13.5px]">{row.name}</p>
+              <p className="text-[#009DFF] text-[11px]">{row.email}</p>
+            </div>
+            
+            <div className="p-4 rounded-lg border border-white/5 bg-[#020202]/40 space-y-2">
+              <span className="text-white/30 text-[9px] uppercase font-bold">Assigned Security Permissions</span>
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                {row.role.permissions.map((perm) => (
+                  <span key={perm} className="px-2 py-0.5 text-[9px] font-bold bg-[#00FFC2]/5 text-[#00FFC2] rounded border border-[#00FFC2]/20">
+                    {perm}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="p-4 rounded-lg border border-white/5 bg-[#020202]/40 space-y-2">
+              <span className="text-white/30 text-[9px] uppercase font-bold">Access Level Credentials</span>
+              <div className="grid grid-cols-2 gap-2 text-[10.5px]">
+                <div className="flex justify-between"><span className="text-white/40">Role Name:</span><span className="text-white font-bold">{row.role.name}</span></div>
+                <div className="flex justify-between"><span className="text-white/40">Clearance:</span><span className="text-white font-bold text-amber-400">{row.clearance.split(" ")[2]}</span></div>
+                <div className="flex justify-between col-span-2 pt-1 border-t border-white/5"><span className="text-white/40 font-semibold uppercase">FIDO2 Token State:</span><span className="text-green-400 font-bold">ACTIVE LOCK</span></div>
+              </div>
+            </div>
+          </div>
+        )}
+      />
     </div>
   );
 }
