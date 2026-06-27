@@ -90,7 +90,8 @@
     "101-phase4-admin-documents",
     "94-phase4-admin-dashboard",
     "99-phase4-admin-users-rbac",
-    "102-phase4-admin-billing"
+    "102-phase4-admin-billing",
+    "103-phase4-admin-support"
   ],
   "failed": [
     {
