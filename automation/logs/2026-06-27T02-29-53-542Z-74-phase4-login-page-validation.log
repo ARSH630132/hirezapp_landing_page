@@ -1,0 +1,46 @@
+## npm run lint
+exit=0
+STDOUT:
+
+> hirezapp_landing_page@0.1.0 lint
+> eslint
+
+
+STDERR:
+
+
+## npm run build
+exit=1
+STDOUT:
+
+> hirezapp_landing_page@0.1.0 build
+> next build
+
+▲ Next.js 16.2.9 (Turbopack)
+- Environments: .env
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 18.8s
+  Running TypeScript ...
+
+STDERR:
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /Users/ayushbansal/package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * /Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/package-lock.json
+
+Failed to type check.
+
+./components/portal/SecureLogin.tsx:108:33
+Type error: Cannot find name 'handleSubmit'.
+
+  [90m106 |[0m
+  [90m107 |[0m                 {[90m/* Form fields */[0m}
+[31m[1m>[0m [90m108 |[0m                 <form onSubmit={handleSubmit} className=[32m"space-y-4"[0m>
+  [90m    |[0m                                 [31m[1m^[0m
+  [90m109 |[0m                   <div className=[32m"space-y-1.5"[0m>
+  [90m110 |[0m                     <label className=[32m"text-[9.5px] font-mono text-zinc-400 uppercase trac...[0m
+  [90m111 |[0m                       [33mEnterprise[0m [33mEmail[0m [33mAddress[0m
+Next.js build worker exited with code: 1 and signal: null
