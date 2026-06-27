@@ -4,6 +4,38 @@ Welcome to the local FastAPI MVP backend foundation for the GFF AI Enterprise pl
 
 ---
 
+## 🚀 Quick Start (Root Convenience Commands)
+
+For rapid development, convenience scripts have been added to the repository's root `package.json`. These allow you to manage and run the backend seamlessly without manually creating or activating Python virtual environments in your active terminal.
+
+From the **root directory** of the project, you can run:
+
+*   **Install Backend Dependencies & Environment Setup**:
+    ```bash
+    npm run backend:install
+    ```
+    *This automatically creates the Python virtual environment (`venv`), installs all required pip dependencies, and copies `.env.example` to `.env` if not already present.*
+
+*   **Initialize & Seed Local SQLite Database**:
+    ```bash
+    npm run backend:seed
+    ```
+    *This executes the database seeder to bootstrap SQLite (`dev.db`) with multi-tenant enterprise development data (including GFF Admin, Apex Tenant Admin, Apex Client Members, as well as mock client accounts, projects, support tickets, invoices, and compliance logs).*
+
+*   **Run Backend Development Server (FastAPI)**:
+    ```bash
+    npm run backend:dev
+    ```
+    *Starts the FastAPI application via Uvicorn on [http://localhost:8000](http://localhost:8000) with hot-reloading enabled.*
+
+*   **Run Backend Security & Dependency Tests**:
+    ```bash
+    npm run backend:check
+    ```
+    *Executes the backend verification suite (`test_security_utilities.py`) to validate JWT token parsing, password bcrypt hashing, and role-based access control (RBAC) rules.*
+
+---
+
 ## Architecture Overview
 
 The backend uses a standard, modular clean-architecture layout built for Python 3.12+ and FastAPI:
