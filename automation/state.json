@@ -243,6 +243,10 @@
     {
       "id": "137-phase5-api-documents-metadata-crud",
       "reason": "failed after review"
+    },
+    {
+      "id": "139-phase5-api-support-tickets-crud",
+      "reason": "failed after review"
     }
   ]
 }
