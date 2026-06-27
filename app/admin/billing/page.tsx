@@ -228,7 +228,7 @@ export default function AdminBillingPage() {
       }, 600);
     }
     return () => clearInterval(t);
-  }, [signing, cId, pId, amount, due, status, month, invoices.length, fetchData]);
+  }, [signing, cId, pId, amount, due, status, month, invoices.length, fetchData, clientsList, projects]);
 
   
   useEffect(() => { 
