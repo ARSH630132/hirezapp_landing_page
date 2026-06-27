@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { 
   Lock, ChevronRight, ChevronDown, Menu, 
-  Building2, Check, Globe, Shield, RefreshCw 
+  Building2, Check, Globe, Shield, RefreshCw, LogOut 
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { SidebarLink, UserProfile, BreadcrumbItem } from "./types";
@@ -12,6 +12,7 @@ import { WorkspaceBreadcrumbs, WorkspaceCommandButton } from "./navigation";
 import { RoleSwitcherPreview } from "./role-switcher";
 import { NotificationBell } from "./notifications";
 import { UserAvatar } from "./notices-avatars";
+import { clearPreviewSession } from "@/lib/preview-auth";
 
 // Define logical grouping for links
 interface LinkGroup {
@@ -251,11 +252,36 @@ export function PrivateSidebar({
         })}
       </div>
 
-      {!collapsed && (
-        <div className="p-4 border-t border-white/5 bg-black/20 text-center font-mono text-[9px] text-white/25 select-none">
-          SECURE CLOCK: 2026.06.27
-        </div>
-      )}
+      <div className="p-3 border-t border-white/5 flex flex-col gap-2 shrink-0 bg-black/10">
+        {!collapsed ? (
+          <button 
+            onClick={() => {
+              clearPreviewSession();
+              window.location.href = "/portal/login";
+            }}
+            className="w-full h-8 rounded-lg border border-red-500/10 hover:border-red-500/30 bg-red-950/5 hover:bg-red-950/15 text-red-400 hover:text-red-300 flex items-center justify-center gap-1.5 font-mono text-[9.5px] font-bold uppercase transition-all cursor-pointer"
+          >
+            <LogOut className="w-3.5 h-3.5 shrink-0" />
+            <span>Sign Out</span>
+          </button>
+        ) : (
+          <button 
+            onClick={() => {
+              clearPreviewSession();
+              window.location.href = "/portal/login";
+            }}
+            className="h-8 w-8 mx-auto rounded-lg border border-red-500/10 hover:border-red-500/30 bg-red-950/5 hover:bg-red-950/15 text-red-400 hover:text-red-300 flex items-center justify-center transition-all cursor-pointer"
+            title="Deauthenticate Session"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+          </button>
+        )}
+        {!collapsed && (
+          <div className="text-center font-mono text-[8px] text-white/20 select-none uppercase tracking-widest mt-1">
+            CLOCK: 2026.06.27
+          </div>
+        )}
+      </div>
     </aside>
   );
 }
@@ -297,6 +323,20 @@ export function PrivateTopbar({
         <WorkspaceCommandButton onClick={onSearchClick} />
         <RoleSwitcherPreview currentRole={role} onRoleChange={onRoleChange} />
         <NotificationBell />
+        
+        {/* Quick Sign Out Action */}
+        <button 
+          onClick={() => {
+            clearPreviewSession();
+            window.location.href = "/portal/login";
+          }}
+          className="h-8 w-8 md:w-auto md:px-2.5 flex items-center justify-center gap-1.5 rounded-lg border border-red-500/10 hover:border-red-500/30 bg-red-950/5 hover:bg-red-950/15 text-red-400 hover:text-red-300 transition-all cursor-pointer"
+          title="Sign Out Session"
+        >
+          <LogOut className="w-3.5 h-3.5" />
+          <span className="hidden md:inline font-mono text-[9.5px] font-bold uppercase tracking-wider">Sign Out</span>
+        </button>
+
         <div className="border-l border-white/10 h-6 mx-0.5 hidden md:block" />
         <UserAvatar user={user} showDetails={true} />
       </div>
