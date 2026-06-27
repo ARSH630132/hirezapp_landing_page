@@ -103,7 +103,8 @@
     "122-phase5-preflight-backend-mvp-audit",
     "123-phase5-backend-folder-and-dev-setup",
     "124-phase5-backend-app-structure",
-    "125-phase5-database-session-and-base-models"
+    "125-phase5-database-session-and-base-models",
+    "126-phase5-core-domain-models"
   ],
   "failed": [
     {
