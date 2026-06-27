@@ -123,3 +123,23 @@ S3_DOCUMENTS_PREFIX=clients
 JWT_SECRET=production_cryptographically_secure_256_bit_signature_key_2026
 ACCESS_TOKEN_EXPIRE_MINUTES=1440
 ```
+
+
+---
+
+## 5. Seeded User Credentials (Final MVP Data)
+
+The system contains exactly **four** seeded user accounts covering the three standard RBAC roles (`gff_admin`, `client_admin`, `client_member`). All passwords, roles, and client associations are modeled to enable immediate high-fidelity secure testing.
+
+| Role | Email | Password | Associated Client | Notes |
+| :--- | :--- | :--- | :--- | :--- |
+| **`gff_admin`** | `gff_admin@gff.ai` | `password123` | *None* | Global platform administrator. Accesses the GFF Admin Panel. |
+| **`client_admin`** | `client_admin@apex.com` | `password123` | `Apex Global Solutions` (ID: 1) | Enterprise client administrator. Full workspace management for Client 1. |
+| **`client_member`** | `client_member@apex.com` | `password123` | `Apex Global Solutions` (ID: 1) | Client 1 standard user. Limited operational access inside Client 1 workspace. |
+| **`client_member`** | `client@chevron.com` | `chevron_secure_pass_2026` | `Sovereign Logistics Corp` (ID: 2) | Client 2 standard user. Used to verify cross-tenant security and upload/download boundaries in smoke tests. |
+
+These credentials can be used both locally (via SQLite/mock fallbacks) and in the production cloud (AWS DynamoDB) once the environment is initialized and seeded using:
+```bash
+npm run backend:seed
+```
+
