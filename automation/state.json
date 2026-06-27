@@ -112,7 +112,8 @@
     "129-phase5-rbac-permissions",
     "130-phase5-auth-endpoints",
     "131-phase5-seed-data-and-dev-users",
-    "132-phase5-backend-run-scripts"
+    "132-phase5-backend-run-scripts",
+    "133-phase5-api-clients-crud"
   ],
   "failed": [
     {
