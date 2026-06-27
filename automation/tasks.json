@@ -302,5 +302,869 @@
     "target": "whole project",
     "allowLandingChanges": false,
     "prompt": "Perform final QA for the complete Phase 0 to Phase 2 build. Do not add new features unless fixing a small clear issue. Verify landing page has approved hero preserved, hero video placement unchanged, hero copy and metrics correct, Enterprise Quick Search present and local, Garage Foundry Factory journey present, What We Build present, Interactive Experience present, Global Presence present, Client Success present, Live Dashboard present without fake numbers, Latest Research present, Footer complete. Verify explicit routes exist and no slug logic or PublicRoutePage exists. Verify all public pages have premium unique UI, category design families, mobile responsiveness, accessibility basics, no fake data, no backend/API/AWS/auth/OTP/export behavior. Verify Blueprint banking test returns 87/100. Run npm run lint and npm run build if available. Final response must include pass/fail checklist, files changed in final QA, commands run, remaining warnings, and any remaining TODOs."
+  },
+  {
+    "id": "38-phase3-preflight-interactive-tools-audit",
+    "title": "Phase 3 preflight audit for interactive Build With GFF tools",
+    "scope": "phase3-audit",
+    "target": "Build With GFF interactive product layer",
+    "allowLandingChanges": false,
+    "prompt": "This is the first task of Phase 3. Do not edit files. Audit the current implementation of all Build With GFF interactive experiences and related shared components. Inspect /build, /build/talk, /build/blueprint, /build/assessment, /build/roi, /build/sandbox, /build/proposal, /build/marketplace, /build/foundry-studio, components/Phase2InteractivePanels.tsx, components/Phase2PublicPages.tsx, lib/frontend-placeholders.ts, lib/blueprint-data.ts, lib/public-page-content.ts, lib/site-map-data.ts, and any existing form/tool/wizard components. Determine what is currently only a visual placeholder and what already has local functionality. Confirm that no backend, AWS, auth, real OTP, real email, database, or export dependency is being used. Confirm that landing page files are not required to be touched for Phase 3. Produce a detailed gap report for building Phase 3 as a frontend-only interactive product layer. The gap report must cover: shared tool architecture, reusable wizard needs, Blueprint Generator, AI Readiness Assessment, ROI Calculator, Talk to Agent, Proposal Builder, Sandbox, Marketplace, Foundry Studio, local workspace state, validation, accessibility, mobile UX, motion polish, and final QA. Do not make changes. Final response must list files inspected, existing capabilities found, missing functionality, risky files to avoid, and recommended implementation order."
+  },
+  {
+    "id": "39-phase3-shared-tool-architecture",
+    "title": "Create shared frontend tool architecture",
+    "scope": "phase3-foundation",
+    "target": "shared interactive tool foundation",
+    "allowLandingChanges": false,
+    "prompt": "Build the shared frontend-only architecture for Phase 3 interactive tools. Do not touch the landing page. Do not add backend/API/AWS/auth/OTP/email/database/export integrations. Create or improve lightweight shared utilities and components needed by /build tools. The goal is to make every Build With GFF tool feel consistent, premium, and product-grade while keeping each tool unique. Inspect existing components and avoid duplicate systems. Create only necessary files. Suggested elements: ToolPageShell, ToolHero, ToolStepLayout, ToolSidebarProgress, ToolResultPanel, ToolInputGroup, ToolOptionGrid, ToolSummaryCard, ToolEmptyState, ToolPreviewNotice, ToolCTA, ToolMotionReveal, ToolTabs, ToolCarousel, ToolComparisonRail, and ToolDataCard if useful. Create shared TypeScript types for industry, company size, AI journey, data readiness, priorities, assessment answers, ROI inputs, proposal inputs, sandbox agent, marketplace agent, and generated local reports. Create local-only service helpers inside an existing placeholder/service file or a new small lib file if needed. Do not create network calls. Do not create fake real outputs. Use deterministic local calculations and clearly labelled previews. Use Framer Motion or motion/react only if already installed. Use Aceternity-inspired patterns locally, such as bento grids, moving borders, spotlight cards, tabs, and card stacks, but do not install heavy dependencies. All components must be responsive, accessible, and visually aligned with the approved landing page theme. Run lint and build."
+  },
+  {
+    "id": "40-phase3-shared-data-models-and-validation",
+    "title": "Create shared data models validation and constants",
+    "scope": "phase3-foundation",
+    "target": "tool data models and validation",
+    "allowLandingChanges": false,
+    "prompt": "Create or improve shared frontend-only data models, constants, and validation utilities for Phase 3 tools. Do not touch the landing page. Do not add backend calls. Centralize reusable data so tools do not hardcode repeated arrays. Include industries: Banking, Healthcare, Manufacturing, Retail, Education, Government, Insurance, Financial Services, Life Sciences, Mining, Energy, Telecom, Audit, Tax, Legal, Advisory, Other. Include company sizes: <100, 100-1000, 1000-10000, 10000+. Include AI journeys: No AI, Exploring AI, Running Pilots, Scaling AI, AI-Driven Enterprise, AI-Native. Include priorities: Reduce Costs, Increase Revenue, Improve Productivity, Improve Customer Experience, Automate Processes, Strengthen Compliance, AI Transformation. Include data readiness levels and leadership commitment levels exactly as required by the Blueprint scoring. Include reusable validation helpers: required text, email format, max selected priorities, number ranges, non-negative currency/volume inputs, safe empty states. Include common suggested AI opportunities: Procurement Copilot, HR Assistant, Contract Intelligence, Knowledge Search, Executive Dashboard, Compliance Assistant, Customer Experience Agent, Document Intelligence Agent, Operations Copilot. Include GFF solution recommendations: Agent Factory, Knowledge Graph, AI Governance, Managed AI Operations, Garage, Foundry, Factory, Control Center. All helpers must be local and deterministic. Add unit-style pure functions where sensible, but do not introduce a test framework unless already present. Run lint and build."
+  },
+  {
+    "id": "41-phase3-reusable-wizard-and-stepper",
+    "title": "Build reusable premium wizard and stepper system",
+    "scope": "phase3-component",
+    "target": "wizard and stepper UI",
+    "allowLandingChanges": false,
+    "prompt": "Build a reusable wizard/stepper system for Build With GFF tools. Do not touch landing page. The system should support multi-step flows for Blueprint, Assessment, ROI, Proposal, and Talk to Agent. It must support step labels, progress, back/next actions, keyboard accessibility, validation messages, mobile stacking, summary side panel, result state, and local-only reset. Design must be premium and custom, not generic form UI. Use current site theme, tasteful motion, clear hierarchy, and mobile-friendly interactions. Use Framer Motion or motion/react only if already installed for step transitions and progress animations. Respect prefers-reduced-motion. Avoid excessive pills, nested boxes, and badge clutter. Do not add backend calls. Do not change actual page content yet except where needed to wire the reusable system into existing tool pages if safe. Run lint and build."
+  },
+  {
+    "id": "42-phase3-talk-to-agent-tool",
+    "title": "Build Talk to Agent frontend-only experience",
+    "scope": "phase3-tool",
+    "target": "/build/talk",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /build/talk into a premium frontend-only AI challenge intake experience. Do not touch landing page. This page should feel like a real enterprise intake tool, not a static contact form. Build a guided flow with fields: challenge description, industry selector, company size selector, geography optional, urgency optional, function/team optional, current AI stage optional. Add smart local preview after submit with three result panels: Proposed Direction, Suggested Squad, Indicative Timeline. The preview must be deterministic and clearly labelled as frontend preview. No API calls. No fake AI generation. Include examples such as 'Employees spend too much time searching for information' and 'Too many manual processes across departments'. Add an elegant side panel showing how Garage, Foundry, and Factory would engage. Add CTA links to /build/blueprint and /contact. Use premium UI with thoughtful spacing, animated step transition, textarea experience, option cards, and result cards. Mobile must be excellent. Accessibility: labels, keyboard navigation, visible focus, clear validation. Run lint and build."
+  },
+  {
+    "id": "43-phase3-blueprint-wizard-inputs",
+    "title": "Build Blueprint Generator wizard input flow",
+    "scope": "phase3-tool",
+    "target": "/build/blueprint input flow",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /build/blueprint input flow into a polished multi-step wizard. Do not touch landing page. Preserve the required Blueprint scoring rules and do not break existing homepage Blueprint if it shares logic. Build steps: 1 Organization: industry and company size. 2 Priorities: select up to 3 priorities. 3 AI Journey: AI maturity stage. 4 Data and Leadership: data readiness and leadership commitment. 5 Challenge: biggest challenge text area. 6 Email and OTP placeholder: email field and clearly-labelled OTP placeholder state. Do not send OTP. Do not call backend. Add optional budget and geography only if they fit cleanly. Design should feel like an expensive enterprise self-assessment tool with progress rail, animated transitions, summary preview, and mobile-friendly step layout. Use local state only. Enforce validation before moving to next step. Result generation can remain existing if already present; this task focuses on the input wizard quality. Run lint and build."
+  },
+  {
+    "id": "44-phase3-blueprint-scoring-engine-and-results",
+    "title": "Finalize Blueprint scoring engine and results report",
+    "scope": "phase3-tool",
+    "target": "/build/blueprint scoring and results",
+    "allowLandingChanges": false,
+    "prompt": "Finalize the Blueprint Generator scoring engine and results report. Do not touch landing page unless shared Blueprint logic requires a safe bug fix, and do not alter hero UI. Use exact formula: Blueprint Score = 0.20(AI Maturity) + 0.25(Business Need) + 0.20(Data Readiness) + 0.20(Process Complexity) + 0.15(Transformation Readiness). AI Maturity scores: No AI 10, Exploring AI 30, Running Pilots 60, Scaling AI 85, AI-Driven Enterprise or AI-Native 100. Business Need: Reduce Costs/Cost Reduction 20, Improve Productivity/Productivity 20, Improve Customer Experience/Customer Experience 15, Increase Revenue/Revenue Growth 15, Strengthen Compliance/Compliance 10, AI Transformation 20, Automate Processes 20, capped at 100. Data Readiness: Highly fragmented 20, Partially connected 50, Mostly integrated 75, Fully integrated 100. Process Complexity: <100 20, 100-1000 50, 1000-10000 80, 10000+ 100. Transformation Readiness: Not Discussed 20, Exploring 50, Budget Approved 80, Executive Mandate 100. Score categories: 0-25 AI Beginner, 26-50 AI Explorer, 51-70 AI Adopter, 71-85 AI Transformer, 86-100 AI-Native Leader. Test case Banking, 15000 employees or 10000+ company size, Scaling AI, Productivity + Cost Reduction + Compliance, Mostly Integrated Data, Budget Approved must show 87/100. Results must include AI Readiness Score, category, dimension breakdown, Top 5 Recommended AI Opportunities, Recommended GFF AI Solution, Expected Business Impact, and 90-Day Roadmap: Garage Discovery, Foundry Pilot, Factory Enterprise Rollout, Operate Managed AI Operations. Impact labels must be expected/modelled, not guaranteed. Create premium report UI with charts or visual score rings using CSS/SVG only, no fake dashboards. Run lint and build."
+  },
+  {
+    "id": "45-phase3-blueprint-local-save-share-copy",
+    "title": "Add local save copy and share-ready Blueprint report actions",
+    "scope": "phase3-tool",
+    "target": "/build/blueprint report actions",
+    "allowLandingChanges": false,
+    "prompt": "Add safe frontend-only actions to the Blueprint results report. Do not touch landing page. Do not create real backend exports. Add local actions: Copy summary to clipboard, Save locally in browser localStorage, Reset assessment, and Print using browser print if easy and safe. Do not generate fake PDFs/PPTs/SOW files. If print view is implemented, ensure it is clearly browser print and does not require backend. Add a clean saved-report state and a small local-history drawer showing recent locally saved Blueprint previews without storing sensitive data beyond user's own local browser. Add privacy note: frontend preview only, no server submission in this phase. Ensure accessibility and mobile usability. Run lint and build."
+  },
+  {
+    "id": "46-phase3-ai-readiness-assessment-framework",
+    "title": "Build AI Readiness Assessment framework",
+    "scope": "phase3-tool",
+    "target": "/build/assessment framework",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /build/assessment into a polished AI Readiness Assessment tool. Do not touch landing page. Build a frontend-only diagnostic framework with dimensions: Strategy, Data Readiness, Process Readiness, Talent Readiness, Governance, Technology Stack, Leadership Commitment, Operating Model. Use local state only. Each dimension should have 3 to 5 carefully written questions with answer options mapped to scores. Do not make fake AI claims. Do not call APIs. Design should feel like a premium enterprise diagnostic with tabs or stepper, dimension navigation, progress indicator, and a side summary. Keep copy concise and executive-friendly. Add validation and clear completion flow. Use subtle motion. Mobile must be excellent. Run lint and build."
+  },
+  {
+    "id": "47-phase3-ai-readiness-scoring-results",
+    "title": "Build AI Readiness scoring and result report",
+    "scope": "phase3-tool",
+    "target": "/build/assessment results",
+    "allowLandingChanges": false,
+    "prompt": "Build the scoring and results report for /build/assessment. Do not touch landing page. Use deterministic local scoring across the assessment dimensions. Show overall readiness score, maturity band, dimension breakdown, strengths, risk areas, recommended next actions, and recommended GFF path: Garage, Foundry, Factory, Operate. Do not guarantee outcomes. Do not use fake benchmarks. Use CSS/SVG charts such as radar-style visual, bar breakdown, score ring, or maturity ladder without external chart dependency unless already installed. Add a CTA to Generate Blueprint and Talk to Agent. Add local-only copy/save/reset actions if shared utilities exist. Design must be highly polished, unique from Blueprint, and mobile-friendly. Run lint and build."
+  },
+  {
+    "id": "48-phase3-roi-calculator-input-model",
+    "title": "Build ROI Calculator input model",
+    "scope": "phase3-tool",
+    "target": "/build/roi input model",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /build/roi into an executive ROI Calculator frontend-only tool. Do not touch landing page. Build a polished input flow with fields: industry, company size, function, annual cost baseline, process volume, average handling time optional, automation target percentage, current manual effort level, expected productivity improvement range, implementation horizon. Use safe validation for numbers and non-negative currency/volume inputs. Do not call APIs. Do not guarantee ROI. Make all outputs illustrative and modelled. Use a premium calculator UI with side preview, sliders or segmented controls where appropriate, and mobile-first form layout. Use subtle motion and clear helper text. Run lint and build."
+  },
+  {
+    "id": "49-phase3-roi-results-and-scenarios",
+    "title": "Build ROI Calculator results and scenario comparison",
+    "scope": "phase3-tool",
+    "target": "/build/roi results",
+    "allowLandingChanges": false,
+    "prompt": "Build the ROI Calculator results experience. Do not touch landing page. Create deterministic local calculations using provided user inputs. Show illustrative annual efficiency opportunity, estimated hours saved, productivity range, payback-style narrative if inputs allow, and scenario comparison for Conservative, Expected, and Aggressive. Clearly label every number as illustrative/modelled and not guaranteed. Add charts using CSS/SVG only unless a chart library already exists. Add scenario cards, waterfall-style value breakdown, and recommended next step CTAs to Assessment, Blueprint, and Proposal Builder. Add copy-to-clipboard and reset actions. No fake benchmarks, no backend, no real financial advice. Mobile excellent. Run lint and build."
+  },
+  {
+    "id": "50-phase3-proposal-builder-intake",
+    "title": "Build Proposal Builder intake flow",
+    "scope": "phase3-tool",
+    "target": "/build/proposal intake",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /build/proposal into a premium frontend-only Proposal Builder. Do not touch landing page. Build intake flow with fields: organization name optional, industry, company size, primary challenge, priority outcomes, target timeline, preferred engagement path, budget range optional, geography optional, stakeholders optional. Use local state and validation. Do not call backend. Do not generate real legal SOW documents. The UI should feel like an enterprise proposal studio: guided form, live outline preview, engagement path cards for Garage, Foundry, Factory, Operate, and a clean summary panel. Use subtle motion, polished cards, and mobile-friendly layout. Run lint and build."
+  },
+  {
+    "id": "51-phase3-proposal-builder-preview",
+    "title": "Build Proposal Builder preview and outline",
+    "scope": "phase3-tool",
+    "target": "/build/proposal preview",
+    "allowLandingChanges": false,
+    "prompt": "Build the local proposal preview experience for /build/proposal. Do not touch landing page. Generate a deterministic local proposal outline using user inputs. Sections should include Executive Summary, Challenge Statement, Recommended GFF Path, Proposed Workstreams, 90-Day Roadmap, Suggested Squad, Governance Approach, Success Measures, Assumptions, Risks, and Next Steps. Label output as frontend preview only and not a final commercial/legal proposal. Add actions: copy outline to clipboard, save locally in browser, reset, and browser print if safe. Export cards for PPT, PDF, and SOW may be shown as disabled or future integration previews only. No fake file generation. Create a polished document-preview UI that looks expensive and enterprise-ready. Run lint and build."
+  },
+  {
+    "id": "52-phase3-sandbox-agent-demo-catalog",
+    "title": "Build Sandbox agent demo catalog",
+    "scope": "phase3-tool",
+    "target": "/build/sandbox",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /build/sandbox into a premium frontend-only Sandbox preview. Do not touch landing page. Build a catalog of representative agent demos using local static data only. Suggested demo categories: Knowledge Search, Procurement Copilot, HR Assistant, Contract Intelligence, Executive Dashboard, Compliance Assistant, Customer Experience Agent, Operations Copilot. Each demo card should include purpose, sample workflow, recommended industry, related platform, and frontend-preview status. Add filters by industry, function, and agent type. Add a demo detail panel or carousel that shows sample steps without pretending a real agent is running. No API calls, no chat model, no fake live runtime. Design should feel like a secure enterprise sandbox with high-quality visuals, tabs/carousel, and subtle motion. Run lint and build."
+  },
+  {
+    "id": "53-phase3-sandbox-simulated-agent-preview",
+    "title": "Build safe simulated Sandbox agent preview",
+    "scope": "phase3-tool",
+    "target": "/build/sandbox simulated preview",
+    "allowLandingChanges": false,
+    "prompt": "Add a safe simulated agent preview inside /build/sandbox. Do not touch landing page. When a user selects a demo agent, show a deterministic, local, prewritten workflow simulation: user challenge, agent interpretation, knowledge needed, actions it would take, human approval point, governance check, and expected output preview. Make it clear this is a static frontend simulation and not a live AI agent. No API calls. No fake real-time claims. Use a premium step-by-step timeline, animated workflow path, or tabbed execution viewer. Add related CTAs to Talk to Agent, Blueprint, and Foundry Studio. Mobile and accessibility must be excellent. Run lint and build."
+  },
+  {
+    "id": "54-phase3-agent-marketplace-tool",
+    "title": "Build Build Marketplace interactive catalog",
+    "scope": "phase3-tool",
+    "target": "/build/marketplace",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /build/marketplace into a premium interactive agent and accelerator catalog. Do not touch landing page. Use local static data only. Include categories: Knowledge Agents, Operations Agents, Compliance Agents, Customer Experience Agents, Executive Agents, Document Intelligence Agents, Procurement Agents, HR Agents. Add filters by industry, function, maturity stage, and platform fit. Add search. Add comparison drawer allowing up to 3 agent patterns. No pricing, no fake purchasable products, no fake availability. Each card should include use case, where it fits in Garage/Foundry/Factory, related capabilities, and CTA to Sandbox or Talk to Agent. Use carousel, bento grid, tabs, and motion if appropriate. Mobile excellent. Run lint and build."
+  },
+  {
+    "id": "55-phase3-foundry-studio-workflow-builder",
+    "title": "Build Foundry Studio visual workflow builder preview",
+    "scope": "phase3-tool",
+    "target": "/build/foundry-studio",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /build/foundry-studio into a premium visual workflow builder preview. Do not touch landing page. This must be frontend-only and not a real builder backend. Create a visual flow where users can select an industry, choose an agent pattern, add workflow stages, add knowledge sources as labels, add human approval points, and see a generated local workflow map. Use deterministic local state. No drag-and-drop dependency unless already installed; use click-to-add modules or simple reorder buttons if needed. Visual modules can include Trigger, Agent Reasoning, Knowledge Graph, Tool Action, Human Review, Governance Check, Output, Control Center Monitoring. Add a polished architecture canvas with SVG/CSS connections. Add CTAs to Proposal Builder and Sandbox. Mobile should degrade gracefully into a stacked workflow. Run lint and build."
+  },
+  {
+    "id": "56-phase3-build-hub-unified-experience",
+    "title": "Upgrade Build With GFF hub as product launcher",
+    "scope": "phase3-tool",
+    "target": "/build",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /build into a premium self-service product launcher for all Build With GFF tools. Do not touch landing page. The page should help users understand which tool to use next. Include a hero, enterprise flow: Visitor, AI Assessment, Blueprint, Workshop, Proposal, Contract, Delivery, Operate, Expand. Add tool launcher cards for Talk to Agent, Blueprint Generator, AI Readiness Assessment, ROI Calculator, Sandbox, Proposal Builder, Marketplace, Foundry Studio. Add a decision guide section: If you are exploring use Assessment, if you know the challenge use Talk, if you need a roadmap use Blueprint, if you need economics use ROI, if you need a proposal use Proposal Builder. Add a local 'continue where you left off' panel if local storage state exists. Design must be premium, clear, interactive, and mobile-friendly. Run lint and build."
+  },
+  {
+    "id": "57-phase3-local-workspace-continuity",
+    "title": "Add local workspace continuity across Build tools",
+    "scope": "phase3-state",
+    "target": "local workspace continuity",
+    "allowLandingChanges": false,
+    "prompt": "Add safe local workspace continuity across Build With GFF tools. Do not touch landing page. Use localStorage only. Do not store sensitive information beyond what the user enters locally. Create a small local workspace utility to save non-sensitive previews for Blueprint, Assessment, ROI, Proposal, Talk to Agent, Sandbox selections, Marketplace comparisons, and Foundry Studio flows. Add clear local-only messaging: saved in this browser only, no server submission in this phase. Add reset/clear workspace action. Add 'continue' panels to /build and relevant tool pages if safe. Do not add auth or backend. Ensure hydration safety in Next.js by guarding browser-only APIs. Run lint and build."
+  },
+  {
+    "id": "58-phase3-cross-tool-recommendations",
+    "title": "Add cross-tool recommendations and next-best-action system",
+    "scope": "phase3-state",
+    "target": "cross-tool recommendations",
+    "allowLandingChanges": false,
+    "prompt": "Build a local next-best-action recommendation system across Build tools. Do not touch landing page. Based on local user inputs or completed previews, recommend the next tool: after Assessment recommend Blueprint, after Blueprint recommend ROI or Proposal, after ROI recommend Proposal, after Talk recommend Blueprint, after Sandbox recommend Foundry Studio, after Marketplace recommend Sandbox or Proposal. This must be deterministic local logic, not AI generation. Add a reusable NextBestAction component with premium CTA styling. Include explanation text, related route, and one secondary action. Ensure it does not appear if there is no relevant state. No backend. Mobile friendly. Run lint and build."
+  },
+  {
+    "id": "59-phase3-command-center-deep-actions",
+    "title": "Enhance Command Center with Build tool deep actions",
+    "scope": "phase3-navigation",
+    "target": "Command Center",
+    "allowLandingChanges": false,
+    "prompt": "Enhance the Command Center with Build With GFF deep actions. Do not touch landing page. Existing Cmd+K/Ctrl+K behavior must remain. Add commands for Start Blueprint, Continue Blueprint if local state exists, Start Assessment, Estimate ROI, Build Proposal, Open Sandbox, Compare Agents, Open Foundry Studio, Clear Local Workspace, Contact Sales, Book Workshop. Keep it frontend-only. Use route navigation and local actions only. Ensure keyboard accessibility, focus trap if modal, escape close, mobile fallback button if needed, and visible focus states. Do not redesign global header unless required. Run lint and build."
+  },
+  {
+    "id": "60-phase3-tool-empty-loading-error-states",
+    "title": "Polish empty loading error and completion states",
+    "scope": "phase3-ux-polish",
+    "target": "all Build tools",
+    "allowLandingChanges": false,
+    "prompt": "Polish empty states, loading-like transitions, error states, validation states, completion states, and reset states across all Build With GFF tools. Do not touch landing page. Tools: /build/talk, /build/blueprint, /build/assessment, /build/roi, /build/sandbox, /build/proposal, /build/marketplace, /build/foundry-studio. Since everything is frontend-only, use short deterministic transitions only where tasteful. Empty states must explain what the user should do. Validation states must be clear and accessible. Completion states must include next actions. Error states must not be scary or fake backend errors. Use premium microcopy and consistent visuals. Run lint and build."
+  },
+  {
+    "id": "61-phase3-mobile-pass-build-tools",
+    "title": "Mobile UX pass for Build With GFF tools",
+    "scope": "phase3-mobile-qa",
+    "target": "Build tool pages",
+    "allowLandingChanges": false,
+    "prompt": "Perform a mobile UX pass for all Build With GFF tools. Do not redesign and do not touch landing page. Check /build, /build/talk, /build/blueprint, /build/assessment, /build/roi, /build/sandbox, /build/proposal, /build/marketplace, /build/foundry-studio. Fix only mobile and responsive issues. Ensure no horizontal overflow, readable text, easy form inputs, large tap targets, stepper usability, accessible carousels/tabs, stacked result panels, simplified diagrams, usable comparison drawer, and workflow builder fallback. Do not add new features. Run lint and build."
+  },
+  {
+    "id": "62-phase3-accessibility-pass-build-tools",
+    "title": "Accessibility pass for Build With GFF tools",
+    "scope": "phase3-accessibility-qa",
+    "target": "Build tool pages",
+    "allowLandingChanges": false,
+    "prompt": "Perform an accessibility pass for all Build With GFF interactive tools. Do not touch landing page. Check labels, aria attributes where needed, keyboard navigation, focus states, form errors, tab/carousel controls, modal/dialog focus handling, command center deep actions, reduced motion, heading order, semantic sections, color contrast, and button/link semantics. Fix only accessibility issues. Do not redesign. Ensure every tool page has one clear H1 and that result panels are announced/readable. Run lint and build."
+  },
+  {
+    "id": "63-phase3-motion-and-interaction-polish",
+    "title": "Motion and interaction polish for Build tools",
+    "scope": "phase3-visual-polish",
+    "target": "Build tool pages",
+    "allowLandingChanges": false,
+    "prompt": "Perform a motion and interaction polish pass for Build With GFF tools. Do not touch landing page. Use Framer Motion or motion/react only if already installed. Improve step transitions, hover states, selected option states, result reveals, tab transitions, carousel movement, workflow map reveal, score chart animation, and CTA micro-interactions. Keep motion subtle, expensive, and purposeful. Respect prefers-reduced-motion. Avoid noisy animation, excessive glows, and fake loading. Do not add dependencies. Run lint and build."
+  },
+  {
+    "id": "64-phase3-visual-premium-polish-build-tools",
+    "title": "Premium visual polish for Build tools",
+    "scope": "phase3-visual-polish",
+    "target": "Build tool pages",
+    "allowLandingChanges": false,
+    "prompt": "Perform final premium UI polish only on Build With GFF tools. Do not touch landing page. Make /build and all tool pages feel like a custom 2026 enterprise product suite. Fix generic-looking sections, weak spacing, repetitive cards, clumsy forms, unbalanced layouts, and any UI that feels AI-generated. Add page-specific visual ideas where missing: score ring, architecture diagram, workflow canvas, product preview, executive report panel, carousel, bento grid, tabbed insight panel, comparison drawer, or timeline. Do not add fake data. Do not add dependencies. Preserve the current site theme. Run lint and build."
+  },
+  {
+    "id": "65-phase3-tool-logic-tests-or-verification-script",
+    "title": "Add lightweight verification for tool logic",
+    "scope": "phase3-quality",
+    "target": "tool calculation logic",
+    "allowLandingChanges": false,
+    "prompt": "Add lightweight verification for deterministic tool logic without introducing a heavy testing stack. Do not touch landing page. If an existing test framework exists, add small tests for Blueprint scoring, Assessment scoring, ROI calculation, local recommendation logic, and validation helpers. If no test framework exists, add a small documented npm-safe verification script only if consistent with the project, or add pure-function self-check comments/docs instead. The Banking Blueprint example must be covered: Banking, 10000+ company size, Scaling AI, Productivity + Cost Reduction + Compliance, Mostly Integrated Data, Budget Approved returns 87/100. Do not add dependencies unless absolutely necessary. Run available test command if present, then lint/build."
+  },
+  {
+    "id": "66-phase3-api-contract-documentation-only",
+    "title": "Document future FastAPI contracts for Phase 4",
+    "scope": "phase3-docs",
+    "target": "future backend API contract documentation",
+    "allowLandingChanges": false,
+    "prompt": "Create or update documentation for future FastAPI backend contracts only. Do not build backend. Do not add FastAPI folder yet unless already present and explicitly documented as empty placeholder. Do not add API calls. Create docs/PHASE_3_INTERACTIVE_TOOLS.md or update existing docs. Document what Phase 3 built, what remains frontend-only, and future endpoints for Phase 4 or backend phase: POST /api/blueprint/generate, POST /api/assessment/score, POST /api/roi/calculate, POST /api/contact/submit, POST /api/proposal/generate, POST /api/auth/request-otp, POST /api/auth/verify-otp, POST /api/newsletter/subscribe, POST /api/sandbox/run, POST /api/foundry/workflow, GET /api/marketplace/agents. Document payload shapes at a high level, response examples clearly marked illustrative, security requirements, auth/session later, email/OTP provider later, database later, object storage later, and no AWS credentials in this phase. Run lint/build if docs affect build."
+  },
+  {
+    "id": "67-phase3-linking-and-cta-integration",
+    "title": "Integrate links and CTAs across Phase 3 tools",
+    "scope": "phase3-integration",
+    "target": "links CTAs navigation between tools",
+    "allowLandingChanges": false,
+    "prompt": "Audit and improve internal linking between Build With GFF tools and related public pages. Do not touch landing page. Ensure /build links to every tool. Each tool should link to the next logical tools. Blueprint links to Assessment, ROI, Proposal, Talk. Assessment links to Blueprint and Talk. ROI links to Proposal and Blueprint. Proposal links to Talk and Contact. Sandbox links to Marketplace and Foundry Studio. Marketplace links to Sandbox and Proposal. Foundry Studio links to Proposal and Talk. Add related links to relevant Capabilities and Platforms where useful. No broken links. No slug links. Use existing CTA style. Run lint and build."
+  },
+  {
+    "id": "68-phase3-final-interactive-tools-qa",
+    "title": "Final Phase 3 QA for interactive tools",
+    "scope": "phase3-final-qa",
+    "target": "entire Phase 3 interactive layer",
+    "allowLandingChanges": false,
+    "prompt": "Perform final QA for Phase 3 interactive Build With GFF tools. Do not add new features unless fixing a small clear issue. Verify /build, /build/talk, /build/blueprint, /build/assessment, /build/roi, /build/sandbox, /build/proposal, /build/marketplace, /build/foundry-studio. Verify shared tool architecture works. Verify frontend-only safety: no backend, no AWS, no auth, no real OTP, no real email, no database, no real API calls, no real exports. Verify Blueprint scoring and Banking example 87/100. Verify assessment and ROI calculations are deterministic and labelled illustrative. Verify local workspace does not break hydration. Verify mobile responsiveness, accessibility, reduced motion, command center deep actions, links, CTAs, empty states, error states, result states, and visual polish. Run npm run lint, npm run build, npm run typecheck if available, and npm test if available. Final response must include pass/fail checklist, files changed, commands run, remaining warnings, and TODOs for the next backend/FastAPI phase."
+  },
+  {
+    "id": "69-phase4-preflight-portal-admin-audit",
+    "title": "Phase 4 preflight audit for login admin and client portal",
+    "scope": "phase4-audit",
+    "target": "login admin client portal frontend",
+    "allowLandingChanges": false,
+    "prompt": "This is the first task of Phase 4. Do not edit files. Audit the current implementation for all login, client portal, admin portal, and private workspace related routes and components. Inspect app/portal, app/client, app/admin if present, app/login if present, app/layout.tsx, components/Header.tsx, components/Footer.tsx, components/CommandCenter.tsx, components/Phase2PublicPages.tsx, components/Phase2InteractivePanels.tsx, lib/site-map-data.ts, lib/public-page-content.ts, lib/frontend-placeholders.ts, and any existing dashboard, portal, auth, client, admin, table, document, billing, support, analytics, or governance components. Determine what currently exists as a public shell and what is missing for a proper logged-in product experience. Do not create backend, real auth, database, AWS, email, OTP, payment, upload, or API integrations. Produce a detailed implementation gap report for Phase 4 frontend. The report must cover required routes, app shell, local auth preview, role switching, route protection preview, client portal dashboard, projects, AI operations, documents, billing, support, analytics, governance, settings, admin dashboard, client management, user management, project management, documents admin, billing admin, support admin, analytics admin, governance admin, activity feed, notifications, global search, command center, tables, filters, mobile UX, accessibility, design system, and final QA. Final response must include files inspected, existing capabilities, missing routes, missing components, design risks, and recommended implementation order. Do not edit files."
+  },
+  {
+    "id": "70-phase4-private-app-design-system",
+    "title": "Create private app design system for portal and admin",
+    "scope": "phase4-foundation",
+    "target": "private app design primitives",
+    "allowLandingChanges": false,
+    "prompt": "Build the shared private app design system for login, client portal, and admin portal. Do not touch the public landing page. Do not redesign public pages. This task should create or improve reusable frontend-only UI primitives for authenticated-style product screens. The UI must feel like a premium 2026 enterprise AI operations product, not a generic admin template. Follow the public website theme but make the private workspace feel more operational, secure, data-rich, and product-grade. Create only necessary reusable components, such as PrivateAppShell, PrivateSidebar, PrivateTopbar, PrivatePageHeader, WorkspaceBreadcrumbs, WorkspaceCommandButton, WorkspaceCard, MetricTile, StatusBadge, DataTable, FilterBar, EmptyState, ActivityFeed, Timeline, DocumentCard, InvoiceCard, SupportTicketCard, AnalyticsPanel, GovernancePanel, AgentHealthCard, ProjectCard, UserAvatar, NotificationBell, RoleSwitcherPreview, and SecurePreviewNotice if useful. Use Framer Motion or motion/react only if already installed. Use Aceternity-inspired effects locally, such as subtle spotlight cards, moving borders, bento dashboards, animated tabs, sticky sidebars, and command palette surfaces. Do not install heavy dependencies without approval. All components must be responsive, accessible, keyboard-friendly, and scoped so they do not affect the public landing page. Run lint and build."
+  },
+  {
+    "id": "71-phase4-private-route-map",
+    "title": "Create explicit routes for login client portal and admin portal",
+    "scope": "phase4-routing",
+    "target": "private route structure",
+    "allowLandingChanges": false,
+    "prompt": "Create or verify explicit App Router pages for the full Phase 4 route structure. Do not use slug routing. Do not create app/[...slug]/page.tsx. Do not recreate PublicRoutePage. Do not touch the landing page. Required public entry routes: /login, /portal, /portal/login. Required client portal routes: /portal/dashboard, /portal/projects, /portal/projects/[id] if the current project supports dynamic explicit folders safely, /portal/ai-operations, /portal/ai-operations/[id] if safe, /portal/documents, /portal/documents/[id] if safe, /portal/billing, /portal/billing/invoices, /portal/billing/invoices/[id] if safe, /portal/support, /portal/support/[id] if safe, /portal/analytics, /portal/governance, /portal/settings, /portal/activity. Required compatibility client routes: /client, /client/control-center, /client/dashboard if useful. Required admin routes: /admin, /admin/dashboard, /admin/clients, /admin/clients/[id] if safe, /admin/projects, /admin/projects/[id] if safe, /admin/users, /admin/ai-operations, /admin/documents, /admin/billing, /admin/support, /admin/analytics, /admin/governance, /admin/settings, /admin/activity. If dynamic routes are risky in the current automation, create explicit list/detail pages without dynamic params and use local state/detail drawers instead. Pages may initially render shared shell placeholders, but every route must exist explicitly. Run lint and build."
+  },
+  {
+    "id": "72-phase4-local-auth-session-rbac-preview",
+    "title": "Build local auth session and role-based preview layer",
+    "scope": "phase4-auth-preview",
+    "target": "frontend-only auth and RBAC preview",
+    "allowLandingChanges": false,
+    "prompt": "Build a frontend-only local auth/session preview layer for Phase 4. Do not add real authentication. Do not call APIs. Do not add backend, cookies requiring server auth, JWT verification, OAuth, Cognito, Firebase, Clerk, Supabase, or database. Implement a safe local preview system using localStorage or in-memory state with hydration guards. Support roles: client_admin, client_member, gff_admin. Provide local preview users with clearly fake/internal preview labels, not real identities. Add helper utilities such as getPreviewSession, setPreviewSession, clearPreviewSession, hasRole, canAccessPortalSection, canAccessAdminSection. Add safe route guard components that redirect or show a locked preview state when no local preview session exists. Every message must say this is frontend preview only and real auth will be connected in backend phase. Do not make it look like real security. Run lint and build."
+  },
+  {
+    "id": "73-phase4-client-login-landing",
+    "title": "Build Client Login public landing at /portal",
+    "scope": "phase4-login",
+    "target": "/portal public client login landing",
+    "allowLandingChanges": false,
+    "prompt": "Upgrade /portal into a premium Client Login landing page. This page is public and should explain the secure delivery workspace before login. Do not touch the main landing page. /portal must contain module previews: Dashboard, Projects, Invoices or Billing, Support, Documents, AI Operations, Analytics, Governance. It should have a premium login CTA, secure workspace narrative, module preview cards, trust/security style visual language without fake certifications, and a clear note that login/auth is frontend preview only in this phase. Add route links to /portal/login and preview module anchors or cards. Design should feel expensive, secure, enterprise-grade, and consistent with the GFF AI theme. Use polished graphics, bento cards, dashboard previews without fake data, and subtle motion. No real auth, no API calls. Run lint and build."
+  },
+  {
+    "id": "74-phase4-login-page",
+    "title": "Build premium login page and local role preview",
+    "scope": "phase4-login",
+    "target": "/login and /portal/login",
+    "allowLandingChanges": false,
+    "prompt": "Build premium frontend-only login pages for /login and /portal/login. Do not touch landing page. The login UI should feel like a secure enterprise product login, with GFF AI branding, email field, password field placeholder, SSO button placeholders, OTP login placeholder, role preview selector for local development, and clear frontend-only notice. On submit, create a local preview session only and route client roles to /portal/dashboard and GFF/admin roles to /admin/dashboard. Do not implement real auth, password validation beyond simple required fields, OTP sending, SSO, OAuth, sessions, cookies, JWT, backend calls, or API calls. Add forgot password placeholder link and contact support link. Make it mobile excellent, accessible, keyboard-friendly, and visually premium with subtle motion. Run lint and build."
+  },
+  {
+    "id": "75-phase4-forgot-password-otp-preview",
+    "title": "Build forgot password and OTP preview states",
+    "scope": "phase4-login",
+    "target": "login recovery frontend preview",
+    "allowLandingChanges": false,
+    "prompt": "Add frontend-only forgot password and OTP preview states to the login experience. Do not create real password reset, email, OTP, or backend calls. The forgot password UI should allow entering an email and then show a safe preview message: password reset will be connected in the backend authentication phase. The OTP UI should allow entering a 6 digit placeholder code only for preview and must not pretend to send or verify real OTP. Add accessible validation, clear microcopy, and safe reset/back actions. The UI should be polished and secure-looking but honest. Do not touch landing page. Run lint and build."
+  },
+  {
+    "id": "76-phase4-private-app-shell",
+    "title": "Build private workspace app shell",
+    "scope": "phase4-layout",
+    "target": "shared client and admin app shell",
+    "allowLandingChanges": false,
+    "prompt": "Build the shared private app shell used by client portal and admin portal pages. Do not touch landing page. The shell should include a responsive sidebar, topbar, workspace switcher or organization label, breadcrumb area, user menu, sign out preview action, and content container. The sidebar should support grouped navigation and collapse behavior on desktop, bottom or drawer navigation on mobile, and clear active states. Client portal navigation must include Dashboard, Projects, AI Operations, Documents, Billing, Support, Analytics, Governance. Admin navigation must include Dashboard, Clients, Projects, Users, AI Operations, Documents, Billing, Support, Analytics, Governance, Activity, Settings. Make the UI feel like a premium enterprise control center, not a basic admin template. Use current theme, subtle motion, accessible landmarks, keyboard focus, and mobile-first behavior. Run lint and build."
+  },
+  {
+    "id": "77-phase4-private-mock-data-model",
+    "title": "Create local mock data model for portal and admin",
+    "scope": "phase4-data",
+    "target": "local mock data",
+    "allowLandingChanges": false,
+    "prompt": "Data should support dashboard, projects, AI operations, documents, billing/invoices, support tickets, governance, users, and clients. Include types for ClientAccount, Project, AgentOperation, DocumentItem, Invoice, SupportTicket, GovernanceItem, User, Role."
+  },
+  {
+    "id": "78-phase4-data-table-filter-system",
+    "title": "Build premium data table filter and list system",
+    "scope": "phase4-component",
+    "target": "tables lists filters",
+    "allowLandingChanges": false,
+    "prompt": "Build reusable premium table, list, filter, and detail-drawer components for portal and admin pages. Do not touch landing page. Components should support search, status filters, type filters, sort controls, empty state, row click, mobile card fallback, and accessible keyboard navigation. Use these components for Projects, Documents, Billing, Support, Users, Clients, AI Operations, Governance. Make the design feel custom and expensive, not default HTML tables. Use subtle row hover, sticky header where useful, and clean responsive cards on mobile. No backend calls. Run lint and build."
+  },
+  {
+    "id": "79-phase4-client-dashboard",
+    "title": "Build Client Portal Dashboard",
+    "scope": "phase4-client-portal",
+    "target": "/portal/dashboard",
+    "allowLandingChanges": false,
+    "prompt": "Build /portal/dashboard as the main client portal cockpit. Do not touch landing page. Use the private app shell. The dashboard should include welcome header, account summary, active projects, AI operations status, document updates, billing snapshot, open support tickets. Use representative preview data only, no fake live data. Dashboard widgets should be visually premium, with bento layout, metric tiles, progress visuals, status cards, timeline, and CTA cards. Metrics must be clearly preview/demo if they could be mistaken as real. Add links to Projects, AI Operations, Documents, Billing, Support, Analytics, Governance. Mobile must stack beautifully. Use motion lightly. Run lint and build."
+  },
+  {
+    "id": "80-phase4-client-projects-list",
+    "title": "Build Client Portal Projects list",
+    "scope": "phase4-client-portal",
+    "target": "/portal/projects",
+    "allowLandingChanges": false,
+    "prompt": "Build /portal/projects as a premium project and program management view for clients. Do not touch landing page. Include project cards or table with search, status filters, phase filters such as Garage, Foundry, Factory, Operate, owner, timeline, progress, next milestone, and health status. Use representative preview data only. Include empty state and local detail drawer if dynamic route is not used. UI should feel like a high-end enterprise delivery dashboard. Add CTA to request update or contact support using frontend-only action. No backend. Mobile card view required. Run lint and build."
+  },
+  {
+    "id": "82-phase4-client-ai-operations-overview",
+    "title": "Build Client Portal AI Operations overview",
+    "scope": "phase4-client-portal",
+    "target": "/portal/ai-operations",
+    "allowLandingChanges": false,
+    "prompt": "Build /portal/ai-operations as the client-facing AI operations command center. Do not touch landing page. Include agent health overview, managed AI operations status, active agents,governance checks, runtime status and Control Center link. Use labels and representative preview data only. Do not claim real-time operations. Use premium dashboard UI with status rails, agent cards, health rings, timeline, and tabs. Add filters by project, agent type, status, and operating stage. No backend. Run lint and build."
+  },
+  {
+    "id": "84-phase4-client-documents-library",
+    "title": "Build Client Portal Documents library",
+    "scope": "phase4-client-portal",
+    "target": "/portal/documents",
+    "allowLandingChanges": false,
+    "prompt": "Build /portal/documents as a premium document library for clients. Do not touch landing page. Include document search, category filters, project filters, document type filters, status filters, and document cards/table. Categories may include Proposals, SOW, Architecture, Reports, Invoices, Governance, Meeting Notes, Delivery Assets. No real file upload or download. Add document metadata drawer with title, type, status, related project, version, owner, and visibility. No upload, no download, no document activity. Use representative data only. Mobile must be excellent. Run lint and build."
+  },
+  {
+    "id": "86-phase4-client-billing-overview",
+    "title": "Build Client Portal Billing and invoices",
+    "scope": "phase4-client-portal",
+    "target": "/portal/billing and /portal/billing/invoices",
+    "allowLandingChanges": false,
+    "prompt": "Build /portal/billing and /portal/billing/invoices as premium billing and invoice preview pages. Do not touch landing page. Include billing summary, invoice list, invoice status, due date, project association, amount preview, and billing contact card. Use representative preview data only. Do not integrate payments. Do not claim real invoices. Add frontend-only actions such as View invoice preview, Copy invoice reference, Contact finance. Include filters and mobile card layout. Run lint and build."
+  },
+  {
+    "id": "88-phase4-client-support-center",
+    "title": "Build Client Portal Support center",
+    "scope": "phase4-client-portal",
+    "target": "/portal/support",
+    "allowLandingChanges": false,
+    "prompt": "Build /portal/support as a premium support center for clients. Do not touch landing page. Include ticket list, create ticket frontend-only form, priority, category, linked project, status filters. No backend submission. On create, add ticket locally in current browser state or show preview-created state. Ticket categories: Project Delivery, AI Operations, Billing, Documents, Access, Governance, General. UI should feel calm, secure, and operational. Mobile excellent. Run lint and build."
+  },
+  {
+    "id": "91-phase4-client-governance",
+    "title": "Build Client Portal Governance",
+    "scope": "phase4-client-portal",
+    "target": "/portal/governance",
+    "allowLandingChanges": false,
+    "prompt": "Build /portal/governance as a premium governance workspace. Do not touch landing page. Include governance overview, policy items, human oversight points, AI operation governance checks, document governance. Do not make legal or compliance guarantees. Use language like designed to support governance workflows. Include filters by project, agent, status, and severity. No backend. Run lint and build."
+  },
+  {
+    "id": "94-phase4-admin-dashboard",
+    "title": "Build Admin Dashboard",
+    "scope": "phase4-admin",
+    "target": "/admin and /admin/dashboard",
+    "allowLandingChanges": false,
+    "prompt": "Build /admin and /admin/dashboard as the GFF internal admin control center. Do not touch landing page. Use the private app shell with admin navigation. The dashboard should include clients overview, active projects, AI operations overview, pending support tickets, billing status, governance alerts. Use representative preview data only. No backend. No fake live metrics. The admin dashboard should feel powerful, dense but elegant, and built for internal delivery operations. Use bento layout, command actions, data cards, and strong navigation. Mobile must remain usable. Run lint and build."
+  },
+  {
+    "id": "95-phase4-admin-clients-list",
+    "title": "Build Admin Clients management",
+    "scope": "phase4-admin",
+    "target": "/admin/clients",
+    "allowLandingChanges": false,
+    "prompt": "Build /admin/clients as an internal client management page. Do not touch landing page. Include client list/table with search, status filters, region filters, industry filters, account owner, active projects count, AI operations count, billing status preview, and health status. Use representative preview clients only, not real client names unless already approved. Add local detail drawer or route to client detail if safe. Include frontend-only actions: add client preview, assign owner preview, view portal preview. No backend. Make the UI polished and operational. Run lint and build."
+  },
+  {
+    "id": "97-phase4-admin-projects",
+    "title": "Build Admin Projects management",
+    "scope": "phase4-admin",
+    "target": "/admin/projects",
+    "allowLandingChanges": false,
+    "prompt": "Build /admin/projects as internal project delivery management. Do not touch landing page. Include project table/cards with client, phase, status, delivery owner. Add filters by client, phase, status, owner. Add frontend-only actions: create project preview, update status locally. No backend. Make UI premium and dense but readable. Include mobile card fallback. Run lint and build."
+  },
+  {
+    "id": "99-phase4-admin-users-rbac",
+    "title": "Build Admin Users and RBAC management",
+    "scope": "phase4-admin",
+    "target": "/admin/users",
+    "allowLandingChanges": false,
+    "prompt": "Build /admin/users as frontend-only user and role management preview. Do not touch landing page. Include user list, role filters, client association, status, and permissions summary. Roles: client_admin, client_member, gff_admin. Add local-only actions: invite user preview, change role preview, deactivate preview, reset access preview. Do not send invites. Do not implement real security. Include a clear backend/auth phase notice. UI must be secure-looking and polished. Run lint and build."
+  },
+  {
+    "id": "100-phase4-admin-ai-operations",
+    "title": "Build Admin AI Operations management",
+    "scope": "phase4-admin",
+    "target": "/admin/ai-operations",
+    "allowLandingChanges": false,
+    "prompt": "Build /admin/ai-operations as internal AI operations command center. Do not touch landing page. Include all client agent operations, agent health, governance alerts,project links, and owner assignment. Add filters by client, project, agent type, status, severity, owner. Add local-only actions: assign owner. Do not claim live runtime or real monitoring. Use premium observability UI with status rails, health cards, tables, and detail drawer. Run lint and build."
+  },
+  {
+    "id": "101-phase4-admin-documents",
+    "title": "Build Admin Documents management",
+    "scope": "phase4-admin",
+    "target": "/admin/documents",
+    "allowLandingChanges": false,
+    "prompt": "Build /admin/documents as internal document management preview. Do not touch landing page. Include all documents across clients/projects with search, filters by client, project, type, status, owner, version. Add assign document to project. No real upload, no storage, no download. Use document drawer with metadata, related project, and governance status. Premium admin UI, mobile card fallback. Run lint and build."
+  },
+  {
+    "id": "102-phase4-admin-billing",
+    "title": "Build Admin Billing management",
+    "scope": "phase4-admin",
+    "target": "/admin/billing",
+    "allowLandingChanges": false,
+    "prompt": "Build /admin/billing as internal billing and invoice management preview. Do not touch landing page. Include invoice list, client, project, amount preview, due date, status and . Add filters by client, status, month. Add local-only actions: create invoice preview. No payment provider, no real invoices, no real PDF generation. Use polished finance dashboard UI with summary cards and table. Run lint and build."
+  },
+  {
+    "id": "103-phase4-admin-support",
+    "title": "Build Admin Support management",
+    "scope": "phase4-admin",
+    "target": "/admin/support",
+    "allowLandingChanges": false,
+    "prompt": "Build /admin/support as internal support operations page. Do not touch landing page. Include support ticket queue, client, priority, category, status, assigned agent, linked project/document. Add filters and local-only actions: assign, change status. No backend, no email sending, no uploads. Use premium support queue UI with detail drawer. Run lint and build."
+  },
+  {
+    "id": "105-phase4-admin-governance",
+    "title": "Build Admin Governance management",
+    "scope": "phase4-admin",
+    "target": "/admin/governance",
+    "allowLandingChanges": false,
+    "prompt": "Build /admin/governance as internal governance management. Do not touch landing page. Include governance items across clients/projects/agents, risk severity, owner, status, due date, s. Do not guarantee compliance. Use local-only actions: assign reviewer. Premium governance console UI with filters, cards, and detail drawer. Run lint and build."
+  },
+  {
+    "id": "113-phase4-route-guard-ux",
+    "title": "Improve route guard and role access UX",
+    "scope": "phase4-auth-preview",
+    "target": "route guards",
+    "allowLandingChanges": false,
+    "prompt": "Improve frontend-only route guard UX for client and admin pages. Do not touch landing page. If no local preview session exists, private routes should show sign-in required or redirect safely to /portal/login depending on current app pattern. If a user has a client role and opens /admin, show access restricted preview. If an admin role opens /portal pages, allow or show switch workspace depending on chosen preview logic. Add clear role preview switcher and sign out action. Do not implement real security. Do not use backend. Ensure hydration safety. Run lint and build."
+  },
+  {
+    "id": "114-phase4-mobile-private-workspace-pass",
+    "title": "Mobile UX pass for portal and admin",
+    "scope": "phase4-mobile-qa",
+    "target": "private workspace mobile UX",
+    "allowLandingChanges": false,
+    "prompt": "Perform a mobile UX pass for all login, portal, client, and admin routes. Do not touch landing page. Fix only mobile and responsive issues. Check /login, /portal, /portal/login, /portal/dashboard, /portal/projects, /portal/ai-operations, /portal/documents, /portal/billing, /portal/support, /portal/analytics, /portal/governance, /admin/dashboard, /admin/clients, /admin/projects, /admin/users, /admin/ai-operations, /admin/documents, /admin/billing, /admin/support, /admin/analytics, /admin/governance. Ensure no horizontal overflow, sidebar works on mobile, topbar is usable, tables become cards, filters collapse, modals/drawers fit, charts are readable, buttons are tappable, and forms are easy to use. Run lint and build."
+  },
+  {
+    "id": "115-phase4-accessibility-private-workspace-pass",
+    "title": "Accessibility pass for login portal and admin",
+    "scope": "phase4-accessibility-qa",
+    "target": "private workspace accessibility",
+    "allowLandingChanges": false,
+    "prompt": "Perform an accessibility pass for login, client portal, and admin portal. Do not touch landing page. Ensure pages have one clear H1, semantic landmarks, accessible sidebar navigation, keyboard accessible menus, focus states, labelled forms, labelled filters, accessible table/card interactions, accessible dialogs/drawers, reduced motion support, sufficient contrast, and correct button/link semantics. Fix only accessibility issues. Run lint and build."
+  },
+  {
+    "id": "118-phase4-frontend-only-safety-audit",
+    "title": "Frontend-only safety audit for Phase 4",
+    "scope": "phase4-safety",
+    "target": "auth portal admin safety",
+    "allowLandingChanges": false,
+    "prompt": "Audit and fix frontend-only safety for Phase 4. Do not touch landing page. Search for fetch, axios, app/api usage, localhost API calls, auth providers, JWT verification, Cognito, Firebase, Supabase, Clerk, AWS, S3, SES, payment providers, upload APIs, email sending, OTP sending, database imports, real file downloads, real invoice generation, and server actions. Remove or disable any accidental real integration in login, portal, admin, documents, billing, support, and analytics. All auth/session/data must be local preview only. If legacy app/api/contact exists, do not use it from Phase 4 UI. Run lint and build."
+  },
+  {
+    "id": "119-phase4-linking-navigation-audit",
+    "title": "Private workspace linking and navigation audit",
+    "scope": "phase4-routing-qa",
+    "target": "portal admin links",
+    "allowLandingChanges": false,
+    "prompt": "Audit and fix all links in login, client portal, admin portal, private sidebar, topbar, tables, cards, CTAs, breadcrumbs, and detail drawers. Do not touch landing page. Verify all links resolve to explicit routes. No slug route references. /portal must be the Client Login landing. /portal/login and /login must work. Client portal modules must include Dashboard, Projects, AI Operations, Documents, Billing or Invoices, Support, Analytics, Governance. Admin modules must include Dashboard, Clients, Projects, Users, AI Operations, Documents, Billing, Support, Analytics, Governance. Fix broken links only. Run lint and build."
+  },
+  {
+    "id": "120-phase4-documentation",
+    "title": "Document Phase 4 portal admin frontend",
+    "scope": "phase4-docs",
+    "target": "Phase 4 documentation",
+    "allowLandingChanges": false,
+    "prompt": "Create or update documentation for Phase 4 frontend implementation. Do not build backend. Create docs/PHASE_4_LOGIN_ADMIN_CLIENT_PORTAL.md or update existing docs. Document routes built, local auth preview behavior, roles, route guard preview, client portal modules, admin modules, local mock data, frontend-only limitations, future backend requirements, future FastAPI endpoints, future database tables, future storage needs, future email/OTP needs, future billing/payment integration, and security considerations. Clearly state that Phase 4 is frontend-only and not production authentication. Include recommended Phase 5 backend build order. Run lint/build if docs affect build."
+  },
+  {
+    "id": "121-phase4-final-qa",
+    "title": "Final Phase 4 QA",
+    "scope": "phase4-final-qa",
+    "target": "login admin client portal frontend",
+    "allowLandingChanges": false,
+    "prompt": "Perform final QA for Phase 4. Do not add new features unless fixing a small clear issue. Verify client portal pages: Dashboard, Projects, AI Operations, Documents, Billing, Support, Analytics, Governance. Verify admin pages: Dashboard, Clients, Projects, Users, AI Operations, Documents, Billing, Support, Analytics, Governance. Verify private shell, sidebar, topbar, tables, filters, local data, empty states, mobile, accessibility, and visual polish. Verify no backend, real auth, AWS, OTP, email, database, uploads, payments, or real API calls were added. Verify no landing page files were changed. Run npm run lint, npm run build, npm run typecheck if available, and npm test if available. Final response must include pass/fail checklist, files changed, commands run, remaining warnings, and TODOs for Phase 5 backend."
+  },
+  {
+    "id": "122-phase5-preflight-backend-mvp-audit",
+    "title": "Phase 5 preflight audit for MVP backend",
+    "scope": "phase5-audit",
+    "target": "local backend database auth RBAC and portal admin integration",
+    "allowLandingChanges": false,
+    "prompt": "This is the first task of Phase 5. Do not edit files. Audit the current project after Phase 4. Inspect the frontend stack, package.json, app routes, portal routes, admin routes, login pages, local auth preview utilities, local mock data, portal/admin components, docs from Phase 4, and any existing backend/API folders. Determine the safest MVP backend approach for this project. Default target architecture should be a separate local backend folder using FastAPI, SQLite, SQLAlchemy or SQLModel, Pydantic, password hashing, JWT auth, RBAC, and local dev CORS, unless the project already has a clearly better backend convention. Do not connect AWS, payment provider, object storage, real file upload, email, OTP provider, OAuth, SSO, or production auth. Do not add backend APIs for GFF AI tools such as Blueprint, ROI, Proposal, Sandbox, Marketplace, Foundry Studio, Talk to Agent, or Assessment. Produce a detailed gap report only. The gap report must cover backend folder needs, database choice, models, seed data, auth endpoints, RBAC roles, client portal CRUD APIs, admin CRUD APIs, frontend API client integration, route guards, migration strategy, local dev scripts, tests, documentation, risks, and exact implementation order. Do not edit files."
+  },
+  {
+    "id": "123-phase5-backend-folder-and-dev-setup",
+    "title": "Create local FastAPI backend folder and dev setup",
+    "scope": "phase5-backend-foundation",
+    "target": "backend folder setup",
+    "allowLandingChanges": false,
+    "prompt": "Create the local MVP backend foundation. Do not touch landing page. Do not modify GFF AI tools. Create a backend folder if it does not exist. Use FastAPI for a local/dev API. Add backend requirements file or pyproject only if consistent with the repository. Include app entrypoint, settings/config module, database module, API router module, health route, CORS config for local Next.js frontend, and a README with local run instructions. Use SQLite local dev database by default. Do not add Docker unless the project already uses it. Do not add AWS, S3, payment, email, OTP provider, OAuth, or production infrastructure. Add .env.example for backend with safe local variables only such as DATABASE_URL, JWT_SECRET, ACCESS_TOKEN_EXPIRE_MINUTES, CORS_ORIGINS. Do not commit real secrets. Add backend .gitignore rules for local database files, __pycache__.env, and virtualenv if needed. Run backend syntax check if possible and frontend lint/build if package scripts exist."
+  },
+  {
+    "id": "124-phase5-backend-app-structure",
+    "title": "Create backend app structure and shared modules",
+    "scope": "phase5-backend-foundation",
+    "target": "backend module structure",
+    "allowLandingChanges": false,
+    "prompt": "Create a clean backend app structure for MVP development. Do not touch landing page or GFF AI tools. Suggested structure: backend/app/main.py, backend/app/core/config.py, backend/app/core/security.py, backend/app/core/rbac.py, backend/app/db/session.py, backend/app/db/base.py, backend/app/models, backend/app/schemas, backend/app/api/deps.py, backend/app/api/routes, backend/app/services, backend/app/seed.py. Keep it simple and understandable. Use FastAPI APIRouter. Keep all endpoints under /api/v1. Add /api/v1/health returning status ok and app name. Add error response helpers if useful. Do not overengineer. No AWS, no storage, no payment, no email, no OTP. Run basic backend import check if possible."
+  },
+  {
+    "id": "125-phase5-database-session-and-base-models",
+    "title": "Create database session and base model setup",
+    "scope": "phase5-backend-database",
+    "target": "SQLite database setup",
+    "allowLandingChanges": false,
+    "prompt": "Implement local SQLite database setup for the backend. Do not touch landing page or GFF AI tools. Use SQLAlchemy or SQLModel based on what is simplest and already available in the backend setup. Create engine/session dependency, Base metadata, init_db helper, and clear database URL config. Use a local SQLite file such as backend/dev.db by default and ensure it is ignored by git. Do not require external Postgres for MVP. Do not add migrations unless the backend already uses Alembic or the change is small and safe. For this MVP, create tables through init_db or seed script if simpler. Run backend import check or startup check if possible."
+  },
+  {
+    "id": "126-phase5-core-domain-models",
+    "title": "Create core database models",
+    "scope": "phase5-backend-database",
+    "target": "database models",
+    "allowLandingChanges": false,
+    "prompt": "Create MVP database models for the admin and client portal only. Do not create models for GFF AI tools such as Blueprint, ROI, Proposal, Assessment, Sandbox, Marketplace, or Foundry Studio. Required models: User, ClientAccount, Project, AgentOperation, DocumentItem, Invoice, SupportTicket, GovernanceItem. Use simple fields that support the Phase 4 UI. User fields: id, name, email, hashed_password, role, client_id nullable, status, created_at, updated_at. Roles: client_admin, client_member, gff_admin. ClientAccount fields: id, name, industry, region, status, account_owner, created_at. Project fields: id, client_id, name, phase, status, health, owner, start_date, target_date, progress, description. AgentOperation fields: id, client_id, project_id nullable, name, agent_type, status, health, owner, governance_status, last_activity_at. DocumentItem fields: id, client_id, project_id nullable, title, document_type, status, version, owner, visibility, created_at. Invoice fields: id, client_id, project_id nullable, invoice_number, status, amount, currency, due_date, issued_date. SupportTicket fields: id, client_id, project_id nullable, title, category, priority, status, assigned_to, created_by, description, created_at. GovernanceItem fields: id, client_id, project_id nullable, title, severity, status, owner, due_date, description. Keep relationships simple. Run backend import check."
+  },
+  {
+    "id": "127-phase5-pydantic-schemas",
+    "title": "Create Pydantic schemas for portal and admin APIs",
+    "scope": "phase5-backend-schemas",
+    "target": "API schemas",
+    "allowLandingChanges": false,
+    "prompt": "Create Pydantic schemas for all MVP backend models. Do not touch landing page or GFF AI tools. Include create, update, list/read response schemas where useful for User, ClientAccount, Project, AgentOperation, DocumentItem, Invoice, SupportTicket, GovernanceItem. Include Auth schemas: LoginRequest, TokenResponse, CurrentUserResponse. Keep schemas simple. Use from_attributes or ORM mode depending on Pydantic version. Ensure schemas do not expose hashed_password. Keep response fields aligned with the Phase 4 frontend data needs. Run backend import check."
+  },
+  {
+    "id": "128-phase5-password-hashing-and-jwt-security",
+    "title": "Implement password hashing and JWT security",
+    "scope": "phase5-auth",
+    "target": "auth security utilities",
+    "allowLandingChanges": false,
+    "prompt": "Implement MVP password hashing and JWT utilities. Do not touch landing page or GFF AI tools. Use passlib bcrypt or a simple secure hashing library already compatible with the backend requirements. Implement hash_password, verify_password, create_access_token, decode_access_token, and get_token_expiry. Use JWT_SECRET from environment with safe local default only for dev, but require production to override in documentation. Do not add OAuth, SSO, OTP, email, or production session infrastructure. Token payload should include user id, role, client_id nullable, and email. Ensure hashed_password is never returned by schemas. Run backend checks."
+  },
+  {
+    "id": "129-phase5-rbac-permissions",
+    "title": "Implement RBAC permission helpers",
+    "scope": "phase5-auth",
+    "target": "RBAC permission system",
+    "allowLandingChanges": false,
+    "prompt": "Implement simple RBAC helpers for the MVP backend. Do not touch landing page or GFF AI tools. Roles: client_admin, client_member, gff_admin. Define permission groups: client_portal_access, admin_access, manage_clients, manage_users, manage_projects, manage_ai_operations, manage_documents, manage_billing, manage_support, manage_governance, view_analytics. Implement FastAPI dependencies such as get_current_user, require_roles, require_admin, require_client_access, require_same_client_or_admin. Client users must only access their own client_id data. Admin roles can access all data depending on permission. Keep this simple and explicit. Do not overbuild enterprise permissions yet. Run backend checks."
+  },
+  {
+    "id": "130-phase5-auth-endpoints",
+    "title": "Build login me and logout endpoints",
+    "scope": "phase5-auth",
+    "target": "auth API endpoints",
+    "allowLandingChanges": false,
+    "prompt": "Create MVP auth endpoints under /api/v1/auth. Do not touch landing page or GFF AI tools. Required endpoints: POST /api/v1/auth/login, GET /api/v1/auth/me, POST /api/v1/auth/logout. Login should accept email and password, verify user, and return JWT access token plus current user info. Me should require bearer token and return current user without hashed password. Logout can be frontend-token-discard only and return success. Do not implement refresh tokens unless very small and safe. Do not implement registration, OTP, forgot password, email, OAuth, SSO, or production cookies. Include clear error handling for invalid credentials and inactive users. Run backend check."
+  },
+  {
+    "id": "131-phase5-seed-data-and-dev-users",
+    "title": "Create seed data and dev users",
+    "scope": "phase5-backend-data",
+    "target": "seed data",
+    "allowLandingChanges": false,
+    "prompt": "Create a safe local seed script for MVP backend. Do not touch landing page or GFF AI tools. Seed representative data only. Create dev users for roles: gff_admin, client_admin, client_member. Use simple documented local passwords such as password123 only in dev seed documentation. Create 2 to 3 representative client accounts, several projects, agent operations, documents metadata, invoices, support tickets, governance items. Do not use real client names or fake logos. Ensure seed script can be run repeatedly without duplicating data, either by checking existing emails/records or resetting safely with explicit command. Add README instructions. Run seed if safe and verify backend can start."
+  },
+  {
+    "id": "132-phase5-backend-run-scripts",
+    "title": "Add backend dev scripts and root convenience commands",
+    "scope": "phase5-devex",
+    "target": "developer scripts",
+    "allowLandingChanges": false,
+    "prompt": "Add simple local developer commands for running the backend and initializing data. Do not touch landing page or GFF AI tools. If the repo root package.json exists, add safe scripts only if appropriate: backend:install, backend:dev, backend:seed, backend:check. Do not break existing scripts. Alternatively document commands in backend/README.md if adding root scripts is risky. Include command for starting FastAPI with uvicorn on localhost port 8000. Include command for seeding SQLite. Include environment setup using backend/.env.example. Run lint/build if frontend package scripts exist and backend check if possible."
+  },
+  {
+    "id": "133-phase5-api-clients-crud",
+    "title": "Build ClientAccount admin CRUD APIs",
+    "scope": "phase5-admin-api",
+    "target": "client account APIs",
+    "allowLandingChanges": false,
+    "prompt": "Create MVP CRUD API routes for ClientAccount under /api/v1/clients. Do not touch landing page or GFF AI tools. Endpoints: GET list, GET by id, POST create, PATCH update, DELETE or soft archive. Protect routes with admin RBAC. Client portal users should not list all clients. Include query params for search, status, industry, region if simple. Use Pydantic schemas.  for create/update/archive if simple. Keep implementation small and reliable. Run backend checks."
+  },
+  {
+    "id": "134-phase5-api-users-crud",
+    "title": "Build User admin CRUD APIs",
+    "scope": "phase5-admin-api",
+    "target": "user APIs",
+    "allowLandingChanges": false,
+    "prompt": "Create MVP user management APIs under /api/v1/users. Do not touch landing page or GFF AI tools. Endpoints: GET list, GET by id, POST create, PATCH update, PATCH status, PATCH role, DELETE or deactivate. Protect with admin RBAC, only gff_admin should create users and change roles if possible. Hash passwords on create/update password. Never return hashed_password. Support filtering by role, status, client_id, search. Client admins may later manage their client users, but keep MVP simple: admin roles only.  Run backend checks."
+  },
+  {
+    "id": "135-phase5-api-projects-crud",
+    "title": "Build Projects CRUD APIs",
+    "scope": "phase5-portal-admin-api",
+    "target": "project APIs",
+    "allowLandingChanges": false,
+    "prompt": "Create MVP project APIs under /api/v1/projects. Do not touch landing page or GFF AI tools. Endpoints: GET list, GET by id, POST create, PATCH update, DELETE or archive. Admin roles can access all projects. Client roles can list and view only projects matching their client_id and cannot create/delete unless role policy allows client_admin to create request-style project only. For MVP, allow admin create/update/archive and client read-only. Include filters: client_id for admin, phase, status, health, owner, search. Run backend checks."
+  },
+  {
+    "id": "136-phase5-api-ai-operations-crud",
+    "title": "Build AI Operations CRUD APIs",
+    "scope": "phase5-portal-admin-api",
+    "target": "AI operations APIs",
+    "allowLandingChanges": false,
+    "prompt": "Create MVP AI Operations APIs under /api/v1/ai-operations. Do not touch landing page or GFF AI tools. This is only for portal/admin AI operations records, not live GFF AI tool execution. Endpoints: GET list, GET by id, POST create, PATCH update, DELETE or archive. Admin roles can manage all. Client roles can read only records for their client_id. Include filters: client_id, project_id, status, health, agent_type, governance_status, owner. No real agent runtime, no live monitoring, no external AI calls. Use representative database records only.  Run backend checks."
+  },
+  {
+    "id": "137-phase5-api-documents-metadata-crud",
+    "title": "Build Documents metadata CRUD APIs",
+    "scope": "phase5-portal-admin-api",
+    "target": "documents metadata APIs",
+    "allowLandingChanges": false,
+    "prompt": "Create MVP Documents APIs under /api/v1/documents. Do not touch landing page or GFF AI tools. This phase manages metadata only. No real upload, no file storage, no S3, no download. Endpoints: GET list, GET by id, POST create metadata, PATCH update metadata, DELETE or archive metadata. Admin roles can manage all. Client roles can list/view documents for their client_id where visibility allows. Include fields like title, document_type, status, version, owner, project_id, visibility. Include filters: client_id, project_id, document_type, status, visibility, search. If frontend has upload/download buttons, they must remain disabled or future integration. Run backend checks."
+  },
+  {
+    "id": "138-phase5-api-billing-invoices-crud",
+    "title": "Build Billing and invoice metadata APIs",
+    "scope": "phase5-portal-admin-api",
+    "target": "billing APIs",
+    "allowLandingChanges": false,
+    "prompt": "Create MVP invoice/billing APIs under /api/v1/invoices or /api/v1/billing. Do not touch landing page or GFF AI tools. No payment provider, no payment processing, no PDF generation, no tax engine, no external finance system. Endpoints: GET list, GET by id, POST create invoice metadata, PATCH update invoice metadata, DELETE or archive. Admin/finance roles can manage. Client roles can read only their client_id invoices. Include filters: client_id, project_id, status, month/date range if simple, search.  Run backend checks."
+  },
+  {
+    "id": "139-phase5-api-support-tickets-crud",
+    "title": "Build Support ticket CRUD APIs",
+    "scope": "phase5-portal-admin-api",
+    "target": "support APIs",
+    "allowLandingChanges": false,
+    "prompt": "Create MVP support ticket APIs under /api/v1/support or /api/v1/tickets. Do not touch landing page or GFF AI tools. Endpoints: GET list, GET by id, POST create, PATCH update, PATCH status, PATCH assign, add comment if simple. Admin/support roles can manage all tickets. Client roles can create and view their own client tickets. No email sending, no file attachments, no uploads. Include fields: title, description, category, priority, status, client_id, project_id nullable, assigned_to, created_by. Include filters: status, priority, category, client_id, project_id, assigned_to, search. Run backend checks."
+  },
+  {
+    "id": "140-phase5-api-governance-crud",
+    "title": "Build Governance item CRUD APIs",
+    "scope": "phase5-portal-admin-api",
+    "target": "governance APIs",
+    "allowLandingChanges": false,
+    "prompt": "Create MVP governance APIs under /api/v1/governance. Do not touch landing page or GFF AI tools. Endpoints: GET list, GET by id, POST create, PATCH update, PATCH status, DELETE or archive. Admin roles can manage all. Client roles can read their client_id governance items and optionally  if the Phase 4 UI already supports local preview. No legal/compliance guarantees. Include filters: client_id, project_id, severity, status, owner, due date, search.  Run backend checks."
+  },
+  {
+    "id": "143-phase5-api-dashboard-summary",
+    "title": "Build dashboard summary APIs",
+    "scope": "phase5-portal-admin-api",
+    "target": "dashboard APIs",
+    "allowLandingChanges": false,
+    "prompt": "Create MVP dashboard summary APIs. Do not touch landing page or GFF AI tools. Endpoints: GET /api/v1/dashboard/client for client portal summary and GET /api/v1/dashboard/admin for admin summary. Client dashboard should return counts and recent records for that user's client_id: active projects, AI operations, documents, invoices, open support tickets, governance items. Admin dashboard should return global counts and recent records across clients: clients, projects, AI operations, documents, invoices, support, governance Values must come from local database records, not hardcoded frontend mock data. Keep queries simple. Run backend checks."
+  },
+  {
+    "id": "144-phase5-api-analytics-summary",
+    "title": "Build analytics summary APIs",
+    "scope": "phase5-portal-admin-api",
+    "target": "analytics APIs",
+    "allowLandingChanges": false,
+    "prompt": "Create MVP analytics APIs under /api/v1/analytics. Do not touch landing page or GFF AI tools. Endpoints: GET /api/v1/analytics/client and GET /api/v1/analytics/admin. Use database aggregation from projects, AI operations, documents, invoices, support tickets, governance items. Keep it simple: counts by status, counts by phase, support by priority, invoice by status, AI operations by health, governance by severity. No fake live analytics. No external analytics provider. Client roles see only their client_id data. Admin roles see all. Run backend checks."
+  },
+  {
+    "id": "145-phase5-backend-error-handling-and-pagination",
+    "title": "Add backend error handling pagination and response consistency",
+    "scope": "phase5-backend-quality",
+    "target": "API consistency",
+    "allowLandingChanges": false,
+    "prompt": "Improve backend API consistency. Do not touch landing page or GFF AI tools. Add simple pagination parameters where useful: limit and offset with safe defaults. Add consistent 404 handling, unauthorized, forbidden, validation error behavior, and simple response shapes. Do not overengineer. Ensure list endpoints do not return hashed passwords or sensitive fields. Ensure client RBAC filters are enforced server-side. Run backend checks."
+  },
+  {
+    "id": "146-phase5-backend-smoke-tests",
+    "title": "Add backend smoke tests or verification script",
+    "scope": "phase5-backend-quality",
+    "target": "backend verification",
+    "allowLandingChanges": false,
+    "prompt": "Add lightweight backend smoke tests or a verification script. Do not touch landing page or GFF AI tools. If pytest is available or easy to add safely, add tests for health, login, auth/me, RBAC blocked admin route for client user, client dashboard data scoping, projects list, support ticket create, and . If adding pytest is too much, create a backend smoke script using FastAPI TestClient if available. Keep it small. Document how to run. Run backend checks."
+  },
+  {
+    "id": "147-phase5-frontend-api-client",
+    "title": "Create frontend API client for portal and admin only",
+    "scope": "phase5-frontend-integration",
+    "target": "frontend API client",
+    "allowLandingChanges": false,
+    "prompt": "Create a frontend API client for portal/admin backend integration. Do not touch landing page. Do not connect GFF AI tools to backend. The API client should support base URL from NEXT_PUBLIC_API_BASE_URL defaulting to local backend, bearer token handling, JSON request helpers, typed functions, error handling, and logout on unauthorized if safe. Add modules for auth, dashboard, clients, users, projects, aiOperations, documents, invoices, support, governance, analytics. Keep it small and readable. Do not use axios unless already used; fetch is fine. Ensure code is client-safe and does not break SSR. Run frontend lint/build."
+  },
+  {
+    "id": "148-phase5-frontend-auth-integration",
+    "title": "Connect login UI to backend auth",
+    "scope": "phase5-frontend-integration",
+    "target": "login backend integration",
+    "allowLandingChanges": false,
+    "prompt": "Connect /login and /portal/login to the MVP backend auth endpoints. Do not touch landing page. Do not modify GFF AI tools. Replace or wrap the Phase 4 local preview login so users can login against /api/v1/auth/login when backend is configured. Store access token in localStorage for MVP dev only with clear TODO for production httpOnly cookie/session hardening. Call /api/v1/auth/me to load current user. Preserve role preview fallback only if backend is unavailable, clearly labelled dev fallback. Sign out should clear token/session and route to /portal/login. Do not add OAuth, OTP, email, SSO, or production cookies. Run lint/build."
+  },
+  {
+    "id": "149-phase5-frontend-route-guard-backend-auth",
+    "title": "Connect route guards to backend auth and RBAC",
+    "scope": "phase5-frontend-integration",
+    "target": "route guards",
+    "allowLandingChanges": false,
+    "prompt": "Update private route guards to use backend auth state from /auth/me and stored MVP token. Do not touch landing page or GFF AI tools. Client roles should access /portal routes. Admin roles should access /admin routes. Unauthorized users should go to /portal/login or show sign-in required. Forbidden role access should show a polished Access Restricted page. Keep Phase 4 preview mode only as fallback if explicitly needed. Ensure hydration safety and no infinite redirect loops. Run lint/build."
+  },
+  {
+    "id": "150-phase5-frontend-client-dashboard-api",
+    "title": "Connect Client Dashboard to backend",
+    "scope": "phase5-frontend-integration",
+    "target": "/portal/dashboard",
+    "allowLandingChanges": false,
+    "prompt": "Connect /portal/dashboard to the MVP backend dashboard API. Do not touch landing page or GFF AI tools. Replace static mock dashboard data with data fetched from /api/v1/dashboard/client when authenticated. Keep graceful loading, error, empty, and offline/dev fallback states. Use the existing premium Phase 4 UI and preserve its design. Do not redesign. Ensure data is client-scoped by backend. Widgets: projects, AI operations, documents, invoices, support, analytics, governance. Run lint/build."
+  },
+  {
+    "id": "151-phase5-frontend-client-projects-api",
+    "title": "Connect Client Projects to backend",
+    "scope": "phase5-frontend-integration",
+    "target": "/portal/projects",
+    "allowLandingChanges": false,
+    "prompt": "Connect /portal/projects and project detail/drawer to backend /api/v1/projects. Do not touch landing page or GFF AI tools. Client users should fetch only their own projects as enforced by backend. Replace static mock data with API data while preserving Phase 4 UI. Implement loading, empty, error, retry, search/filter using API params or local filtering if simpler. Client view should remain mostly read-only for MVP. Admin project management is handled separately. Run lint/build."
+  },
+  {
+    "id": "152-phase5-frontend-client-ai-operations-api",
+    "title": "Connect Client AI Operations to backend",
+    "scope": "phase5-frontend-integration",
+    "target": "/portal/ai-operations",
+    "allowLandingChanges": false,
+    "prompt": "Connect /portal/ai-operations and AI operation detail/drawer to backend /api/v1/ai-operations. Do not touch landing page or GFF AI tools. This is only portal operational records, not live AI tool execution. Preserve the Phase 4 premium UI. Add loading, empty, error, and retry states. Client users should see only their client_id records. No real-time monitoring, no websockets, no external AI calls. Run lint/build."
+  },
+  {
+    "id": "153-phase5-frontend-client-documents-api",
+    "title": "Connect Client Documents to backend metadata API",
+    "scope": "phase5-frontend-integration",
+    "target": "/portal/documents",
+    "allowLandingChanges": false,
+    "prompt": "Connect /portal/documents and document detail/drawer to backend /api/v1/documents. Do not touch landing page or GFF AI tools. This phase is metadata-only. No upload, no download, no file storage. Replace static mock metadata with backend records. Keep upload/download controls disabled or future integration notes. Add loading, empty, error, retry states, search/filter if simple, and preserve UI. Run lint/build."
+  },
+  {
+    "id": "154-phase5-frontend-client-billing-api",
+    "title": "Connect Client Billing to backend invoice API",
+    "scope": "phase5-frontend-integration",
+    "target": "/portal/billing",
+    "allowLandingChanges": false,
+    "prompt": "Connect /portal/billing and invoice list/detail to backend invoice API. Do not touch landing page or GFF AI tools. This phase is invoice metadata only. No payment, no PDF, no download. Replace static invoices with backend data. Keep disabled/future payment/download actions. Add loading, empty, error, retry states. Preserve Phase 4 premium finance UI. Run lint/build."
+  },
+  {
+    "id": "155-phase5-frontend-client-support-api",
+    "title": "Connect Client Support to backend tickets API",
+    "scope": "phase5-frontend-integration",
+    "target": "/portal/support",
+    "allowLandingChanges": false,
+    "prompt": "Connect /portal/support and ticket detail/drawer to backend support ticket APIs. Do not touch landing page or GFF AI tools. Client users must be able to list their tickets and create a new ticket through POST. If comments endpoint exists, allow frontend-only or backend comment based on API availability. No email sending, no file attachments. Preserve Phase 4 premium support UI. Add loading, empty, error, success, retry, and validation states. Run lint/build."
+  },
+  {
+    "id": "156-phase5-frontend-client-analytics-governance-api",
+    "title": "Connect Client Analytics and Governance to backend",
+    "scope": "phase5-frontend-integration",
+    "target": "/portal/analytics and /portal/governance",
+    "allowLandingChanges": false,
+    "prompt": "Connect /portal/analytics to /api/v1/analytics/client and /portal/governance to /api/v1/governance. Do not touch landing page or GFF AI tools. Replace static data with backend summaries and governance records. Governance read actions may be backend-connected if endpoint exists, otherwise keep read-only. Preserve Phase 4 visual design, charts, filters, and mobile behavior. Add loading, empty, error, and retry states. Run lint/build."
+  },
+  {
+    "id": "158-phase5-frontend-admin-dashboard-api",
+    "title": "Connect Admin Dashboard to backend",
+    "scope": "phase5-frontend-integration",
+    "target": "/admin/dashboard",
+    "allowLandingChanges": false,
+    "prompt": "Connect /admin and /admin/dashboard to backend /api/v1/dashboard/admin. Do not touch landing page or GFF AI tools. Replace static admin dashboard data with backend data. Preserve Phase 4 premium admin UI. Add loading, empty, error, retry states. Admin dashboard should show clients, projects, AI operations, documents, invoices, support, governance,  based on database records. No fake live data. Run lint/build."
+  },
+  {
+    "id": "159-phase5-frontend-admin-clients-users-api",
+    "title": "Connect Admin Clients and Users to backend CRUD",
+    "scope": "phase5-frontend-integration",
+    "target": "/admin/clients and /admin/users",
+    "allowLandingChanges": false,
+    "prompt": "Connect /admin/clients and /admin/users to backend CRUD APIs. Do not touch landing page or GFF AI tools. Admin clients page should list, search/filter, create, edit, archive if API supports it. Admin users page should list, search/filter, create, edit role/status, deactivate if API supports it. Use modals or drawers that preserve existing UI. Add loading, empty, error, success, validation, and retry states. Enforce frontend role visibility based on backend current user, but backend remains source of truth. Run lint/build."
+  },
+  {
+    "id": "160-phase5-frontend-admin-projects-aiops-api",
+    "title": "Connect Admin Projects and AI Operations to backend CRUD",
+    "scope": "phase5-frontend-integration",
+    "target": "/admin/projects and /admin/ai-operations",
+    "allowLandingChanges": false,
+    "prompt": "Connect /admin/projects and /admin/ai-operations to backend CRUD APIs. Do not touch landing page or GFF AI tools. Admin projects page should list, filter, create, edit, archive projects if API supports it. Admin AI operations page should list, filter, create, edit, assign owner, update status/health/governance if API supports it. Preserve Phase 4 UI with drawers/modals. No live agent runtime. Add loading, empty, error, success states. Run lint/build."
+  },
+  {
+    "id": "161-phase5-frontend-admin-documents-billing-api",
+    "title": "Connect Admin Documents and Billing to backend CRUD",
+    "scope": "phase5-frontend-integration",
+    "target": "/admin/documents and /admin/billing",
+    "allowLandingChanges": false,
+    "prompt": "Connect /admin/documents to backend document metadata CRUD and /admin/billing to invoice metadata CRUD. Do not touch landing page or GFF AI tools. Documents are metadata-only, no upload/download/storage. Billing is invoice metadata-only, no payment/PDF. Admin should list, create metadata, edit metadata, archive if API supports it. Preserve Phase 4 UI and disabled future integration controls. Add loading, empty, error, success, validation states. Run lint/build."
+  },
+  {
+    "id": "162-phase5-frontend-admin-support-governance-api",
+    "title": "Connect Admin Support and Governance to backend CRUD",
+    "scope": "phase5-frontend-integration",
+    "target": "/admin/support and /admin/governance",
+    "allowLandingChanges": false,
+    "prompt": "Connect /admin/support to backend support ticket APIs and /admin/governance to backend governance APIs. Do not touch landing page or GFF AI tools. Admin support should list, filter, assign, update status, and optionally add local/backend comment depending on API. Admin governance should list, filter, create, update status, assign reviewer if API supports it. Preserve Phase 4 premium UI. No email, no attachments, no compliance guarantees. Add loading, empty, error, success, retry states. Run lint/build."
+  },
+  {
+    "id": "165-phase5-remove-old-local-preview-data-dependency",
+    "title": "Reduce dependency on Phase 4 local mock data in portal admin",
+    "scope": "phase5-cleanup",
+    "target": "mock data cleanup",
+    "allowLandingChanges": false,
+    "prompt": "Reduce reliance on Phase 4 local mock data for portal/admin pages now connected to backend. Do not touch landing page or GFF AI tools. Keep local mock data only as fallback or for non-backend preview sections. Portal/admin dashboard, projects, AI operations, documents, billing, support, analytics, governance,clients, and users should prefer backend API data. Do not delete shared mock data if still used safely by non-integrated components, but clearly separate backend-connected data from fallback data. Run lint/build."
+  },
+  {
+    "id": "166-phase5-dev-environment-docs",
+    "title": "Document local dev environment for MVP backend",
+    "scope": "phase5-docs",
+    "target": "local dev documentation",
+    "allowLandingChanges": false,
+    "prompt": "Create or update docs/PHASE_5_MVP_BACKEND.md. Do not touch landing page or GFF AI tools. Document how to install backend dependencies, create .env from .env.example, initialize SQLite, run seed, start backend, start frontend, configure NEXT_PUBLIC_API_BASE_URL, login with seeded dev users, and test portal/admin flows. Document that this phase is local/dev MVP only and does not include AWS, storage, payments, email, OTP, OAuth, SSO, production auth hardening, or backend for GFF AI tools. Include troubleshooting for CORS, missing DB, invalid token, and seed rerun. Run lint/build if docs affect build."
+  },
+  {
+    "id": "167-phase5-security-limitations-docs",
+    "title": "Document MVP security limitations and Phase 6 hardening",
+    "scope": "phase5-docs",
+    "target": "security documentation",
+    "allowLandingChanges": false,
+    "prompt": "Create or update docs/PHASE_5_SECURITY_LIMITATIONS.md. Do not touch landing page or GFF AI tools. Document MVP security limitations honestly: JWT in localStorage or dev storage, SQLite local DB, local seed users, no production password reset, no MFA, no refresh token hardening, no httpOnly secure cookie implementation unless already done, no rate limiting, no audit-grade logs, no production RBAC review, no file scanning, no payment compliance. Document required Phase 6 hardening steps: production database, httpOnly secure cookies or hardened session strategy, refresh token rotation, password reset, MFA/SSO optional, rate limiting, audit logs, secrets management, deployment config, CORS hardening. Run lint/build if docs affect build."
+  },
+  {
+    "id": "168-phase5-backend-frontend-smoke-qa",
+    "title": "Run backend and frontend smoke QA",
+    "scope": "phase5-quality",
+    "target": "local full stack smoke QA",
+    "allowLandingChanges": false,
+    "prompt": "Perform a local full-stack smoke QA for Phase 5. Do not add features unless fixing small clear issues. Verify backend can start, health endpoint works, database initializes, seed script works, dev users can login, /auth/me returns current user, client user cannot access admin APIs, admin user can access admin APIs, client portal dashboard fetches data, admin dashboard fetches data, support ticket create works, documents are metadata-only, invoices are metadata-only. Verify frontend builds. Do not touch landing page or GFF AI tools. Run available backend checks/tests and frontend lint/build. Fix only issues found during smoke QA."
+  },
+  {
+    "id": "169-phase5-no-gff-tools-backend-regression-audit",
+    "title": "Audit that GFF AI tools remain frontend-only",
+    "scope": "phase5-safety",
+    "target": "GFF AI tools backend exclusion",
+    "allowLandingChanges": false,
+    "prompt": "Audit that Phase 3 GFF AI tools remain frontend-only and were not accidentally connected to backend. Do not touch landing page. Check /build/blueprint, /build/roi, /build/proposal, /build/assessment, /build/sandbox, /build/marketplace, /build/foundry-studio, /build/talk. These should not call the new backend APIs in Phase 5. They may still use local state, localStorage, deterministic calculations, and frontend preview behavior. If accidental backend integration exists in these tools, remove it and restore frontend-only behavior. Do not change their UI unless required to remove backend calls. Run lint/build."
+  },
+  {
+    "id": "170-phase5-final-mvp-backend-qa",
+    "title": "Final Phase 5 MVP backend QA",
+    "scope": "phase5-final-qa",
+    "target": "MVP backend auth RBAC portal admin integration",
+    "allowLandingChanges": false,
+    "prompt": "Perform final QA for Phase 5. Do not add new features unless fixing a small clear issue. Verify local/dev backend exists and runs. Verify SQLite database setup. Verify seed data and dev users. Verify JWT login, auth/me, logout, RBAC, client data scoping, admin access. Verify CRUD APIs for clients, users, projects, AI operations, documents metadata, invoices metadata, support tickets, governance, dashboard summaries, analytics summaries. Verify frontend login connects to backend. Verify client portal pages use backend data: Dashboard, Projects, AI Operations, Documents, Billing, Support, Analytics, Governance, Activity, Settings. Verify admin pages use backend data: Dashboard, Clients, Users, Projects, AI Operations, Documents, Billing, Support, Analytics, Governance, Settings. Verify no AWS, storage, payment, email, OTP, OAuth, SSO, production auth, or backend for GFF AI tools was added. Verify landing page unchanged. Run backend tests/checks if available, backend startup/import checks, npm run lint, npm run build, npm run typecheck if available, and npm test if available. Final response must include pass/fail checklist, files changed, commands run, remaining warnings, local dev login credentials from seed docs, and TODOs for Phase 6 production hardening."
   }
 ]

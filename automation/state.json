@@ -37,7 +37,55 @@
     "35-visual-premium-polish-pass",
     "36-link-route-content-audit",
     "37-final-full-build-and-qa",
-    "09-homepage-client-success"
+    "09-homepage-client-success",
+    "38-phase3-preflight-interactive-tools-audit",
+    "39-phase3-shared-tool-architecture",
+    "40-phase3-shared-data-models-and-validation",
+    "41-phase3-reusable-wizard-and-stepper",
+    "42-phase3-talk-to-agent-tool",
+    "43-phase3-blueprint-wizard-inputs",
+    "44-phase3-blueprint-scoring-engine-and-results",
+    "46-phase3-ai-readiness-assessment-framework",
+    "47-phase3-ai-readiness-scoring-results",
+    "49-phase3-roi-results-and-scenarios",
+    "45-phase3-blueprint-local-save-share-copy",
+    "48-phase3-roi-calculator-input-model",
+    "52-phase3-sandbox-agent-demo-catalog",
+    "50-phase3-proposal-builder-intake",
+    "51-phase3-proposal-builder-preview",
+    "53-phase3-sandbox-simulated-agent-preview",
+    "54-phase3-agent-marketplace-tool",
+    "55-phase3-foundry-studio-workflow-builder",
+    "56-phase3-build-hub-unified-experience",
+    "57-phase3-local-workspace-continuity",
+    "58-phase3-cross-tool-recommendations",
+    "59-phase3-command-center-deep-actions",
+    "60-phase3-tool-empty-loading-error-states",
+    "61-phase3-mobile-pass-build-tools",
+    "62-phase3-accessibility-pass-build-tools",
+    "63-phase3-motion-and-interaction-polish",
+    "64-phase3-visual-premium-polish-build-tools",
+    "65-phase3-tool-logic-tests-or-verification-script",
+    "66-phase3-api-contract-documentation-only",
+    "67-phase3-linking-and-cta-integration",
+    "68-phase3-final-interactive-tools-qa",
+    "69-phase4-preflight-portal-admin-audit",
+    "70-phase4-private-app-design-system",
+    "71-phase4-private-route-map",
+    "72-phase4-local-auth-session-rbac-preview",
+    "73-phase4-client-login-landing",
+    "74-phase4-login-page",
+    "75-phase4-forgot-password-otp-preview",
+    "76-phase4-private-app-shell",
+    "77-phase4-private-mock-data-model",
+    "79-phase4-client-dashboard",
+    "80-phase4-client-projects-list",
+    "78-phase4-data-table-filter-system",
+    "84-phase4-client-documents-library",
+    "86-phase4-client-billing-overview",
+    "91-phase4-client-governance",
+    "95-phase4-admin-clients-list",
+    "97-phase4-admin-projects"
   ],
   "failed": [
     {
@@ -102,6 +150,54 @@
     },
     {
       "id": "09-homepage-client-success",
+      "reason": "cline implementation failed"
+    },
+    {
+      "id": "45-phase3-blueprint-local-save-share-copy",
+      "reason": "failed after review"
+    },
+    {
+      "id": "48-phase3-roi-calculator-input-model",
+      "reason": "cline implementation failed"
+    },
+    {
+      "id": "50-phase3-proposal-builder-intake",
+      "reason": "cline implementation failed"
+    },
+    {
+      "id": "51-phase3-proposal-builder-preview",
+      "reason": "cline implementation failed"
+    },
+    {
+      "id": "53-phase3-sandbox-simulated-agent-preview",
+      "reason": "cline implementation failed"
+    },
+    {
+      "id": "74-phase4-login-page",
+      "reason": "cline implementation failed"
+    },
+    {
+      "id": "78-phase4-data-table-filter-system",
+      "reason": "cline implementation failed"
+    },
+    {
+      "id": "78-phase4-data-table-filter-system",
+      "reason": "cline implementation failed"
+    },
+    {
+      "id": "82-phase4-client-ai-operations-overview",
+      "reason": "cline implementation failed"
+    },
+    {
+      "id": "88-phase4-client-support-center",
+      "reason": "cline implementation failed"
+    },
+    {
+      "id": "94-phase4-admin-dashboard",
+      "reason": "cline implementation failed"
+    },
+    {
+      "id": "99-phase4-admin-users-rbac",
       "reason": "cline implementation failed"
     }
   ]

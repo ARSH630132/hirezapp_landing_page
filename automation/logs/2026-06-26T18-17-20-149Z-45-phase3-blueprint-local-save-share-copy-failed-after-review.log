@@ -1,0 +1,48 @@
+
+
+## npm run lint
+exit=0
+STDOUT:
+
+> hirezapp_landing_page@0.1.0 lint
+> eslint
+
+
+STDERR:
+
+
+## npm run build
+exit=1
+STDOUT:
+
+> hirezapp_landing_page@0.1.0 build
+> next build
+
+▲ Next.js 16.2.9 (Turbopack)
+- Environments: .env
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 28.3s
+  Running TypeScript ...
+
+STDERR:
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /Users/ayushbansal/package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * /Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/package-lock.json
+
+Failed to type check.
+
+./components/sections/BlueprintGenerator.tsx:237:36
+Type error: Cannot find name 'compileBlueprint'.
+
+  [90m235 |[0m           [36mif[0m (decodedData && decodedData.industry) {
+  [90m236 |[0m             [90m// Recompile results on-the-fly[0m
+[31m[1m>[0m [90m237 |[0m             [36mconst[0m compiledResult = compileBlueprint(decodedData);
+  [90m    |[0m                                    [31m[1m^[0m
+  [90m238 |[0m             setLoadedState({
+  [90m239 |[0m               data: {
+  [90m240 |[0m                 ...initialData,
+Next.js build worker exited with code: 1 and signal: null
