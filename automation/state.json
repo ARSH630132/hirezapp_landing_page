@@ -134,7 +134,8 @@
     "137-phase5-api-documents-metadata-crud",
     "139-phase5-api-support-tickets-crud",
     "145-phase5-backend-error-handling-and-pagination",
-    "156-phase5-frontend-client-analytics-governance-api"
+    "156-phase5-frontend-client-analytics-governance-api",
+    "158-phase5-frontend-admin-dashboard-api"
   ],
   "failed": [
     {
