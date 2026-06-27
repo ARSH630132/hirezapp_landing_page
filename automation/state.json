@@ -95,7 +95,8 @@
     "105-phase4-admin-governance",
     "113-phase4-route-guard-ux",
     "114-phase4-mobile-private-workspace-pass",
-    "115-phase4-accessibility-private-workspace-pass"
+    "115-phase4-accessibility-private-workspace-pass",
+    "118-phase4-frontend-only-safety-audit"
   ],
   "failed": [
     {
