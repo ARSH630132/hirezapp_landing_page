@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { UserProfile } from "./types";
+import { useRouter } from "next/navigation";
+import { clearPreviewSession } from "@/lib/preview-auth";
 
 // ==========================================
 // 1. SECURE PREVIEW NOTICE
@@ -35,6 +37,7 @@ export function UserAvatar({
   showDetails?: boolean;
 }) {
   const [showCard, setShowCard] = useState(false);
+  const router = useRouter();
 
   return (
     <div className="relative">
@@ -86,6 +89,19 @@ export function UserAvatar({
                   <span>Enclave:</span>
                   <span className="text-white/40">GFF_0x7FFA</span>
                 </div>
+              </div>
+
+              <div className="border-t border-white/5 pt-3 mt-1.5">
+                <button
+                  onClick={() => {
+                    clearPreviewSession();
+                    setShowCard(false);
+                    router.push("/login");
+                  }}
+                  className="w-full h-8 rounded-lg bg-red-950/15 hover:bg-red-950/30 border border-red-500/10 hover:border-red-500/20 text-red-400 font-mono text-[9px] uppercase font-bold tracking-wider transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  Deauthenticate Session
+                </button>
               </div>
             </motion.div>
           </>

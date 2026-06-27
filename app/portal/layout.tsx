@@ -1,9 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { PrivateAppShell, BreadcrumbItem } from "@/components/private-app";
 import { clientUser, clientSidebarLinks, clientLinkToRoute } from "@/components/private-app/routes-config";
+import { PreviewRouteGuard } from "@/components/private-app/PreviewRouteGuard";
+import { getPreviewSession, PreviewSession } from "@/lib/preview-auth";
 
 export default function ClientPortalLayout({
   children,
@@ -12,6 +14,18 @@ export default function ClientPortalLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
+  const [session, setSession] = useState<PreviewSession | null>(null);
+
+  useEffect(() => {
+    setSession(getPreviewSession());
+    const handleSessionChanged = () => {
+      setSession(getPreviewSession());
+    };
+    window.addEventListener("gff_preview_session_changed", handleSessionChanged);
+    return () => {
+      window.removeEventListener("gff_preview_session_changed", handleSessionChanged);
+    };
+  }, []);
 
   // If it's an auth page, we render it directly without the app shell
   const isAuthPage = pathname === "/portal" || pathname === "/portal/login" || pathname === "/login";
@@ -48,17 +62,28 @@ export default function ClientPortalLayout({
     }
   };
 
+  // Build current user representation
+  const activeUser = session ? {
+    name: session.name,
+    email: session.email,
+    role: (session.role === "client_admin" || session.role === "client_member") ? ("Client" as const) : ("Administrator" as const),
+    clearance: session.clearance
+  } : clientUser;
+
   return (
-    <PrivateAppShell
-      user={clientUser}
-      breadcrumbs={breadcrumbs}
-      links={clientSidebarLinks}
-      activeLink={activeLinkId}
-      onLinkChange={handleLinkChange}
-      role="Client"
-      onRoleChange={handleRoleChange}
-    >
-      {children}
-    </PrivateAppShell>
+    <PreviewRouteGuard type="portal">
+      <PrivateAppShell
+        user={activeUser}
+        breadcrumbs={breadcrumbs}
+        links={clientSidebarLinks}
+        activeLink={activeLinkId}
+        onLinkChange={handleLinkChange}
+        role="Client"
+        onRoleChange={handleRoleChange}
+      >
+        {children}
+      </PrivateAppShell>
+    </PreviewRouteGuard>
   );
 }
+
