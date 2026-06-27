@@ -136,13 +136,41 @@ const industryOptItems = [
 ];
 
 const priorityOptItems = [
-  { id: "Cost Reduction", title: "Cost Reduction", description: "Optimize operational spending and token utilization models." },
-  { id: "Productivity", title: "Productivity", description: "Empower staff with sovereign co-pilots and knowledge synthesis." },
-  { id: "Customer Experience", title: "Customer Experience", description: "Deploy high-fidelity, safe conversational supervisor interfaces." },
-  { id: "Revenue Growth", title: "Revenue Growth", description: "Identify predictive market opportunities and automated campaigns." },
-  { id: "Compliance", title: "Compliance", description: "Continuous, air-gapped regulatory telemetry auditing and ledger safety." },
-  { id: "AI Transformation", title: "AI Transformation", description: "Re-platform legacy systems into multi-agent DAG architectures." },
-  { id: "Automate Processes", title: "Automate Processes", description: "Replace repetitive workflows with autonomous human-in-the-loop agents." }
+  {
+    id: "Reduce Costs",
+    title: "Reduce Costs",
+    description: "Reduce operational expenditure and optimize enterprise spending.",
+  },
+  {
+    id: "Increase Revenue",
+    title: "Increase Revenue",
+    description: "Create new revenue streams and accelerate business growth.",
+  },
+  {
+    id: "Improve Productivity",
+    title: "Improve Productivity",
+    description: "Increase workforce efficiency through AI-enabled automation.",
+  },
+  {
+    id: "Improve Customer Experience",
+    title: "Improve Customer Experience",
+    description: "Deliver faster, smarter, and personalized customer interactions.",
+  },
+  {
+    id: "Automate Processes",
+    title: "Automate Processes",
+    description: "Replace repetitive workflows with intelligent automation.",
+  },
+  {
+    id: "Strengthen Compliance",
+    title: "Strengthen Compliance",
+    description: "Improve governance, security, and regulatory adherence.",
+  },
+  {
+    id: "AI Transformation",
+    title: "AI Transformation",
+    description: "Drive enterprise-wide AI adoption and modernization.",
+  },
 ];
 
 const aiJourneyOptItems = [
@@ -1116,26 +1144,25 @@ PRIVACY NOTICE: Generated locally on the client edge. No data is stored on serve
 
 
   return (
-    <div className="w-full space-y-6">
+    <div className="w-full min-h-screen bg-[#020204] space-y-6 ">
       {/* Top Title Section */}
-      <div className="border-b border-white/5 pb-8 mb-4 flex flex-col md:flex-row md:items-end justify-between gap-6 print:hidden">
-        <div className="space-y-3 max-w-4xl">
-          <span className="text-[10px] font-mono text-[#087DF3] font-bold uppercase tracking-widest block">
+      <div className="relative border-b border-white/5 pb-8 mb-4 print:hidden mt-10">
+<div className="space-y-3 max-w-full mx-auto text-center">
+            {/* <span className="text-[10px] font-mono text-[#087DF3] font-bold uppercase tracking-widest block">
             Sovereign Self-Assessment Engine
-          </span>
-          <h1 className="text-3xl lg:text-5xl font-extrabold text-white tracking-tight leading-none">
+          </span> */}
+          <h1 className="text-3xl lg:text-5xl font-extrabold text-white tracking-tight leading-none whitespace-nowrap">
             Sovereign Enterprise{" "}
             <span className="bg-gradient-to-r from-white via-white to-[#087DF3] bg-clip-text text-transparent">
               AI Blueprint Generator
             </span>
           </h1>
-          <p className="text-white/60 text-xs lg:text-sm font-light max-w-2xl leading-relaxed">
-            Formulate your tailored operating model, target multi-agent DAG architectures, and synthesized 90-day execution roadmap built on standard GFF AI baselines.
+<p className="text-white/60 text-xs lg:text-sm font-light max-w-2xl mx-auto leading-relaxed">            Formulate your tailored operating model, target multi-agent DAG architectures, and synthesized 90-day execution roadmap built on standard GFF AI baselines.
           </p>
         </div>
 
         {/* Local History Vault Button */}
-        <div className="shrink-0 flex items-center gap-3">
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-3">
           <button
             type="button"
             onClick={() => setIsDrawerOpen(true)}

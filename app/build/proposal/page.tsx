@@ -508,7 +508,7 @@ SECTION XI: NEXT STEPS
                     type="button"
                     onClick={() => { if (validateStep(1) && (g < 3 || validateStep(2))) setActiveStepGate(g as 1 | 2 | 3); }}
                     className={`flex-1 py-2 rounded transition font-semibold uppercase ${activeStepGate === g ? "bg-white/5 text-[#009DFF] border border-white/10" : "text-white/40 hover:text-white"}`}
-                    disabled={g > activeStepGate && !validateStep(activeStepGate)}
+                    disabled={g > activeStepGate}
                   >
                     <span>0{g}</span>
                     <span className="hidden sm:inline"> {"//"} {g === 1 ? "Baseline Profile" : g === 2 ? "Strategy & Outcomes" : "Deployment Pathway"}</span>
