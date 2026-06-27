@@ -86,7 +86,8 @@
     "91-phase4-client-governance",
     "95-phase4-admin-clients-list",
     "97-phase4-admin-projects",
-    "100-phase4-admin-ai-operations"
+    "100-phase4-admin-ai-operations",
+    "101-phase4-admin-documents"
   ],
   "failed": [
     {
