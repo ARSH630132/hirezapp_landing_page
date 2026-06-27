@@ -931,3 +931,106 @@ if (!(global as any)._apiMockSupportTickets) {
 }
 export const API_MOCK_SUPPORT_TICKETS: Record<string, ApiSupportTicket> = (global as any)._apiMockSupportTickets;
 
+// --- CLIENTS CRUD API MODELS & SEED DATA ---
+
+export interface ApiClient {
+  id: string;
+  name: string;
+  domain: string;
+  status: "active" | "suspended" | "pending" | "archived";
+  tier: "Sovereign" | "Enterprise" | "Standard";
+  createdAt: string;
+  region: string;
+  complianceLevel: string;
+  contactName: string;
+  contactEmail: string;
+  industry: string;
+  accountOwner: string;
+  billingStatus: "Paid" | "Unpaid" | "Processing" | "Overdue";
+  healthStatus: "Healthy" | "Warning" | "Critical" | "Offline";
+}
+
+export const DEFAULT_API_MOCK_CLIENTS: Record<string, ApiClient> = {
+  "client-001": {
+    id: "client-001",
+    name: "Apex Sovereign Group [Preview Client]",
+    domain: "apex-sovereign.gff.ai",
+    status: "active",
+    tier: "Sovereign",
+    createdAt: "2026-01-15T08:30:00Z",
+    region: "EU-West (Isolated)",
+    complianceLevel: "ISO-27001 Fully Certified",
+    contactName: "Alexander Mercer",
+    contactEmail: "a.mercer@apex-sovereign.gff.ai",
+    industry: "Cybersecurity & Defense",
+    healthStatus: "Healthy",
+    billingStatus: "Paid",
+    accountOwner: "Dr. Sarah Vance"
+  },
+  "client-002": {
+    id: "client-002",
+    name: "Global Retail Enclave [Preview Client]",
+    domain: "global-retail.gff.ai",
+    status: "active",
+    tier: "Enterprise",
+    createdAt: "2026-02-10T14:15:00Z",
+    region: "US-East (Dedicated)",
+    complianceLevel: "SOC2 Type II Assured",
+    contactName: "Evelyn Carter",
+    contactEmail: "e.carter@global-retail.gff.ai",
+    industry: "E-Commerce & Retail",
+    healthStatus: "Warning",
+    billingStatus: "Overdue",
+    accountOwner: "Alexander Mercer"
+  },
+  "client-003": {
+    id: "client-003",
+    name: "Sovereign Logistics Unit [Preview Client]",
+    domain: "sovereign-logistics.gff.ai",
+    status: "pending",
+    tier: "Standard",
+    createdAt: "2026-06-01T09:00:00Z",
+    region: "APAC-South (Shared)",
+    complianceLevel: "NIST AI RMF Pending",
+    contactName: "Marcus Vance",
+    contactEmail: "m.vance@sovereign-logistics.gff.ai",
+    industry: "Supply Chain & Logistics",
+    healthStatus: "Offline",
+    billingStatus: "Unpaid",
+    accountOwner: "Sarah Jenkins"
+  },
+  "client-004": {
+    id: "client-004",
+    name: "Federal Treasury Division [Preview Client]",
+    domain: "fed-treasury.gff.ai",
+    status: "active",
+    tier: "Sovereign",
+    createdAt: "2025-11-20T11:45:00Z",
+    region: "US-GovWest (Airgapped)",
+    complianceLevel: "NIST SP 800-53 High",
+    contactName: "Sarah Jenkins",
+    contactEmail: "s.jenkins@fed-treasury.gff.ai",
+    industry: "FinTech & Treasury",
+    healthStatus: "Healthy",
+    billingStatus: "Paid",
+    accountOwner: "Marcus Vance"
+  }
+};
+
+if (!(global as any)._apiMockClients) {
+  (global as any)._apiMockClients = { ...DEFAULT_API_MOCK_CLIENTS };
+}
+export const API_MOCK_CLIENTS: Record<string, ApiClient> = (global as any)._apiMockClients;
+
+export function getNextClientId(): string {
+  const clients = Object.values(API_MOCK_CLIENTS);
+  const ids = clients
+    .map(c => {
+      const match = c.id.match(/^client-(\d+)$/);
+      return match ? parseInt(match[1], 10) : 0;
+    })
+    .filter(id => id > 0);
+  const maxId = ids.length > 0 ? Math.max(...ids) : 4;
+  return `client-${String(maxId + 1).padStart(3, "0")}`;
+}
+
