@@ -81,7 +81,8 @@
     "79-phase4-client-dashboard",
     "80-phase4-client-projects-list",
     "78-phase4-data-table-filter-system",
-    "84-phase4-client-documents-library"
+    "84-phase4-client-documents-library",
+    "86-phase4-client-billing-overview"
   ],
   "failed": [
     {
