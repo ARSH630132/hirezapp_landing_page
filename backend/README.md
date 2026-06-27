@@ -206,3 +206,43 @@ Creates a test system log.
   "created_at": "2026-06-27T15:10:00.000000"
 }
 ```
+
+
+---
+
+## ☁️ Production AWS Cloud Deployment & Configuration
+
+For production scaling, the local SQLite database is replaced with an enterprise-grade Amazon DynamoDB multi-table stack, and client files are housed in a secure Amazon S3 bucket.
+
+### 1. Required Backend Environment Keys (Production)
+Configure the following parameters in AWS Lambda, App Runner, or ECS environment settings:
+- `PROJECT_NAME`: `"GFF AI Enterprise Cloud Engine"`
+- `API_V1_STR`: `"/api/v1"`
+- `ENVIRONMENT`: `"production"`
+- `CORS_ORIGINS`: Comma-separated allowed frontend domains (e.g. `https://portal.gff.ai,https://admin.gff.ai`)
+- `FRONTEND_BASE_URL`: `https://portal.gff.ai`
+- `AWS_REGION`: Chosen deployment region (e.g. `us-east-1`)
+- `AWS_ACCESS_KEY_ID` & `AWS_SECRET_ACCESS_KEY`: IAM credentials with DynamoDB/S3 permissions
+- `DYNAMODB_USERS_TABLE`: `GFF_USERS`
+- `DYNAMODB_CLIENTS_TABLE`: `GFF_CLIENTS`
+- `DYNAMODB_ITEMS_TABLE`: `GFF_PORTAL_ITEMS`
+- `DYNAMODB_ITEMS_TYPE_INDEX`: `GSI1`
+- `S3_DOCUMENTS_BUCKET`: `gff-portal-documents-prod`
+- `S3_DOCUMENTS_PREFIX`: `clients`
+- `JWT_SECRET`: High-entropy production signature key
+- `ACCESS_TOKEN_EXPIRE_MINUTES`: `1440` (24 hours)
+
+### 2. Backend Start Command (Production)
+```bash
+# Launching ASGI Server
+venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
+```
+
+### 3. AWS Resource Names
+- DynamoDB Table for Users: `GFF_USERS` (Partition Key: `email`)
+- DynamoDB Table for Clients: `GFF_CLIENTS` (Partition Key: `client_id`)
+- DynamoDB Table for Portal Workspace Items: `GFF_PORTAL_ITEMS` (PK: `PK`, SK: `SK`, GSI: `GSI1`)
+- S3 Bucket name: `gff-portal-documents-prod`
+
+For complete architectural topologies, data models, and step-by-step guidance, refer to the full [Phase 6 AWS Production Deployment Guide](../docs/PHASE_6_AWS_FINAL_SETUP.md).
+

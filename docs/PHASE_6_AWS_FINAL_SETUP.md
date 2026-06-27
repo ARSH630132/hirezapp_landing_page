@@ -143,3 +143,148 @@ These credentials can be used both locally (via SQLite/mock fallbacks) and in th
 npm run backend:seed
 ```
 
+
+
+---
+
+## 6. Execution, Build, and Deployment Manual
+
+This section outlines the operational commands, deployment procedures, required environment parameters, and AWS production resources for launching the GFF AI Platform.
+
+### 6.1. Backend Execution & Deployment Commands
+
+The backend is built as a cloud-ready FastAPI application that can be run locally using Uvicorn or deployed to AWS Lambda (e.g., using Mangum adapter) or AWS App Runner / Elastic Beanstalk.
+
+#### 1. Setup & Installation
+To create the virtual environment and install all python dependencies, run:
+```bash
+# From project root
+npm run backend:install
+
+# Or from backend directory
+cd backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+#### 2. Seed Database
+To seed the database with multi-tenant workspace credentials, projects, operations, invoices, support tickets, and compliance logs:
+```bash
+# From project root
+npm run backend:seed
+
+# Or from backend directory with active virtual environment
+cd backend
+python app/seed.py
+```
+
+#### 3. Run Backend Start Command (Development/Production)
+To launch the FastAPI ASGI server:
+```bash
+# From project root (hot-reload enabled)
+npm run backend:dev
+
+# From backend directory (standard FastAPI startup)
+cd backend
+venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000
+```
+*For production cloud environments (e.g., AWS App Runner or EC2), execute:*
+```bash
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
+```
+
+#### 4. Backend Health & Smoke Checks
+To execute complete RBAC, JWT, and multi-tenancy isolation tests:
+```bash
+# From project root
+npm run backend:check
+
+# Or from backend directory
+cd backend
+./venv/bin/pytest app/test_backend_smoke.py
+./venv/bin/python app/test_security_utilities.py
+./venv/bin/python app/test_clients_api.py
+```
+
+---
+
+### 6.2. Next.js Frontend Execution & Build Commands
+
+The frontend is an enterprise-grade Next.js App Router workspace optimized for modern deployment platforms (Vercel, AWS Amplify, AWS ECS, or S3/CloudFront for static builds).
+
+#### 1. Frontend Build Command
+To produce an optimized production-ready bundle:
+```bash
+# From project root
+npm run build
+```
+This command compiles the TypeScript components, static assets, and App Router pages into the `.next` production distribution.
+
+#### 2. Frontend Start Command
+To run the built production frontend server:
+```bash
+# From project root
+npm run start
+```
+
+#### 3. Frontend Development Command
+To launch the local development hot-reloading server:
+```bash
+# From project root
+npm run dev
+```
+
+---
+
+### 6.3. Complete Production Environment Variables
+
+#### Backend Environment Variables
+These variables must be configured in AWS Parameter Store, AWS Secrets Manager, or as environment variables on the hosting container/Lambda:
+
+| Variable Name | Required Value/Format | Purpose |
+| :--- | :--- | :--- |
+| `PROJECT_NAME` | `"GFF AI Enterprise Cloud Engine"` | API title metadata |
+| `API_V1_STR` | `"/api/v1"` | API prefix path |
+| `ENVIRONMENT` | `"production"` | Set runtime stage |
+| `CORS_ORIGINS` | `https://portal.gff.ai,https://admin.gff.ai` | Allowed frontend domains (CORS compliance) |
+| `FRONTEND_BASE_URL` | `https://portal.gff.ai` | Root URL of client-facing portal |
+| `AWS_REGION` | `us-east-1` (or chosen region) | Target region for DynamoDB and S3 |
+| `AWS_ACCESS_KEY_ID` | *production_aws_access_key_id* | AWS IAM deployer credentials |
+| `AWS_SECRET_ACCESS_KEY` | *production_aws_secret_access_key* | AWS IAM deployer secret |
+| `DYNAMODB_USERS_TABLE` | `GFF_USERS` | DynamoDB user registry table |
+| `DYNAMODB_CLIENTS_TABLE` | `GFF_CLIENTS` | DynamoDB enterprise client registry table |
+| `DYNAMODB_ITEMS_TABLE` | `GFF_PORTAL_ITEMS` | Multi-tenant operational records store |
+| `DYNAMODB_ITEMS_TYPE_INDEX` | `GSI1` | Global Secondary Index for single-table queries |
+| `S3_DOCUMENTS_BUCKET` | `gff-portal-documents-prod` | Secure client document storage |
+| `S3_DOCUMENTS_PREFIX` | `clients` | File key namespace prefix |
+| `JWT_SECRET` | *cryptographically_secure_256_bit_signature_key* | Cryptographic token signing secret |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | `1440` (24 hours) | Token lifespan limit |
+
+#### Frontend Environment Variables
+These variables must be set in the build pipeline (e.g. Vercel dashboard, AWS Amplify console):
+
+| Variable Name | Required Value/Format | Purpose |
+| :--- | :--- | :--- |
+| `NEXT_PUBLIC_API_BASE_URL` | `https://api.gff.ai/v1` | URL pointing to the FastAPI gateway |
+| `NEXT_PUBLIC_APP_ENV` | `production` | Deployment stage tag |
+| `NEXT_PUBLIC_PORTAL_UPLOADS_ENABLED` | `true` | Enables upload features on Client Portal |
+| `NEXT_PUBLIC_S3_BUCKET_NAME` | `gff-portal-documents-prod` | Target S3 bucket name |
+
+---
+
+### 6.4. AWS Production Cloud Resource Names
+
+Ensure the following exact resource names are created in your target AWS account to match the production configuration defaults:
+
+1. **Amazon DynamoDB Tables**:
+   - `GFF_USERS` (Primary Key: `email` [String])
+   - `GFF_CLIENTS` (Primary Key: `client_id` [String])
+   - `GFF_PORTAL_ITEMS` (Primary Key: `PK` [String], Sort Key: `SK` [String], GSI: `GSI1` with PK `GSI1PK` [String] and SK `GSI1SK` [String])
+
+2. **Amazon S3 Storage Bucket**:
+   - `gff-portal-documents-prod` (Block All Public Access, KMS SSE-KMS Encryption, TLS 1.3 Secure Transport enforced)
+
+3. **AWS IAM Execution Role Policy**:
+   - Create a role with a minimum privilege boundary allowing full read/write access to the three DynamoDB tables above, and pre-signed URL generation access on the `gff-portal-documents-prod` S3 bucket.
+
