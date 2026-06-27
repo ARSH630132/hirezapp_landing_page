@@ -70,7 +70,8 @@
     "67-phase3-linking-and-cta-integration",
     "68-phase3-final-interactive-tools-qa",
     "69-phase4-preflight-portal-admin-audit",
-    "70-phase4-private-app-design-system"
+    "70-phase4-private-app-design-system",
+    "71-phase4-private-route-map"
   ],
   "failed": [
     {
