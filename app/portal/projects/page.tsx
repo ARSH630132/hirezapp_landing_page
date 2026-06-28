@@ -128,11 +128,12 @@ function mapApiProjectToClientProject(p: ApiProject): ClientProject {
     "Evelyn Carter": "Sovereign Systems Lead"
   };
 
-  const idUpper = p.id.toUpperCase();
-  const env = envMap[p.id] || `${p.enclaveType} Node`;
-  const platformCore = platformMap[p.id] || "GFF AI Platform Core";
-  const nodeId = nodeMap[p.id] || `${idUpper}-NODE`;
-  const nextMilestone = milestoneMap[p.id] || "Continuous Compliance Audit Review";
+  const idStr = p.id !== undefined && p.id !== null ? String(p.id) : "";
+  const idUpper = idStr.toUpperCase();
+  const env = envMap[idStr] || `${p.enclaveType} Node`;
+  const platformCore = platformMap[idStr] || "GFF AI Platform Core";
+  const nodeId = nodeMap[idStr] || `${idUpper}-NODE`;
+  const nextMilestone = milestoneMap[idStr] || "Continuous Compliance Audit Review";
   
   // Progress based on phase
   let progress = 50;
@@ -164,7 +165,7 @@ function mapApiProjectToClientProject(p: ApiProject): ClientProject {
     "proj-003": "Mar 2026 - Nov 2026",
     "proj-004": "Jan 2026 - Ongoing"
   };
-  const timeline = timelineMap[p.id] || "April 2026 - Ongoing";
+  const timeline = timelineMap[idStr] || "April 2026 - Ongoing";
 
   const complianceScore = 95.0 + ((p.nodesCount * 7) % 5) * 0.9;
 
