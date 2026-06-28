@@ -81,7 +81,7 @@ export default function DeveloperPlatformPage() {
         </MotionReveal>
 
         {/* Section 2: Interactive Developer Console Workspace */}
-        <MotionReveal className="space-y-10">
+        {/* <MotionReveal className="space-y-10">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-white/5 pb-6">
             <div>
               <span className="text-xs font-mono text-[#009DFF] uppercase tracking-widest font-bold">Standard Environment</span>
@@ -89,7 +89,7 @@ export default function DeveloperPlatformPage() {
               <p className="text-white/50 text-xs sm:text-sm font-light mt-1.5 font-sans">Simulate cognitive runtimes, inspect static YAML topologies, and test adversarial boundary overrides.</p>
             </div>
 
-            {/* Tab Selectors */}
+            //  Tab Selectors 
             <div className="flex gap-1 p-1 bg-white/5 rounded-xl border border-white/10 w-full md:w-auto overflow-x-auto">
               {[
                 { id: "build", label: "Build (YAML)", icon: <Code2 className="w-3.5 h-3.5" /> },
@@ -115,11 +115,11 @@ export default function DeveloperPlatformPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
             
-            {/* Left Box: Active Dev Workspace */}
+             Left Box: Active Dev Workspace 
             <div className="lg:col-span-8 bg-[#04060b] rounded-xl border border-white/10 p-6 shadow-2xl relative min-h-[420px] flex flex-col justify-between overflow-hidden">
               <div className="absolute top-0 right-0 w-[40%] h-[30%] bg-gradient-to-bl from-[#009DFF]/5 to-transparent blur-[40px] pointer-events-none" />
 
-              {/* BUILD TAB */}
+               BUILD TAB *
               {activeTab === "build" && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between border-b border-white/5 pb-3">
@@ -149,7 +149,7 @@ safety_policies:
                 </div>
               )}
 
-              {/* TEST TAB */}
+               TEST TAB 
               {activeTab === "test" && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between border-b border-white/5 pb-3">
@@ -178,7 +178,7 @@ safety_policies:
               )}
 
 
-              {/* INTEGRATE TAB */}
+              INTEGRATE TAB 
               {activeTab === "integrate" && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between border-b border-white/5 pb-3">
@@ -206,7 +206,7 @@ safety_policies:
                 </div>
               )}
 
-              {/* OPERATE TAB */}
+              OPERATE TAB 
               {activeTab === "operate" && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between border-b border-white/5 pb-3">
@@ -242,7 +242,7 @@ safety_policies:
                 </div>
               )}
 
-              {/* Console Footer */}
+              {/* Console Footer 
               <div className="mt-8 pt-4 border-t border-white/5 flex justify-between items-center text-[10px] text-white/30 font-mono">
                 <span>SDK: v1.0.8-ALPHA</span>
                 <span>LOCAL SIMULATION MODE</span>
@@ -282,7 +282,7 @@ safety_policies:
             </div>
 
           </div>
-        </MotionReveal>
+        </MotionReveal> */}
 
         <MotionReveal className="space-y-12">
           <div className="text-center max-w-3xl mx-auto space-y-3 font-sans">

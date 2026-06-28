@@ -172,7 +172,7 @@ export default function AiAcademyPage() {
         {/* Editorial Introduction */}
         <MotionReveal className="grid grid-cols-1 lg:grid-cols-12 gap-8 py-10 border-y border-white/5 items-center">
           <div className="lg:col-span-5">
-            <span className="text-xs font-mono text-[#009DFF] uppercase tracking-widest font-bold">Human Operating Layer</span>
+            {/* <span className="text-xs font-mono text-[#009DFF] uppercase tracking-widest font-bold">Human Operating Layer</span> */}
             <h2 className="text-2xl sm:text-3xl font-bold text-white mt-2 leading-tight">Upskilling the Sovereign Enterprise</h2>
           </div>
           <div className="lg:col-span-7">
@@ -185,7 +185,7 @@ export default function AiAcademyPage() {
         {/* Interactive Workspace Console */}
         <MotionReveal className="space-y-10">
           <div className="text-center max-w-2xl mx-auto space-y-3">
-            <span className="text-xs font-mono text-[#009DFF] uppercase tracking-widest font-semibold">Custom Curriculum Workspace</span>
+            {/* <span className="text-xs font-mono text-[#009DFF] uppercase tracking-widest font-semibold">Custom Curriculum Workspace</span> */}
             <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">Interactive Learning Console</h2>
             <p className="text-white/50 text-xs sm:text-sm font-light">
               Select an educational discipline to preview active learning modules, structured objectives, and run sandboxed CLI commands.
@@ -290,7 +290,7 @@ export default function AiAcademyPage() {
         {/* Structural Enablement Pillars (Bento Grid) */}
         <MotionReveal className="space-y-10">
           <div className="text-center max-w-2xl mx-auto">
-            <span className="text-xs font-mono text-[#009DFF] uppercase tracking-widest font-semibold">Enterprise Pillars</span>
+            {/* <span className="text-xs font-mono text-[#009DFF] uppercase tracking-widest font-semibold">Enterprise Pillars</span> */}
             <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mt-1">Sovereign Enablement Structure</h2>
           </div>
 
@@ -324,7 +324,7 @@ export default function AiAcademyPage() {
         {/* Rolling Enablement Timeline */}
         <MotionReveal className="space-y-10">
           <div className="text-center max-w-2xl mx-auto">
-            <span className="text-xs font-mono text-[#E4000F] uppercase tracking-widest font-semibold">Enablement Lifecycle</span>
+            {/* <span className="text-xs font-mono text-[#E4000F] uppercase tracking-widest font-semibold">Enablement Lifecycle</span> */}
             <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mt-1">90-Day Academy Adoption Timeline</h2>
             <p className="text-white/50 text-xs sm:text-sm font-light mt-2">
               Our structured roadmap guarantees clear human readiness, secure sandbox environments, and rigorous validation.

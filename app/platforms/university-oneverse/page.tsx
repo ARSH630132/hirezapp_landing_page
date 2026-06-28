@@ -187,7 +187,7 @@ export default function UniversityOneversePage() {
         {/* Editorial Introduction */}
         <MotionReveal className="grid grid-cols-1 lg:grid-cols-12 gap-8 py-10 border-y border-white/5 items-center">
           <div className="lg:col-span-5">
-            <span className="text-xs font-mono text-[#009DFF] uppercase tracking-widest font-bold">Unified Campus Mesh</span>
+            {/* <span className="text-xs font-mono text-[#009DFF] uppercase tracking-widest font-bold">Unified Campus Mesh</span> */}
             <h2 className="text-2xl sm:text-3xl font-bold text-white mt-2 leading-tight">Institutional Sovereign Intelligence</h2>
           </div>
           <div className="lg:col-span-7">
@@ -200,7 +200,7 @@ export default function UniversityOneversePage() {
         {/* Interactive Workspace Console */}
         <MotionReveal className="space-y-10">
           <div className="text-center max-w-2xl mx-auto space-y-3">
-            <span className="text-xs font-mono text-[#009DFF] uppercase tracking-widest font-semibold">Institutional Control Hub</span>
+            {/* <span className="text-xs font-mono text-[#009DFF] uppercase tracking-widest font-semibold">Institutional Control Hub</span> */}
             <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">University OneVerse Portal Simulator</h2>
             <p className="text-white/50 text-xs sm:text-sm font-light">
               Select an institutional domain to preview sovereign security protocols, active agent networks, and test real-time workflow simulations.
@@ -305,7 +305,7 @@ export default function UniversityOneversePage() {
         {/* Technical Architecture Bento Grid */}
         <MotionReveal className="space-y-10">
           <div className="text-center max-w-2xl mx-auto">
-            <span className="text-xs font-mono text-[#009DFF] uppercase tracking-widest font-semibold">Mesh Architecture</span>
+            {/* <span className="text-xs font-mono text-[#009DFF] uppercase tracking-widest font-semibold">Mesh Architecture</span> */}
             <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mt-1">Platform Core Integrity</h2>
           </div>
 
@@ -339,7 +339,7 @@ export default function UniversityOneversePage() {
         {/* Academic Integration Timeline */}
         <MotionReveal className="space-y-10">
           <div className="text-center max-w-2xl mx-auto">
-            <span className="text-xs font-mono text-[#E4000F] uppercase tracking-widest font-semibold">Deployment Blueprint</span>
+            {/* <span className="text-xs font-mono text-[#E4000F] uppercase tracking-widest font-semibold">Deployment Blueprint</span> */}
             <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mt-1">Multi-Phase Integration Timeline</h2>
             <p className="text-white/50 text-xs sm:text-sm font-light mt-2">
               Our systematic approach guarantees institutional records security and seamless departmental sandbox configurations.

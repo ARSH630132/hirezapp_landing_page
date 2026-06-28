@@ -79,7 +79,7 @@ export default function AssessmentMeshPage() {
         {/* Editorial Introduction */}
         <MotionReveal className="grid grid-cols-1 lg:grid-cols-12 gap-8 py-10 border-y border-white/5 items-center">
           <div className="lg:col-span-5">
-            <span className="text-xs font-mono text-[#009DFF] uppercase tracking-widest font-bold">Rigorous Diagnostics</span>
+            {/* <span className="text-xs font-mono text-[#009DFF] uppercase tracking-widest font-bold">Rigorous Diagnostics</span> */}
             <h2 className="text-2xl sm:text-3xl font-bold text-white mt-2 leading-tight">Quantitative Risk Mapping</h2>
           </div>
           <div className="lg:col-span-7">
@@ -91,7 +91,7 @@ export default function AssessmentMeshPage() {
         {/* Interactive Calculator Scorecard */}
         <MotionReveal className="space-y-10">
           <div className="text-center max-w-2xl mx-auto space-y-3">
-            <span className="text-xs font-mono text-[#009DFF] uppercase tracking-widest font-semibold">Simulate Your Infrastructure</span>
+            {/* <span className="text-xs font-mono text-[#009DFF] uppercase tracking-widest font-semibold">Simulate Your Infrastructure</span> */}
             <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">Interactive Readiness Assessor</h2>
             <p className="text-white/50 text-xs sm:text-sm font-light">
               Adjust the operational metrics below to compile your sovereign risk indicators and GFF Readiness Score.
@@ -233,7 +233,7 @@ export default function AssessmentMeshPage() {
         {/* Quantitative Scanning Bento Grid */}
         <MotionReveal className="space-y-10">
           <div className="text-center max-w-2xl mx-auto">
-            <span className="text-xs font-mono text-[#009DFF] uppercase tracking-widest font-semibold">Active Diagnostics</span>
+            {/* <span className="text-xs font-mono text-[#009DFF] uppercase tracking-widest font-semibold">Active Diagnostics</span> */}
             <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mt-1">Audit Coverage Dimensions</h2>
           </div>
 
@@ -267,7 +267,7 @@ export default function AssessmentMeshPage() {
         {/* Scanning Lifecycle Timeline */}
         <MotionReveal className="space-y-10">
           <div className="text-center max-w-2xl mx-auto">
-            <span className="text-xs font-mono text-[#E4000F] uppercase tracking-widest font-semibold">Active Scan Lifecycle</span>
+            {/* <span className="text-xs font-mono text-[#E4000F] uppercase tracking-widest font-semibold">Active Scan Lifecycle</span> */}
             <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mt-1">Four-Step Scanning Process</h2>
             <p className="text-white/50 text-xs sm:text-sm font-light mt-2">
               How the GFF Assessment Mesh runs quantitative diagnostics to build your sovereign strategic blueprint.
@@ -281,7 +281,7 @@ export default function AssessmentMeshPage() {
             {[
               {
                 step: "Phase 1: Probe Injection",
-                title: "eBPF Telemetry Initialization",
+                title: "EBPF Telemetry Initialization",
                 desc: "Secure, passive kernel hooks are injected into target microservice systems without disrupting production application workloads."
               },
               {

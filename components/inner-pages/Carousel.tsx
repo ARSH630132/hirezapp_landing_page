@@ -42,9 +42,9 @@ export default function Carousel({ items }: CarouselProps) {
   };
 
   return (
-    <div className="w-full relative flex flex-col gap-4">
+    <div className="w-full relative flex flex-col gap-4 px-14">
       {/* Navigation Buttons Row */}
-      <div className="flex justify-end gap-2.5 px-1 relative z-10">
+      {/* <div className="flex justify-end gap-2.5 px-1 relative z-10">
         <button
           onClick={() => scrollBy(-320)}
           disabled={!canScrollLeft}
@@ -70,8 +70,40 @@ export default function Carousel({ items }: CarouselProps) {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
           </svg>
         </button>
-      </div>
+      </div> */}
+{/* Left Arrow */}
+<button
+  onClick={() => scrollBy(-320)}
+  // disabled={!canScrollLeft}
+ className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full border border-white/10 bg-black/70 flex items-center justify-center text-white transition-all hover:bg-white/10 active:scale-95"
+  aria-label="Scroll left"
+>
+  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2.5}
+      d="M15 19l-7-7 7-7"
+    />
+  </svg>
+</button>
 
+{/* Right Arrow */}
+<button
+  onClick={() => scrollBy(320)}
+  // disabled={!canScrollRight}
+  className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full border border-white/10 bg-black/70 flex items-center justify-center text-white transition-all hover:bg-white/10 active:scale-95"
+  aria-label="Scroll right"
+>
+  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2.5}
+      d="M9 5l7 7-7 7"
+    />
+  </svg>
+</button>
       {/* Snap Container */}
       <div
         ref={containerRef}

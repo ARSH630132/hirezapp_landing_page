@@ -160,7 +160,7 @@ export default function OREMeshPlatformPage() {
         <MotionReveal className="grid grid-cols-1 lg:grid-cols-12 gap-8 py-10 border-y border-white/5 bg-white/[0.01] px-8 rounded-2xl relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-[#E4000F]/5 via-transparent to-[#009DFF]/5 pointer-events-none" />
           <div className="lg:col-span-5 flex flex-col justify-center">
-            <span className="text-[10px] font-mono text-[#009DFF] uppercase tracking-widest font-bold">Resilient Engineering</span>
+            {/* <span className="text-[10px] font-mono text-[#009DFF] uppercase tracking-widest font-bold">Resilient Engineering</span> */}
             <h2 className="text-2xl lg:text-3xl font-bold text-white mt-2 leading-tight">Ruggedized Edge Autonomy</h2>
           </div>
           <div className="lg:col-span-7 flex items-center">
@@ -173,7 +173,7 @@ export default function OREMeshPlatformPage() {
         {/* SECTION 3: TOPOLOGY */}
         <MotionReveal className="space-y-8">
           <div className="text-center max-w-3xl mx-auto space-y-2">
-            <span className="text-xs font-mono text-[#E4000F] uppercase tracking-wider font-semibold">System Blueprint</span>
+            {/* <span className="text-xs font-mono text-[#E4000F] uppercase tracking-wider font-semibold">System Blueprint</span> */}
             <h2 className="text-2xl lg:text-3xl font-bold text-white">Subterranean Node Architecture</h2>
             <p className="text-white/50 text-sm font-light">
               Click elements inside the industrial topological diagram below to inspect specialized hardware interfaces, dedicated telemetry agents, and active offline data buffers.
@@ -184,7 +184,7 @@ export default function OREMeshPlatformPage() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               {/* Interactive Topological Diagram */}
               <div className="lg:col-span-7 flex flex-col items-center justify-center bg-black/30 p-6 rounded-xl border border-white/5 relative min-h-[350px]">
-                <span className="absolute top-3 left-4 text-[9px] font-mono text-white/30 tracking-widest uppercase">OREMesh Physical-Logical Topology</span>
+                {/* <span className="absolute top-3 left-4 text-[9px] font-mono text-white/30 tracking-widest uppercase">OREMesh Physical-Logical Topology</span> */}
                 
                 <svg className="w-full max-w-[480px] h-[300px]" viewBox="0 0 500 320" fill="none" xmlns="http://www.w3.org/2000/svg">
                   {/* Sat Uplink Connection */}
@@ -298,13 +298,13 @@ export default function OREMeshPlatformPage() {
                 </div>
 
                 <div className="mt-6 pt-3 border-t border-white/5">
-                  <span className="text-[9px] uppercase text-white/30 tracking-wider">Engineered Layer Stack</span>
+                  {/* <span className="text-[9px] uppercase text-white/30 tracking-wider">Engineered Layer Stack</span> */}
                   <div className="mt-1 flex flex-wrap gap-1.5">
-                    {["eBPF Ingest", "AES-256 Keys", "gRPC Batch", "SQLite Encrypted"].map((tech) => (
-                      <span key={tech} className="px-2 py-0.5 rounded-[4px] bg-white/5 border border-white/10 text-[10px] font-mono text-white/60">
+                    {/* {["eBPF Ingest", "AES-256 Keys", "gRPC Batch", "SQLite Encrypted"].map((tech) => ( */}
+                      {/* <span key={tech} className="px-2 py-0.5 rounded-[4px] bg-white/5 border border-white/10 text-[10px] font-mono text-white/60">
                         {tech}
                       </span>
-                    ))}
+                    ))} */}
                   </div>
                 </div>
               </div>

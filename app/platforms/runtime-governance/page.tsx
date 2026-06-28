@@ -112,7 +112,7 @@ export default function RuntimeGovernancePage() {
         <MotionReveal className="grid grid-cols-1 lg:grid-cols-12 gap-8 py-12 border-y border-white/5 items-center bg-white/[0.01] px-8 rounded-2xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-[30%] h-full bg-gradient-to-l from-[#E4000F]/5 to-transparent pointer-events-none" />
           <div className="lg:col-span-5">
-            <span className="text-xs font-mono text-red-500 uppercase tracking-widest font-bold">The Boardroom Challenge</span>
+            {/* <span className="text-xs font-mono text-red-500 uppercase tracking-widest font-bold">The Boardroom Challenge</span> */}
             <h2 className="text-3xl font-semibold text-white tracking-tight mt-2">Guarding Enterprise Integrity</h2>
           </div>
           <div className="lg:col-span-7">
@@ -125,7 +125,7 @@ export default function RuntimeGovernancePage() {
         {/* Section 1: Interactive Governance Shield Diagram */}
         <MotionReveal className="space-y-10">
           <div className="text-center max-w-2xl mx-auto space-y-2">
-            <span className="text-xs font-mono text-[#009DFF] uppercase tracking-widest font-bold">The Gatekeeper Stack</span>
+            {/* <span className="text-xs font-mono text-[#009DFF] uppercase tracking-widest font-bold">The Gatekeeper Stack</span> */}
             <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">Active Sequence Flow</h2>
             <p className="text-white/50 text-sm font-light">Trace the life of an execution payload from ingress interception to cryptographic archival.</p>
           </div>
@@ -166,23 +166,23 @@ export default function RuntimeGovernancePage() {
             {/* Selected Step Inspector Panel */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-8 relative z-10 min-h-[160px]">
               <div className="lg:col-span-8 space-y-3">
-                <div className="flex items-center gap-2">
+                {/* <div className="flex items-center gap-2">
                   <span className="px-2 py-0.5 rounded text-[9px] bg-[#E4000F]/15 text-[#E4000F] font-mono font-bold uppercase tracking-widest border border-[#E4000F]/20">
                     Active Step Inspector
                   </span>
                   <span className="text-xs font-mono text-white/40">{"// SYSTEM_FLOW_"}{activeStep.toUpperCase()}</span>
-                </div>
+                </div> */}
                 <h4 className="text-xl font-bold text-white tracking-tight">{currentStepData.title} — {currentStepData.subtitle}</h4>
                 <p className="text-sm text-white/70 font-light leading-relaxed max-w-3xl">{currentStepData.desc}</p>
               </div>
 
               <div className="lg:col-span-4 flex justify-end">
-                <div className="border border-white/5 bg-black/60 rounded-xl p-4 w-full max-w-[320px] font-mono text-[10px] text-white/60 space-y-1.5 shadow-inner">
+                {/* <div className="border border-white/5 bg-black/60 rounded-xl p-4 w-full max-w-[320px] font-mono text-[10px] text-white/60 space-y-1.5 shadow-inner">
                   <div className="flex justify-between border-b border-white/5 pb-1"><span className="text-white/40">GATEWAY_STATUS</span><span className="text-emerald-400 font-bold">SECURED</span></div>
                   <div className="flex justify-between"><span className="text-white/40">OVERHEAD_LATENCY</span><span className="text-white font-semibold">1.8ms</span></div>
                   <div className="flex justify-between"><span className="text-white/40">INTERCEPT_HOOK</span><span className="text-[#009DFF] font-semibold">eBPF_probe</span></div>
                   <div className="flex justify-between"><span className="text-white/40">INTEGRITY_SHIELD</span><span className="text-[#E4000F] font-semibold">GFF_Shield_v4</span></div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -192,7 +192,7 @@ export default function RuntimeGovernancePage() {
         <MotionReveal className="space-y-10">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-white/5 pb-6">
             <div>
-              <span className="text-xs font-mono text-red-500 uppercase tracking-widest font-bold">Dynamic Console</span>
+              {/* <span className="text-xs font-mono text-red-500 uppercase tracking-widest font-bold">Dynamic Console</span> */}
               <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mt-1">Operational Governance Centre</h2>
               <p className="text-white/50 text-xs sm:text-sm font-light mt-1.5 font-sans">Simulate policy configurations, authorize pending actions, and inspect live blockchain-style hashes.</p>
             </div>
@@ -337,15 +337,15 @@ export default function RuntimeGovernancePage() {
               )}
 
               {/* Console Footing Note */}
-              <div className="mt-8 pt-4 border-t border-white/5 flex justify-between items-center text-[10px] text-white/30 font-mono">
+              {/* <div className="mt-8 pt-4 border-t border-white/5 flex justify-between items-center text-[10px] text-white/30 font-mono">
                 <span>GATEWAY SYSTEM V4.1.2</span>
                 <span>NO COMPLIANCE GUARANTEE IMPLIED</span>
-              </div>
+              </div> */}
             </div>
 
 
             {/* Right Box: Live Metrics Gauge */}
-            <div className="lg:col-span-4 bg-gradient-to-br from-black to-[#050505] rounded-xl border border-white/10 p-6 flex flex-col justify-between shadow-xl relative overflow-hidden">
+            {/* <div className="lg:col-span-4 bg-gradient-to-br from-black to-[#050505] rounded-xl border border-white/10 p-6 flex flex-col justify-between shadow-xl relative overflow-hidden">
               <div className="space-y-6">
                 <div>
                   <span className="text-[9px] font-mono text-red-500 uppercase tracking-widest font-bold">Telemetry Output</span>
@@ -386,7 +386,7 @@ export default function RuntimeGovernancePage() {
               <div className="mt-6 pt-4 border-t border-white/5 text-[10px] text-white/40 font-light leading-relaxed">
                 Policy updates are hot-reloadable and push immediately to isolated edge containers.
               </div>
-            </div>
+            </div> */}
 
           </div>
         </MotionReveal>

@@ -148,10 +148,10 @@ export default function AgentMarketplacePage() {
         <MotionReveal className="space-y-8">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 border-b border-white/5 pb-6">
             <div>
-              <div className="flex items-center gap-2 text-white/40 text-[11px] font-mono uppercase tracking-widest">
+              {/* <div className="flex items-center gap-2 text-white/40 text-[11px] font-mono uppercase tracking-widest">
                 <Compass className="w-3.5 h-3.5 text-[#009DFF]" />
                 Interactive Registry Explorer
-              </div>
+              </div> */}
               <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mt-1">Sovereign Patterns</h2>
               <p className="text-white/50 text-xs sm:text-sm font-light mt-1.5">Select and inspect verified architectures ready for containerized sandbox deployments.</p>
             </div>
@@ -228,10 +228,10 @@ export default function AgentMarketplacePage() {
               <div className="space-y-6 relative z-10">
                 <div className="flex items-start justify-between border-b border-white/5 pb-4">
                   <div>
-                    <span className="text-[9px] uppercase font-mono tracking-widest text-[#009DFF] font-bold">Dynamic Inspector</span>
+                    {/* <span className="text-[9px] uppercase font-mono tracking-widest text-[#009DFF] font-bold">Dynamic Inspector</span> */}
                     <h3 className="text-lg font-bold text-white mt-1">{activeAcc.name}</h3>
                   </div>
-                  <Server className="w-5 h-5 text-[#009DFF] shrink-0" />
+                  {/* <Server className="w-5 h-5 text-[#009DFF] shrink-0" /> */}
                 </div>
 
                 <div className="border border-white/5 bg-black/60 rounded-xl p-4 flex flex-col items-center justify-center relative min-h-[140px]">
@@ -320,7 +320,7 @@ export default function AgentMarketplacePage() {
         {/* Section 2: Technical Bento Grid mapping out the anatomy of GFF agents */}
         <MotionReveal className="space-y-12">
           <div className="text-center max-w-3xl mx-auto space-y-3">
-            <span className="text-xs font-mono text-[#009DFF] uppercase tracking-widest font-bold">Standardized Blueprint Anatomy</span>
+            {/* <span className="text-xs font-mono text-[#009DFF] uppercase tracking-widest font-bold">Standardized Blueprint Anatomy</span> */}
             <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">Structured Agent Architecture</h2>
             <p className="text-white/50 text-sm font-light">Every component in our registry is engineered across three foundational compliance and integration layers.</p>
           </div>

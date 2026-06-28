@@ -50,7 +50,7 @@ export default function ControlCenterPage() {
         {/* Core Mission Banner */}
         <MotionReveal className="grid grid-cols-1 lg:grid-cols-12 gap-8 py-10 border-y border-white/5 items-center bg-white/[0.01] px-6 rounded-2xl">
           <div className="lg:col-span-5">
-            <span className="text-xs font-mono text-[#E4000F] uppercase tracking-widest font-bold">Cockpit Overview</span>
+            {/* <span className="text-xs font-mono text-[#E4000F] uppercase tracking-widest font-bold">Cockpit Overview</span> */}
             <h2 className="text-2xl font-bold text-white mt-2">The Sovereign Control Surface</h2>
           </div>
           <div className="lg:col-span-7">
@@ -105,7 +105,7 @@ export default function ControlCenterPage() {
                     <h3 className="text-xs font-bold text-white flex items-center gap-1.5">
                       <Radio className="w-3.5 h-3.5 text-green-400 animate-pulse" /> Active Swarm Telemetry
                     </h3>
-                    <span className="text-[10px] font-mono text-emerald-400 uppercase">3 Nodes Healthy</span>
+                    {/* <span className="text-[10px] font-mono text-emerald-400 uppercase">3 Nodes Healthy</span> */}
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -247,12 +247,12 @@ export default function ControlCenterPage() {
                 </div>
               )}
 
-              <div className="mt-5 pt-3 border-t border-white/5 flex items-center justify-between text-[10px] text-white/40">
-                <span>GFF Control Node: operational_gateway_v2</span>
+              {/* <div className="mt-5 pt-3 border-t border-white/5 flex items-center justify-between text-[10px] text-white/40">
+                 <span>GFF Control Node: operational_gateway_v2</span> 
                 <span className="font-mono text-emerald-400 flex items-center gap-1">
                   <CheckCircle className="w-3.5 h-3.5 text-emerald-500" /> SECURE CONSOLE
                 </span>
-              </div>
+              </div> */}
             </div>
           </div>
         </MotionReveal>
@@ -268,7 +268,7 @@ export default function ControlCenterPage() {
 
           <BentoGrid>
             <BentoCard
-              title="eBPF Kernel Telemetry"
+              title="EBPF Kernel Telemetry"
               description="Monitors network traffic, socket connections, and system call loops directly in the OS kernel to detect credential leak risks instantly."
               badge="OS Guard"
               glowColor="red"
