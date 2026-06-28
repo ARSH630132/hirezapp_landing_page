@@ -544,9 +544,9 @@ export default function ClientPortalLandingPage() {
       <section className="relative w-full px-6 lg:px-16 py-20 lg:py-24">
         <div className="max-w-[1795px] mx-auto space-y-12">
           <div className="text-center space-y-4">
-            <span className="text-[11px] font-bold tracking-[0.15em] text-[#009DFF] uppercase">
+            {/* <span className="text-[11px] font-bold tracking-[0.15em] text-[#009DFF] uppercase">
               Security Frameworks
-            </span>
+            </span> */}
             <h2 className="text-[28px] sm:text-[40px] font-bold text-white tracking-tight">
               Cryptographically Isolated Deliverables
             </h2>

@@ -476,7 +476,7 @@ export default function BuildHubPage() {
           
           <div className="relative z-10 max-w-[1400px] mx-auto space-y-6">
             <div className="space-y-1">
-              <span className="text-xs font-mono text-[#009DFF] font-semibold uppercase tracking-wider block">INTELLIGENT NAVIGATOR</span>
+              {/* <span className="text-xs font-mono text-[#009DFF] font-semibold uppercase tracking-wider block">INTELLIGENT NAVIGATOR</span> */}
               <h2 className="text-xl lg:text-2xl font-bold text-white tracking-tight">Which Tool Should You Use Next?</h2>
               <p className="text-white/60 text-xs max-w-[650px] font-light">Select your primary operational objective to receive an instant co-engineering diagnostic recommendation.</p>
             </div>
@@ -554,7 +554,7 @@ export default function BuildHubPage() {
         {/* 8 Premium Tool Launcher Cards Section */}
         <section className="space-y-8">
           <div className="text-center space-y-2">
-            <span className="text-xs font-mono text-[#009DFF] font-semibold uppercase tracking-wider block">UTILITY TERMINAL</span>
+            {/* <span className="text-xs font-mono text-[#009DFF] font-semibold uppercase tracking-wider block">UTILITY TERMINAL</span> */}
             <h2 className="text-2xl lg:text-3xl font-bold text-white tracking-tight font-semibold">Self-Service Co-Engineering Utility Suite</h2>
             <p className="text-white/60 text-xs max-w-[600px] mx-auto font-light">
               Engage with our core self-service diagnostics, financial models, sandbox environments, and live DAG creators.

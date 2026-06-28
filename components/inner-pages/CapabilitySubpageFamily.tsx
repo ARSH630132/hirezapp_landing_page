@@ -106,7 +106,7 @@ export default function CapabilitySubpageFamily({
       <section className="relative w-full px-6 lg:px-16 pb-16 -mt-8">
         <div className="max-w-[1795px] mx-auto border border-white/5 bg-[#030304]/40 backdrop-blur-md rounded-[24px] p-8 flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="flex-1">
-            <span className="text-[10px] font-mono tracking-widest text-[#009DFF] uppercase font-bold">SYSTEM VECTOR</span>
+            {/* <span className="text-[10px] font-mono tracking-widest text-[#009DFF] uppercase font-bold">SYSTEM VECTOR</span> */}
             <h3 className="text-[20px] font-bold text-white mt-2">Architectural Blueprint</h3>
             <p className="mt-2 text-[13px] text-white/50 font-light leading-[1.6]">
               This specialized capability runs natively inside GFF enterprise models. It conforms to strict regulatory parameters while keeping sub-second execution speeds.
@@ -122,7 +122,7 @@ export default function CapabilitySubpageFamily({
       <section className="relative w-full px-6 lg:px-16 pb-20 pt-8 border-t border-white/5">
         <div className="max-w-[1795px] mx-auto">
           <div className="text-center max-w-[800px] mx-auto mb-12">
-            <span className="text-[10px] font-mono tracking-[0.2em] text-[#009DFF] uppercase font-bold">TACTICAL VECTOR</span>
+            {/* <span className="text-[10px] font-mono tracking-[0.2em] text-[#009DFF] uppercase font-bold">TACTICAL VECTOR</span> */}
             <h2 className="text-[28px] sm:text-[34px] font-bold text-white tracking-tight mt-2">Enterprise Use Cases</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -150,7 +150,7 @@ export default function CapabilitySubpageFamily({
         <div className="max-w-[1795px] mx-auto">
           <div className="bg-[#030304]/60 border border-white/5 rounded-2xl p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-7 space-y-2">
-              <span className="text-[10px] font-mono text-white/30 uppercase tracking-widest mb-2 block">STACK PLACEMENT</span>
+              {/* <span className="text-[10px] font-mono text-white/30 uppercase tracking-widest mb-2 block">STACK PLACEMENT</span> */}
               {Object.entries(layersInfo).map(([id, info]) => {
                 const isActive = activeLayerId === id;
                 return (
@@ -185,7 +185,7 @@ export default function CapabilitySubpageFamily({
       <section className="relative w-full px-6 lg:px-16 pb-20 border-t border-white/5 pt-16">
         <div className="max-w-[1795px] mx-auto">
           <div className="text-center max-w-[800px] mx-auto mb-12">
-            <span className="text-[10px] font-mono tracking-[0.2em] text-[#009DFF] uppercase font-bold">OPERATIONAL MODEL</span>
+            {/* <span className="text-[10px] font-mono tracking-[0.2em] text-[#009DFF] uppercase font-bold">OPERATIONAL MODEL</span> */}
             <h2 className="text-[28px] sm:text-[34px] font-bold text-white tracking-tight mt-2">Delivery & Deployment Models</h2>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -223,7 +223,7 @@ export default function CapabilitySubpageFamily({
       <section className="relative w-full px-6 lg:px-16 pb-20 border-t border-white/5 pt-16">
         <div className="max-w-[1795px] mx-auto">
           <div className="text-center max-w-[800px] mx-auto mb-12">
-            <span className="text-[10px] font-mono tracking-[0.2em] text-[#E4000F] uppercase font-bold">OUTCOME METRIC</span>
+            {/* <span className="text-[10px] font-mono tracking-[0.2em] text-[#E4000F] uppercase font-bold">OUTCOME METRIC</span> */}
             <h2 className="text-[28px] sm:text-[34px] font-bold text-white tracking-tight mt-2">Operational Impact & Milestones</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -241,7 +241,7 @@ export default function CapabilitySubpageFamily({
       </section>
 
       {/* Related Platform Redirect */}
-      <section className="relative w-full px-6 lg:px-16 pb-20 border-t border-white/5 pt-16">
+      {/* <section className="relative w-full px-6 lg:px-16 pb-20 border-t border-white/5 pt-16">
         <div className="max-w-[1795px] mx-auto bg-[#030304]/60 border border-white/5 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
             <span className="text-[10px] font-mono text-[#009DFF] uppercase tracking-widest">ECOSYSTEM MATRIX CONNECTION</span>
@@ -253,7 +253,7 @@ export default function CapabilitySubpageFamily({
             <ArrowRight className="w-3.5 h-3.5" />
           </a>
         </div>
-      </section>
+      </section> */}
 
       {/* Next Steps / Related Capabilities */}
       <div className="max-w-[1795px] mx-auto px-6 lg:px-16 pb-20 border-t border-white/5 pt-16">

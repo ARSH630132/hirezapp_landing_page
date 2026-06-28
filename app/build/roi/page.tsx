@@ -1186,7 +1186,7 @@ Status: MODELLED - ILLUSTRATIVE ONLY
 
           {/* Section B: Payback-Style Strategic Narrative */}
           <div className="p-6 rounded-2xl border border-white/5 bg-[#030306]/80 backdrop-blur-sm space-y-4">
-            <span className="text-[9px] font-mono text-white/40 uppercase tracking-widest block">EXECUTIVE SIMULATION DIALOGUE // {currentPriorityObj.title.toUpperCase()}</span>
+            {/* <span className="text-[9px] font-mono text-white/40 uppercase tracking-widest block">EXECUTIVE SIMULATION DIALOGUE // {currentPriorityObj.title.toUpperCase()}</span> */}
             
             <div className="space-y-4 text-xs md:text-sm font-light leading-relaxed text-white/80">
               <p>

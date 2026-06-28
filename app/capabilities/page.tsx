@@ -101,37 +101,54 @@ export default function CapabilitiesPage() {
       </section>
 
       {/* SECTION 2: COMMAND GRID */}
-      <section className="relative w-full px-6 lg:px-16 pb-20 border-t border-white/5 pt-16">
-        <div className="max-w-[1795px] mx-auto">
-          <div className="text-center max-w-[800px] mx-auto mb-12">
-            {/* <span className="text-[10px] font-mono tracking-[0.2em] text-[#E4000F] uppercase font-bold">COMMAND GRID</span> */}
-            <h2 className="text-[28px] sm:text-[34px] font-bold text-white tracking-tight mt-2">Core Capabilities Matrix</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {capabilities.map((cap) => (
-              <a
-                key={cap.id}
-                href={cap.href}
-                className="group relative flex flex-col justify-between p-5 rounded-2xl border border-white/5 bg-[#030304]/40 backdrop-blur-md hover:border-white/10 hover:bg-[#070709]/80 transition-all duration-300"
-              >
-                <div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[9px] font-mono tracking-widest text-white/40 group-hover:text-[#009DFF] transition-colors">{cap.tag}</span>
-                    <div className="p-1 rounded bg-white/5 border border-white/10">{cap.icon}</div>
-                  </div>
-                  <h3 className="text-[15.5px] font-semibold text-white tracking-tight mt-3">{cap.title}</h3>
-                  <p className="mt-2 text-[12px] leading-[1.5] text-white/50 font-light group-hover:text-white/70 transition-colors">{cap.desc}</p>
-                </div>
-                <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-[10.5px] font-mono text-[#009DFF] group-hover:text-white transition-all">
-                  <span>INSPECT BLUEPRINT</span>
-                  <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
+  <section className="relative w-full px-6 lg:px-16 pb-20 border-t border-white/5 pt-16">
+  <div className="max-w-[1795px] mx-auto">
+    <div className="text-center max-w-[800px] mx-auto mb-12">
+      {/* <span className="text-[10px] font-mono tracking-[0.2em] text-[#E4000F] uppercase font-bold">COMMAND GRID</span> */}
+      <h2 className="text-[28px] sm:text-[34px] font-bold text-white tracking-tight mt-2">
+        Core Capabilities Matrix
+      </h2>
+    </div>
 
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      {capabilities.map((cap) => (
+        <div
+          key={cap.id}
+          className="group relative flex flex-col justify-between p-5 rounded-2xl border border-white/5 bg-[#030304]/40 backdrop-blur-md hover:border-white/10 hover:bg-[#070709]/80 transition-all duration-300"
+        >
+          <div>
+            <div className="flex items-center justify-between">
+              <span className="text-[9px] font-mono tracking-widest text-white/40 group-hover:text-[#009DFF] transition-colors">
+                {cap.tag}
+              </span>
+
+              <div className="p-1 rounded bg-white/5 border border-white/10">
+                {cap.icon}
+              </div>
+            </div>
+
+            <h3 className="text-[15.5px] font-semibold text-white tracking-tight mt-3">
+              {cap.title}
+            </h3>
+
+            <p className="mt-2 text-[12px] leading-[1.5] text-white/50 font-light group-hover:text-white/70 transition-colors">
+              {cap.desc}
+            </p>
+          </div>
+
+          <a
+            href={cap.href}
+            className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-[10.5px] font-mono text-[#009DFF] hover:text-white transition-all"
+          >
+            <span>INSPECT BLUEPRINT</span>
+
+            <ArrowRight className="w-3 h-3 hover:translate-x-1 transition-transform" />
+          </a>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
       {/* SECTION 3: FACTORIES */}
       {/* <section className="relative w-full px-6 lg:px-16 pb-20 border-t border-white/5 pt-16">
         <div className="max-w-[1795px] mx-auto">

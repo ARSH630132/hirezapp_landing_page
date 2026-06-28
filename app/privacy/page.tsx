@@ -63,7 +63,7 @@ export default function PrivacyPolicyPage() {
               </div>
 
               <div className="flex justify-center py-6 min-h-[140px] border border-white/5 rounded-xl bg-black/40">
-                {active === "vpc" ? "VPC ISOLATION ACTIVE" : active === "weights" ? "KMS WEIGHTS ISOLATION ACTIVE" : "EBPF ZERO-PAYLOAD ACTIVE"}
+                {active === "vpc" ? "VPC ISOLATION ACTIVE" : active === "weights" ? "KMS WEIGHTS ISOLATION ACTIVE" : "eBPF ZERO-PAYLOAD ACTIVE"}
               </div>
 
               <div className="bg-white/[0.02] border border-white/5 rounded-xl p-4 text-[12.5px] leading-relaxed font-light text-white/70">

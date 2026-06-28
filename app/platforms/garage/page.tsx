@@ -37,7 +37,7 @@ export default function GaragePage() {
       <div className="max-w-[1795px] mx-auto px-6 lg:px-16 pb-24 space-y-16">
         <MotionReveal className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center py-10 border-y border-white/5">
           <div className="lg:col-span-5">
-            <span className="text-xs font-mono text-[#00FF9D] uppercase tracking-widest font-bold">Innovation Framework</span>
+            {/* <span className="text-xs font-mono text-[#00FF9D] uppercase tracking-widest font-bold">Innovation Framework</span> */}
             <h2 className="text-3xl font-bold text-white mt-2">The Innovation Layer</h2>
           </div>
           <div className="lg:col-span-7">

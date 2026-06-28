@@ -139,7 +139,7 @@ export default function RetailMeshPlatformPage() {
         <MotionReveal className="grid grid-cols-1 lg:grid-cols-12 gap-8 py-10 border-y border-white/5 bg-white/[0.01] px-8 rounded-2xl relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-[#E4000F]/5 via-transparent to-[#009DFF]/5 pointer-events-none" />
           <div className="lg:col-span-5 flex flex-col justify-center">
-            <span className="text-[10px] font-mono text-[#009DFF] uppercase tracking-widest font-bold">Omnichannel Excellence</span>
+            {/* <span className="text-[10px] font-mono text-[#009DFF] uppercase tracking-widest font-bold">Omnichannel Excellence</span> */}
             <h2 className="text-2xl lg:text-3xl font-bold text-white mt-2 leading-tight">Decoupled Retail Visibility</h2>
           </div>
           <div className="lg:col-span-7 flex items-center">
@@ -152,7 +152,7 @@ export default function RetailMeshPlatformPage() {
         {/* SECTION 3: TOPOLOGY */}
         <MotionReveal className="space-y-8">
           <div className="text-center max-w-3xl mx-auto space-y-2">
-            <span className="text-xs font-mono text-[#E4000F] uppercase tracking-wider font-semibold">Distributed Architecture</span>
+            {/* <span className="text-xs font-mono text-[#E4000F] uppercase tracking-wider font-semibold">Distributed Architecture</span> */}
             <h2 className="text-2xl lg:text-3xl font-bold text-white">Storefront-to-Cloud Topology</h2>
             <p className="text-white/50 text-sm font-light">
               Select elements inside the distributed transactional diagram below to inspect point-of-sale endpoints, back-office edge servers, and cloud routing clusters.
@@ -281,7 +281,7 @@ export default function RetailMeshPlatformPage() {
                   </div>
                 </div>
 
-                <div className="mt-6 pt-3 border-t border-white/5">
+                {/* <div className="mt-6 pt-3 border-t border-white/5">
                   <span className="text-[9px] uppercase text-white/30 tracking-wider">Engineered Layer Stack</span>
                   <div className="mt-1 flex flex-wrap gap-1.5">
                     {["PCI-DSS Masking", "Local SQLite", "TLS 1.3 SD-WAN", "eBPF Auditor"].map((tech) => (
@@ -290,7 +290,7 @@ export default function RetailMeshPlatformPage() {
                       </span>
                     ))}
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -299,7 +299,7 @@ export default function RetailMeshPlatformPage() {
         {/* SECTION 4: SIMULATOR */}
         <MotionReveal className="space-y-8">
           <div className="text-center max-w-3xl mx-auto space-y-2">
-            <span className="text-xs font-mono text-[#009DFF] uppercase tracking-wider font-semibold">Zero-Trust Sandbox</span>
+            {/* <span className="text-xs font-mono text-[#009DFF] uppercase tracking-wider font-semibold">Zero-Trust Sandbox</span> */}
             <h2 className="text-2xl lg:text-3xl font-bold text-white">PII Masking & Sync Simulator</h2>
             <p className="text-white/50 text-sm font-light">
               Toggle GFF's local PII masking shield below, then process a test transaction to watch identifiers anonymized instantly on the edge before syncing.
@@ -409,7 +409,7 @@ export default function RetailMeshPlatformPage() {
         {/* SECTION 5: CAROUSEL */}
         <div className="space-y-8">
           <div className="text-center max-w-2xl mx-auto">
-            <span className="text-xs font-mono text-[#009DFF] uppercase tracking-wider font-semibold">Engineered Systems</span>
+            {/* <span className="text-xs font-mono text-[#009DFF] uppercase tracking-wider font-semibold">Engineered Systems</span> */}
             <h2 className="text-2xl lg:text-3xl font-bold text-white mt-1">Platform Modules</h2>
           </div>
           <Carousel items={MODULES} />
@@ -418,7 +418,7 @@ export default function RetailMeshPlatformPage() {
         {/* SECTION 6: BENTO */}
         <MotionReveal className="space-y-8">
           <div className="text-center max-w-2xl mx-auto">
-            <span className="text-xs font-mono text-[#E4000F] uppercase tracking-wider font-semibold">Reliable Storefronts</span>
+            {/* <span className="text-xs font-mono text-[#E4000F] uppercase tracking-wider font-semibold">Reliable Storefronts</span> */}
             <h2 className="text-2xl lg:text-3xl font-bold text-white mt-1">High Availability Benchmarks</h2>
           </div>
 

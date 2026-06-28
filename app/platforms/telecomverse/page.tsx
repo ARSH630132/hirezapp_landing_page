@@ -161,7 +161,7 @@ export default function TelecomVersePlatformPage() {
         <MotionReveal className="grid grid-cols-1 lg:grid-cols-12 gap-8 py-10 border-y border-white/5 bg-white/[0.01] px-8 rounded-2xl relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-[#E4000F]/5 via-transparent to-[#009DFF]/5 pointer-events-none" />
           <div className="lg:col-span-5 flex flex-col justify-center">
-            <span className="text-[10px] font-mono text-[#009DFF] uppercase tracking-widest font-bold">Carrier Orchestration</span>
+            {/* <span className="text-[10px] font-mono text-[#009DFF] uppercase tracking-widest font-bold">Carrier Orchestration</span> */}
             <h2 className="text-2xl lg:text-3xl font-bold text-white mt-2 leading-tight">High-Throughput Resiliency</h2>
           </div>
           <div className="lg:col-span-7 flex items-center">
@@ -174,7 +174,7 @@ export default function TelecomVersePlatformPage() {
         {/* SECTION 3: TOPOLOGY */}
         <MotionReveal className="space-y-8">
           <div className="text-center max-w-3xl mx-auto space-y-2">
-            <span className="text-xs font-mono text-[#E4000F] uppercase tracking-wider font-semibold">Optical Backhaul Grid</span>
+            {/* <span className="text-xs font-mono text-[#E4000F] uppercase tracking-wider font-semibold">Optical Backhaul Grid</span> */}
             <h2 className="text-2xl lg:text-3xl font-bold text-white">Carrier Telemetry Topology</h2>
             <p className="text-white/50 text-sm font-light">
               Select elements inside the optical network diagram below to inspect cellular sector nodes, microwave meshes, and central optical exchanges.
@@ -279,9 +279,9 @@ export default function TelecomVersePlatformPage() {
               <div className="lg:col-span-5 flex flex-col border-l border-white/5 lg:pl-6 min-h-[300px] justify-between">
                 <div className="space-y-4">
                   <div>
-                    <span className="px-2 py-0.5 text-[9px] font-mono font-bold text-[#009DFF] bg-[#009DFF]/10 rounded-full uppercase tracking-widest">
+                    {/* <span className="px-2 py-0.5 text-[9px] font-mono font-bold text-[#009DFF] bg-[#009DFF]/10 rounded-full uppercase tracking-widest">
                       Node Spec Inspector
-                    </span>
+                    </span> */}
                     <h3 className="mt-2 text-xl font-bold text-white tracking-tight">{activeNodeInfo.name}</h3>
                     <div className="flex gap-2 mt-1.5 items-center">
                       <span className={`w-1.5 h-1.5 rounded-full ${activeNodeInfo.status.includes("Peak") ? "bg-amber-400" : "bg-emerald-400"}`} />
@@ -315,7 +315,7 @@ export default function TelecomVersePlatformPage() {
                   </div>
                 </div>
 
-                <div className="mt-6 pt-3 border-t border-white/5">
+                {/* <div className="mt-6 pt-3 border-t border-white/5">
                   <span className="text-[9px] uppercase text-white/30 tracking-wider">Engineered Layer Stack</span>
                   <div className="mt-1 flex flex-wrap gap-1.5">
                     {["UHF Microwave", "DWDM Ring", "eBPF Kernel", "TLS 1.3 Corridors"].map((tech) => (
@@ -324,7 +324,7 @@ export default function TelecomVersePlatformPage() {
                       </span>
                     ))}
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -333,7 +333,7 @@ export default function TelecomVersePlatformPage() {
         {/* SECTION 4: SIMULATOR */}
         <MotionReveal className="space-y-8">
           <div className="text-center max-w-3xl mx-auto space-y-2">
-            <span className="text-xs font-mono text-[#009DFF] uppercase tracking-wider font-semibold">Resiliency Console</span>
+            {/* <span className="text-xs font-mono text-[#009DFF] uppercase tracking-wider font-semibold">Resiliency Console</span> */}
             <h2 className="text-2xl lg:text-3xl font-bold text-white">Carrier Load & Resiliency Simulator</h2>
             <p className="text-white/50 text-sm font-light">
               Toggle the Sector 4 fiber line cut to watch traffic immediately transition to microwave backhaul streams in real-time.
@@ -389,10 +389,10 @@ export default function TelecomVersePlatformPage() {
                 </div>
               </div>
 
-              <div className="pt-6 border-t border-white/5 mt-6 flex justify-between items-center text-[10px] font-mono text-white/40">
+              {/* <div className="pt-6 border-t border-white/5 mt-6 flex justify-between items-center text-[10px] font-mono text-white/40">
                 <span>Active Target Node: <span className="text-white">{activeNodeInfo.name}</span></span>
                 <span className="text-emerald-400 uppercase">SANDBOX STATUS: READY</span>
-              </div>
+              </div> */}
             </div>
             {/* Simulated Live Terminal Right Column */}
             <div className="w-full md:w-[360px] p-6 flex flex-col justify-between bg-black/20 text-xs border-t md:border-t-0 md:border-l border-white/5">
@@ -431,7 +431,7 @@ export default function TelecomVersePlatformPage() {
         {/* SECTION 5: CAROUSEL */}
         <div className="space-y-8">
           <div className="text-center max-w-2xl mx-auto">
-            <span className="text-xs font-mono text-[#009DFF] uppercase tracking-wider font-semibold">Engineered Systems</span>
+            {/* <span className="text-xs font-mono text-[#009DFF] uppercase tracking-wider font-semibold">Engineered Systems</span> */}
             <h2 className="text-2xl lg:text-3xl font-bold text-white mt-1">Platform Modules</h2>
           </div>
           <Carousel items={MODULES} />
@@ -440,7 +440,7 @@ export default function TelecomVersePlatformPage() {
         {/* SECTION 6: BENTO */}
         <MotionReveal className="space-y-8">
           <div className="text-center max-w-2xl mx-auto">
-            <span className="text-xs font-mono text-[#E4000F] uppercase tracking-wider font-semibold">Resilient Grid</span>
+            {/* <span className="text-xs font-mono text-[#E4000F] uppercase tracking-wider font-semibold">Resilient Grid</span> */}
             <h2 className="text-2xl lg:text-3xl font-bold text-white mt-1">Carrier Resiliency Benchmarks</h2>
           </div>
 

@@ -281,7 +281,7 @@ export default function AssessmentMeshPage() {
             {[
               {
                 step: "Phase 1: Probe Injection",
-                title: "EBPF Telemetry Initialization",
+                title: "eBPF Telemetry Initialization",
                 desc: "Secure, passive kernel hooks are injected into target microservice systems without disrupting production application workloads."
               },
               {

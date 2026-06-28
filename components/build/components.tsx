@@ -33,11 +33,11 @@ export function ToolPageShell({ children, showContact = true }: ToolPageShellPro
               <span className="w-1.5 h-1.5 rounded-full bg-[#00FF9D] animate-ping" />
               <span>GFF ENGINE STATUS: <span className="text-white font-bold text-[#00FF9D]">SOVEREIGN_CONNECTED</span></span>
             </div>
-            <div className="flex items-center gap-6 text-white/40">
+            {/* <div className="flex items-center gap-6 text-white/40">
               <span>ZERO LANDING RETENTION: <span className="text-[#00FF9D]">ENFORCED</span></span>
               <span className="hidden sm:inline">DATA PERIMETER: <span className="text-white font-semibold">SINGLE-TENANT VPC</span></span>
               <span>TOKEN LATENCY: <span className="text-[#009DFF] font-semibold">&lt; 150MS</span></span>
-            </div>
+            </div> */}
           </div>
         </div>
 
