@@ -84,8 +84,8 @@ function RecentList({
       </div>
       {items.length > 0 ? (
         <div className="space-y-3">
-          {items.map((item) => (
-            <div key={item.id} className="rounded-lg border border-white/5 bg-black/20 p-3">
+          {items.map((item, index) => (
+            <div key={`${item.id || index}-${index}`} className="rounded-lg border border-white/5 bg-black/20 p-3">
               {renderItem(item)}
             </div>
           ))}

@@ -167,7 +167,7 @@ const mapApiToRichAgent = (op: any): RichAgentOperation => {
     name: op.name,
     projectId: op.project_id,
     projectName: extra.projectName || getProjectNameFromId(op.project_id),
-    clientName: op.client_name,
+    clientName: op.client_name || "Apex Sovereign Group [Preview Client]",
     status: (op.status as any) || "active",
     threads: typeof extra.threads === 'number' ? extra.threads : (op.status === "decoupled" ? 0 : 16 + (lastCharIndex % 4) * 8),
     memory: extra.memory || (op.status === "decoupled" ? "0.0 GB / 8.0 GB" : "7.5 GB / 8.0 GB"),
@@ -645,11 +645,11 @@ export default function AdminAiOperationsPage() {
             <div className="h-2 w-2 rounded-full bg-[#009DFF] relative flex shrink-0">
               <span className={`animate-ping absolute inline-flex h-full w-full rounded-full bg-[#009DFF] opacity-75 ${simulationPulse ? "scale-150" : "scale-100"}`}></span>
             </div>
-            <span className="text-[10px] font-mono tracking-widest text-[#009DFF] uppercase font-bold">SOVEREIGN CORE TELEMETRY</span>
+            <span className="text-[10px] font-mono tracking-widest text-[#009DFF] uppercase font-bold">LIVE AGENT TELEMETRY</span>
           </div>
-          <h2 className="text-2xl font-bold text-white tracking-tight font-mono uppercase mt-1">AI Operations Command Center</h2>
+          <h2 className="text-2xl font-bold text-white tracking-tight font-mono uppercase mt-1">AI Systems Control Center</h2>
           <p className="text-xs text-white/55 mt-1 leading-relaxed max-w-2xl">
-            Global administrative terminal. Audit multi-agent runtimes, monitor context frame load indices, and coordinate incident ownership across verified hardware enclaves.
+            Monitor active AI agents, track system load levels, view operational logs, and assign account owners in real-time.
           </p>
         </div>
 
@@ -659,7 +659,7 @@ export default function AdminAiOperationsPage() {
             className="h-9 px-4 rounded bg-[#009DFF] hover:bg-[#0082d4] text-[11px] font-mono font-bold uppercase tracking-wider text-white flex items-center gap-1.5 transition-all cursor-pointer shadow-[0_0_20px_rgba(0,157,255,0.2)]"
           >
             <Plus className="w-4 h-4" />
-            <span>Create Operational Agent</span>
+            <span>Create AI Agent</span>
           </button>
 
           <div className="flex items-center gap-3 font-mono text-[11px] border border-white/5 bg-[#050505]/35 rounded-lg px-3 py-2 text-white/60">
@@ -676,9 +676,9 @@ export default function AdminAiOperationsPage() {
       <div className="border border-white/5 rounded-xl bg-gradient-to-r from-blue-500/5 to-emerald-500/5 p-4 flex items-start gap-3.5">
         <Shield className="w-5 h-5 text-[#009DFF] shrink-0 mt-0.5" />
         <div className="space-y-1">
-          <div className="text-[11px] font-mono uppercase font-bold text-[#009DFF] tracking-wider">SIMULATION TELEMETRY STREAM ONLY — Standard sandbox compliance auditing mode active.</div>
+          <div className="text-[11px] font-mono uppercase font-bold text-[#009DFF] tracking-wider">PREVIEW MODE — Standard system simulation active.</div>
           <p className="text-[11px] text-white/45 font-mono leading-relaxed max-w-5xl">
-            This administrative control console operates inside isolated volatile memory spaces. Telemetric streams, CPU partitions (Intel SGX / AMD SEV-SNP), and hardware logs represent verified GFF AI preview models. Actions taken (e.g., owner assignment, diagnostic checks) are modeled locally inside the browser context to demonstrate governance alignment.
+            This control console operates inside simulated environments. Telemetry metrics, agent operations, and logs represent preview configurations. Changes made here (such as owner assignment or running diagnostics) are simulated in the browser for demonstration purposes.
           </p>
         </div>
       </div>
@@ -816,7 +816,7 @@ export default function AdminAiOperationsPage() {
 
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
           <div className="col-span-2 md:col-span-2 flex flex-col gap-1.5">
-            <label className="text-[9px] font-mono text-white/30 uppercase font-bold tracking-wider font-semibold">Search Node Parameters</label>
+            <label className="text-[9px] font-mono text-white/30 uppercase font-bold tracking-wider font-semibold">Search Agent Details</label>
             <div className="relative">
               <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-white/35 pointer-events-none" />
               <input
@@ -919,11 +919,11 @@ export default function AdminAiOperationsPage() {
           <div className="bg-white/[0.02] border-b border-white/5 px-4 py-3 flex items-center justify-between">
             <div className="flex items-center gap-2 text-[10px] font-mono text-white/40 uppercase font-bold tracking-wider">
               <Bot className="w-4 h-4 text-[#009DFF]" />
-              <span>Multi-Agent Sovereign Runtimes ({filteredAgents.length})</span>
+              <span>Active AI System Agents ({filteredAgents.length})</span>
             </div>
             <div className="text-[10.5px] font-mono text-white/30 flex items-center gap-1.5">
               <RefreshCw className={`w-3 h-3 text-[#009DFF] ${simulationPulse ? "animate-spin" : ""}`} />
-              <span>Real-time sweep active</span>
+              <span>Live monitor active</span>
             </div>
           </div>
 
@@ -955,13 +955,13 @@ export default function AdminAiOperationsPage() {
               <thead>
                 <tr className="border-b border-white/5 text-white/35 text-[9.5px] uppercase font-bold bg-white/[0.01]">
                   <th className="p-4">Agent ID / Name</th>
-                  <th className="p-4">Enterprise Bounds</th>
+                  <th className="p-4">Client Organization</th>
                   <th className="p-4">Classification</th>
-                  <th className="p-4">Compute allocation</th>
-                  <th className="p-4">Pulse State</th>
+                  <th className="p-4">Resource Allocation</th>
+                  <th className="p-4">Status</th>
                   <th className="p-4">Severity</th>
-                  <th className="p-4">Local Assignee</th>
-                  <th className="p-4 text-right">Oversight</th>
+                  <th className="p-4">Assignee</th>
+                  <th className="p-4 text-right">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
@@ -985,7 +985,7 @@ export default function AdminAiOperationsPage() {
 
                       {/* Client & Project Links */}
                       <td className="p-4 max-w-[200px]">
-                        <div className="font-bold text-white/80 truncate text-[11.5px]">{agent.clientName.replace(" [Preview Client]", "")}</div>
+                        <div className="font-bold text-white/80 truncate text-[11.5px]">{(agent.clientName || "").replace(" [Preview Client]", "")}</div>
                         <div className="flex items-center gap-1 mt-0.5">
                           <Layers className="w-3 h-3 text-[#00FFC2] shrink-0" />
                           <Link 
@@ -1059,7 +1059,7 @@ export default function AdminAiOperationsPage() {
                           }}
                           className="h-7 px-2 border border-white/5 hover:border-[#009DFF]/30 hover:bg-[#009DFF]/10 rounded font-mono text-[#009DFF] hover:text-white transition-all text-[10px] uppercase font-bold tracking-wider inline-flex items-center gap-1 cursor-pointer"
                         >
-                          <span>TML_LOG</span>
+                          <span>LOGS</span>
                           <ChevronRight className="w-3 h-3" />
                         </button>
                       </td>
@@ -1096,7 +1096,7 @@ export default function AdminAiOperationsPage() {
         <div className="lg:col-span-1 border border-white/5 rounded-2xl bg-[#050505]/40 backdrop-blur-sm overflow-hidden flex flex-col">
           <div className="bg-white/[0.02] border-b border-white/5 px-4 py-3 flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-[#00FFC2]" />
-            <span className="text-[10px] font-mono text-white/40 uppercase font-bold tracking-wider">Governance Alerts Ledger</span>
+            <span className="text-[10px] font-mono text-white/40 uppercase font-bold tracking-wider">System Alert Log</span>
           </div>
 
           <div className="p-4 divide-y divide-white/5 space-y-4 max-h-[600px] overflow-y-auto">
@@ -1263,10 +1263,10 @@ export default function AdminAiOperationsPage() {
 
             {/* Interactive Assignment Widget */}
             <div className="border border-white/5 bg-white/[0.01] rounded-xl p-4 space-y-3">
-              <span className="text-[9.5px] text-white/35 uppercase font-bold block tracking-wider font-semibold">Operational Handshake Assignee</span>
+              <span className="text-[9.5px] text-white/35 uppercase font-bold block tracking-wider font-semibold">Assigned Account Owner</span>
               
               <div className="space-y-1.5">
-                <label className="text-[9px] text-white/40 block">Assigned Incident Owner</label>
+                <label className="text-[9px] text-white/40 block">Assignee</label>
                 <div className="relative">
                   <select
                     value={selectedAgent.owner}
@@ -1275,7 +1275,7 @@ export default function AdminAiOperationsPage() {
                   >
                     {OWNERS.map(o => (
                       <option key={o} value={o} className="bg-[#0b0b0c] text-white/80">
-                        {o === "Unassigned" ? "⚠️ Unassigned (Volatile Alert)" : `👤 ${o}`}
+                        {o === "Unassigned" ? "⚠️ Unassigned" : `👤 ${o}`}
                       </option>
                     ))}
                   </select>
@@ -1284,17 +1284,17 @@ export default function AdminAiOperationsPage() {
 
               <div className="text-[9.5px] text-white/30 leading-normal flex items-start gap-1">
                 <AlertCircle className="w-3.5 h-3.5 text-[#009DFF] shrink-0 mt-0.5" />
-                <span>Assigning an operator bounds zero-trust cryptographic keys to their clearance level and automatically transitions connected governance alerts.</span>
+                <span>Assigning an operator establishes account ownership and transitions connected alerts.</span>
               </div>
             </div>
 
             {/* Metadata / Technical Specifications */}
             <div className="space-y-2 border border-white/5 bg-white/[0.01] rounded-xl p-4 text-[10.5px]">
-              <span className="text-[9.5px] text-white/35 uppercase font-bold block tracking-wider pb-1 border-b border-white/5 font-semibold">Enclave Core Mappings</span>
+              <span className="text-[9.5px] text-white/35 uppercase font-bold block tracking-wider pb-1 border-b border-white/5 font-semibold">System Configurations</span>
               
               <div className="flex justify-between">
                 <span className="text-white/40">Enterprise Client</span>
-                <span className="text-white/85 font-bold">{selectedAgent.clientName.replace(" [Preview Client]", "")}</span>
+                <span className="text-white/85 font-bold">{(selectedAgent.clientName || "").replace(" [Preview Client]", "")}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-white/40">Project Layer</span>
@@ -1321,7 +1321,7 @@ export default function AdminAiOperationsPage() {
 
             {/* Diagnostic Action Block */}
             <div className="space-y-2.5">
-              <span className="text-[9.5px] text-white/35 uppercase font-bold block tracking-wider font-semibold">Manual Intervention Controls</span>
+              <span className="text-[9.5px] text-white/35 uppercase font-bold block tracking-wider font-semibold">Agent Controls</span>
               
               <div className="grid grid-cols-2 gap-2">
                 <button
@@ -1330,7 +1330,7 @@ export default function AdminAiOperationsPage() {
                   className="h-9 rounded-lg border border-white/5 hover:border-[#00FFC2]/20 bg-white/[0.01] hover:bg-[#00FFC2]/5 text-[10px] text-white/70 hover:text-[#00FFC2] font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
                 >
                   <ShieldCheck className={`w-3.5 h-3.5 ${isVerifying ? "animate-spin" : ""}`} />
-                  <span>{isVerifying ? "Verifying..." : "Verify Integrity"}</span>
+                  <span>{isVerifying ? "Running..." : "Run Diagnostic"}</span>
                 </button>
 
                 <button
@@ -1339,7 +1339,7 @@ export default function AdminAiOperationsPage() {
                   className="h-9 rounded-lg border border-white/5 hover:border-[#009DFF]/20 bg-white/[0.01] hover:bg-[#009DFF]/5 text-[10px] text-white/70 hover:text-[#009DFF] font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
                 >
                   <Cpu className={`w-3.5 h-3.5 ${isDumping ? "animate-spin" : ""}`} />
-                  <span>{isDumping ? "Dumping..." : "Thread Dump"}</span>
+                  <span>{isDumping ? "Restarting..." : "Restart Agent"}</span>
                 </button>
               </div>
             </div>

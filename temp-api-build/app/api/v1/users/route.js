@@ -5,15 +5,24 @@ exports.GET = GET;
 exports.POST = POST;
 const server_1 = require("next/server");
 const api_auth_1 = require("../../../../lib/api-auth");
+const dynamodb_client_1 = require("@/lib/dynamodb-client");
 exports.runtime = "nodejs";
-function getAuthCaller(req) {
+async function getAuthCaller(req) {
     const auth = req.headers.get("authorization");
     if (!auth?.startsWith("Bearer "))
         return { status: 401, error: "Unauthorized", msg: "Missing/malformed Authorization header." };
     const decoded = (0, api_auth_1.verifyJwt)(auth.substring(7));
     if (!decoded?.email)
         return { status: 401, error: "Unauthorized", msg: "Invalid/expired access token." };
-    const user = api_auth_1.API_MOCK_USERS[decoded.email.toLowerCase().trim()];
+    const email = decoded.email.toLowerCase().trim();
+    const dynamoUser = await (0, dynamodb_client_1.getUserFromDynamoDB)(email);
+    if (dynamoUser) {
+        const mapped = (0, dynamodb_client_1.mapDynamoUserToApiUser)(dynamoUser);
+        if (mapped.status === "inactive")
+            return { status: 403, error: "Forbidden", msg: "This account is inactive." };
+        return { caller: mapped };
+    }
+    const user = api_auth_1.API_MOCK_USERS[email];
     if (!user)
         return { status: 401, error: "Unauthorized", msg: "Authorized user not found." };
     if (user.status === "inactive")
@@ -22,7 +31,7 @@ function getAuthCaller(req) {
 }
 async function GET(req) {
     try {
-        const auth = getAuthCaller(req);
+        const auth = await getAuthCaller(req);
         if ("status" in auth)
             return server_1.NextResponse.json({ success: false, error: auth.error, message: auth.msg }, { status: auth.status });
         const { caller } = auth;
@@ -34,28 +43,31 @@ async function GET(req) {
         const statusFilter = searchParams.get("status");
         const clientIdFilter = searchParams.get("client_id");
         const searchQuery = searchParams.get("search");
-        let users = Object.values(api_auth_1.API_MOCK_USERS);
+        const dynamoUsers = await (0, dynamodb_client_1.listUsersFromDynamoDB)();
+        let users = dynamoUsers.length > 0
+            ? dynamoUsers.map((user) => ({ ...(0, dynamodb_client_1.mapDynamoUserToApiUser)(user), client_id: String(user.client_id ?? "") }))
+            : Object.values(api_auth_1.API_MOCK_USERS).map(({ passwordHash, ...user }) => user);
         if (caller.role === "client_admin") {
-            users = users.filter(u => u.clientAssociation === caller.clientAssociation);
+            users = users.filter((u) => u.clientAssociation === caller.clientAssociation);
         }
         if (roleFilter)
-            users = users.filter(u => u.role === roleFilter);
+            users = users.filter((u) => u.role === roleFilter);
         if (statusFilter)
-            users = users.filter(u => u.status === statusFilter);
+            users = users.filter((u) => u.status === statusFilter);
         if (clientIdFilter) {
             const low = clientIdFilter.toLowerCase();
-            users = users.filter(u => u.clientAssociation?.toLowerCase().includes(low) || u.id === clientIdFilter);
+            users = users.filter((u) => u.clientAssociation?.toLowerCase().includes(low) || u.id === clientIdFilter || u.client_id === clientIdFilter);
         }
         if (searchQuery) {
             const q = searchQuery.toLowerCase().trim();
-            users = users.filter(u => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q));
+            users = users.filter((u) => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q));
         }
         const limitParam = searchParams.get("limit");
         const offsetParam = searchParams.get("offset") || searchParams.get("skip");
         const limit = limitParam ? Math.max(1, Math.min(1000, parseInt(limitParam, 10) || 100)) : 100;
         const offset = offsetParam ? Math.max(0, parseInt(offsetParam, 10) || 0) : 0;
         const paginatedUsers = users.slice(offset, offset + limit);
-        return server_1.NextResponse.json({ success: true, users: paginatedUsers.map(({ passwordHash, ...u }) => u) });
+        return server_1.NextResponse.json({ success: true, users: paginatedUsers });
     }
     catch (err) {
         return server_1.NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
@@ -63,7 +75,7 @@ async function GET(req) {
 }
 async function POST(req) {
     try {
-        const auth = getAuthCaller(req);
+        const auth = await getAuthCaller(req);
         if ("status" in auth)
             return server_1.NextResponse.json({ success: false, error: auth.error, message: auth.msg }, { status: auth.status });
         if (auth.caller.role !== "gff_admin") {
@@ -77,7 +89,7 @@ async function POST(req) {
             return server_1.NextResponse.json({ success: false, error: "Bad Request", message: "Missing or invalid required fields." }, { status: 400 });
         }
         const normalizedEmail = email.toLowerCase().trim();
-        if (api_auth_1.API_MOCK_USERS[normalizedEmail]) {
+        if (api_auth_1.API_MOCK_USERS[normalizedEmail] || (await (0, dynamodb_client_1.getUserFromDynamoDB)(normalizedEmail))) {
             return server_1.NextResponse.json({ success: false, error: "Conflict", message: "User already exists." }, { status: 409 });
         }
         const allowedRoles = ["gff_admin", "client_admin", "client_member"];
@@ -96,13 +108,26 @@ async function POST(req) {
             name: name.trim(),
             email: normalizedEmail,
             role: role,
-            clientAssociation: clientAssociation || "GFF AI Platform Core (Global Root)",
+            clientAssociation: clientAssociation || "GFF AI",
             status: status === "inactive" ? "inactive" : "active",
-            clearance: clearance || (role === "gff_admin" ? "CLEARANCE LEVEL V (SECURE PLATFORM SUPERUSER)" : "CLEARANCE LEVEL I (BASIC VIEW-ONLY)"),
+            clearance: clearance || (role === "gff_admin" ? "Admin access" : role === "client_admin" ? "Client admin access" : "Client member access"),
             permissions,
             passwordHash: (0, api_auth_1.hashPassword)(password)
         };
         api_auth_1.API_MOCK_USERS[normalizedEmail] = newUser;
+        await (0, dynamodb_client_1.putUserInDynamoDB)({
+            email: normalizedEmail,
+            hashed_password: newUser.passwordHash,
+            full_name: newUser.name,
+            name: newUser.name,
+            role: newUser.role,
+            status: newUser.status,
+            clientAssociation: newUser.clientAssociation,
+            is_active: newUser.status !== "inactive",
+            id: newUser.id,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+        });
         const { passwordHash: _, ...userRes } = newUser;
         return server_1.NextResponse.json({ success: true, user: userRes }, { status: 201 });
     }

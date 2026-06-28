@@ -434,19 +434,19 @@ export default function ClientProjectsPage() {
         <div className="flex items-center gap-2.5 text-white/70">
           <Activity className="w-4 h-4 text-[#009DFF] shrink-0" />
           <span>
-            <strong className="text-white">COCKPIT LEDGER SYNC:</strong> Active monitoring of your secure enclaves is online. Interactive parameters represent localized sandbox partitions.
+            <strong className="text-white">SYSTEM CONNECTION ACTIVE:</strong> Live monitoring of your active systems is online. Details show your active system workspaces.
           </span>
         </div>
         <span className="text-[9.5px] text-[#009DFF]/80 font-bold bg-[#009DFF]/10 border border-[#009DFF]/20 px-2 py-0.5 rounded uppercase tracking-wider shrink-0 select-none">
-          SECURE PROTOCOL ACTIVE
+          SYSTEM ACTIVE
         </span>
       </div>
 
       {/* 2. PRIVATE PAGE WELCOME HEADER */}
       <PrivatePageHeader
-        title="Delivery Program Control Deck"
-        desc="Audit high-end sandbox developments, core model lifecycle phases, compliance checks, and secure multi-agent sandboxes."
-        badgeLabel="Level III Clearance"
+        title="Project Tracking Dashboard"
+        desc="Track active projects, setup progress, and system health status."
+        badgeLabel="Projects Monitor"
         actions={
           <div className="flex flex-wrap gap-2 w-full md:w-auto">
             <button
@@ -457,14 +457,14 @@ export default function ClientProjectsPage() {
               className="flex-grow md:flex-grow-0 inline-flex h-9 items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.02] px-4 text-[11px] font-mono font-bold text-white hover:bg-white/[0.06] hover:border-white/20 transition-all cursor-pointer"
             >
               <Send className="w-3.5 h-3.5 text-white/60" />
-              <span>REQUEST GLOBAL AUDIT</span>
+              <span>RUN COMPREHENSIVE SCAN</span>
             </button>
             <button
               onClick={() => router.push("/portal/support")}
               className="flex-grow md:flex-grow-0 inline-flex h-9 items-center justify-center gap-1.5 rounded-lg bg-[#009DFF] px-4 text-[11px] font-mono font-bold text-white hover:bg-[#009DFF]/90 transition-all cursor-pointer shadow-[0_0_15px_rgba(0,157,255,0.2)]"
             >
               <MessageSquare className="w-3.5 h-3.5" />
-              <span>SUPPORT WIRE</span>
+              <span>GET HELP / SUPPORT</span>
             </button>
           </div>
         }

@@ -81,9 +81,9 @@ exports.DEFAULT_API_MOCK_USERS = {
         name: "GFF Admin Lead",
         email: "gff_admin@gff.ai",
         role: "gff_admin",
-        clientAssociation: "GFF AI Platform Core (Global Root)",
+        clientAssociation: "GFF AI",
         status: "active",
-        clearance: "CLEARANCE LEVEL V (SECURE PLATFORM SUPERUSER)",
+        clearance: "Admin access",
         permissions: [
             "all:*", "read:telemetry", "write:telemetry", "read:projects", "write:projects",
             "read:users", "write:users", "read:clients", "write:clients", "write:governance"
@@ -123,9 +123,9 @@ exports.DEFAULT_API_MOCK_USERS = {
         name: "Apex Admin Lead",
         email: "client_admin@apex.com",
         role: "client_admin",
-        clientAssociation: "Apex Sovereign Group [Preview Client]",
+        clientAssociation: "Apex Global Solutions",
         status: "active",
-        clearance: "CLEARANCE LEVEL III (SANDBOX OPERATOR)",
+        clearance: "Client admin access",
         permissions: [
             "read:telemetry", "read:projects", "write:projects", "read:ai-operations",
             "write:ai-operations", "read:documents", "write:documents", "write:support"
@@ -173,9 +173,9 @@ exports.DEFAULT_API_MOCK_USERS = {
         name: "Apex Analyst",
         email: "client_member@apex.com",
         role: "client_member",
-        clientAssociation: "Apex Sovereign Group [Preview Client]",
+        clientAssociation: "Apex Global Solutions",
         status: "active",
-        clearance: "CLEARANCE LEVEL I (BASIC VIEW-ONLY)",
+        clearance: "Client member access",
         permissions: ["read:telemetry", "read:projects", "read:ai-operations", "read:documents", "write:support"],
         passwordHash: "password123"
     },
@@ -310,20 +310,26 @@ function getNextProjectId() {
 }
 function getClientNameFromId(clientId) {
     switch (clientId) {
-        case "client-001": return "Apex Sovereign Group [Preview Client]";
-        case "client-002": return "Global Retail Enclave [Preview Client]";
-        case "client-003": return "Sovereign Logistics Unit [Preview Client]";
-        case "client-004": return "Federal Treasury Division [Preview Client]";
-        default: return "GFF AI Platform Core (Global Root)";
+        case "client-001": return "Apex Global Solutions";
+        case "client-002": return "Sovereign Logistics Corp";
+        case "client-003": return "Global Retail Group";
+        case "client-004": return "Federal Treasury Division";
+        default: return "GFF AI";
     }
 }
 function getClientIdFromAssociation(association) {
     const assoc = association.toLowerCase();
     if (assoc.includes("apex-sovereign") || assoc.includes("apex sovereign"))
         return "client-001";
+    if (assoc.includes("apex global"))
+        return "client-001";
     if (assoc.includes("global-retail") || assoc.includes("global retail"))
         return "client-002";
+    if (assoc.includes("sovereign logistics"))
+        return "client-002";
     if (assoc.includes("sovereign-logistics") || assoc.includes("sovereign logistics"))
+        return "client-003";
+    if (assoc.includes("global retail group"))
         return "client-003";
     if (assoc.includes("fed-treasury") || assoc.includes("federal treasury"))
         return "client-004";

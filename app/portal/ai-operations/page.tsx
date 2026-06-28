@@ -301,26 +301,26 @@ export default function ClientAiOperationsPage() {
         <div className="flex items-center gap-2.5 text-white/70">
           <ShieldAlert className="w-4 h-4 text-[#009DFF] shrink-0 animate-pulse" />
           <span>
-            <strong className="text-white">COCKPIT REPRESENTATIVE TELEMETRY:</strong> This control center displays emulated telemetry data and sandboxed system parameters. Real-time live production adjustments are emulated for security.
+            <strong className="text-white">SYSTEM MONITOR:</strong> This dashboard shows simulated health metrics, logs, and active configurations of your AI systems.
           </span>
         </div>
         <span className="text-[9.5px] text-[#009DFF]/80 font-bold bg-[#009DFF]/10 border border-[#009DFF]/20 px-2 py-0.5 rounded uppercase tracking-wider shrink-0 select-none">
-          EMULATED RUNTIME
+          SYSTEM SIMULATOR
         </span>
       </div>
 
       {/* 2. PAGE HEADER */}
       <PrivatePageHeader
-        title="AI Operations Command Center"
-        desc="Central portal for continuous monitoring of managed sandbox runtimes, sovereign hardware partition metrics, and zero-trust policy validations."
-        badgeLabel="Sovereign AI Ops"
+        title="AI Agents & Systems Control Center"
+        desc="Monitor your active AI agents, view live load metrics, and track system logs."
+        badgeLabel="AI Systems Health"
         actions={
           <div className="flex gap-2 w-full md:w-auto">
             <Link
               href="/portal/control-center"
               className="flex-grow md:flex-grow-0 inline-flex h-9 items-center justify-center gap-1.5 rounded-lg bg-[#009DFF] hover:bg-[#009DFF]/90 text-white font-mono font-bold text-[11px] px-4 uppercase tracking-wider transition-all hover:shadow-[0_0_12px_rgba(0,157,255,0.25)]"
             >
-              Hardware Control Center
+              Systems Control Center
               <ArrowUpRight className="w-3.5 h-3.5" />
             </Link>
           </div>
@@ -335,23 +335,23 @@ export default function ClientAiOperationsPage() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
           </span>
-          <span className="text-white/40">OPS STATUS:</span>
-          <span className="text-[#00FFC2] font-bold">STEADY & COMPLIANT</span>
+          <span className="text-white/40">STATUS:</span>
+          <span className="text-[#00FFC2] font-bold">RUNNING & HEALTHY</span>
         </div>
         <div className="flex items-center gap-2.5 px-3 py-1 border-b md:border-b-0 md:border-r border-white/5">
           <Cpu className="w-3.5 h-3.5 text-[#009DFF]" />
-          <span className="text-white/40">SYSTEM RUNTIMES:</span>
-          <span className="text-white font-bold">5 REPL SANDBOXES</span>
+          <span className="text-white/40">AI AGENTS:</span>
+          <span className="text-white font-bold">5 ACTIVE AGENTS</span>
         </div>
         <div className="flex items-center gap-2.5 px-3 py-1 border-b md:border-b-0 md:border-r border-white/5">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-          <span className="text-white/40">INTEGRITY LOCKS:</span>
-          <span className="text-emerald-400 font-bold">ISO-27001 ACTIVE</span>
+          <span className="text-white/40">SECURITY STATUS:</span>
+          <span className="text-emerald-400 font-bold">OPTIMAL</span>
         </div>
         <div className="flex items-center gap-2.5 px-3 py-1">
           <Clock className="w-3.5 h-3.5 text-amber-400" />
-          <span className="text-white/40">MAINTENANCE CYCLE:</span>
-          <span className="text-white font-bold">AUTOMATED (2H 45M)</span>
+          <span className="text-white/40">SYSTEM CHECK:</span>
+          <span className="text-white font-bold">AUTOMATED (EVERY 2H)</span>
         </div>
       </div>
 

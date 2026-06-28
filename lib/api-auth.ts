@@ -94,7 +94,7 @@ export const DEFAULT_API_MOCK_USERS: Record<string, MockUserDbEntry> = {
     passwordHash: "password123"
   },
   "s.vance@governance.gff.ai": {
-    id: "usr-001",
+    id: "usr-002",
     name: "Dr. Sarah Vance",
     email: "s.vance@governance.gff.ai",
     role: "gff_admin",
@@ -108,7 +108,7 @@ export const DEFAULT_API_MOCK_USERS: Record<string, MockUserDbEntry> = {
     passwordHash: "VanceSecure2026!"
   },
   "a.mercer@apex-sovereign.gff.ai": {
-    id: "usr-002",
+    id: "usr-003",
     name: "Alexander Mercer",
     email: "a.mercer@apex-sovereign.gff.ai",
     role: "client_admin",
@@ -122,7 +122,7 @@ export const DEFAULT_API_MOCK_USERS: Record<string, MockUserDbEntry> = {
     passwordHash: "MercerSecure2026!"
   },
   "client_admin@apex.com": {
-    id: "usr-002",
+    id: "usr-004",
     name: "Apex Admin Lead",
     email: "client_admin@apex.com",
     role: "client_admin",
@@ -136,7 +136,7 @@ export const DEFAULT_API_MOCK_USERS: Record<string, MockUserDbEntry> = {
     passwordHash: "password123"
   },
   "e.carter@global-retail.gff.ai": {
-    id: "usr-003",
+    id: "usr-005",
     name: "Evelyn Carter",
     email: "e.carter@global-retail.gff.ai",
     role: "client_admin",
@@ -150,7 +150,7 @@ export const DEFAULT_API_MOCK_USERS: Record<string, MockUserDbEntry> = {
     passwordHash: "CarterSecure2026!"
   },
   "m.vance@sovereign-logistics.gff.ai": {
-    id: "usr-004",
+    id: "usr-006",
     name: "Marcus Vance",
     email: "m.vance@sovereign-logistics.gff.ai",
     role: "client_member",
@@ -161,7 +161,7 @@ export const DEFAULT_API_MOCK_USERS: Record<string, MockUserDbEntry> = {
     passwordHash: "VanceLogistics2026!"
   },
   "s.jenkins@fed-treasury.gff.ai": {
-    id: "usr-005",
+    id: "usr-007",
     name: "Sarah Jenkins",
     email: "s.jenkins@fed-treasury.gff.ai",
     role: "client_member",
@@ -172,7 +172,7 @@ export const DEFAULT_API_MOCK_USERS: Record<string, MockUserDbEntry> = {
     passwordHash: "JenkinsSecure2026!"
   },
   "client_member@apex.com": {
-    id: "usr-005",
+    id: "usr-008",
     name: "Apex Analyst",
     email: "client_member@apex.com",
     role: "client_member",
