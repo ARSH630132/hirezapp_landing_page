@@ -30,7 +30,7 @@ export async function GET(req: Request, { params }: { params: any }) {
 
     if (!ticket) return NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
 
-    const isAdminOrSupport = caller.role === "gff_admin" || caller.role === "support_agent" || caller.role === "admin" || caller.permissions?.includes("read:support");
+    const isAdminOrSupport = caller.role === "gff_admin";
 
     if (!isAdminOrSupport) {
       const cid = getClientIdFromAssociation(caller.clientAssociation);
@@ -64,7 +64,7 @@ export async function PATCH(req: Request, { params }: { params: any }) {
 
     if (!ticket) return NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
 
-    const isAdminOrSupport = caller.role === "gff_admin" || caller.role === "support_agent" || caller.role === "admin" || caller.permissions?.includes("write:support");
+    const isAdminOrSupport = caller.role === "gff_admin";
 
     if (!isAdminOrSupport) {
       const cid = getClientIdFromAssociation(caller.clientAssociation);

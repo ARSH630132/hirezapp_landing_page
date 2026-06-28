@@ -25,3 +25,9 @@ class CurrentUserResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class AuthLoginResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    role: str
+    user: CurrentUserResponse

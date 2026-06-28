@@ -29,7 +29,7 @@ export async function PATCH(req: Request, { params }: { params: any }) {
     const ticket = API_MOCK_SUPPORT_TICKETS[key] || Object.values(API_MOCK_SUPPORT_TICKETS).find((t: any) => t.id.toLowerCase() === key);
     if (!ticket) return NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
 
-    const isAdminOrSupport = caller.role === "gff_admin" || caller.role === "support_agent" || caller.role === "admin" || caller.permissions?.includes("write:support");
+    const isAdminOrSupport = caller.role === "gff_admin";
 
     if (!isAdminOrSupport) {
       const cid = getClientIdFromAssociation(caller.clientAssociation);

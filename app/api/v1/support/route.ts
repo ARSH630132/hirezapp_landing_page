@@ -62,7 +62,7 @@ export async function GET(req: Request) {
       return ticketWithReplies;
     });
 
-    const isAdminOrSupport = caller.role === "gff_admin" || caller.role === "support_agent" || caller.role === "admin" || caller.permissions?.includes("read:support");
+    const isAdminOrSupport = caller.role === "gff_admin";
 
     if (!isAdminOrSupport) {
       const callerClientId = getClientIdFromAssociation(caller.clientAssociation);
@@ -145,7 +145,7 @@ export async function POST(req: Request) {
     }
 
     const callerClientId = getClientIdFromAssociation(caller.clientAssociation);
-    const isAdminOrSupport = caller.role === "gff_admin" || caller.role === "support_agent" || caller.role === "admin" || caller.permissions?.includes("write:support");
+    const isAdminOrSupport = caller.role === "gff_admin";
 
     if (!isAdminOrSupport) {
       if (client_id && client_id !== callerClientId) {

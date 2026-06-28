@@ -27,7 +27,7 @@ export async function GET(req: Request) {
     const cliF = s.get("client_id"), projF = s.get("project_id"), statF = s.get("status"), mF = s.get("month"), startF = s.get("start_date"), endF = s.get("end_date"), searchQ = s.get("search");
 
     let invoices = Object.values(API_MOCK_INVOICES) as ApiInvoice[];
-    const isMgr = caller.role === "gff_admin" || (caller.role as string) === "finance_admin";
+    const isMgr = caller.role === "gff_admin";
 
     if (!isMgr) {
       const cid = getClientIdFromAssociation(caller.clientAssociation);
@@ -65,7 +65,7 @@ export async function POST(req: Request) {
     const auth = getAuthCaller(req);
     if ("status" in auth) return NextResponse.json({ success: false, error: auth.error, message: auth.msg }, { status: auth.status });
     const { caller } = auth;
-    if (caller.role !== "gff_admin" && (caller.role as string) !== "finance_admin") return NextResponse.json({ success: false, error: "Forbidden", message: "Forbidden" }, { status: 403 });
+    if (caller.role !== "gff_admin") return NextResponse.json({ success: false, error: "Forbidden", message: "Forbidden" }, { status: 403 });
     const b = await req.json().catch(() => null);
     if (!b) return NextResponse.json({ success: false, error: "Bad Request", message: "Invalid JSON" }, { status: 400 });
 

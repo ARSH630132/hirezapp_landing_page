@@ -48,56 +48,14 @@ const ROLE_METADATA: Record<PreviewRole, RoleMeta> = {
     badgeClass: "text-purple-400 bg-purple-500/5 border-purple-500/10",
     glowColor: "rgba(168, 85, 247, 0.15)",
   },
-  gff_operator: {
-    role: "gff_operator",
-    title: "GFF Systems Engineer",
-    clearance: "L4 OPERATIONAL CLEARANCE",
-    desc: "Monitors running infrastructure nodes, core agent model trainers, and system mesh graphs.",
-    badgeClass: "text-indigo-400 bg-indigo-500/5 border-indigo-500/10",
-    glowColor: "rgba(99, 102, 241, 0.15)",
-  },
-  finance_admin: {
-    role: "finance_admin",
-    title: "GFF Financial Director",
-    clearance: "L3 FINANCIAL CLEARANCE",
-    desc: "Access to financial ledgers, subscription tiers, pricing matrices, and corporate client accounts.",
-    badgeClass: "text-emerald-400 bg-emerald-500/5 border-emerald-500/10",
-    glowColor: "rgba(16, 185, 129, 0.15)",
-  },
-  support_agent: {
-    role: "support_agent",
-    title: "GFF Support Liaison",
-    clearance: "L3 SUPPORT CLEARANCE",
-    desc: "Maintains active support pipelines, client user accounts, and telemetry diagnostics logs.",
-    badgeClass: "text-amber-400 bg-amber-500/5 border-amber-500/10",
-    glowColor: "rgba(245, 158, 11, 0.15)",
-  },
-  viewer: {
-    role: "viewer",
-    title: "Global Compliance Auditor",
-    clearance: "L1 COMPLIANCE CLEARANCE",
-    desc: "Read-only access to verify security postures, sovereign telemetry streams, and transaction logs.",
-    badgeClass: "text-zinc-400 bg-zinc-500/5 border-zinc-500/10",
-    glowColor: "rgba(113, 113, 122, 0.15)",
-  },
 };
 
-const ALL_ROLES: PreviewRole[] = [
-  "client_admin",
-  "client_member",
-  "gff_admin",
-  "gff_operator",
-  "finance_admin",
-  "support_agent",
-  "viewer"
-];
+const ALL_ROLES: PreviewRole[] = ["client_admin", "client_member", "gff_admin"];
 
 const CLEARANCE_TIERS = [
   { level: "LEVEL V", name: "FEDERATED OVERLORD", roles: ["gff_admin"], badge: "bg-purple-500/10 text-purple-400 border-purple-500/20" },
-  { level: "LEVEL IV", name: "SYSTEMS ENGINEER", roles: ["gff_operator"], badge: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20" },
-  { level: "LEVEL III", name: "WORKSPACE ADMIN", roles: ["client_admin", "finance_admin", "support_agent"], badge: "bg-blue-500/10 text-blue-400 border-blue-500/20" },
+  { level: "LEVEL III", name: "WORKSPACE ADMIN", roles: ["client_admin"], badge: "bg-blue-500/10 text-blue-400 border-blue-500/20" },
   { level: "LEVEL II", name: "WORKSPACE OPERATOR", roles: ["client_member"], badge: "bg-teal-500/10 text-teal-400 border-teal-500/20" },
-  { level: "LEVEL I", name: "AUDIT ACCESS", roles: ["viewer"], badge: "bg-zinc-500/10 text-zinc-400 border-zinc-500/20" },
 ];
 
 export function PreviewRouteGuard({ children, type }: { children: React.ReactNode; type: "portal" | "admin" }) {
@@ -184,16 +142,14 @@ export function PreviewRouteGuard({ children, type }: { children: React.ReactNod
         if (currentSession) {
           const role = currentSession.role;
           const isClient = role === "client_admin" || role === "client_member";
-          const isAdmin = ["gff_admin", "gff_operator", "finance_admin", "support_agent", "viewer"].includes(role);
+          const isAdmin = role === "gff_admin";
 
           let allowed = false;
           if (type === "portal") {
-            // Client roles can access portal, and gff_admin can access for simulation override
-            if (isClient || role === "gff_admin") {
+            if (isClient) {
               allowed = canAccessPortalSection(role, sec);
             }
           } else if (type === "admin") {
-            // Admin roles can access admin
             if (isAdmin) {
               allowed = canAccessAdminSection(role, sec);
             }
@@ -305,11 +261,11 @@ export function PreviewRouteGuard({ children, type }: { children: React.ReactNod
       const sec = segments[2] || "dashboard";
       
       const isClient = role === "client_admin" || role === "client_member";
-      const isAdmin = ["gff_admin", "gff_operator", "finance_admin", "support_agent", "viewer"].includes(role);
+      const isAdmin = role === "gff_admin";
       
       let allowed = false;
       if (type === "portal") {
-        if (isClient || role === "gff_admin") {
+        if (isClient) {
           allowed = canAccessPortalSection(role, sec);
         }
       } else if (type === "admin") {
@@ -332,10 +288,10 @@ export function PreviewRouteGuard({ children, type }: { children: React.ReactNod
   const getAuthorizedRoles = (): PreviewRole[] => {
     return ALL_ROLES.filter(role => {
       const isClient = role === "client_admin" || role === "client_member";
-      const isAdmin = ["gff_admin", "gff_operator", "finance_admin", "support_agent", "viewer"].includes(role);
+      const isAdmin = role === "gff_admin";
       
       if (type === "portal") {
-        if (isClient || role === "gff_admin") {
+        if (isClient) {
           return canAccessPortalSection(role, activeSec);
         }
       } else if (type === "admin") {
@@ -362,7 +318,7 @@ export function PreviewRouteGuard({ children, type }: { children: React.ReactNod
   // SCREEN 1: Enclave Session Expired / Authentication Required (Split-Panel Layout)
   if (!session) {
     const pct = (countdown / 5) * 100;
-    const simProfiles: PreviewRole[] = ["client_admin", "gff_admin", "gff_operator", "client_member"];
+    const simProfiles: PreviewRole[] = ["client_admin", "client_member", "gff_admin"];
 
     return (
       <div className="min-h-screen grid grid-cols-1 lg:grid-cols-12 bg-[#030303] text-white font-sans antialiased selection:bg-cyan-500/20 selection:text-cyan-300">

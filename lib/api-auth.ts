@@ -4,7 +4,7 @@ export interface ApiUser {
   id: string;
   name: string;
   email: string;
-  role: "gff_admin" | "client_admin" | "client_member" | "gff_operator" | "finance_admin" | "support_agent" | "viewer" | string;
+  role: "gff_admin" | "client_admin" | "client_member" | string;
   clientAssociation: string;
   status: "active" | "inactive";
   clearance: string;
@@ -79,6 +79,20 @@ export function verifyJwt(token: string, secret: string = JWT_SECRET): Record<st
 }
 
 export const DEFAULT_API_MOCK_USERS: Record<string, MockUserDbEntry> = {
+  "gff_admin@gff.ai": {
+    id: "usr-001",
+    name: "GFF Admin Lead",
+    email: "gff_admin@gff.ai",
+    role: "gff_admin",
+    clientAssociation: "GFF AI",
+    status: "active",
+    clearance: "Admin access",
+    permissions: [
+      "all:*", "read:telemetry", "write:telemetry", "read:projects", "write:projects",
+      "read:users", "write:users", "read:clients", "write:clients", "write:governance"
+    ],
+    passwordHash: "password123"
+  },
   "s.vance@governance.gff.ai": {
     id: "usr-001",
     name: "Dr. Sarah Vance",
@@ -106,6 +120,20 @@ export const DEFAULT_API_MOCK_USERS: Record<string, MockUserDbEntry> = {
       "write:ai-operations", "read:documents", "write:documents", "write:support"
     ],
     passwordHash: "MercerSecure2026!"
+  },
+  "client_admin@apex.com": {
+    id: "usr-002",
+    name: "Apex Admin Lead",
+    email: "client_admin@apex.com",
+    role: "client_admin",
+    clientAssociation: "Apex Global Solutions",
+    status: "active",
+    clearance: "Client admin access",
+    permissions: [
+      "read:telemetry", "read:projects", "write:projects", "read:ai-operations",
+      "write:ai-operations", "read:documents", "write:documents", "write:support"
+    ],
+    passwordHash: "password123"
   },
   "e.carter@global-retail.gff.ai": {
     id: "usr-003",
@@ -143,66 +171,28 @@ export const DEFAULT_API_MOCK_USERS: Record<string, MockUserDbEntry> = {
     permissions: ["read:telemetry", "read:projects", "read:ai-operations", "read:documents", "write:support"],
     passwordHash: "JenkinsSecure2026!"
   },
-  "preview-gff-operator@internal.gff.ai": {
-    id: "usr-006",
-    name: "Operator Node 6",
-    email: "preview-gff-operator@internal.gff.ai",
-    role: "gff_operator",
-    clientAssociation: "GFF AI Operations [Internal]",
+  "client_member@apex.com": {
+    id: "usr-005",
+    name: "Apex Analyst",
+    email: "client_member@apex.com",
+    role: "client_member",
+    clientAssociation: "Apex Global Solutions",
     status: "active",
-    clearance: "CLEARANCE LEVEL IV (GFF TECHNICAL OPERATOR)",
-    permissions: [
-      "read:telemetry", "read:projects", "write:projects", "read:ai-operations",
-      "write:ai-operations", "read:documents", "write:documents", "write:support"
-    ],
-    passwordHash: "gff-secure-2026!"
+    clearance: "Client member access",
+    permissions: ["read:telemetry", "read:projects", "read:ai-operations", "read:documents", "write:support"],
+    passwordHash: "password123"
   },
-  "preview-finance-admin@internal.gff.ai": {
-    id: "usr-007",
-    name: "Finance Controller",
-    email: "preview-finance-admin@internal.gff.ai",
-    role: "finance_admin",
-    clientAssociation: "GFF Corporate Finance [Internal]",
-    status: "active",
-    clearance: "CLEARANCE LEVEL III (GFF FINANCIAL CONTROLLER)",
-    permissions: [
-      "read:telemetry", "read:projects", "read:ai-operations", "read:documents",
-      "read:billing", "write:billing"
-    ],
-    passwordHash: "gff-secure-2026!"
-  },
-  "preview-support-agent@internal.gff.ai": {
-    id: "usr-008",
-    name: "Support Liaison",
-    email: "preview-support-agent@internal.gff.ai",
-    role: "support_agent",
-    clientAssociation: "GFF Client Support [Internal]",
-    status: "active",
-    clearance: "CLEARANCE LEVEL III (GFF SUPPORT WIRE)",
-    permissions: [
-      "read:telemetry", "read:projects", "read:ai-operations", "read:documents",
-      "read:support", "write:support", "read:users", "write:users"
-    ],
-    passwordHash: "gff-secure-2026!"
-  },
-  "preview-viewer@internal.gff.ai": {
-    id: "usr-009",
-    name: "Auditor Node 9",
-    email: "preview-viewer@internal.gff.ai",
-    role: "viewer",
-    clientAssociation: "Global Compliance Auditor [External]",
-    status: "active",
-    clearance: "CLEARANCE LEVEL I (READ-ONLY AUDITOR)",
-    permissions: [
-      "read:telemetry", "read:projects", "read:ai-operations", "read:documents"
-    ],
-    passwordHash: "gff-secure-2026!"
-  }
 };
 
 // Initialize the mock users database globally to persist edits in memory across hot reloads.
 if (!(global as any)._apiMockUsers) {
   (global as any)._apiMockUsers = { ...DEFAULT_API_MOCK_USERS };
+} else {
+  for (const [email, user] of Object.entries(DEFAULT_API_MOCK_USERS)) {
+    if (!(global as any)._apiMockUsers[email]) {
+      (global as any)._apiMockUsers[email] = user;
+    }
+  }
 }
 
 export const API_MOCK_USERS: Record<string, MockUserDbEntry> = (global as any)._apiMockUsers;
@@ -350,19 +340,22 @@ export function getNextProjectId(): string {
 
 export function getClientNameFromId(clientId: string): string {
   switch (clientId) {
-    case "client-001": return "Apex Sovereign Group [Preview Client]";
-    case "client-002": return "Global Retail Enclave [Preview Client]";
-    case "client-003": return "Sovereign Logistics Unit [Preview Client]";
-    case "client-004": return "Federal Treasury Division [Preview Client]";
-    default: return "GFF AI Platform Core (Global Root)";
+    case "client-001": return "Apex Global Solutions";
+    case "client-002": return "Sovereign Logistics Corp";
+    case "client-003": return "Global Retail Group";
+    case "client-004": return "Federal Treasury Division";
+    default: return "GFF AI";
   }
 }
 
 export function getClientIdFromAssociation(association: string): string {
   const assoc = association.toLowerCase();
   if (assoc.includes("apex-sovereign") || assoc.includes("apex sovereign")) return "client-001";
+  if (assoc.includes("apex global")) return "client-001";
   if (assoc.includes("global-retail") || assoc.includes("global retail")) return "client-002";
+  if (assoc.includes("sovereign logistics")) return "client-002";
   if (assoc.includes("sovereign-logistics") || assoc.includes("sovereign logistics")) return "client-003";
+  if (assoc.includes("global retail group")) return "client-003";
   if (assoc.includes("fed-treasury") || assoc.includes("federal treasury")) return "client-004";
   return "client-unknown";
 }
@@ -1033,4 +1026,3 @@ export function getNextClientId(): string {
   const maxId = ids.length > 0 ? Math.max(...ids) : 4;
   return `client-${String(maxId + 1).padStart(3, "0")}`;
 }
-

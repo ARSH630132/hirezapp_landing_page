@@ -11,16 +11,16 @@ import { CommandPalette } from "./command-palette";
 const clientGroups = [
   { name: "CORE OVERSIGHT", linkIds: ["dashboard"] },
   { name: "OPERATIONS & INTEL", linkIds: ["projects", "ai-operations", "documents"] },
-  { name: "TELEMETRY & POLICIES", linkIds: ["analytics", "governance", "activity"] },
-  { name: "ADMIN & SETTINGS", linkIds: ["billing", "support", "settings"] },
+  { name: "TELEMETRY & POLICIES", linkIds: ["analytics", "governance"] },
+  { name: "ADMIN", linkIds: ["billing", "support"] },
 ];
 
 const adminGroups = [
   { name: "CORE OVERSIGHT", linkIds: ["dashboard"] },
   { name: "REGISTRY & USERS", linkIds: ["clients", "projects", "users"] },
   { name: "OPERATIONS & CONTROL", linkIds: ["ai-operations", "documents"] },
-  { name: "TELEMETRY & AUDIT", linkIds: ["analytics", "governance", "activity"] },
-  { name: "SYSTEM CONFIG", linkIds: ["billing", "support", "settings"] },
+  { name: "TELEMETRY & AUDIT", linkIds: ["analytics", "governance"] },
+  { name: "SYSTEM CONFIG", linkIds: ["billing", "support"] },
 ];
 
 
@@ -51,8 +51,8 @@ export function PrivateAppShell({
 
   // Resolve mobile bottom navigation primary links (top 4 links + 'More' button)
   const primaryMobileIds = role === "Client" 
-    ? ["dashboard", "projects", "ai-operations", "settings"]
-    : ["dashboard", "clients", "projects", "settings"];
+    ? ["dashboard", "projects", "ai-operations", "support"]
+    : ["dashboard", "clients", "projects", "support"];
 
   const primaryMobileLinks = primaryMobileIds
     .map(id => links.find(link => link.id === id))

@@ -74,6 +74,7 @@ export async function GET(req: Request) {
     return NextResponse.json({
       success: true,
       client_id: callerClientId,
+      client_name: caller.clientAssociation || callerClientId,
       summary: {
         projects: { activeCount: activeProjectsCount, totalCount: clientProjects.length, recent: sortByDate(clientProjects) },
         aiOperations: { activeCount: activeOperationsCount, totalCount: clientOps.length, recent: sortByDate(clientOps) },
@@ -88,6 +89,5 @@ export async function GET(req: Request) {
     return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
   }
 }
-
 
 

@@ -140,7 +140,6 @@ import { getPreviewSession } from "./preview-auth";
 const TOKEN_KEY = "gff_api_token";
 
 export const getApiBaseUrl = (): string => {
-  if (process.env.NEXT_PUBLIC_API_BASE_URL) return process.env.NEXT_PUBLIC_API_BASE_URL;
   if (typeof window !== "undefined") return `${window.location.origin}/api/v1`;
   return "http://localhost:3000/api/v1";
 };
@@ -170,7 +169,7 @@ export async function ensureValidToken(): Promise<string | null> {
   }
   
   try {
-    const res = await fetch(`${getApiBaseUrl().replace(/\/$/, "")}/auth/login`, {
+    const res = await fetch("/api/v1/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -225,18 +224,26 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
 
 export const auth = {
   login: async (creds: { email: string; password?: string }): Promise<{ success: boolean; accessToken: string; user: ApiUser }> => {
-    const res = await request<{ success: boolean; accessToken: string; user: ApiUser }>("/auth/login", {
+    const res = await fetch("/api/v1/auth/login", {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(creds),
     });
-    if (res.success && res.accessToken) setStoredToken(res.accessToken);
-    return res;
+    const data = await res.json();
+    if (data.success && data.accessToken) setStoredToken(data.accessToken);
+    return data;
   },
   logout: async (): Promise<{ success: boolean }> => {
-    try { await request("/auth/logout", { method: "POST" }); } catch { /* Ignore */ } finally { clearStoredToken(); }
+    try { await fetch("/api/v1/auth/logout", { method: "POST" }); } catch { /* Ignore */ } finally { clearStoredToken(); }
     return { success: true };
   },
-  me: async (): Promise<{ success: boolean; user: ApiUser }> => request<{ success: boolean; user: ApiUser }>("/auth/me"),
+  me: async (): Promise<{ success: boolean; user: ApiUser }> => {
+    const token = getStoredToken();
+    const res = await fetch("/api/v1/auth/me", {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    });
+    return res.json();
+  },
 };
 
 export const dashboard = {

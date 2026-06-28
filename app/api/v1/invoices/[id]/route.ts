@@ -23,7 +23,7 @@ export async function GET(req: Request, { params }: { params: any }) {
     const invoice = (API_MOCK_INVOICES as Record<string, ApiInvoice>)[id];
     if (!invoice) return NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
 
-    const isMgr = caller.role === "gff_admin" || (caller.role as string) === "finance_admin";
+    const isMgr = caller.role === "gff_admin";
     if (!isMgr) {
       const cid = getClientIdFromAssociation(caller.clientAssociation);
       if (invoice.client_id !== cid) return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
@@ -38,7 +38,7 @@ export async function PATCH(req: Request, { params }: { params: any }) {
   try {
     const caller = getAuthCaller(req);
     if (!caller) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
-    const isMgr = caller.role === "gff_admin" || (caller.role as string) === "finance_admin";
+    const isMgr = caller.role === "gff_admin";
     if (!isMgr) return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
 
     const { id } = await params;
@@ -98,7 +98,7 @@ export async function DELETE(req: Request, { params }: { params: any }) {
   try {
     const caller = getAuthCaller(req);
     if (!caller) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
-    const isMgr = caller.role === "gff_admin" || (caller.role as string) === "finance_admin";
+    const isMgr = caller.role === "gff_admin";
     if (!isMgr) return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
 
     const { id } = await params;
