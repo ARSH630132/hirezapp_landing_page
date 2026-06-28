@@ -58,7 +58,7 @@ export default function CompanyMissionPage() {
       <section className="relative w-full px-6 lg:px-16 pb-16 border-t border-white/5 pt-16">
         <div className="max-w-[1795px] mx-auto">
           <div className="text-center max-w-[800px] mx-auto mb-12">
-            <span className="text-[10px] font-mono tracking-[0.2em] text-[#009DFF] uppercase font-bold">Inviolable Pillars</span>
+            {/* <span className="text-[10px] font-mono tracking-[0.2em] text-[#009DFF] uppercase font-bold">Inviolable Pillars</span> */}
             <h2 className="text-[28px] sm:text-[34px] font-bold text-white tracking-tight mt-2">Our Operating Core</h2>
           </div>
 

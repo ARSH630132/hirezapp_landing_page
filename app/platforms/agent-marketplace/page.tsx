@@ -134,7 +134,7 @@ export default function AgentMarketplacePage() {
         <MotionReveal className="grid grid-cols-1 lg:grid-cols-12 gap-8 py-12 border-y border-white/5 items-center bg-white/[0.01] px-8 rounded-2xl relative overflow-hidden">
           <div className="absolute top-0 left-0 w-[30%] h-full bg-gradient-to-r from-[#009DFF]/5 to-transparent pointer-events-none" />
           <div className="lg:col-span-5 relative z-10">
-            <span className="text-xs font-mono text-[#009DFF] uppercase tracking-widest font-bold">Standardized Autonomy</span>
+            {/* <span className="text-xs font-mono text-[#009DFF] uppercase tracking-widest font-bold">Standardized Autonomy</span> */}
             <h2 className="text-3xl font-semibold text-white tracking-tight mt-2">Zero-Trust Deterministic Blueprints</h2>
           </div>
           <div className="lg:col-span-7 relative z-10">
