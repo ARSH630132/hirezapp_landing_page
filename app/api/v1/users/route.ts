@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { API_MOCK_USERS, verifyJwt, hashPassword, getNextUserId, MockUserDbEntry } from "../../../../lib/api-auth";
-import { getUserFromDynamoDB, listUsersFromDynamoDB, mapDynamoUserToApiUser, putUserInDynamoDB } from "@/lib/dynamodb-client";
+import { getUserFromDynamoDB, listUsersFromDynamoDB, mapDynamoUserToApiUser, putUserInDynamoDB } from "../../../../lib/dynamodb-client";
 
 export const runtime = "nodejs";
 

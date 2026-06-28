@@ -101,6 +101,25 @@ export async function putUserInDynamoDB(user: DynamoDbUser): Promise<boolean> {
   return false;
 }
 
+export async function deleteUserFromDynamoDB(email: string): Promise<boolean> {
+  const normalizedEmail = email.toLowerCase().trim();
+  if (docClient) {
+    try {
+      await docClient.send(
+        new DeleteCommand({
+          TableName: tableName,
+          Key: { email: normalizedEmail },
+        })
+      );
+      return true;
+    } catch (err) {
+      console.error(`[DYNAMODB] Error deleting user ${normalizedEmail} from DynamoDB:`, err);
+      return false;
+    }
+  }
+  return false;
+}
+
 export function hashPassword(password: string): string {
   return crypto
     .createHmac("sha256", "gff-ai-salt-2026")

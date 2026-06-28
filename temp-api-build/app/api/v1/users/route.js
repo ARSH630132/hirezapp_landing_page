@@ -5,7 +5,7 @@ exports.GET = GET;
 exports.POST = POST;
 const server_1 = require("next/server");
 const api_auth_1 = require("../../../../lib/api-auth");
-const dynamodb_client_1 = require("@/lib/dynamodb-client");
+const dynamodb_client_1 = require("../../../../lib/dynamodb-client");
 exports.runtime = "nodejs";
 async function getAuthCaller(req) {
     const auth = req.headers.get("authorization");
