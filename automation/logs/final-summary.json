@@ -145,7 +145,21 @@
     "167-phase5-security-limitations-docs",
     "168-phase5-backend-frontend-smoke-qa",
     "169-phase5-no-gff-tools-backend-regression-audit",
-    "170-phase5-final-mvp-backend-qa"
+    "170-phase5-final-mvp-backend-qa",
+    "171-phase6-aws-preflight-final-scope-audit",
+    "172-phase6-aws-env-and-config",
+    "173-phase6-dynamodb-table-documentation",
+    "174-phase6-dynamodb-client-and-repositories",
+    "175-phase6-auth-users-dynamodb",
+    "176-phase6-clients-and-portal-items-dynamodb",
+    "177-phase6-dashboard-analytics-dynamodb",
+    "178-phase6-s3-document-files",
+    "179-phase6-frontend-documents-s3-integration",
+    "180-phase6-seed-aws-data",
+    "181-phase6-frontend-env-and-api-finalization",
+    "182-phase6-cors-and-deployment-config",
+    "183-phase6-final-product-qa",
+    "184-phase6-final-wrap-up-docs"
   ],
   "failed": [
     {
@@ -287,5 +301,5 @@
   ],
   "finalStatus": "M automation/state.json",
   "finalValidationOk": true,
-  "finishedAt": "2026-06-27T20:08:04.864Z"
+  "finishedAt": "2026-06-27T23:06:15.244Z"
 }
