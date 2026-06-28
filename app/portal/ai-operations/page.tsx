@@ -27,7 +27,8 @@ import {
   StatusBadge,
   PrivatePageHeader,
   Timeline,
-  GovernancePanel
+  GovernancePanel,
+  InfoTooltip
 } from "@/components/private-app";
 
 import { mapApiOpToEnrichedAgent, EnrichedAgent } from "./mapping-helper";
@@ -679,7 +680,10 @@ export default function ClientAiOperationsPage() {
                     <div className="grid grid-cols-2 gap-4 mt-3">
                       <div className="border border-[#009DFF]/30 bg-[#009DFF]/5 p-3.5 rounded-lg relative space-y-2 group hover:border-[#009DFF] transition-all">
                         <div className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-[#009DFF] animate-ping" />
-                        <span className="text-[#009DFF] font-bold block text-[9.5px]">INTEL SGX</span>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[#009DFF] font-bold block text-[9.5px]">INTEL SGX</span>
+                          <InfoTooltip content="Intel Software Guard Extensions isolate user-space code and data in hardware-protected memory segments (enclaves) to prevent host snooping." />
+                        </div>
                         <div className="text-[8.5px] text-white/50 leading-relaxed">
                           Isolated User-Space Enclave. Memory fully encrypted at silicon layer.
                         </div>
@@ -689,7 +693,10 @@ export default function ClientAiOperationsPage() {
                       </div>
                       <div className="border border-emerald-500/30 bg-emerald-500/5 p-3.5 rounded-lg relative space-y-2 group hover:border-emerald-500 transition-all">
                         <div className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping" />
-                        <span className="text-emerald-400 font-bold block text-[9.5px]">AMD SEV-SNP</span>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-emerald-400 font-bold block text-[9.5px]">AMD SEV-SNP</span>
+                          <InfoTooltip content="AMD Secure Encrypted Virtualization-Secure Nested Paging uses hardware-level cryptography to protect VM registers and tables from administrative access." />
+                        </div>
                         <div className="text-[8.5px] text-white/50 leading-relaxed">
                           Secure Nested Paging. Strict hardware CPU isolation and register lock.
                         </div>
@@ -767,6 +774,7 @@ export default function ClientAiOperationsPage() {
                 <h3 className="text-xs font-bold text-white font-mono uppercase tracking-wider">
                   Hardware Security Modules (HSM)
                 </h3>
+                <InfoTooltip content="Physical cryptographic coprocessors safeguarding and managing GFF access keys for strong continuous attestation checks." />
               </div>
               <div className="p-3 bg-green-500/5 border border-green-500/20 text-green-400 font-bold rounded flex items-center justify-between font-mono text-[11px]">
                 <span>HSM LOCK:</span>

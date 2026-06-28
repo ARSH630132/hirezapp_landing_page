@@ -4,6 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getUserFromDynamoDB = getUserFromDynamoDB;
+exports.listUsersFromDynamoDB = listUsersFromDynamoDB;
+exports.putUserInDynamoDB = putUserInDynamoDB;
 exports.hashPassword = hashPassword;
 exports.verifyDbUserPassword = verifyDbUserPassword;
 exports.mapDynamoUserToApiUser = mapDynamoUserToApiUser;
@@ -62,6 +64,36 @@ async function getUserFromDynamoDB(email) {
     }
     return null;
 }
+async function listUsersFromDynamoDB() {
+    if (docClient) {
+        try {
+            const response = await docClient.send(new lib_dynamodb_2.ScanCommand({
+                TableName: tableName,
+            }));
+            return (response.Items || []);
+        }
+        catch (err) {
+            console.error("[DYNAMODB] Error listing users from DynamoDB:", err);
+        }
+    }
+    return [];
+}
+async function putUserInDynamoDB(user) {
+    if (docClient) {
+        try {
+            await docClient.send(new lib_dynamodb_2.PutCommand({
+                TableName: tableName,
+                Item: user,
+            }));
+            return true;
+        }
+        catch (err) {
+            console.error(`[DYNAMODB] Error writing user ${user.email} to DynamoDB:`, err);
+            return false;
+        }
+    }
+    return false;
+}
 function hashPassword(password) {
     return crypto_1.default
         .createHmac("sha256", "gff-ai-salt-2026")
@@ -95,45 +127,45 @@ function verifyDbUserPassword(dbUser, passwordAttempt) {
 }
 function mapDynamoUserToApiUser(dbUser) {
     const role = dbUser.role || "client_member";
-    let clearance = "CLEARANCE LEVEL I (BASIC VIEW-ONLY)";
+    let clearance = "Client member access";
     let permissions = ["read:telemetry", "read:projects", "read:ai-operations", "read:documents", "write:support"];
     if (role === "gff_admin") {
-        clearance = "CLEARANCE LEVEL V (SECURE PLATFORM SUPERUSER)";
+        clearance = "Admin access";
         permissions = [
             "all:*", "read:telemetry", "write:telemetry", "read:projects", "write:projects",
             "read:users", "write:users", "read:clients", "write:clients", "write:governance"
         ];
     }
     else if (role === "client_admin") {
-        clearance = "CLEARANCE LEVEL III (SANDBOX OPERATOR)";
+        clearance = "Client admin access";
         permissions = [
             "read:telemetry", "read:projects", "write:projects", "read:ai-operations",
             "write:ai-operations", "read:documents", "write:documents", "write:support"
         ];
     }
     // Handle client association
-    let clientAssociation = "GFF AI Platform Core (Global Root)";
+    let clientAssociation = "GFF AI";
     if (role !== "gff_admin") {
-        if (dbUser.client_id !== undefined && dbUser.client_id !== null) {
+        if (dbUser.clientAssociation) {
+            clientAssociation = dbUser.clientAssociation;
+        }
+        else if (dbUser.client_id !== undefined && dbUser.client_id !== null) {
             const cid = String(dbUser.client_id);
             if (cid === "1" || cid.toLowerCase().includes("apex") || cid.toLowerCase().includes("client-001")) {
-                clientAssociation = "Apex Sovereign Group [Preview Client]";
+                clientAssociation = "Apex Global Solutions";
             }
-            else if (cid === "2" || cid.toLowerCase().includes("retail") || cid.toLowerCase().includes("client-002")) {
-                clientAssociation = "Global Retail Enclave [Preview Client]";
+            else if (cid === "2" || cid.toLowerCase().includes("logistics") || cid.toLowerCase().includes("client-002")) {
+                clientAssociation = "Sovereign Logistics Corp";
             }
-            else if (cid === "3" || cid.toLowerCase().includes("logistics") || cid.toLowerCase().includes("client-003")) {
-                clientAssociation = "Sovereign Logistics Unit [Preview Client]";
+            else if (cid === "3" || cid.toLowerCase().includes("retail") || cid.toLowerCase().includes("client-003")) {
+                clientAssociation = "Global Retail Group";
             }
             else if (cid === "4" || cid.toLowerCase().includes("treasury") || cid.toLowerCase().includes("fed-treasury") || cid.toLowerCase().includes("client-004")) {
-                clientAssociation = "Federal Treasury Division [Preview Client]";
+                clientAssociation = "Federal Treasury Division";
             }
             else {
-                clientAssociation = dbUser.clientAssociation || `Enterprise Tenant #${cid}`;
+                clientAssociation = `Client ${cid}`;
             }
-        }
-        else if (dbUser.clientAssociation) {
-            clientAssociation = dbUser.clientAssociation;
         }
     }
     const status = (dbUser.is_active === false || dbUser.status === "inactive") ? "inactive" : "active";
@@ -161,17 +193,30 @@ function mapDynamoUserToApiUser(dbUser) {
 const ENTITY_PREFIXES = { PROJECT: "PROJ#", AI_OPERATION: "AIOPS#", DOCUMENT: "DOC#", INVOICE: "INV#", SUPPORT: "TICKET#", GOVERNANCE: "GOV#" };
 const DYNAMODB_CLIENTS_TABLE = process.env.DYNAMODB_CLIENTS_TABLE || "GFF_CLIENTS";
 const DYNAMODB_ITEMS_TABLE = process.env.DYNAMODB_ITEMS_TABLE || "GFF_PORTAL_ITEMS";
+function normalizeClientKey(clientId) {
+    const value = String(clientId || "").trim().toLowerCase();
+    if (value === "client-001")
+        return "1";
+    if (value === "client-002")
+        return "2";
+    if (value === "client-003")
+        return "3";
+    if (value === "client-004")
+        return "4";
+    return String(clientId || "").trim();
+}
 async function dynamoDbGetClient(clientId) {
+    const normalizedClientId = normalizeClientKey(clientId);
     if (docClient) {
         try {
-            const res = await docClient.send(new lib_dynamodb_1.GetCommand({ TableName: DYNAMODB_CLIENTS_TABLE, Key: { client_id: clientId } }));
+            const res = await docClient.send(new lib_dynamodb_1.GetCommand({ TableName: DYNAMODB_CLIENTS_TABLE, Key: { client_id: normalizedClientId } }));
             return res.Item || null;
         }
         catch (err) {
             return null;
         }
     }
-    return (global._apiMockClients || {})[clientId] || null;
+    return (global._apiMockClients || {})[clientId] || (global._apiMockClients || {})[normalizedClientId] || null;
 }
 async function dynamoDbListClients() {
     if (docClient) {
@@ -216,7 +261,8 @@ async function dynamoDbDeleteClient(clientId) {
     return false;
 }
 async function dynamoDbGetPortalItem(clientId, itemId, entityType) {
-    const pk = `CLIENT#${clientId}`, sk = `${ENTITY_PREFIXES[entityType] || ""}${itemId}`;
+    const normalizedClientId = normalizeClientKey(clientId);
+    const pk = `CLIENT#${normalizedClientId}`, sk = `${ENTITY_PREFIXES[entityType] || ""}${itemId}`;
     if (docClient) {
         try {
             const res = await docClient.send(new lib_dynamodb_1.GetCommand({ TableName: DYNAMODB_ITEMS_TABLE, Key: { PK: pk, SK: sk } }));
@@ -229,13 +275,14 @@ async function dynamoDbGetPortalItem(clientId, itemId, entityType) {
     return getMockStore(entityType)[itemId] || null;
 }
 async function dynamoDbListPortalItems(entityType, clientId) {
+    const normalizedClientId = clientId ? normalizeClientKey(clientId) : undefined;
     if (docClient) {
         try {
-            if (clientId) {
+            if (normalizedClientId) {
                 const res = await docClient.send(new lib_dynamodb_2.QueryCommand({
                     TableName: DYNAMODB_ITEMS_TABLE,
                     KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk_prefix)",
-                    ExpressionAttributeValues: { ":pk": `CLIENT#${clientId}`, ":sk_prefix": ENTITY_PREFIXES[entityType] || "" }
+                    ExpressionAttributeValues: { ":pk": `CLIENT#${normalizedClientId}`, ":sk_prefix": ENTITY_PREFIXES[entityType] || "" }
                 }));
                 return res.Items || [];
             }
@@ -253,11 +300,14 @@ async function dynamoDbListPortalItems(entityType, clientId) {
         }
     }
     const items = Object.values(getMockStore(entityType));
-    return clientId ? items.filter((item) => item.client_id === clientId) : items;
+    return normalizedClientId
+        ? items.filter((item) => item.client_id === clientId || item.client_id === normalizedClientId)
+        : items;
 }
 async function dynamoDbPutPortalItem(entityType, clientId, item) {
-    const pk = `CLIENT#${clientId}`, sk = `${ENTITY_PREFIXES[entityType] || ""}${item.id}`;
-    const dbItem = { ...item, PK: pk, SK: sk, entity_type: entityType, client_id: clientId };
+    const normalizedClientId = normalizeClientKey(clientId);
+    const pk = `CLIENT#${normalizedClientId}`, sk = `${ENTITY_PREFIXES[entityType] || ""}${item.id}`;
+    const dbItem = { ...item, PK: pk, SK: sk, entity_type: entityType, client_id: normalizedClientId };
     if (docClient) {
         try {
             await docClient.send(new lib_dynamodb_2.PutCommand({ TableName: DYNAMODB_ITEMS_TABLE, Item: dbItem }));
@@ -271,7 +321,8 @@ async function dynamoDbPutPortalItem(entityType, clientId, item) {
     return item;
 }
 async function dynamoDbDeletePortalItem(entityType, clientId, itemId) {
-    const pk = `CLIENT#${clientId}`, sk = `${ENTITY_PREFIXES[entityType] || ""}${itemId}`;
+    const normalizedClientId = normalizeClientKey(clientId);
+    const pk = `CLIENT#${normalizedClientId}`, sk = `${ENTITY_PREFIXES[entityType] || ""}${itemId}`;
     if (docClient) {
         try {
             await docClient.send(new lib_dynamodb_2.DeleteCommand({ TableName: DYNAMODB_ITEMS_TABLE, Key: { PK: pk, SK: sk } }));

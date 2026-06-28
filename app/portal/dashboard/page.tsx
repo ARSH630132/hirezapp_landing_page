@@ -12,7 +12,7 @@ import {
   RefreshCw,
   ShieldCheck,
 } from "lucide-react";
-import { PrivatePageHeader } from "@/components/private-app";
+import { PrivatePageHeader, InfoTooltip } from "@/components/private-app";
 
 type ClientDashboardData = {
   success: boolean;
@@ -34,12 +34,14 @@ function MetricCard({
   detail,
   href,
   icon: Icon,
+  tooltip,
 }: {
   label: string;
   value: string;
   detail: string;
   href: string;
   icon: React.ComponentType<{ className?: string }>;
+  tooltip?: string;
 }) {
   return (
     <Link
@@ -48,7 +50,10 @@ function MetricCard({
     >
       <div className="flex items-start justify-between gap-3">
         <div className="space-y-1">
-          <p className="text-[11px] uppercase tracking-widest text-white/45">{label}</p>
+          <div className="flex items-center gap-1.5">
+            <p className="text-[11px] uppercase tracking-widest text-white/45">{label}</p>
+            {tooltip && <InfoTooltip content={tooltip} />}
+          </div>
           <p className="text-2xl font-semibold text-white">{value}</p>
           <p className="text-[11px] text-white/55">{detail}</p>
         </div>
@@ -174,6 +179,7 @@ export default function ClientDashboardPage() {
               detail="Active and total projects"
               href="/portal/projects"
               icon={Layers}
+              tooltip="The lifecycle tracking of your enterprise integration initiatives across planning, setup, and live execution stages."
             />
             <MetricCard
               label="AI Operations"
@@ -181,6 +187,7 @@ export default function ClientDashboardPage() {
               detail="Running and total AI operations"
               href="/portal/ai-operations"
               icon={Bot}
+              tooltip="Telemetry status of your active, hardware-isolated AI agent cores, memory slots, and safety alignment filters."
             />
             <MetricCard
               label="Documents"
@@ -188,6 +195,7 @@ export default function ClientDashboardPage() {
               detail="Verified and total documents"
               href="/portal/documents"
               icon={FileText}
+              tooltip="Secure project blueprint specifications, NDAs, or hardware compliance audit records stored with end-to-end encryption."
             />
             <MetricCard
               label="Billing"
@@ -195,6 +203,7 @@ export default function ClientDashboardPage() {
               detail="Invoices still pending"
               href="/portal/billing"
               icon={CreditCard}
+              tooltip="A clean ledger summarizing unpaid/pending service cycles, node resource runtime fees, and cloud resource invoices."
             />
             <MetricCard
               label="Support"
@@ -202,6 +211,7 @@ export default function ClientDashboardPage() {
               detail="Support tickets still open"
               href="/portal/support"
               icon={HelpCircle}
+              tooltip="Secure communication channels open with your dedicated GFF Solutions Architect team for SLAs and setup issues."
             />
             <MetricCard
               label="Governance"
@@ -209,6 +219,7 @@ export default function ClientDashboardPage() {
               detail="Items that need attention"
               href="/portal/governance"
               icon={ShieldCheck}
+              tooltip="Real-time compliance checks assessing alignment rules (ISO-27001, SOC2, etc.) and flagging policy warnings."
             />
             <MetricCard
               label="Analytics"
@@ -216,6 +227,7 @@ export default function ClientDashboardPage() {
               detail="Projects and AI operations tracked"
               href="/portal/analytics"
               icon={BarChart3}
+              tooltip="Global platform usage analytics showcasing telemetry latency metrics, core thread workloads, and active model execution counts."
             />
           </div>
 

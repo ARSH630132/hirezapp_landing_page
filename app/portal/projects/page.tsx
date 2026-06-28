@@ -31,7 +31,8 @@ import {
   WorkspaceCard, 
   StatusBadge, 
   PrivatePageHeader,
-  EmptyState
+  EmptyState,
+  InfoTooltip
 } from "@/components/private-app";
 
 interface ClientProject {
@@ -635,7 +636,10 @@ export default function ClientProjectsPage() {
               </div>
               
               <div className="mt-3 space-y-1.5 p-2.5 bg-white/[0.01] border border-white/5 rounded-lg">
-                <span className="text-[8.5px] font-mono text-white/30 uppercase block font-bold font-sans">Lifecycle Stage</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[8.5px] font-mono text-white/30 uppercase block font-bold font-sans">Lifecycle Stage</span>
+                  <InfoTooltip content="GFF Lifecycle Stages: 1. Garage (Planning & Threat Modeling), 2. Foundry (Secure Enclave Setup), 3. Factory (AI Agent Alignment & UAT), 4. Operate (Live Production with Active Telemetry)." />
+                </div>
                 <div className="relative flex justify-between px-1">
                   <div className="absolute left-2 right-2 top-1/2 -translate-y-1/2 h-0.5 border-t border-dashed border-white/10" />
                   {LIFECYCLE_PHASES.map((phase, idx) => {

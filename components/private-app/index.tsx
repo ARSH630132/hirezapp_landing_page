@@ -18,3 +18,4 @@ export * from "./agent-project-health";
 export * from "./page-header";
 export * from "./sidebar-topbar";
 export * from "./app-shell";
+export * from "./tooltip";

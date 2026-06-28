@@ -11,7 +11,7 @@ import {
   ShieldCheck,
   Users,
 } from "lucide-react";
-import { PrivatePageHeader } from "@/components/private-app";
+import { PrivatePageHeader, InfoTooltip } from "@/components/private-app";
 
 type AdminDashboardData = {
   success: boolean;
@@ -32,12 +32,14 @@ function MetricCard({
   detail,
   href,
   icon: Icon,
+  tooltip,
 }: {
   label: string;
   value: string;
   detail: string;
   href: string;
   icon: React.ComponentType<{ className?: string }>;
+  tooltip?: string;
 }) {
   return (
     <Link
@@ -46,7 +48,10 @@ function MetricCard({
     >
       <div className="flex items-start justify-between gap-3">
         <div className="space-y-1">
-          <p className="text-[11px] uppercase tracking-widest text-white/45">{label}</p>
+          <div className="flex items-center gap-1.5">
+            <p className="text-[11px] uppercase tracking-widest text-white/45">{label}</p>
+            {tooltip && <InfoTooltip content={tooltip} />}
+          </div>
           <p className="text-2xl font-semibold text-white">{value}</p>
           <p className="text-[11px] text-white/55">{detail}</p>
         </div>
@@ -168,6 +173,7 @@ export default function AdminDashboardPage() {
               detail="Registered client accounts"
               href="/admin/clients"
               icon={Users}
+              tooltip="The global registry of enterprise client accounts active on the GFF platform."
             />
             <MetricCard
               label="AI Operations"
@@ -175,6 +181,7 @@ export default function AdminDashboardPage() {
               detail="Running and total AI operations"
               href="/admin/ai-operations"
               icon={Bot}
+              tooltip="Total counts and status checks of hardware-isolated model partitions running across all tenant boundaries."
             />
             <MetricCard
               label="Documents"
@@ -182,6 +189,7 @@ export default function AdminDashboardPage() {
               detail="Verified and total documents"
               href="/admin/documents"
               icon={FileText}
+              tooltip="Total NDAs, project blueprints, and hardware-compliance certificates securely loaded into AWS S3."
             />
             <MetricCard
               label="Open Support"
@@ -189,6 +197,7 @@ export default function AdminDashboardPage() {
               detail="Support tickets still open"
               href="/admin/support"
               icon={HelpCircle}
+              tooltip="Incoming customer technical requests, system re-attestation tickets, or configuration questions pending SLA review."
             />
             <MetricCard
               label="Projects"
@@ -196,6 +205,7 @@ export default function AdminDashboardPage() {
               detail="Active and total projects"
               href="/admin/projects"
               icon={Users}
+              tooltip="Enterprise program lifecycle stages tracked globally across all registered organizations."
             />
             <MetricCard
               label="Billing"
@@ -203,6 +213,7 @@ export default function AdminDashboardPage() {
               detail="Invoices still pending"
               href="/admin/billing"
               icon={CreditCard}
+              tooltip="Active and pending invoice items tracked globally across all clients for computing time and hosting fees."
             />
             <MetricCard
               label="Governance"
@@ -210,6 +221,7 @@ export default function AdminDashboardPage() {
               detail="Items that need attention"
               href="/admin/governance"
               icon={ShieldCheck}
+              tooltip="System compliance violations, alignment issues, or policy drift warnings globally flagged by the guardrail audits."
             />
             <MetricCard
               label="Analytics"
@@ -217,6 +229,7 @@ export default function AdminDashboardPage() {
               detail="Projects and AI operations tracked"
               href="/admin/analytics"
               icon={RefreshCw}
+              tooltip="Global platform workload volume and computing performance metrics aggregated from node sensors."
             />
           </div>
 
