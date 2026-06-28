@@ -410,36 +410,36 @@ export default function ClientGovernancePage() {
   const handleVerify = (id: string) => {
     if (verId) return;
     setVerId(id);
-    triggerToast(`Cryptographic handshake check running for ${id}...`, "info");
+    triggerToast(`Security check running for ${id}...`, "info");
     setTimeout(() => {
-      setPolicies(prev => prev.map(p => p.id === id ? { ...p, status: "compliant", logs: [`[${new Date().toLocaleTimeString()}] RE-VERIFIED: Validated via hardware proof.`, ...p.logs] } : p));
+      setPolicies(prev => prev.map(p => p.id === id ? { ...p, status: "compliant", logs: [`[${new Date().toLocaleTimeString()}] RE-VERIFIED: System check successful.`, ...p.logs] } : p));
       setVerId(null);
-      triggerToast(`Boundary verified: ${id} is locked and fully compliant.`, "success");
+      triggerToast(`Verified: ${id} is locked and fully secure.`, "success");
     }, 1200);
   };
 
   const handleResolveOversight = (id: string, state: "approved" | "rejected") => {
     setOversights(prev => prev.map(o => o.id === id ? { ...o, status: state } : o));
-    if (state === "approved") triggerToast(`Signature committed. Interlock ${id} approved.`, "success");
-    else triggerToast(`Interlock request ${id} rejected by client keys.`, "warning");
+    if (state === "approved") triggerToast(`Approved. Request ${id} approved.`, "success");
+    else triggerToast(`Request ${id} rejected.`, "warning");
   };
 
   const handleDocExport = (id: string) => {
     if (expIdDoc) return;
     setExpIdDoc(id);
-    triggerToast(`Compiling signed attestation file for ${id}...`, "info");
+    triggerToast(`Creating download file for ${id}...`, "info");
     setTimeout(() => {
       setExpIdDoc(null);
-      triggerToast(`Certified file package compiled and downloaded successfully.`, "success");
+      triggerToast(`File compiled and downloaded successfully.`, "success");
     }, 1500);
   };
 
   const steps = [
-    { id: "step-1", title: "1. Prompt Ingress Node", val: "0.4ms latency", desc: "Inference transaction streams are parsed inside localized secure process loops." },
-    { id: "step-2", title: "2. Guardrail Interceptor", val: "99.8% pass rate", desc: "Validates payload streams against active compliance rulesets and redacts PII." },
-    { id: "step-3", title: "3. Isolated Secure Enclave", val: "AMD SEV Locked", desc: "Executes model operations inside physically decoupled memory enclaves." },
-    { id: "step-4", title: "4. Human Oversight Interlock", val: `${pendingCount} Pending Sign`, desc: "Sensitive boundary actions pause at hardware layer awaiting administrator credentials." },
-    { id: "step-5", title: "5. Sealed State Ledger", val: "SHA-256 Verified", desc: "Logs physical transactions into an immutable, client-managed auditing ledger." }
+    { id: "step-1", title: "1. Input Checker", val: "0.4ms latency", desc: "All incoming requests are checked quickly for safety." },
+    { id: "step-2", title: "2. Safety Filter", val: "99.8% pass rate", desc: "Checks messages for bad words or private data and hides them." },
+    { id: "step-3", title: "3. Secure Room", val: "Locked", desc: "Runs all AI operations in a locked, highly secure server." },
+    { id: "step-4", title: "4. Manager Approval", val: `${pendingCount} Pending Sign`, desc: "Important changes pause here until a manager approves them." },
+    { id: "step-5", title: "5. Saved Logs", val: "Verified", desc: "Saves all activity logs into a permanent, secure database list." }
   ];
 
   if (loading && policies.length === 0) {
@@ -447,8 +447,8 @@ export default function ClientGovernancePage() {
       <div className="space-y-6 max-w-[1700px] mx-auto pb-16 font-mono p-4 text-white">
         <div className="flex justify-between items-center border-b border-white/5 pb-4">
           <div>
-            <h1 className="text-xl font-bold uppercase tracking-tight animate-pulse">Sovereign Governance</h1>
-            <p className="text-xs text-white/50 mt-1">Acquiring cryptographic consensus on ledger rulesets...</p>
+            <h1 className="text-xl font-bold uppercase tracking-tight animate-pulse">Rules & Policies</h1>
+            <p className="text-xs text-white/50 mt-1">Loading active system rules and database settings...</p>
           </div>
           <RefreshCw className="w-5 h-5 text-[#009DFF] animate-spin" />
         </div>
@@ -468,14 +468,14 @@ export default function ClientGovernancePage() {
       <div className="space-y-6 max-w-[1700px] mx-auto pb-16 font-mono p-4 text-white">
         <WorkspaceCard className="p-8 border border-red-500/10 bg-red-950/5 text-center max-w-lg mx-auto my-12">
           <ShieldAlert className="w-8 h-8 text-red-400 mx-auto animate-pulse" />
-          <h4 className="text-white font-bold uppercase text-sm mt-4 font-mono">GOVERNANCE CONFLICT</h4>
+          <h4 className="text-white font-bold uppercase text-sm mt-4 font-mono">SYSTEM ERROR</h4>
           <p className="text-white/50 text-[11px] leading-relaxed my-3 font-mono">{error}</p>
           <button
             onClick={loadData}
             className="mx-auto h-9 px-6 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold text-[11px] uppercase flex items-center gap-2 transition-all cursor-pointer font-mono"
           >
             <RefreshCw className="w-3.5 h-3.5" />
-            <span>RE-ESTABLISH SECURE LINK</span>
+            <span>RETRY CONNECTION</span>
           </button>
         </WorkspaceCard>
       </div>
@@ -490,11 +490,11 @@ export default function ClientGovernancePage() {
         <div className="flex items-start gap-2.5 text-white/80">
           <ShieldAlert className="w-5 h-5 text-[#009DFF] shrink-0 mt-0.5" />
           <span>
-            <strong className="text-white">WORKFLOW COMPANION SYSTEM:</strong> This interface is <strong className="text-[#009DFF]">designed to support governance workflows</strong>. All assertions, guardrails, and compliance logs are simulated sandbox boundaries built to assist your auditing processes, and do not constitute formal legal or regulatory guarantees.
+            <strong className="text-white">SECURE SYSTEM:</strong> This screen helps you manage rules and approvals. All reports and logs are mock entries to help you preview how the system works.
           </span>
         </div>
         <span className="text-[9px] text-[#009DFF]/90 font-bold bg-[#009DFF]/15 border border-[#009DFF]/30 px-2 py-0.5 rounded uppercase tracking-wider shrink-0 font-mono">
-          SUPPORT ACTIVE
+          PREVIEW ACTIVE
         </span>
       </div>
 
@@ -502,13 +502,13 @@ export default function ClientGovernancePage() {
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 border-b border-white/5 pb-5 select-none font-mono">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-xl md:text-2xl font-bold tracking-tight text-white uppercase">Sovereign Governance</h1>
+            <h1 className="text-xl md:text-2xl font-bold tracking-tight text-white uppercase">Rules & Policies</h1>
             <span className="inline-flex rounded bg-[#00FFC2]/10 border border-[#00FFC2]/20 px-1.5 py-0.5 text-[9px] font-bold uppercase text-[#00FFC2]">
-              LOCKED STATE
+              FULLY SECURE
             </span>
           </div>
           <p className="text-[12px] text-white/50 mt-1">
-            Real-time telemetry, automated guardrail verification blocks, human interlock points, and certified document audit records.
+            See active system rules, manual approvals, and secure file logs.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -533,21 +533,21 @@ export default function ClientGovernancePage() {
         <div className="flex flex-col gap-4">
           <WorkspaceCard className="flex flex-col justify-between h-[105px] border-[#00FFC2]/10">
             <div className="flex justify-between items-start font-mono text-[10px]">
-              <span className="text-white/45 uppercase tracking-wider">Dynamic Trust Index</span>
-              <StatusBadge state="active" label="continuous check" />
+              <span className="text-white/45 uppercase tracking-wider">System Health Score</span>
+              <StatusBadge state="active" label="Active Check" />
             </div>
             <div className="flex items-end justify-between mt-1 font-mono">
               <div className="text-3xl font-bold text-white font-mono">{trustScore}%</div>
               <span className="text-[9.5px] text-emerald-400 flex items-center gap-1">
-                Optimized <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                Healthy <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
               </span>
             </div>
           </WorkspaceCard>
 
           <WorkspaceCard className="flex flex-col justify-between h-[105px]">
             <div className="flex justify-between items-start font-mono text-[10px]">
-              <span className="text-white/45 uppercase tracking-wider">AI Guardrails & Policies</span>
-              <span className="text-[#009DFF] bg-[#009DFF]/10 px-1.5 py-0.5 rounded border border-[#009DFF]/20">ACTIVE</span>
+              <span className="text-white/45 uppercase tracking-wider">Active Rules</span>
+              <span className="text-[#009DFF] bg-[#009DFF]/10 px-1.5 py-0.5 rounded border border-[#009DFF]/20">RUNNING</span>
             </div>
             <div className="flex items-end justify-between mt-1 font-mono">
               <div className="text-3xl font-bold text-white">{policies.length}</div>
@@ -559,16 +559,16 @@ export default function ClientGovernancePage() {
 
           <WorkspaceCard className={`flex flex-col justify-between h-[105px] transition-all ${pendingCount > 0 ? "border-amber-500/20 bg-amber-500/[0.01]" : ""}`}>
             <div className="flex justify-between items-start font-mono text-[10px]">
-              <span className="text-white/45 uppercase tracking-wider">Pending Interlocks</span>
+              <span className="text-white/45 uppercase tracking-wider">Pending Approvals</span>
               {pendingCount > 0 ? (
-                <span className="text-amber-400 bg-amber-400/10 px-1.5 py-0.5 rounded border border-amber-400/20 animate-pulse">SIGN REQUIRED</span>
+                <span className="text-amber-400 bg-amber-400/10 px-1.5 py-0.5 rounded border border-amber-400/20 animate-pulse">APPROVAL NEEDED</span>
               ) : (
-                <span className="text-white/30">ALL SIGNED</span>
+                <span className="text-white/30">ALL APPROVED</span>
               )}
             </div>
             <div className="flex items-end justify-between mt-1 font-mono">
               <div className="text-3xl font-bold text-white">{pendingCount}</div>
-              <span className="text-[9.5px] text-white/40">Awaiting client credentials</span>
+              <span className="text-[9.5px] text-white/40">Awaiting admin approval</span>
             </div>
           </WorkspaceCard>
         </div>
@@ -585,7 +585,7 @@ export default function ClientGovernancePage() {
               <div className="flex items-center justify-between border-b border-white/5 pb-2">
                 <div className="flex items-center gap-1.5 font-mono text-[11px]">
                   <Layers className="w-3.5 h-3.5 text-[#009DFF]" />
-                  <span className="font-bold text-white uppercase tracking-wider">Enclave Interceptor Pipeline</span>
+                  <span className="font-bold text-white uppercase tracking-wider">System Process Flow</span>
                 </div>
                 <span className="text-[9px] font-mono text-white/30 uppercase">Topology</span>
               </div>
@@ -694,7 +694,7 @@ export default function ClientGovernancePage() {
           </div>
 
           <div>
-            <label className="block text-[8px] text-white/40 uppercase mb-0.5">Sovereign Agent</label>
+            <label className="block text-[8px] text-white/40 uppercase mb-0.5">System Agent</label>
             <select 
               value={selAgent} 
               onChange={(e) => { setSelAgent(e.target.value); triggerToast("Filter: Agent target updated", "info"); }}

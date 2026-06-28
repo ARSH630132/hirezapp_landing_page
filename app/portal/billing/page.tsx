@@ -27,7 +27,7 @@ const PROJECTS_DATA: Record<string, {
     graphColor: "#009DFF",
     points: [20, 35, 45, 30, 55, 75, 84],
     dates: ["Jun 1", "Jun 5", "Jun 10", "Jun 15", "Jun 20", "Jun 25", "Jun 27"],
-    description: "Continuous real-time point-of-sale edge nodes and retail data synchronization."
+    description: "Store sales data and project tracking server."
   },
   "GFF-2026-0914": {
     name: "Sovereign Mining Loop",
@@ -38,7 +38,7 @@ const PROJECTS_DATA: Record<string, {
     graphColor: "#00FFC2",
     points: [10, 12, 11, 15, 14, 15, 15],
     dates: ["Jun 1", "Jun 5", "Jun 10", "Jun 15", "Jun 20", "Jun 25", "Jun 27"],
-    description: "SLA priority mining telemetry pipelines and threat protection modules."
+    description: "Daily work tracking and safety alerts system."
   },
   "GFF-2026-0945": {
     name: "Singapore Sandbox Enclave",
@@ -49,7 +49,7 @@ const PROJECTS_DATA: Record<string, {
     graphColor: "#A855F7",
     points: [40, 55, 60, 75, 80, 85, 92],
     dates: ["Jun 1", "Jun 5", "Jun 10", "Jun 15", "Jun 20", "Jun 25", "Jun 27"],
-    description: "High-inference LLM sandbox environment with isolated security guardrails."
+    description: "High power testing area with extra safety controls."
   },
   "GFF-2026-0988": {
     name: "Multi-Agent Inference Cluster",
@@ -60,7 +60,7 @@ const PROJECTS_DATA: Record<string, {
     graphColor: "#F59E0B",
     points: [15, 22, 30, 28, 35, 39, 41],
     dates: ["Jun 1", "Jun 5", "Jun 10", "Jun 15", "Jun 20", "Jun 25", "Jun 27"],
-    description: "Distributed AI agent system executing asynchronous regulatory compliance runs."
+    description: "Smart helpers running safety and quality checks."
   }
 };
 
@@ -89,7 +89,7 @@ export default function ClientBillingPage() {
     try {
       const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") : null;
       if (!token) {
-        setError("AUTHENTICATION TOKENS MISSING. SECURE SESSION EXPIRED.");
+        setError("Please log in again. Your session has expired.");
         return;
       }
       
@@ -101,7 +101,7 @@ export default function ClientBillingPage() {
       });
 
       if (!res.ok) {
-        throw new Error(`Enclave sync failed with status ${res.status}`);
+        throw new Error(`Failed to load bills (status ${res.status})`);
       }
 
       const data = await res.json();
@@ -117,11 +117,11 @@ export default function ClientBillingPage() {
           }
         }
       } else {
-        throw new Error("Handshake returned malformed enclave register.");
+        throw new Error("Received wrong data format from the server.");
       }
     } catch (err: any) {
       console.error("Error fetching billing invoices:", err);
-      setError(err.message || "Decentralized ledger handshake timed out.");
+      setError(err.message || "Could not connect. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -167,15 +167,15 @@ export default function ClientBillingPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/5 pb-4">
         <div>
-          <h2 className="text-xl font-bold text-white tracking-tight font-mono uppercase">Sovereign Spend & Bill Ledger</h2>
-          <p className="text-xs text-white/50 mt-1">Cryptographically certified enterprise commitments, real-time SLA compute quotas, and verified epoch statements.</p>
+          <h2 className="text-xl font-bold text-white tracking-tight font-mono uppercase">Billing & Payments</h2>
+          <p className="text-xs text-white/50 mt-1">View your active plan, check bills, and download monthly statements.</p>
         </div>
         <div className="flex items-center gap-2">
           <Link
             href="/portal/billing/invoices"
             className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.02] px-4 text-xs font-semibold text-white hover:bg-white/[0.06] hover:border-white/20 transition-all"
           >
-            <span>Invoice Ledger</span>
+            <span>Invoices</span>
             <ArrowRight className="w-3.5 h-3.5 text-[#009DFF]" />
           </Link>
         </div>
@@ -187,20 +187,20 @@ export default function ClientBillingPage() {
         <div className="p-5 rounded-xl border border-white/5 bg-[#050505]/40 backdrop-blur-sm space-y-4">
           <div className="flex items-center gap-2 border-b border-white/5 pb-2">
             <CreditCard className="w-4 h-4 text-[#009DFF]" />
-            <h3 className="text-xs font-bold text-white font-mono uppercase">Plan Parameters</h3>
+            <h3 className="text-xs font-bold text-white font-mono uppercase">Plan Settings</h3>
           </div>
           <div className="space-y-2.5 font-mono text-[11px] text-white/70">
             <div className="flex justify-between border-b border-white/[0.02] pb-1.5">
-              <span className="text-white/40">Active Tier:</span>
+              <span className="text-white/40">Active Plan:</span>
               <span className="text-white font-bold">Enterprise Infinite</span>
             </div>
             <div className="flex justify-between border-b border-white/[0.02] pb-1.5">
-              <span className="text-white/40">Compute Quota Limit:</span>
+              <span className="text-white/40">Spend Limit:</span>
               <span className="text-[#009DFF] font-bold">100,000.00 USD</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-white/40">Isolated Sandboxes:</span>
-              <span className="text-white">4 Active Enclaves</span>
+              <span className="text-white/40">Active Projects:</span>
+              <span className="text-white">4 Active Projects</span>
             </div>
           </div>
         </div>
@@ -209,19 +209,19 @@ export default function ClientBillingPage() {
         <div className="p-5 rounded-xl border border-white/5 bg-[#050505]/40 backdrop-blur-sm space-y-4">
           <div className="flex items-center gap-2 border-b border-white/5 pb-2">
             <Briefcase className="w-4 h-4 text-[#00FFC2]" />
-            <h3 className="text-xs font-bold text-white font-mono uppercase">Ledger Summary</h3>
+            <h3 className="text-xs font-bold text-white font-mono uppercase">Billing Summary</h3>
           </div>
           <div className="space-y-2.5 font-mono text-[11px] text-white/70">
             <div className="flex justify-between border-b border-white/[0.02] pb-1.5">
-              <span className="text-white/40">Total Committed:</span>
+              <span className="text-white/40">Total Spend:</span>
               <span className="text-[#009DFF] font-bold">$51,470.00 USD</span>
             </div>
             <div className="flex justify-between border-b border-white/[0.02] pb-1.5">
-              <span className="text-white/40">Settled (Paid):</span>
+              <span className="text-white/40">Paid:</span>
               <span className="text-emerald-400 font-bold">$18,320.00 USD</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-white/40">Pending Clearance:</span>
+              <span className="text-white/40">Due Balance:</span>
               <span className="text-amber-400 font-bold">$33,150.00 USD</span>
             </div>
           </div>
@@ -232,10 +232,10 @@ export default function ClientBillingPage() {
           <div className="space-y-2">
             <div className="flex items-center gap-2 border-b border-white/5 pb-2">
               <ShieldCheck className="w-4 h-4 text-[#00FFC2]" />
-              <h3 className="text-xs font-bold text-white font-mono uppercase">Ledger Integrity</h3>
+              <h3 className="text-xs font-bold text-white font-mono uppercase">Billing Security</h3>
             </div>
             <p className="text-[10px] text-white/50 leading-relaxed font-mono">
-              Invoices are cryptographically co-signed under isolated hardware security. Instant zero-knowledge verification status.
+              All invoices are checked and signed off securely for your safety.
             </p>
           </div>
           <button 
@@ -251,7 +251,7 @@ export default function ClientBillingPage() {
             ) : (
               <ShieldCheck className="w-3.5 h-3.5 text-[#00FFC2]" />
             )}
-            <span>{verifying ? "VERIFYING SEALS..." : "LEDGER COVENANT VERIFIED"}</span>
+            <span>{verifying ? "VERIFYING..." : "BILLING SECURED"}</span>
           </button>
         </div>
       </div>
@@ -262,7 +262,7 @@ export default function ClientBillingPage() {
         {/* Recent Certified Invoices */}
         <div className="lg:col-span-2 p-5 rounded-xl border border-white/5 bg-[#050505]/40 backdrop-blur-sm space-y-4">
           <div className="flex items-center justify-between border-b border-white/5 pb-2">
-            <h3 className="text-xs font-bold text-white font-mono uppercase tracking-wider">Epoch Statements</h3>
+            <h3 className="text-xs font-bold text-white font-mono uppercase tracking-wider">Monthly Bills</h3>
             <Link 
               href="/portal/billing/invoices" 
               className="text-[10px] font-mono text-[#009DFF] hover:underline flex items-center gap-1"
@@ -277,30 +277,30 @@ export default function ClientBillingPage() {
               <div className="flex flex-col items-center justify-center py-12 space-y-4 border border-white/5 bg-white/[0.01] rounded-lg">
                 <RefreshCw className="w-8 h-8 animate-spin text-[#009DFF]" />
                 <div className="text-center">
-                  <p className="text-xs font-mono font-semibold text-white tracking-wider uppercase">DECRYPTING ENCLAVE BILLS...</p>
-                  <p className="text-[10px] text-white/40 font-mono mt-1">Establishing ZK-ledger tunnel to secure nodes</p>
+                  <p className="text-xs font-mono font-semibold text-white tracking-wider uppercase">LOADING YOUR BILLS...</p>
+                  <p className="text-[10px] text-white/40 font-mono mt-1">Please wait a moment...</p>
                 </div>
               </div>
             ) : error ? (
               <div className="flex flex-col items-center justify-center py-12 space-y-4 border border-red-500/10 bg-red-500/[0.01] rounded-lg">
                 <Info className="w-8 h-8 text-red-400" />
                 <div className="text-center">
-                  <p className="text-xs font-mono font-semibold text-red-400 tracking-wider uppercase">SYNC HANDSHAKE FAILED</p>
+                  <p className="text-xs font-mono font-semibold text-red-400 tracking-wider uppercase">COULD NOT LOAD BILLS</p>
                   <p className="text-[10px] text-white/40 font-mono mt-1 max-w-xs">{error}</p>
                 </div>
                 <button 
                   onClick={fetchInvoices}
                   className="px-3 py-1.5 border border-red-500/20 hover:border-red-500/40 bg-red-500/5 text-red-400 font-mono text-[10px] uppercase font-bold rounded cursor-pointer transition-all"
                 >
-                  RE-ESTABLISH SYNCHRONIZATION
+                  RELOAD
                 </button>
               </div>
             ) : invoices.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 space-y-4 border border-white/5 bg-white/[0.01] rounded-lg">
                 <Briefcase className="w-8 h-8 text-white/20" />
                 <div className="text-center">
-                  <p className="text-xs font-mono font-semibold text-white tracking-wider uppercase">NO INVOICES REGISTERED</p>
-                  <p className="text-[10px] text-white/40 font-mono mt-1">This enclave does not have active transaction records.</p>
+                  <p className="text-xs font-mono font-semibold text-white tracking-wider uppercase">NO BILLS FOUND</p>
+                  <p className="text-[10px] text-white/40 font-mono mt-1">You have no bills here yet.</p>
                 </div>
               </div>
             ) : (
@@ -322,7 +322,7 @@ export default function ClientBillingPage() {
                     <div className="flex justify-between items-start">
                       <div>
                         <span className="font-bold text-white block">{inv.invoice_number}</span>
-                        <span className="text-[9.5px] text-white/40 block mt-0.5">{inv.project_name || "Sovereign Cluster Allocation"}</span>
+                        <span className="text-[9.5px] text-white/40 block mt-0.5">{inv.project_name || "Project Billing"}</span>
                       </div>
                       <span className={`px-1.5 py-0.5 rounded text-[8px] font-bold uppercase ${
                         inv.status === "paid" ? "bg-green-500/10 border border-green-500/20 text-green-400" :
@@ -346,7 +346,7 @@ export default function ClientBillingPage() {
                         }}
                         className="text-[#009DFF] hover:underline font-bold"
                       >
-                        Audit Drawer &gt;
+                        {"View Bill Details >"}
                       </button>
                       <button 
                         onClick={(e) => {
@@ -368,24 +368,24 @@ export default function ClientBillingPage() {
         {/* Contact Treasury Card */}
         <div className="p-5 rounded-xl border border-white/5 bg-[#050505]/40 backdrop-blur-sm space-y-4">
           <div className="border-b border-white/5 pb-2">
-            <h3 className="text-xs font-bold text-white font-mono uppercase tracking-wider">Treasury Liaison Desk</h3>
-            <p className="text-[10px] text-white/40 font-mono mt-0.5">Encrypted non-automated wire support.</p>
+            <h3 className="text-xs font-bold text-white font-mono uppercase tracking-wider">Billing Support</h3>
+            <p className="text-[10px] text-white/40 font-mono mt-0.5">Get help with your payments here.</p>
           </div>
 
           <div className="p-4 rounded border border-white/5 bg-black space-y-2 font-mono text-[10.5px]">
             <div>
-              <span className="text-white/30 block text-[9px]">SWIFT ROUTER CODE</span>
-              <span className="text-white font-bold">GFF-AI-TREAS-BER</span>
+              <span className="text-white/30 block text-[9px]">PAYMENT CODE</span>
+              <span className="text-white font-bold">GFF-AI-BILLING</span>
             </div>
             <div>
-              <span className="text-white/30 block text-[9px]">SECURE EMAIL CHANNEL</span>
-              <span className="text-white">treasury@gff.ai</span>
+              <span className="text-white/30 block text-[9px]">SUPPORT EMAIL</span>
+              <span className="text-white">billing@gff.ai</span>
             </div>
           </div>
 
           {inquirySent ? (
             <div className="p-2 text-center rounded border border-green-500/20 bg-green-500/5 text-green-400 font-mono text-[10.5px]">
-              Inquiry registered. GFF desk notified.
+              We got your message! We will reply soon.
             </div>
           ) : (
             <button 
@@ -395,12 +395,12 @@ export default function ClientBillingPage() {
               }}
               className="w-full h-8 bg-white hover:bg-white/90 text-black text-[10.5px] font-bold uppercase rounded transition-all cursor-pointer"
             >
-              Contact GFF Treasury Desk
+              Send Support Message
             </button>
           )}
           
           <p className="text-[9.5px] text-white/30 leading-relaxed font-mono">
-            Always specify invoice ledger references in SWIFT metadata to enable instant enclave matching.
+            Please make sure to mention your invoice number when talking to us.
           </p>
         </div>
       </div>
@@ -412,9 +412,9 @@ export default function ClientBillingPage() {
             <div className="space-y-6">
               <div className="flex justify-between items-start border-b border-white/5 pb-3">
                 <div>
-                  <span className="text-[9px] bg-blue-500/10 border border-blue-500/20 text-[#009DFF] px-1.5 py-0.5 rounded font-mono font-bold uppercase">Statement preview</span>
+                  <span className="text-[9px] bg-blue-500/10 border border-blue-500/20 text-[#009DFF] px-1.5 py-0.5 rounded font-mono font-bold uppercase">Bill Details</span>
                   <h3 className="text-lg font-bold text-white font-mono mt-1">{selInvoice.invoice_number}</h3>
-                  <span className="text-[10px] text-white/40 font-mono block mt-0.5 font-bold">Project: {selInvoice.project_name || "Sovereign Cluster Allocation"}</span>
+                  <span className="text-[10px] text-white/40 font-mono block mt-0.5 font-bold">Project: {selInvoice.project_name || "Project Billing"}</span>
                 </div>
                 <button 
                   onClick={() => setSelInvoice(null)}
@@ -427,7 +427,7 @@ export default function ClientBillingPage() {
               <div className="space-y-4 font-mono text-[11px]">
                 <div className="p-3.5 rounded bg-black border border-white/5 space-y-2">
                   <div className="flex justify-between text-white/40 text-[10px]">
-                    <span>LEDGER CRYPTO SEAL</span>
+                    <span>SECURITY CODE</span>
                     <button onClick={() => handleCopy(selInvoice.hash, "sel")} className="text-[#009DFF] hover:underline font-bold">COPY</button>
                   </div>
                   <div className="text-[9px] text-white/80 break-all select-all leading-relaxed bg-white/[0.02] p-2 rounded">
@@ -436,10 +436,10 @@ export default function ClientBillingPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <h4 className="text-[10.5px] font-bold text-white uppercase border-b border-white/5 pb-1">Resource Cost Allocation</h4>
+                  <h4 className="text-[10.5px] font-bold text-white uppercase border-b border-white/5 pb-1">Price Details</h4>
                   <div className="space-y-1.5 text-white/70">
                     <div className="flex justify-between">
-                      <span>{selInvoice.category} SLA Allocation</span>
+                      <span>{selInvoice.category} Price</span>
                       <span className="text-white font-bold">
                         {typeof selInvoice.amount === "number" 
                           ? selInvoice.amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " " + selInvoice.currency 
@@ -451,11 +451,11 @@ export default function ClientBillingPage() {
 
                 <div className="p-3 rounded border border-white/[0.03] bg-white/[0.01] space-y-2 text-[10.5px] text-white/50">
                   <div className="flex justify-between">
-                    <span>Invoice Timestamp:</span>
+                    <span>Invoice Date:</span>
                     <span className="text-white">{selInvoice.issue_date}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Epoch Due Date:</span>
+                    <span>Due Date:</span>
                     <span className="text-white">{selInvoice.due_date}</span>
                   </div>
                 </div>
@@ -468,7 +468,7 @@ export default function ClientBillingPage() {
                 className="w-full h-9 rounded bg-white hover:bg-white/95 text-black font-semibold text-[11px] uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer"
               >
                 <Download className="w-3.5 h-3.5" />
-                <span>Download Certified PDF receipt</span>
+                <span>Download Bill PDF</span>
               </button>
               <button 
                 onClick={() => {
@@ -478,7 +478,7 @@ export default function ClientBillingPage() {
                 }}
                 className="w-full h-9 rounded border border-white/10 hover:border-white/20 bg-white/[0.01] text-white font-semibold text-[11px] uppercase tracking-wider transition-all cursor-pointer"
               >
-                Contact Finance Desk
+                Contact Support Team
               </button>
             </div>
           </div>

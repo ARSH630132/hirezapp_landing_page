@@ -32,7 +32,7 @@ export async function PATCH(req: Request, { params }: { params: any }) {
     const key = id.toLowerCase();
     const dbItems = await dynamoDbListPortalItems("SUPPORT");
     let ticket = dbItems.find(t => t.id.toLowerCase() === key);
-    let isDynamo = !!ticket;
+    const isDynamo = !!ticket;
 
     if (!ticket) {
       ticket = API_MOCK_SUPPORT_TICKETS[key] || Object.values(API_MOCK_SUPPORT_TICKETS).find((t: any) => t.id.toLowerCase() === key);

@@ -63,9 +63,9 @@ export default function AdminBillingPage() {
     if (!cId) return [];
     return dbProjects.filter(p => p.client_id === cId).map(p => ({
       id: p.id,
-      name: p.name,
+      name: p.name || "",
       clientAccountId: p.client_id,
-      tag: p.name.substring(0, 3).toUpperCase()
+      tag: (p.name || "").substring(0, 3).toUpperCase()
     }));
   }, [cId, dbProjects]);
 
@@ -106,7 +106,7 @@ export default function AdminBillingPage() {
             projectId: i.project_id,
             projectName: i.project_name || i.project_id || "Secure Enclave",
             hash: i.hash,
-            billingMonth: i.issue_date.substring(0, 7)
+            billingMonth: (i.issue_date || "").substring(0, 7)
           }));
           setInvoices(mappedInvoices);
 
@@ -417,7 +417,7 @@ export default function AdminBillingPage() {
         >
           <option value="all">Sovereign Client: All</option>
           {clientsList.map(c => (
-            <option key={c.id} value={c.id}>{c.name.replace(" [Preview Client]", "")}</option>
+            <option key={c.id || c.client_id} value={c.id || c.client_id}>{(c.name || "").replace(" [Preview Client]", "")}</option>
           ))}
         </select>
         <select 
@@ -473,7 +473,7 @@ export default function AdminBillingPage() {
                     className="hover:bg-white/[0.02] transition-all cursor-pointer group"
                   >
                     <td className="py-3.5 px-5 font-bold text-[#009DFF] font-mono">{i.id}</td>
-                    <td className="py-3.5 px-5 text-zinc-200 font-semibold">{i.clientName.replace(" [Preview Client]", "")}</td>
+                    <td className="py-3.5 px-5 text-zinc-200 font-semibold">{(i.clientName || "").replace(" [Preview Client]", "")}</td>
                     <td className="py-3.5 px-5 text-zinc-400">{i.projectName}</td>
                     <td className="py-3.5 px-5 text-zinc-500 text-[9.5px] uppercase tracking-wider font-mono">{i.category}</td>
                     <td className="py-3.5 px-5 text-right font-bold text-white font-mono">${i.amount.toLocaleString()}</td>
@@ -488,7 +488,7 @@ export default function AdminBillingPage() {
                         {i.status}
                       </span>
                     </td>
-                    <td className="py-3.5 px-5 text-center text-zinc-500 text-[10px] font-mono">{i.hash.slice(0, 10)}...</td>
+                    <td className="py-3.5 px-5 text-center text-zinc-500 text-[10px] font-mono">{(i.hash || "").slice(0, 10)}...</td>
                     <td className="py-3.5 px-5 text-center text-white/20 group-hover:text-[#009DFF] transition-colors">
                       <ChevronRight className="w-4 h-4 translate-x-0 group-hover:translate-x-0.5 transition-transform" />
                     </td>
@@ -645,7 +645,7 @@ export default function AdminBillingPage() {
                     >
                       <option value="">-- Choose Client --</option>
                       {clientsList.map(c => (
-                        <option key={c.id} value={c.id}>{c.name.replace(" [Preview Client]", "")}</option>
+                        <option key={c.id || c.client_id} value={c.id || c.client_id}>{(c.name || "").replace(" [Preview Client]", "")}</option>
                       ))}
                     </select>
                   </div>

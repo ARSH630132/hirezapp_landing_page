@@ -44,8 +44,8 @@ export default function ClientSupportPage() {
   const projectsList = useMemo(() => {
     return dbProjects.map(p => ({
       id: p.id,
-      name: p.name,
-      tag: p.name.substring(0, 3).toUpperCase()
+      name: p.name || "",
+      tag: (p.name || "").substring(0, 3).toUpperCase()
     }));
   }, [dbProjects]);
 
@@ -125,8 +125,8 @@ export default function ClientSupportPage() {
     if (!subject.trim() || !desc.trim()) return;
     setIsSubmittingForm(true);
     setSubmittingLogs([
-      "Negotiating session keys inside Intel SGX memory page...",
-      "Binding secure hardware-signed enclave session (Clearance Level III)..."
+      "Connecting to our support center...",
+      "Setting up a safe connection..."
     ]);
 
     try {
@@ -150,7 +150,7 @@ export default function ClientSupportPage() {
       if (data.success && data.ticket) {
         const normalized = normalizeTicket(data.ticket);
         setTickets(prev => [normalized, ...prev]);
-        setToastMsg(`Sovereign Tunnel ${normalized.id} initialized successfully.`);
+        setToastMsg(`Support Ticket ${normalized.id} created successfully.`);
         setShowToast(true);
         setTimeout(() => setShowToast(false), 4000);
         setSelectedTicketId(normalized.id);
@@ -191,38 +191,38 @@ export default function ClientSupportPage() {
     setProtocolRunning(idx);
     if (idx === 0) {
       setProtocolLogs([
-        "[INITIALIZING] Establishing isolated loop communication to SGX Host Node 3...",
-        "[COMPILER] Performing memory integrity validation checksum..."
+        "[INITIALIZING] Connecting to local support servers...",
+        "[COMPILER] Performing basic system integrity check..."
       ]);
       setTimeout(() => {
-        setProtocolLogs(prev => [...prev, "[OK] Found hardware enclave signature (Intel-Xeon-v4)", "[OK] Active session keys verified under block 19280."]);
+        setProtocolLogs(prev => [...prev, "[OK] Server connection is stable", "[OK] Session verified successfully."]);
       }, 700);
       setTimeout(() => {
-        setProtocolLogs(prev => [...prev, "[OK] Attestation signature: 0x98FF...3FAA verified.", "[SUCCESS] Secure attestation handshake completed successfully!"]);
+        setProtocolLogs(prev => [...prev, "[OK] Security check passed.", "[SUCCESS] Secure connection completed successfully!"]);
         setProtocolRunning(null);
       }, 1600);
     } else if (idx === 1) {
       setProtocolLogs([
-        "[INITIALIZING] Fetching Enclave Page Cache (EPC) allocation metrics...",
-        "[ALLOCATOR] Discovering active thread partitions..."
+        "[INITIALIZING] Checking memory usage metrics...",
+        "[ALLOCATOR] Locating active system slots..."
       ]);
       setTimeout(() => {
-        setProtocolLogs(prev => [...prev, "[WARNING] Found 14% thread fragmentation on Node 2", "[REALLOCATING] Compacting secure RAM sectors..."]);
+        setProtocolLogs(prev => [...prev, "[WARNING] System memory usage is slightly high", "[OPTIMIZING] Clearing up server cache memory..."]);
       }, 700);
       setTimeout(() => {
-        setProtocolLogs(prev => [...prev, "[OK] Recovered 256MB SGX protected memory cache.", "[SUCCESS] EPC memory allocation realigned and optimized!"]);
+        setProtocolLogs(prev => [...prev, "[OK] Recovered system memory cache.", "[SUCCESS] Memory allocation updated and optimized!"]);
         setProtocolRunning(null);
       }, 1600);
     } else {
       setProtocolLogs([
-        "[INITIALIZING] Auditing operational access clearance credentials...",
-        "[AUDITOR] Compiling NIST AI RMF continuous compliance trails..."
+        "[INITIALIZING] Checking user access settings...",
+        "[AUDITOR] Checking security and rule settings..."
       ]);
       setTimeout(() => {
-        setProtocolLogs(prev => [...prev, "[OK] Integrity trail matched against SGX hardware seal", "[ROTATING] Rolling over administration HSM credentials..."]);
+        setProtocolLogs(prev => [...prev, "[OK] Security checks match.", "[ROTATING] Updating secure system login keys..."]);
       }, 700);
       setTimeout(() => {
-        setProtocolLogs(prev => [...prev, "[OK] Signed key rollover commit block hash: 0xABCD9912", "[SUCCESS] Compliant logging structures and HSM keys rotated!"]);
+        setProtocolLogs(prev => [...prev, "[OK] Rollover completed.", "[SUCCESS] Security keys updated successfully!"]);
         setProtocolRunning(null);
       }, 1600);
     }
@@ -283,19 +283,19 @@ export default function ClientSupportPage() {
         <div>
           <span className="text-[10px] font-mono font-bold tracking-widest text-[#009DFF] bg-[#009DFF]/5 border border-[#009DFF]/15 px-2.5 py-0.5 rounded uppercase flex items-center gap-1.5 w-fit">
             <Radio className="w-3 h-3 text-[#009DFF] animate-pulse" />
-            <span>SOVEREIGN SECURITY TUNNEL ACTIVE</span>
+            <span>ONLINE & READY TO HELP</span>
           </span>
           <h2 className="text-2xl md:text-3xl font-extrabold font-mono uppercase mt-1.5 tracking-tight text-white flex items-center gap-2">
-            <span>Client Support Center</span>
+            <span>Help & Support</span>
           </h2>
           <p className="text-xs text-white/50 mt-1 max-w-2xl leading-relaxed">
-            Hardware-isolated communications corridor with on-call architects. Securely exchange credentials, configuration trace logs, and enclave diagnostics under active SLA protection.
+            Need help? Ask us a question, chat with our support team, or use our self-help tools below.
           </p>
         </div>
         {selectedTicketId && (
           <button onClick={() => setSelectedTicketId(null)} className="h-10 px-5 rounded-lg border border-white/10 hover:border-white/20 bg-white/[0.01] hover:bg-white/[0.03] text-[11px] font-mono font-bold uppercase text-white transition-all flex items-center gap-2 cursor-pointer font-sans shadow-md">
             <Plus className="w-4 h-4 text-[#009DFF]" />
-            <span>Open New Support Wire</span>
+            <span>Ask for Help</span>
           </button>
         )}
       </div>
@@ -303,10 +303,10 @@ export default function ClientSupportPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 font-mono text-left">
         {[
-          { l: "Active Tunnels", v: tickets.filter(t => t.status !== "resolved").length, d: "Pending resolution" },
-          { l: "SLA Response", v: "100%", d: "< 15m compliance" },
-          { l: "Trust Clearance", v: "LEVEL IV", d: "Hardware isolated" },
-          { l: "Archived Wires", v: tickets.filter(t => t.status === "resolved").length, d: "Cryptographically sealed" }
+          { l: "Open Tickets", v: tickets.filter(t => t.status !== "resolved").length, d: "Waiting for replies" },
+          { l: "Response Speed", v: "100%", d: "Under 15 minutes" },
+          { l: "Security Level", v: "Maximum", d: "Fully Protected" },
+          { l: "Solved Tickets", v: tickets.filter(t => t.status === "resolved").length, d: "Closed and saved" }
         ].map((s, i) => (
           <div key={i} className="p-4 rounded-xl border border-white/5 bg-[#050505]/40 backdrop-blur-sm">
             <span className="text-[9.5px] text-white/35 uppercase">{s.l}</span>
@@ -321,7 +321,7 @@ export default function ClientSupportPage() {
           <div className="p-4 rounded-xl border border-white/5 bg-[#050505]/30 backdrop-blur-sm space-y-3 font-mono">
             <div className="relative">
               <Search className="absolute left-3 top-2.5 h-4 w-4 text-white/30" />
-              <input type="text" placeholder="Search secure tickets by subject..." value={search} onChange={e => setSearch(e.target.value)} className="w-full h-10 pl-9 pr-4 rounded-lg border border-white/10 bg-black/40 text-white text-[12px] outline-none focus:border-[#009DFF]/30" />
+              <input type="text" placeholder="Search your support tickets..." value={search} onChange={e => setSearch(e.target.value)} className="w-full h-10 pl-9 pr-4 rounded-lg border border-white/10 bg-black/40 text-white text-[12px] outline-none focus:border-[#009DFF]/30" />
             </div>
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-[9px]">
@@ -363,7 +363,7 @@ export default function ClientSupportPage() {
               <div className="p-6 rounded-xl border border-red-500/10 bg-red-500/[0.02] text-center space-y-4 font-mono">
                 <ShieldAlert className="w-8 h-8 text-red-400 mx-auto animate-pulse" />
                 <div className="space-y-1">
-                  <h4 className="text-xs font-bold text-red-400 uppercase tracking-wider font-mono">SECURE TUNNEL HANDSHAKE FAILED</h4>
+                  <h4 className="text-xs font-bold text-red-400 uppercase tracking-wider font-mono">COULD NOT LOAD TICKETS</h4>
                   <p className="text-[10px] text-white/45 leading-relaxed font-mono">{error}</p>
                 </div>
                 <button 
@@ -371,18 +371,18 @@ export default function ClientSupportPage() {
                   className="px-4 h-8 rounded border border-red-500/20 bg-red-500/5 hover:bg-red-500/10 text-[9.5px] text-red-400 uppercase font-bold transition-all cursor-pointer flex items-center gap-1.5 mx-auto font-mono"
                 >
                   <RefreshCw className="w-3 h-3" />
-                  <span>Retry Attestation</span>
+                  <span>RELOAD</span>
                 </button>
               </div>
             ) : filtered.length === 0 ? (
               <div className="p-10 rounded-xl border border-white/5 bg-[#050505]/20 text-center space-y-3.5 font-mono">
                 <ShieldAlert className="w-8 h-8 text-white/20 mx-auto" />
-                <p className="text-xs text-white/30 font-bold">No active wires match the current security filters.</p>
+                <p className="text-xs text-white/30 font-bold">No support tickets found with these filters.</p>
                 <button 
                   onClick={() => { setSearch(""); setStatusFilter("ALL"); setCatFilter("ALL"); setPriFilter("ALL"); setProjFilter("ALL"); }} 
                   className="px-4 h-8 rounded border border-white/10 hover:bg-white/5 text-[9.5px] text-[#009DFF] uppercase font-bold transition-all cursor-pointer"
                 >
-                  Reset Parameters
+                  Reset Filters
                 </button>
               </div>
             ) : (
@@ -440,30 +440,30 @@ export default function ClientSupportPage() {
             <div className="flex items-center gap-2 border-b border-white/5 pb-2.5">
               <Terminal className="w-4.5 h-4.5 text-[#009DFF]" />
               <div className="text-left font-mono">
-                <h3 className="text-[11.5px] font-extrabold text-white uppercase tracking-wider">Diagnostic Protocols</h3>
-                <p className="text-[9px] text-white/40 mt-0.5 uppercase tracking-tight">Automated diagnostics inside localized sandbox contexts.</p>
+                <h3 className="text-[11.5px] font-extrabold text-white uppercase tracking-wider">Self-Help Tools</h3>
+                <p className="text-[9px] text-white/40 mt-0.5 uppercase tracking-tight">Quick buttons to check if things are working.</p>
               </div>
             </div>
 
             <div className="space-y-2">
               {[
                 {
-                  id: "PROTOCOL-ALPHA",
-                  title: "HSM KEY RE-ATTESTATION",
-                  desc: "Forces key validation request to prove isolated memory attestation inside the SGX page cache without exposing core state.",
-                  btn: "Verify Handshake"
+                  id: "TOOL-ALPHA",
+                  title: "CHECK CONNECTION",
+                  desc: "Test if your computer is safely connected to our servers.",
+                  btn: "Test Connection"
                 },
                 {
-                  id: "PROTOCOL-BETA",
-                  title: "SGX EPC CACHE COMPACTION",
-                  desc: "Compacts thread load fragmentation inside the EPC memory buffer to resolve delayed HSM key rotational delays.",
-                  btn: "Compact Cache"
+                  id: "TOOL-BETA",
+                  title: "CLEAN MEMORY",
+                  desc: "Cleans up temporary files to make the connection run faster.",
+                  btn: "Clean Up Memory"
                 },
                 {
-                  id: "PROTOCOL-GAMMA",
-                  title: "NIST RMF COMPLIANCE ROLLOVER",
-                  desc: "Rotates administrative credentials inside secure hardware memory and re-evaluates logging structures.",
-                  btn: "Rotate HSM Credentials"
+                  id: "TOOL-GAMMA",
+                  title: "UPDATE LOGIN KEYS",
+                  desc: "Updates security login keys for your safety.",
+                  btn: "Update Login Keys"
                 }
               ].map((p, idx) => {
                 const isOpen = activeAccordion === idx;
@@ -510,7 +510,7 @@ export default function ClientSupportPage() {
                           {(isThisRunning || protocolLogs.length > 0 && activeAccordion === idx) && (
                             <div className="p-2.5 rounded bg-black/80 border border-white/5 font-mono text-[8.5px] text-left leading-normal space-y-1 select-text">
                               <div className="flex items-center justify-between border-b border-white/5 pb-1 mb-1 text-white/30">
-                                <span className="flex items-center gap-1 uppercase tracking-widest"><Terminal className="w-2.5 h-2.5" /> Terminal Logs</span>
+                                <span className="flex items-center gap-1 uppercase tracking-widest"><Terminal className="w-2.5 h-2.5" /> Activity Logs</span>
                                 {isThisRunning && <span className="text-[#00FFC2] animate-pulse uppercase text-[8px] font-bold">ONLINE</span>}
                               </div>
                               <div className="max-h-[100px] overflow-y-auto space-y-1">
@@ -553,7 +553,7 @@ export default function ClientSupportPage() {
                     </button>
                     <span className="text-[9px] text-[#009DFF] bg-[#009DFF]/10 border border-[#009DFF]/20 px-2 py-0.5 rounded font-bold uppercase tracking-wider flex items-center gap-1 select-none">
                       <Lock className="w-2.5 h-2.5" />
-                      SECURE WIRE
+                      MESSAGE TICKET
                     </span>
                     <span className="text-[9px] text-white/40 font-bold select-text">{activeTicket.id}</span>
                   </div>
@@ -565,28 +565,28 @@ export default function ClientSupportPage() {
               <div className="flex-1 overflow-y-auto p-4 space-y-4">
                 <div className="grid grid-cols-2 gap-2.5 text-[9px]">
                   <div className="p-2.5 rounded-lg border border-white/5 bg-black/40">
-                    <span className="text-white/30 font-bold block uppercase text-[8px] tracking-wider select-none">Enclave Attestation</span>
+                    <span className="text-white/30 font-bold block uppercase text-[8px] tracking-wider select-none">Safety Status</span>
                     <div className="flex items-center gap-1.5 text-emerald-400 font-bold mt-1.5 select-none">
                       <Lock className="w-3.5 h-3.5 animate-pulse" />
-                      <span>Intel SGX Signed Enclave</span>
+                      <span>Fully Secured</span>
                     </div>
                   </div>
                   <div className="p-2.5 rounded-lg border border-white/5 bg-black/40">
-                    <span className="text-white/30 font-bold block uppercase text-[8px] tracking-wider select-none">SLA Response Guarantee</span>
+                    <span className="text-white/30 font-bold block uppercase text-[8px] tracking-wider select-none">When will we reply?</span>
                     <div className="flex items-center gap-1.5 text-amber-400 font-bold mt-1.5 select-none">
                       <Clock className="w-3.5 h-3.5 animate-pulse" />
-                      <span>{activeTicket.priority === "critical" ? "P1 Response (<15m)" : "P2 Response (<1h)"}</span>
+                      <span>{activeTicket.priority === "critical" ? "Under 15 minutes" : "Under 1 hour"}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Exception trace log block */}
                 <div className="space-y-1.5 text-left">
-                  <span className="text-[8px] font-bold tracking-wider text-white/30 block uppercase select-none">Diagnostics Trace Dump</span>
+                  <span className="text-[8px] font-bold tracking-wider text-white/30 block uppercase select-none">Error Details</span>
                   <div className="p-3.5 rounded-lg border border-white/5 bg-black/60 text-[10.5px] text-white/80 leading-relaxed max-h-[120px] overflow-y-auto select-text">
                     <div className="flex items-center gap-1.5 text-[#009DFF] border-b border-white/5 pb-1.5 mb-2 select-none">
                       <Terminal className="w-3.5 h-3.5" />
-                      <span className="font-bold tracking-wider uppercase text-[8.5px]">LOCAL EXCEPTION TRACE DUMP</span>
+                      <span className="font-bold tracking-wider uppercase text-[8.5px]">ERROR DETAILS</span>
                     </div>
                     <pre className="font-mono text-left leading-relaxed break-all whitespace-pre-wrap">{activeTicket.desc}</pre>
                   </div>
@@ -594,16 +594,16 @@ export default function ClientSupportPage() {
 
                 {/* Handshake conversation logs */}
                 <div className="space-y-3 pt-1 text-left">
-                  <span className="text-[8px] font-bold tracking-wider text-white/30 block uppercase select-none">Secure Handshake Logs</span>
+                  <span className="text-[8px] font-bold tracking-wider text-white/30 block uppercase select-none">Chat Messages</span>
                   <div className="space-y-3">
                     
                     <div className="p-3 rounded-lg border border-white/5 bg-white/[0.01] text-[10.5px] space-y-1.5 max-w-[90%]">
                       <div className="flex items-center gap-1.5 text-[#00FFC2] font-mono text-[9px] font-bold select-none">
                         <Server className="w-3.5 h-3.5" />
-                        <span>SYSTEM PORTAL GATEWAY</span>
+                        <span>SYSTEM BOT</span>
                       </div>
                       <p className="text-white/70 leading-relaxed select-text font-mono">
-                        Secure handshake verified at epoch {new Date(activeTicket.createdAt).getTime()}. Handshake payload isolated within active memory guardrails.
+                        Safe connection established. You can now chat with our team here.
                       </p>
                     </div>
 
@@ -631,7 +631,7 @@ export default function ClientSupportPage() {
                     {isReplying && (
                       <div className="p-3 rounded-lg border border-white/5 text-[10px] text-white/30 flex items-center gap-2 animate-pulse max-w-[80%] select-none font-mono">
                         <RefreshCw className="w-3.5 h-3.5 animate-spin text-emerald-400" />
-                        <span>On-call systems engineer decoding secure telemetry stream...</span>
+                        <span>Our support agent is reading your message...</span>
                       </div>
                     )}
                     <div ref={chatEndRef} />
@@ -645,7 +645,7 @@ export default function ClientSupportPage() {
                   <textarea
                     required
                     disabled={isReplying}
-                    placeholder="Type secured diagnostics reply and press Enter..."
+                    placeholder="Type your reply here..."
                     value={replyText}
                     onChange={e => setReplyText(e.target.value)}
                     onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSendReply(e); } }}
@@ -673,7 +673,7 @@ export default function ClientSupportPage() {
                     rightTab === "intake" ? "border-[#009DFF] text-white bg-white/[0.01]" : "border-transparent text-white/40"
                   }`}
                 >
-                  Secured Intake Wire
+                  Open a Ticket
                 </button>
                 <button 
                   onClick={() => setRightTab("topology")} 
@@ -681,7 +681,7 @@ export default function ClientSupportPage() {
                     rightTab === "topology" ? "border-[#00FFC2] text-white bg-white/[0.01]" : "border-transparent text-white/40"
                   }`}
                 >
-                  Tunnel Security Gateway
+                  System Status Map
                 </button>
               </div>
 
@@ -692,13 +692,13 @@ export default function ClientSupportPage() {
                     <div className="flex-1 flex flex-col items-center justify-center text-center p-8 space-y-4">
                       <RefreshCw className="w-10 h-10 text-[#009DFF] animate-spin" />
                       <div className="space-y-1.5 font-mono">
-                        <h4 className="text-xs font-bold text-white uppercase tracking-wider">CREATING SECURE HANDSHAKE...</h4>
-                        <p className="text-[9.5px] text-white/40">Deploying Intel SGX Isolated Tunnel</p>
+                        <h4 className="text-xs font-bold text-white uppercase tracking-wider">CREATING TICKET...</h4>
+                        <p className="text-[9.5px] text-white/40">Connecting to secure support system</p>
                       </div>
 
                       <div className="w-full max-w-sm p-3 bg-black/80 rounded border border-white/5 text-[9px] text-left leading-normal font-mono space-y-1 text-emerald-400 select-text">
                         {submittingLogs.map((log, idx) => (
-                          <div key={idx}>&gt; {log}</div>
+                          <div key={idx}> {log}</div>
                         ))}
                       </div>
                     </div>
@@ -708,17 +708,17 @@ export default function ClientSupportPage() {
                         <div className="flex items-center gap-2 border-b border-white/5 pb-3 select-none">
                           <MessageSquare className="w-4 h-4 text-[#009DFF]" />
                           <div>
-                            <h3 className="text-[12px] font-bold text-white uppercase tracking-wider">Initialize Support Wire</h3>
-                            <p className="text-[9px] text-white/40 mt-0.5 uppercase tracking-tight">Route real-time diagnostics securely to GFF systems triage.</p>
+                            <h3 className="text-[12px] font-bold text-white uppercase tracking-wider">Open a Support Ticket</h3>
+                            <p className="text-[9px] text-white/40 mt-0.5 uppercase tracking-tight">Send a message to our support team to get help quickly.</p>
                           </div>
                         </div>
 
                         <form onSubmit={handleCreate} className="space-y-3.5 text-[10px]">
                           <div className="space-y-1.5">
-                            <label className="text-white/45 uppercase tracking-wider font-extrabold block">Summary Subject</label>
+                            <label className="text-white/45 uppercase tracking-wider font-extrabold block">Subject</label>
                             <input
                               required
-                              placeholder="Briefly describe system issue..."
+                              placeholder="Describe your issue..."
                               value={subject}
                               onChange={e => setSubject(e.target.value)}
                               className="w-full h-10 rounded-lg border border-white/10 bg-black/50 px-3.5 text-white text-[11px] outline-none focus:border-[#009DFF]/35 transition-all font-mono"
@@ -741,31 +741,31 @@ export default function ClientSupportPage() {
                             </div>
 
                             <div className="space-y-1.5">
-                              <label className="text-white/45 uppercase tracking-wider font-extrabold block">Priority SLA</label>
+                              <label className="text-white/45 uppercase tracking-wider font-extrabold block">Priority</label>
                               <div className="relative">
                                 <select
                                   value={priority}
                                   onChange={e => setPriority(e.target.value as any)}
                                   className="w-full h-9 rounded-lg border border-white/10 bg-black/50 px-2.5 text-white outline-none cursor-pointer font-bold text-[10px] transition-all font-mono appearance-none hover:bg-black/70 focus:border-[#009DFF]/35"
                                 >
-                                  <option value="critical" className="bg-[#050505] text-red-400 font-mono">CRITICAL (15m response)</option>
-                                  <option value="high" className="bg-[#050505] text-amber-400 font-mono">HIGH (1h response)</option>
-                                  <option value="medium" className="bg-[#050505] text-blue-400 font-mono">MEDIUM (4h response)</option>
-                                  <option value="low" className="bg-[#050505] text-white/50 font-mono">LOW (12h response)</option>
+                                  <option value="critical" className="bg-[#050505] text-red-400 font-mono">CRITICAL (15 mins response)</option>
+                                  <option value="high" className="bg-[#050505] text-amber-400 font-mono">HIGH (1 hour response)</option>
+                                  <option value="medium" className="bg-[#050505] text-blue-400 font-mono">MEDIUM (4 hours response)</option>
+                                  <option value="low" className="bg-[#050505] text-white/50 font-mono">LOW (12 hours response)</option>
                                 </select>
                                 <ChevronDown className="absolute right-2 top-3 h-3.5 w-3.5 text-white/30 pointer-events-none" />
                               </div>
                             </div>
                           </div>
                           <div className="space-y-1.5">
-                            <label className="text-white/45 uppercase tracking-wider font-extrabold block">Linked Sandbox Project</label>
+                            <label className="text-white/45 uppercase tracking-wider font-extrabold block">Associated Project</label>
                             <div className="relative">
                               <select
                                 value={project}
                                 onChange={e => setProject(e.target.value)}
                                 className="w-full h-9 rounded-lg border border-white/10 bg-black/50 px-2.5 text-white outline-none cursor-pointer text-[10px] transition-all font-mono appearance-none hover:bg-black/70 focus:border-[#009DFF]/35"
                               >
-                                <option value="none" className="bg-[#050505] text-white/45">NO ATTACHED ARCHITECTURE (GENERAL SUPPORT)</option>
+                                <option value="none" className="bg-[#050505] text-white/45">NO PROJECT (GENERAL SUPPORT)</option>
                                 {projectsList.map(p => <option key={p.id} value={p.id} className="bg-[#050505] text-white font-mono">{p.name.toUpperCase()} ({p.tag})</option>)}
                               </select>
                               <ChevronDown className="absolute right-2 top-3 h-3.5 w-3.5 text-white/30 pointer-events-none" />
@@ -773,10 +773,10 @@ export default function ClientSupportPage() {
                           </div>
 
                           <div className="space-y-1.5">
-                            <label className="text-white/45 uppercase tracking-wider font-extrabold block font-mono">Telemetry logs / Diagnostics report</label>
+                            <label className="text-white/45 uppercase tracking-wider font-extrabold block font-mono">Description / Message Details</label>
                             <textarea
                               required
-                              placeholder="Provide crash logs, node configurations, replication delays, CPU telemetry or specific sandbox anomalies..."
+                              placeholder="Provide as much detail as possible to help us resolve your issue quickly..."
                               value={desc}
                               onChange={e => setDesc(e.target.value)}
                               className="w-full h-24 rounded-lg border border-white/10 bg-black/50 p-3 text-white text-[11px] outline-none resize-none leading-relaxed transition-all focus:border-[#009DFF]/35 font-mono"
@@ -788,7 +788,7 @@ export default function ClientSupportPage() {
                             className="w-full h-10 rounded-lg bg-white hover:bg-white/90 text-black font-extrabold uppercase transition-all cursor-pointer flex items-center justify-center gap-2 select-none text-[10.5px] font-sans tracking-wider"
                           >
                             <Lock className="w-4 h-4 text-black" />
-                            <span>Establish Sovereign Support Wire</span>
+                            <span>Submit Support Ticket</span>
                           </button>
                         </form>
                       </div>
@@ -801,8 +801,8 @@ export default function ClientSupportPage() {
               {rightTab === "topology" && (
                 <div className="p-4 flex-1 flex flex-col justify-between space-y-3 text-[9.5px]">
                   <div className="space-y-0.5 select-none border-b border-white/5 pb-1.5 text-left font-mono">
-                    <h3 className="text-[11.5px] font-bold text-white uppercase flex items-center gap-1.5"><Shield className="w-4 h-4 text-[#00FFC2]" />Zero-Trust Topology</h3>
-                    <p className="text-white/40 uppercase tracking-tight text-[8px]">Click any node to audit cryptographic enclave telemetry.</p>
+                    <h3 className="text-[11.5px] font-bold text-white uppercase flex items-center gap-1.5"><Shield className="w-4 h-4 text-[#00FFC2]" />System Connection Flow</h3>
+                    <p className="text-white/40 uppercase tracking-tight text-[8px]">Click any node to check its status.</p>
                   </div>
                   
                   <div className="flex-1 flex items-center justify-center bg-black/40 border border-white/5 rounded-xl p-2.5 min-h-[160px]">
@@ -832,18 +832,18 @@ export default function ClientSupportPage() {
                   <div className="p-3 bg-black/50 rounded-xl border border-white/5 text-left font-mono">
                     {selectedSvgNode === "client" ? (
                       <div className="space-y-1">
-                        <span className="text-white/30 block uppercase font-bold text-[7.5px]">CLIENT TERMINAL ALPHA</span>
-                        <p className="text-white/85"><span className="text-white/40">Operator:</span> Alexander Mercer • <span className="text-white/40">VPN:</span> 10.144.12.89 • <span className="text-emerald-400 font-bold">SGX Certified</span></p>
+                        <span className="text-white/30 block uppercase font-bold text-[7.5px]">YOUR COMPUTER</span>
+                        <p className="text-white/85"><span className="text-white/40">User:</span> Alexander Mercer • <span className="text-white/40">IP Address:</span> 10.144.12.89 • <span className="text-emerald-400 font-bold">Safely Connected</span></p>
                       </div>
                     ) : selectedSvgNode === "shield" ? (
                       <div className="space-y-1">
-                        <span className="text-white/30 block uppercase font-bold text-[7.5px]">GFF DEEP SHIELD PROXY</span>
-                        <p className="text-white/85"><span className="text-white/40">Standard:</span> NIST Compliant • <span className="text-white/40">Seals:</span> AES-256-GCM • <span className="text-[#00FFC2] font-bold">Isolated Memory</span></p>
+                        <span className="text-white/30 block uppercase font-bold text-[7.5px]">SECURITY BARRIER</span>
+                        <p className="text-white/85"><span className="text-white/40">Standard:</span> High Protection • <span className="text-white/40">Status:</span> Fully Protected • <span className="text-[#00FFC2] font-bold">Secure Memory</span></p>
                       </div>
                     ) : (
                       <div className="space-y-1">
-                        <span className="text-white/30 block uppercase font-bold text-[7.5px]">SENTINEL TRIAGE CORE</span>
-                        <p className="text-white/85"><span className="text-white/40">Architect:</span> Dr. Sarah Vance • <span className="text-white/40">SLA:</span> Response &lt;15m • <span className="text-emerald-400 font-bold">Sentinel Active</span></p>
+                        <span className="text-white/30 block uppercase font-bold text-[7.5px]">SUPPORT CENTER</span>
+                        <p className="text-white/85"><span className="text-white/40">Manager:</span> Dr. Sarah Vance • <span className="text-white/40">Response Time:</span> Under 15 minutes • <span className="text-emerald-400 font-bold">Support Agent Active</span></p>
                       </div>
                     )}
                   </div>

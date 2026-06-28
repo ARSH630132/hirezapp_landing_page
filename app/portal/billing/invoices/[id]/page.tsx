@@ -27,7 +27,7 @@ export default function ClientInvoiceDetailPage() {
     try {
       const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") : null;
       if (!token) {
-        setError("AUTHENTICATION TOKENS MISSING. SECURE SESSION EXPIRED.");
+        setError("Please log in again. Your session has expired.");
         return;
       }
       const res = await fetch(`/api/v1/invoices/${id}`, {
@@ -37,20 +37,20 @@ export default function ClientInvoiceDetailPage() {
         }
       });
       if (res.status === 404) {
-        throw new Error("Invoice statement not found in enclave registry.");
+        throw new Error("We could not find this invoice in our system.");
       }
       if (!res.ok) {
-        throw new Error(`Enclave sync failed with status ${res.status}`);
+        throw new Error(`Failed to load invoice details (status ${res.status})`);
       }
       const data = await res.json();
       if (data.success && data.invoice) {
         setInvoice(data.invoice);
       } else {
-        throw new Error("Handshake returned malformed enclave register.");
+        throw new Error("Received wrong data format from the server.");
       }
     } catch (err: any) {
       console.error("Error fetching invoice detail:", err);
-      setError(err.message || "Decentralized ledger handshake timed out.");
+      setError(err.message || "Could not connect. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -104,9 +104,9 @@ export default function ClientInvoiceDetailPage() {
           </button>
           <div>
             <span className="text-[10px] font-mono font-bold text-[#009DFF] bg-[#009DFF]/5 border border-[#009DFF]/20 px-2 py-0.5 rounded uppercase">
-              Treasury Ledger Enclave
+              Billing History
             </span>
-            <h2 className="text-xl font-bold text-white tracking-tight font-mono uppercase mt-1">Audit Enclave Statement</h2>
+            <h2 className="text-xl font-bold text-white tracking-tight font-mono uppercase mt-1">View Detailed Invoice</h2>
           </div>
         </div>
         
@@ -115,7 +115,7 @@ export default function ClientInvoiceDetailPage() {
           className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.02] px-4 text-xs font-semibold text-white hover:bg-white/[0.06] hover:border-white/20 transition-all cursor-pointer"
         >
           <Printer className="w-3.5 h-3.5" />
-          <span>Print Audit Statement</span>
+          <span>Print Invoice</span>
         </button>
       </div>
 
@@ -123,30 +123,30 @@ export default function ClientInvoiceDetailPage() {
         <div className="flex flex-col items-center justify-center py-32 space-y-4 border border-white/5 bg-[#050505]/40 backdrop-blur-sm rounded-xl">
           <RefreshCw className="w-10 h-10 animate-spin text-[#009DFF]" />
           <div className="text-center">
-            <p className="text-sm font-mono font-semibold text-white tracking-wider uppercase">DECRYPTING ENCLAVE MEMORY...</p>
-            <p className="text-xs text-white/40 font-mono mt-1">Establishing secure enclave connection for token {id}</p>
+            <p className="text-sm font-mono font-semibold text-white tracking-wider uppercase">LOADING INVOICE DETAILS...</p>
+            <p className="text-xs text-white/40 font-mono mt-1">Retrieving your secure invoice data for {id}</p>
           </div>
         </div>
       ) : error ? (
         <div className="flex flex-col items-center justify-center py-32 space-y-4 border border-red-500/10 bg-red-500/[0.01] rounded-xl">
           <Info className="w-10 h-10 text-red-400" />
           <div className="text-center">
-            <p className="text-sm font-mono font-semibold text-red-400 tracking-wider uppercase">ENCLAVE DECRYPTION ERROR</p>
+            <p className="text-sm font-mono font-semibold text-red-400 tracking-wider uppercase">COULD NOT LOAD INVOICE</p>
             <p className="text-xs text-white/40 font-mono mt-1 max-w-sm">{error}</p>
           </div>
           <button 
             onClick={fetchInvoice}
             className="px-4 py-2 border border-red-500/20 hover:border-red-500/40 bg-red-500/5 text-red-400 font-mono text-xs uppercase font-bold rounded cursor-pointer transition-all"
           >
-            RE-INITIATE DECRYPTION HANDSHAKE
+            RELOAD
           </button>
         </div>
       ) : !invoiceData ? (
         <div className="flex flex-col items-center justify-center py-32 space-y-4 border border-white/5 bg-[#050505]/40 backdrop-blur-sm rounded-xl">
           <Info className="w-10 h-10 text-white/20" />
           <div className="text-center">
-            <p className="text-sm font-mono font-semibold text-white tracking-wider uppercase">STATEMENT NOT FOUND</p>
-            <p className="text-xs text-white/40 font-mono mt-1">The requested ledger statement could not be resolved.</p>
+            <p className="text-sm font-mono font-semibold text-white tracking-wider uppercase">BILL NOT FOUND</p>
+            <p className="text-xs text-white/40 font-mono mt-1">We could not find the bill you requested.</p>
           </div>
         </div>
       ) : (
@@ -163,10 +163,10 @@ export default function ClientInvoiceDetailPage() {
               <div className="flex justify-between items-start border-b border-white/5 pb-5 select-none">
                 <div>
                   <h3 className="text-sm font-bold text-white font-mono uppercase tracking-wider">GFF AI Systems</h3>
-                  <p className="text-[10px] text-white/40 font-mono mt-0.5">Automated Enclave Settlement Ledger</p>
+                  <p className="text-[10px] text-white/40 font-mono mt-0.5">Billing Account Statement</p>
                 </div>
                 <div className="text-right font-mono text-[10.5px]">
-                  <div className="text-white/40">STATEMENT REFERENCE</div>
+                  <div className="text-white/40">INVOICE NUMBER / ID</div>
                   <div className="text-[#009DFF] font-bold mt-0.5">{invoice?.invoice_number || id}</div>
                 </div>
               </div>
@@ -174,23 +174,23 @@ export default function ClientInvoiceDetailPage() {
               {/* Address Info */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 font-mono text-[11px] text-white/50 border-b border-white/5 pb-5 select-none">
                 <div className="space-y-1">
-                  <div className="text-white/30 text-[9.5px] uppercase">Issuer (Hardware Custodian)</div>
+                  <div className="text-white/30 text-[9.5px] uppercase">Issuer</div>
                   <div className="text-white font-semibold">GFF AI Global Treasury Corp</div>
-                  <div>Berlin Secure Server Enclave 01</div>
-                  <div>Hash Ring Corridor 4</div>
+                  <div>Berlin Secure Office</div>
+                  <div>GFF AI Support Team</div>
                 </div>
                 <div className="space-y-1 sm:text-right">
-                  <div className="text-white/30 text-[9.5px] uppercase">Sovereign Client</div>
+                  <div className="text-white/30 text-[9.5px] uppercase">Client Name</div>
                   <div className="text-white font-semibold">Alexander Mercer</div>
-                  <div>Apex Sovereign Sandbox</div>
-                  <div>enclave-ref: apex-sovereign.gff.ai</div>
+                  <div>Standard Sandbox Account</div>
+                  <div>Account ref: apex-sovereign.gff.ai</div>
                 </div>
               </div>
 
               {/* Dates & Billing Method */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 font-mono text-[11px] text-white/50 border-b border-white/5 pb-5 select-none">
                 <div>
-                  <span className="text-white/30 text-[9.5px] block uppercase">Epoch Date</span>
+                  <span className="text-white/30 text-[9.5px] block uppercase">Invoice Date</span>
                   <span className="text-white font-semibold mt-0.5 block">{invoiceData.date}</span>
                 </div>
                 <div>
@@ -202,7 +202,7 @@ export default function ClientInvoiceDetailPage() {
                   <span className="text-white font-semibold mt-0.5 block">{invoiceData.category}</span>
                 </div>
                 <div>
-                  <span className="text-white/30 text-[9.5px] block uppercase">Hardware Zone</span>
+                  <span className="text-white/30 text-[9.5px] block uppercase">Server Zone</span>
                   <span className="text-white font-semibold mt-0.5 block">{invoiceData.enclaveZone}</span>
                 </div>
               </div>
@@ -211,7 +211,7 @@ export default function ClientInvoiceDetailPage() {
             <div className="space-y-4">
               <div className="flex items-center gap-2 text-xs font-mono font-bold text-white uppercase border-b border-white/5 pb-2">
                 <CreditCard className="w-4 h-4 text-[#009DFF]" />
-                <span>Resource Allocation Statement</span>
+                <span>What you are paying for</span>
               </div>
 
               <div className="space-y-3 font-mono text-[11px] text-white/70 font-semibold">
@@ -224,7 +224,7 @@ export default function ClientInvoiceDetailPage() {
 
                 {/* Total settled cost */}
                 <div className="flex justify-between items-center text-sm font-bold text-white pt-2 select-none">
-                  <span className="uppercase">Total Settled Amount:</span>
+                  <span className="uppercase">Total Amount Paid:</span>
                   <span className="text-[#009DFF] text-lg font-mono">{invoiceData.amount}</span>
                 </div>
               </div>
@@ -236,7 +236,7 @@ export default function ClientInvoiceDetailPage() {
           <div className="p-5 rounded-xl border border-white/5 bg-[#050505]/40 backdrop-blur-sm space-y-4 font-mono text-[11px]">
             <h4 className="text-xs font-bold text-white uppercase border-b border-white/5 pb-2 flex items-center gap-2">
               <Landmark className="w-4 h-4 text-[#00FFC2]" />
-              <span>Treasury Settlement Clearance</span>
+              <span>Payment Information</span>
             </h4>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-white/50">
@@ -245,7 +245,7 @@ export default function ClientInvoiceDetailPage() {
                 <span className="text-white font-semibold block mt-0.5">{invoiceData.method}</span>
               </div>
               <div>
-                <span className="text-white/30 text-[9.5px] block uppercase">Transaction Reference Seal:</span>
+                <span className="text-white/30 text-[9.5px] block uppercase">Payment Reference Number:</span>
                 <div className="flex items-center gap-1.5 mt-0.5">
                   <span className="text-[#00FFC2] font-semibold truncate block max-w-[200px]">
                     0xWIRE-{invoice?.invoice_number || id}
@@ -270,14 +270,14 @@ export default function ClientInvoiceDetailPage() {
           <div className="p-5 rounded-xl border border-white/5 bg-[#050505]/40 backdrop-blur-sm space-y-4">
             <div className="flex items-center gap-1.5 border-b border-white/5 pb-2 select-none">
               <ShieldCheck className="w-4.5 h-4.5 text-[#00FFC2]" />
-              <h3 className="text-xs font-bold text-white font-mono uppercase tracking-wider">Ledger Cryptography</h3>
+              <h3 className="text-xs font-bold text-white font-mono uppercase tracking-wider">Security Details</h3>
             </div>
 
             <div className="space-y-4 font-mono text-[11px]">
               
               <div className="p-3 rounded-lg bg-black border border-white/5 space-y-2">
                 <div className="flex justify-between items-center text-white/40 text-[9.5px]">
-                  <span>ENCLAVE CRYPTO SEAL</span>
+                  <span>SECURITY KEY</span>
                   <button 
                     onClick={() => handleCopy(invoiceData.hash, "hash")}
                     className="text-[#009DFF] hover:underline font-bold flex items-center gap-1 cursor-pointer"
@@ -292,11 +292,11 @@ export default function ClientInvoiceDetailPage() {
 
               <div className="p-3 rounded-lg bg-black border border-white/5 space-y-2">
                 <div className="flex justify-between items-center text-white/40 text-[9.5px]">
-                  <span>HARDWARE SECURITY MODULE (HSM) KEY</span>
+                  <span>SIGNATURE KEY</span>
                   <span className="text-[#00FFC2] font-bold">{invoiceData.signature}</span>
                 </div>
                 <p className="text-[10px] text-white/40 leading-relaxed font-sans">
-                  The HSM signature represents verified zero-knowledge proof generated by secure SGX enclaves upon final bank settlement detection.
+                  This signature key shows that this invoice has been paid and verified by our system.
                 </p>
               </div>
 
@@ -304,7 +304,7 @@ export default function ClientInvoiceDetailPage() {
               {sealStatus === "verified" ? (
                 <div className="flex items-center gap-2 p-2.5 rounded-lg border border-emerald-500/20 bg-emerald-500/5 text-emerald-400 font-bold justify-center select-none">
                   <FileCheck className="w-4 h-4 shrink-0" />
-                  <span>STATEMENT CERTIFICATE VALID</span>
+                  <span>INVOICE PAID & VERIFIED</span>
                 </div>
               ) : (
                 <button
@@ -315,12 +315,12 @@ export default function ClientInvoiceDetailPage() {
                   {verifying ? (
                     <>
                       <Cpu className="w-4 h-4 animate-spin text-[#009DFF]" />
-                      <span>DECRYPTING SEALS...</span>
+                      <span>VERIFYING SECURITY KEYS...</span>
                     </>
                   ) : (
                     <>
                       <ShieldCheck className="w-4 h-4 text-[#00FFC2]" />
-                      <span>VALIDATE COVENANT PROOF</span>
+                      <span>VERIFY PAYMENT SECURITY</span>
                     </>
                   )}
                 </button>
@@ -333,13 +333,13 @@ export default function ClientInvoiceDetailPage() {
           <div className="p-4 rounded-xl border border-white/5 bg-[#050505]/20 font-mono text-[10px] text-white/40 leading-relaxed space-y-2 select-none">
             <div className="flex items-center gap-1.5 font-bold text-white/60">
               <Landmark className="w-3.5 h-3.5" />
-              <span>REGULATORY DISCLAIMER</span>
+              <span>IMPORTANT NOTICE</span>
             </div>
             <p>
-              This document serves as an official proof of allocation for isolated sovereign container clusters.
+              This document serves as an official receipt for your projects and servers.
             </p>
             <p>
-              In accordance with ISO-27001 rulesets, all transactional traces are cryptographically co-signed under zero-trust memory limits and cannot be altered retroactively.
+              All payments are saved securely in our records and cannot be changed or edited later.
             </p>
           </div>
 

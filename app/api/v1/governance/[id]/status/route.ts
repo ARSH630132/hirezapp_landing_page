@@ -31,7 +31,7 @@ export async function PATCH(req: Request, { params }: { params: any }) {
     const { id } = await params;
     const dbItems = await dynamoDbListPortalItems("GOVERNANCE");
     let item = dbItems.find(i => i.id === id);
-    let isDynamo = !!item;
+    const isDynamo = !!item;
 
     if (!item) {
       item = (API_MOCK_GOVERNANCE as Record<string, ApiGovernanceItem>)[id];

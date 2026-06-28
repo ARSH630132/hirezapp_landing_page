@@ -141,7 +141,7 @@ export default function ClientDocumentDetailPage() {
   // Generate premium bespoke audit logs using real backend parameters
   const auditLogs = doc ? [
     { time: "08:14:10 UTC", text: `Document compiled and sealed by author: ${doc.owner}`, user: doc.owner, status: "SUCCESS" },
-    { time: "09:30:15 UTC", text: `Cryptographic SHA-256 seal assigned and verified: ${doc.sha256.substring(0, 24)}...`, user: "HSM Node G4", status: "VERIFIED" },
+    { time: "09:30:15 UTC", text: `Cryptographic SHA-256 seal assigned and verified: ${doc.sha256 ? doc.sha256.substring(0, 24) : "N/A"}...`, user: "HSM Node G4", status: "VERIFIED" },
     { time: "10:18:22 UTC", text: `Client session handshake authorized. Access privileges: ${doc.client_id === 'client-001' ? 'Level IV (Restricted)' : 'Level I (Client View)'}`, user: "Auth Core", status: "AUTHORIZED" },
     { time: "10:22:15 UTC", text: `Sovereign signature validation for release version ${doc.version} matches master registry`, user: "HSM Attestation", status: "OK" },
     { time: "10:25:00 UTC", text: `Master ledger synchronized with verified verification status '${doc.status || "Verified"}'`, user: "System Auditor", status: "SYNCED" }
