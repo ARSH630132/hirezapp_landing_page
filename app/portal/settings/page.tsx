@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { Key, ShieldAlert, Lock, RefreshCw } from "lucide-react";
 
 export default function ClientSettingsPage() {
