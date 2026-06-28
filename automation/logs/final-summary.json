@@ -299,7 +299,7 @@
       "reason": "failed after review"
     }
   ],
-  "finalStatus": "M automation/state.json",
+  "finalStatus": "",
   "finalValidationOk": true,
-  "finishedAt": "2026-06-27T23:06:15.244Z"
+  "finishedAt": "2026-06-28T00:23:52.441Z"
 }
