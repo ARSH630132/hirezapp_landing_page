@@ -68,6 +68,7 @@ async function GET(req) {
         return server_1.NextResponse.json({
             success: true,
             client_id: callerClientId,
+            client_name: caller.clientAssociation || callerClientId,
             summary: {
                 projects: { activeCount: activeProjectsCount, totalCount: clientProjects.length, recent: sortByDate(clientProjects) },
                 aiOperations: { activeCount: activeOperationsCount, totalCount: clientOps.length, recent: sortByDate(clientOps) },

@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getUserFromDynamoDB = getUserFromDynamoDB;
 exports.listUsersFromDynamoDB = listUsersFromDynamoDB;
 exports.putUserInDynamoDB = putUserInDynamoDB;
+exports.deleteUserFromDynamoDB = deleteUserFromDynamoDB;
 exports.hashPassword = hashPassword;
 exports.verifyDbUserPassword = verifyDbUserPassword;
 exports.mapDynamoUserToApiUser = mapDynamoUserToApiUser;
@@ -89,6 +90,23 @@ async function putUserInDynamoDB(user) {
         }
         catch (err) {
             console.error(`[DYNAMODB] Error writing user ${user.email} to DynamoDB:`, err);
+            return false;
+        }
+    }
+    return false;
+}
+async function deleteUserFromDynamoDB(email) {
+    const normalizedEmail = email.toLowerCase().trim();
+    if (docClient) {
+        try {
+            await docClient.send(new lib_dynamodb_2.DeleteCommand({
+                TableName: tableName,
+                Key: { email: normalizedEmail },
+            }));
+            return true;
+        }
+        catch (err) {
+            console.error(`[DYNAMODB] Error deleting user ${normalizedEmail} from DynamoDB:`, err);
             return false;
         }
     }

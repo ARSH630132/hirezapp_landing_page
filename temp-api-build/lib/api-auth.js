@@ -310,10 +310,10 @@ function getNextProjectId() {
 }
 function getClientNameFromId(clientId) {
     switch (clientId) {
-        case "client-001": return "Apex Global Solutions";
-        case "client-002": return "Sovereign Logistics Corp";
-        case "client-003": return "Global Retail Group";
-        case "client-004": return "Federal Treasury Division";
+        case "client-001": return "Apex Sovereign Group [Preview Client]";
+        case "client-002": return "Global Retail Enclave [Preview Client]";
+        case "client-003": return "Sovereign Logistics Unit [Preview Client]";
+        case "client-004": return "Federal Treasury Division [Preview Client]";
         default: return "GFF AI";
     }
 }

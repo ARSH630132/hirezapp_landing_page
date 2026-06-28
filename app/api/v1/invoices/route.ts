@@ -4,15 +4,23 @@ import {
   API_MOCK_USERS, API_MOCK_INVOICES, API_MOCK_PROJECTS, verifyJwt, 
   MockUserDbEntry, ApiInvoice, getNextInvoiceId, getClientNameFromId, getClientIdFromAssociation 
 } from "../../../../lib/api-auth";
+import { getUserFromDynamoDB, mapDynamoUserToApiUser, dynamoDbListPortalItems, dynamoDbPutPortalItem } from "../../../../lib/dynamodb-client";
 
 export const runtime = "nodejs";
 
-function getAuthCaller(req: Request) {
+async function getAuthCaller(req: Request) {
   const auth = req.headers.get("authorization");
   if (!auth?.startsWith("Bearer ")) return { status: 401, error: "Unauthorized", msg: "Missing header." };
   const decoded = verifyJwt(auth.substring(7));
   if (!decoded?.email) return { status: 401, error: "Unauthorized", msg: "Invalid token." };
-  const u = (API_MOCK_USERS as Record<string, MockUserDbEntry>)[decoded.email.toLowerCase().trim()];
+  const email = decoded.email.toLowerCase().trim();
+  const dynamoUser = await getUserFromDynamoDB(email);
+  if (dynamoUser) {
+    const mapped = mapDynamoUserToApiUser(dynamoUser);
+    if (mapped.status === "inactive") return { status: 403, error: "Forbidden", msg: "Account inactive." };
+    return { caller: mapped };
+  }
+  const u = (API_MOCK_USERS as Record<string, MockUserDbEntry>)[email];
   if (!u) return { status: 401, error: "Unauthorized", msg: "User not found." };
   if (u.status === "inactive") return { status: 403, error: "Forbidden", msg: "Account inactive." };
   return { caller: u };
@@ -20,13 +28,17 @@ function getAuthCaller(req: Request) {
 
 export async function GET(req: Request) {
   try {
-    const auth = getAuthCaller(req);
+    const auth = await getAuthCaller(req);
     if ("status" in auth) return NextResponse.json({ success: false, error: auth.error, message: auth.msg }, { status: auth.status });
     const { caller } = auth;
     const { searchParams: s } = new URL(req.url);
     const cliF = s.get("client_id"), projF = s.get("project_id"), statF = s.get("status"), mF = s.get("month"), startF = s.get("start_date"), endF = s.get("end_date"), searchQ = s.get("search");
 
-    let invoices = Object.values(API_MOCK_INVOICES) as ApiInvoice[];
+    const dbItems = await dynamoDbListPortalItems("INVOICE");
+    let invoices = dbItems.length > 0 
+      ? dbItems 
+      : (Object.values(API_MOCK_INVOICES) as ApiInvoice[]);
+
     const isMgr = caller.role === "gff_admin";
 
     if (!isMgr) {
@@ -62,7 +74,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
-    const auth = getAuthCaller(req);
+    const auth = await getAuthCaller(req);
     if ("status" in auth) return NextResponse.json({ success: false, error: auth.error, message: auth.msg }, { status: auth.status });
     const { caller } = auth;
     if (caller.role !== "gff_admin") return NextResponse.json({ success: false, error: "Forbidden", message: "Forbidden" }, { status: 403 });
@@ -74,7 +86,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "Bad Request", message: "Invalid client_id" }, { status: 400 });
     }
     if (amt === undefined || typeof amt !== "number" || amt < 0) return NextResponse.json({ success: false, error: "Bad Request", message: "Invalid amount" }, { status: 400 });
-    if (invN && typeof invN === "string" && invN.trim() && Object.values(API_MOCK_INVOICES).some(i => i.invoice_number.toLowerCase() === invN.toLowerCase().trim())) {
+    
+    const dbItems = await dynamoDbListPortalItems("INVOICE");
+    const existingInvs = dbItems.length > 0 
+      ? dbItems 
+      : Object.values(API_MOCK_INVOICES);
+
+    if (invN && typeof invN === "string" && invN.trim() && existingInvs.some(i => i.invoice_number.toLowerCase() === invN.toLowerCase().trim())) {
       return NextResponse.json({ success: false, error: "Bad Request", message: "Duplicate number" }, { status: 400 });
     }
 
@@ -93,6 +111,7 @@ export async function POST(req: Request) {
       hash: b.hash || `0x${crypto.randomBytes(32).toString("hex").toUpperCase()}`, signature: b.signature || `SHA_${crypto.randomBytes(5).toString("hex").toUpperCase()}`, description: desc || "Cloud native secure enclave compute fee.", lastUpdated: new Date().toISOString()
     };
     (API_MOCK_INVOICES as Record<string, ApiInvoice>)[nid] = newInv;
+    await dynamoDbPutPortalItem("INVOICE", newInv.client_id, newInv);
     return NextResponse.json({ success: true, invoice: newInv }, { status: 201 });
   } catch (err) {
     return NextResponse.json({ success: false, error: "Internal Error" }, { status: 500 });

@@ -8,10 +8,11 @@ import {
   getClientIdFromAssociation,
   getClientNameFromId
 } from "../../../../lib/api-auth";
+import { getUserFromDynamoDB, mapDynamoUserToApiUser, dynamoDbListPortalItems, dynamoDbPutPortalItem } from "../../../../lib/dynamodb-client";
 
 export const runtime = "nodejs";
 
-function getAuthCaller(req: Request) {
+async function getAuthCaller(req: Request) {
   const auth = req.headers.get("authorization");
   if (!auth?.startsWith("Bearer ")) {
     return { status: 401, error: "Unauthorized", msg: "Missing Authorization header." };
@@ -20,7 +21,16 @@ function getAuthCaller(req: Request) {
   if (!decoded?.email) {
     return { status: 401, error: "Unauthorized", msg: "Invalid/expired access token." };
   }
-  const user = (API_MOCK_USERS as Record<string, MockUserDbEntry>)[decoded.email.toLowerCase().trim()];
+  const email = decoded.email.toLowerCase().trim();
+  const dynamoUser = await getUserFromDynamoDB(email);
+  if (dynamoUser) {
+    const mapped = mapDynamoUserToApiUser(dynamoUser);
+    if (mapped.status === "inactive") {
+      return { status: 403, error: "Forbidden", msg: "This account is inactive." };
+    }
+    return { caller: mapped };
+  }
+  const user = (API_MOCK_USERS as Record<string, MockUserDbEntry>)[email];
   if (!user) {
     return { status: 401, error: "Unauthorized", msg: "Authorized user not found." };
   }
@@ -32,7 +42,7 @@ function getAuthCaller(req: Request) {
 
 export async function GET(req: Request) {
   try {
-    const auth = getAuthCaller(req);
+    const auth = await getAuthCaller(req);
     if ("status" in auth) {
       return NextResponse.json({ success: false, error: auth.error, message: auth.msg }, { status: auth.status });
     }
@@ -47,13 +57,16 @@ export async function GET(req: Request) {
     const assignedToFilter = searchParams.get("assigned_to") || searchParams.get("assignedAgent") || searchParams.get("assigned_agent");
     const searchQuery = searchParams.get("search");
 
-    let tickets = Object.values(API_MOCK_SUPPORT_TICKETS) as ApiSupportTicket[];
+    const dbItems = await dynamoDbListPortalItems("SUPPORT");
+    let tickets = dbItems.length > 0 
+      ? dbItems 
+      : (Object.values(API_MOCK_SUPPORT_TICKETS) as ApiSupportTicket[]);
 
     // Ensure bidirectional mapping of wireFeed and replies
     tickets = tickets.map(t => {
       const ticketWithReplies = { ...t } as any;
       if (t.wireFeed && !ticketWithReplies.replies) {
-        ticketWithReplies.replies = t.wireFeed.map(w => ({
+        ticketWithReplies.replies = t.wireFeed.map((w: any) => ({
           sender: w.senderName,
           text: w.text,
           timestamp: w.timestamp.includes("Z") || w.timestamp.includes("-") ? w.timestamp : new Date().toISOString()
@@ -125,7 +138,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
-    const auth = getAuthCaller(req);
+    const auth = await getAuthCaller(req);
     if ("status" in auth) {
       return NextResponse.json({ success: false, error: auth.error, message: auth.msg }, { status: auth.status });
     }
@@ -204,6 +217,7 @@ export async function POST(req: Request) {
     };
 
     API_MOCK_SUPPORT_TICKETS[newId.toLowerCase()] = newTicket;
+    await dynamoDbPutPortalItem("SUPPORT", newTicket.client_id, newTicket);
 
     return NextResponse.json({ success: true, ticket: newTicket }, { status: 201 });
   } catch (err) {

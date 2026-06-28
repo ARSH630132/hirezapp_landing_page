@@ -4,24 +4,38 @@ import {
   verifyJwt, MockUserDbEntry, ApiGovernanceItem, 
   getClientNameFromId, getClientIdFromAssociation 
 } from "../../../../../lib/api-auth";
+import { getUserFromDynamoDB, mapDynamoUserToApiUser, dynamoDbListPortalItems, dynamoDbPutPortalItem, dynamoDbDeletePortalItem } from "../../../../../lib/dynamodb-client";
 
 export const runtime = "nodejs";
 
-function getAuthCaller(req: Request) {
+async function getAuthCaller(req: Request) {
   const auth = req.headers.get("authorization");
   if (!auth?.startsWith("Bearer ")) return null;
   const decoded = verifyJwt(auth.substring(7));
   if (!decoded?.email) return null;
-  const user = (API_MOCK_USERS as Record<string, MockUserDbEntry>)[decoded.email.toLowerCase().trim()];
+  const email = decoded.email.toLowerCase().trim();
+  const dynamoUser = await getUserFromDynamoDB(email);
+  if (dynamoUser) {
+    const mapped = mapDynamoUserToApiUser(dynamoUser);
+    return mapped && mapped.status !== "inactive" ? mapped : null;
+  }
+  const user = (API_MOCK_USERS as Record<string, MockUserDbEntry>)[email];
   return user && user.status !== "inactive" ? user : null;
 }
 
 export async function GET(req: Request, { params }: { params: any }) {
   try {
-    const caller = getAuthCaller(req);
+    const caller = await getAuthCaller(req);
     if (!caller) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     const { id } = await params;
-    const item = (API_MOCK_GOVERNANCE as Record<string, ApiGovernanceItem>)[id];
+
+    const dbItems = await dynamoDbListPortalItems("GOVERNANCE");
+    let item = dbItems.find(i => i.id === id);
+
+    if (!item) {
+      item = (API_MOCK_GOVERNANCE as Record<string, ApiGovernanceItem>)[id];
+    }
+
     if (!item) return NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
 
     if (caller.role !== "gff_admin") {
@@ -38,12 +52,19 @@ export async function GET(req: Request, { params }: { params: any }) {
 
 export async function PATCH(req: Request, { params }: { params: any }) {
   try {
-    const caller = getAuthCaller(req);
+    const caller = await getAuthCaller(req);
     if (!caller) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     if (caller.role !== "gff_admin") return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
 
     const { id } = await params;
-    const item = (API_MOCK_GOVERNANCE as Record<string, ApiGovernanceItem>)[id];
+    const dbItems = await dynamoDbListPortalItems("GOVERNANCE");
+    let item = dbItems.find(i => i.id === id);
+    let isDynamo = !!item;
+
+    if (!item) {
+      item = (API_MOCK_GOVERNANCE as Record<string, ApiGovernanceItem>)[id];
+    }
+
     if (!item) return NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
 
     const body = await req.json().catch(() => null);
@@ -85,7 +106,15 @@ export async function PATCH(req: Request, { params }: { params: any }) {
     }
 
     item.lastUpdated = new Date().toISOString();
+    
+    // Always persist to API_MOCK_GOVERNANCE in memory too
     (API_MOCK_GOVERNANCE as Record<string, ApiGovernanceItem>)[id] = item;
+    
+    // If DynamoDB is used or was originally in DynamoDB, update it
+    if (isDynamo || dbItems.length > 0) {
+      await dynamoDbPutPortalItem("GOVERNANCE", item.client_id, item);
+    }
+
     return NextResponse.json({ success: true, governance: item });
   } catch (err) {
     return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
@@ -94,15 +123,26 @@ export async function PATCH(req: Request, { params }: { params: any }) {
 
 export async function DELETE(req: Request, { params }: { params: any }) {
   try {
-    const caller = getAuthCaller(req);
+    const caller = await getAuthCaller(req);
     if (!caller) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     if (caller.role !== "gff_admin") return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
 
     const { id } = await params;
-    if (!(API_MOCK_GOVERNANCE as Record<string, ApiGovernanceItem>)[id]) {
+    const dbItems = await dynamoDbListPortalItems("GOVERNANCE");
+    let item = dbItems.find(i => i.id === id);
+    let isDynamo = !!item;
+
+    if (!item) {
+      item = (API_MOCK_GOVERNANCE as Record<string, ApiGovernanceItem>)[id];
+    }
+
+    if (!item) {
       return NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
     }
 
+    if (isDynamo || dbItems.length > 0) {
+      await dynamoDbDeletePortalItem("GOVERNANCE", item.client_id, id);
+    }
     delete (API_MOCK_GOVERNANCE as Record<string, ApiGovernanceItem>)[id];
     return NextResponse.json({ success: true, message: "Governance item deleted." });
   } catch (err) {

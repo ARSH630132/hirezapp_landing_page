@@ -7,26 +7,38 @@ import {
   ApiSupportTicket, 
   getClientIdFromAssociation 
 } from "../../../../../lib/api-auth";
+import { getUserFromDynamoDB, mapDynamoUserToApiUser, dynamoDbListPortalItems, dynamoDbPutPortalItem, dynamoDbDeletePortalItem } from "../../../../../lib/dynamodb-client";
 
 export const runtime = "nodejs";
 
-function getAuthCaller(req: Request) {
+async function getAuthCaller(req: Request) {
   const auth = req.headers.get("authorization");
   if (!auth?.startsWith("Bearer ")) return null;
   const decoded = verifyJwt(auth.substring(7));
   if (!decoded?.email) return null;
-  return (API_MOCK_USERS as Record<string, MockUserDbEntry>)[decoded.email.toLowerCase().trim()] || null;
+  const email = decoded.email.toLowerCase().trim();
+  const dynamoUser = await getUserFromDynamoDB(email);
+  if (dynamoUser) {
+    const mapped = mapDynamoUserToApiUser(dynamoUser);
+    return mapped && mapped.status !== "inactive" ? mapped : null;
+  }
+  return (API_MOCK_USERS as Record<string, MockUserDbEntry>)[email] || null;
 }
 
 export async function GET(req: Request, { params }: { params: any }) {
   try {
-    const caller = getAuthCaller(req);
+    const caller = await getAuthCaller(req);
     if (!caller) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     const { id } = await params;
     if (!id) return NextResponse.json({ success: false, error: "Bad Request" }, { status: 400 });
 
     const key = id.toLowerCase();
-    const ticket = API_MOCK_SUPPORT_TICKETS[key] || Object.values(API_MOCK_SUPPORT_TICKETS).find(t => t.id.toLowerCase() === key);
+    const dbItems = await dynamoDbListPortalItems("SUPPORT");
+    let ticket = dbItems.find(t => t.id.toLowerCase() === key);
+
+    if (!ticket) {
+      ticket = API_MOCK_SUPPORT_TICKETS[key] || Object.values(API_MOCK_SUPPORT_TICKETS).find(t => t.id.toLowerCase() === key);
+    }
 
     if (!ticket) return NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
 
@@ -39,7 +51,7 @@ export async function GET(req: Request, { params }: { params: any }) {
 
     const ticketWithReplies = { ...ticket } as any;
     if (ticket.wireFeed && !ticketWithReplies.replies) {
-      ticketWithReplies.replies = ticket.wireFeed.map(w => ({
+      ticketWithReplies.replies = ticket.wireFeed.map((w: any) => ({
         sender: w.senderName,
         text: w.text,
         timestamp: w.timestamp.includes("Z") || w.timestamp.includes("-") ? w.timestamp : new Date().toISOString()
@@ -54,13 +66,19 @@ export async function GET(req: Request, { params }: { params: any }) {
 
 export async function PATCH(req: Request, { params }: { params: any }) {
   try {
-    const caller = getAuthCaller(req);
+    const caller = await getAuthCaller(req);
     if (!caller) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     const { id } = await params;
     if (!id) return NextResponse.json({ success: false, error: "Bad Request" }, { status: 400 });
 
     const key = id.toLowerCase();
-    const ticket = API_MOCK_SUPPORT_TICKETS[key] || Object.values(API_MOCK_SUPPORT_TICKETS).find(t => t.id.toLowerCase() === key);
+    const dbItems = await dynamoDbListPortalItems("SUPPORT");
+    let ticket = dbItems.find(t => t.id.toLowerCase() === key);
+    let isDynamo = !!ticket;
+
+    if (!ticket) {
+      ticket = API_MOCK_SUPPORT_TICKETS[key] || Object.values(API_MOCK_SUPPORT_TICKETS).find(t => t.id.toLowerCase() === key);
+    }
 
     if (!ticket) return NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
 
@@ -121,6 +139,10 @@ export async function PATCH(req: Request, { params }: { params: any }) {
 
     API_MOCK_SUPPORT_TICKETS[ticket.id.toLowerCase()] = ticket;
 
+    if (isDynamo || dbItems.length > 0) {
+      await dynamoDbPutPortalItem("SUPPORT", ticket.client_id, ticket);
+    }
+
     return NextResponse.json({ success: true, ticket });
   } catch (err) {
     return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
@@ -129,13 +151,19 @@ export async function PATCH(req: Request, { params }: { params: any }) {
 
 export async function POST(req: Request, { params }: { params: any }) {
   try {
-    const caller = getAuthCaller(req);
+    const caller = await getAuthCaller(req);
     if (!caller) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     const { id } = await params;
     if (!id) return NextResponse.json({ success: false, error: "Bad Request" }, { status: 400 });
 
     const key = id.toLowerCase();
-    const ticket = API_MOCK_SUPPORT_TICKETS[key] || Object.values(API_MOCK_SUPPORT_TICKETS).find(t => t.id.toLowerCase() === key);
+    const dbItems = await dynamoDbListPortalItems("SUPPORT");
+    let ticket = dbItems.find(t => t.id.toLowerCase() === key);
+    let isDynamo = !!ticket;
+
+    if (!ticket) {
+      ticket = API_MOCK_SUPPORT_TICKETS[key] || Object.values(API_MOCK_SUPPORT_TICKETS).find(t => t.id.toLowerCase() === key);
+    }
 
     if (!ticket) return NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
 
@@ -158,7 +186,7 @@ export async function POST(req: Request, { params }: { params: any }) {
     if (!ticket.wireFeed) ticket.wireFeed = [];
     const ticketAny = ticket as any;
     if (!ticketAny.replies) {
-      ticketAny.replies = ticket.wireFeed.map(w => ({
+      ticketAny.replies = ticket.wireFeed.map((w: any) => ({
         sender: w.senderName,
         text: w.text,
         timestamp: timestampStr
@@ -214,6 +242,10 @@ export async function POST(req: Request, { params }: { params: any }) {
 
     API_MOCK_SUPPORT_TICKETS[ticket.id.toLowerCase()] = ticket;
 
+    if (isDynamo || dbItems.length > 0) {
+      await dynamoDbPutPortalItem("SUPPORT", ticket.client_id, ticket);
+    }
+
     return NextResponse.json({ success: true, ticket: ticketAny });
   } catch (err) {
     return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
@@ -222,7 +254,7 @@ export async function POST(req: Request, { params }: { params: any }) {
 
 export async function DELETE(req: Request, { params }: { params: any }) {
   try {
-    const caller = getAuthCaller(req);
+    const caller = await getAuthCaller(req);
     if (!caller) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     const isAdmin = caller.role === "gff_admin" || caller.role === "admin";
     if (!isAdmin) return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
@@ -230,9 +262,19 @@ export async function DELETE(req: Request, { params }: { params: any }) {
     if (!id) return NextResponse.json({ success: false, error: "Bad Request" }, { status: 400 });
 
     const key = id.toLowerCase();
-    const ticket = API_MOCK_SUPPORT_TICKETS[key] || Object.values(API_MOCK_SUPPORT_TICKETS).find(t => t.id.toLowerCase() === key);
+    const dbItems = await dynamoDbListPortalItems("SUPPORT");
+    let ticket = dbItems.find(t => t.id.toLowerCase() === key);
+    let isDynamo = !!ticket;
+
+    if (!ticket) {
+      ticket = API_MOCK_SUPPORT_TICKETS[key] || Object.values(API_MOCK_SUPPORT_TICKETS).find(t => t.id.toLowerCase() === key);
+    }
+
     if (!ticket) return NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
 
+    if (isDynamo || dbItems.length > 0) {
+      await dynamoDbDeletePortalItem("SUPPORT", ticket.client_id, ticket.id);
+    }
     delete API_MOCK_SUPPORT_TICKETS[ticket.id.toLowerCase()];
     if (API_MOCK_SUPPORT_TICKETS[key]) {
       delete API_MOCK_SUPPORT_TICKETS[key];

@@ -4,15 +4,23 @@ import {
   verifyJwt, MockUserDbEntry, ApiGovernanceItem, 
   getNextGovernanceId, getClientNameFromId, getClientIdFromAssociation 
 } from "../../../../lib/api-auth";
+import { getUserFromDynamoDB, mapDynamoUserToApiUser, dynamoDbListPortalItems, dynamoDbPutPortalItem } from "../../../../lib/dynamodb-client";
 
 export const runtime = "nodejs";
 
-function getAuthCaller(req: Request) {
+async function getAuthCaller(req: Request) {
   const auth = req.headers.get("authorization");
   if (!auth?.startsWith("Bearer ")) return { status: 401, error: "Unauthorized", msg: "Missing/malformed Authorization." };
   const decoded = verifyJwt(auth.substring(7));
   if (!decoded?.email) return { status: 401, error: "Unauthorized", msg: "Invalid/expired access token." };
-  const user = (API_MOCK_USERS as Record<string, MockUserDbEntry>)[decoded.email.toLowerCase().trim()];
+  const email = decoded.email.toLowerCase().trim();
+  const dynamoUser = await getUserFromDynamoDB(email);
+  if (dynamoUser) {
+    const mapped = mapDynamoUserToApiUser(dynamoUser);
+    if (mapped.status === "inactive") return { status: 403, error: "Forbidden", msg: "Account inactive." };
+    return { caller: mapped };
+  }
+  const user = (API_MOCK_USERS as Record<string, MockUserDbEntry>)[email];
   if (!user) return { status: 401, error: "Unauthorized", msg: "User not found." };
   if (user.status === "inactive") return { status: 403, error: "Forbidden", msg: "Account inactive." };
   return { caller: user };
@@ -20,7 +28,7 @@ function getAuthCaller(req: Request) {
 
 export async function GET(req: Request) {
   try {
-    const auth = getAuthCaller(req);
+    const auth = await getAuthCaller(req);
     if ("status" in auth) return NextResponse.json({ success: false, error: auth.error, message: auth.msg }, { status: auth.status });
     const { caller } = auth;
     const { searchParams } = new URL(req.url);
@@ -32,7 +40,10 @@ export async function GET(req: Request) {
     const due = searchParams.get("due_date") || searchParams.get("due-date") || searchParams.get("dueDate");
     const search = searchParams.get("search");
 
-    let items = Object.values(API_MOCK_GOVERNANCE) as ApiGovernanceItem[];
+    const dbItems = await dynamoDbListPortalItems("GOVERNANCE");
+    let items = dbItems.length > 0 
+      ? dbItems 
+      : (Object.values(API_MOCK_GOVERNANCE) as ApiGovernanceItem[]);
 
     if (caller.role !== "gff_admin") {
       const callerCid = getClientIdFromAssociation(caller.clientAssociation);
@@ -73,7 +84,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
-    const auth = getAuthCaller(req);
+    const auth = await getAuthCaller(req);
     if ("status" in auth) return NextResponse.json({ success: false, error: auth.error, message: auth.msg }, { status: auth.status });
     const { caller } = auth;
 
@@ -117,6 +128,7 @@ export async function POST(req: Request) {
     };
 
     (API_MOCK_GOVERNANCE as Record<string, ApiGovernanceItem>)[id] = newGov;
+    await dynamoDbPutPortalItem("GOVERNANCE", newGov.client_id, newGov);
     return NextResponse.json({ success: true, governance: newGov }, { status: 201 });
   } catch (err) {
     return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
