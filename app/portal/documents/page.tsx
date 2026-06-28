@@ -506,8 +506,8 @@ export default function ClientDocumentsPage() {
         if (meRes.ok) {
           const data = await meRes.json();
           if (data) {
-            setCurrentClientId(data.client_id || null);
-            setCurrentUserRole(data.role || null);
+            setCurrentClientId(data.user?.client_id || null);
+            setCurrentUserRole(data.user?.role || null);
           }
         }
 
@@ -588,7 +588,7 @@ export default function ClientDocumentsPage() {
         });
         if (meRes.ok) {
           const meData = await meRes.json();
-          targetClientId = meData.client_id;
+          targetClientId = meData.user?.client_id;
         }
       }
       

@@ -68,12 +68,12 @@ export async function GET(req: Request, { params }: { params: any }) {
     const filename_val = document.filename || document.title || "document";
     const baseLocalS3 = path.join(process.cwd(), "backend", "local_s3_storage");
     
-    let filePath = path.join(baseLocalS3, document.client_id, "documents", document.id, filename_val);
+    let filePath = path.join(baseLocalS3, String(document.client_id || ""), "documents", String(document.id || ""), filename_val);
     
     if (!fs.existsSync(filePath)) {
-      const alt_client_id = getAlt(document.client_id);
+      const alt_client_id = getAlt(String(document.client_id || ""));
       if (alt_client_id) {
-        filePath = path.join(baseLocalS3, alt_client_id, "documents", document.id, filename_val);
+        filePath = path.join(baseLocalS3, alt_client_id, "documents", String(document.id || ""), filename_val);
       }
     }
 
