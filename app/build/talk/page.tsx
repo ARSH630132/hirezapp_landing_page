@@ -487,8 +487,7 @@ export default function TalkToAgentPage() {
                               ? "bg-white/5 text-white/60 border-white/5 hover:text-white"
                               : "bg-transparent text-white/20 border-transparent cursor-not-allowed"
                           }`}
-                          disabled={step > currentStep && (step === 3 || data.desc.trim().length < 15)}
-                        >
+disabled={step > currentStep && (step === 3 || (data.desc || "").trim().length < 15)}                        >
                           <span>GATE 0{step}</span>
                           {step < currentStep && (
                             <svg className="w-2.5 h-2.5 text-[#00FF9D]" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">

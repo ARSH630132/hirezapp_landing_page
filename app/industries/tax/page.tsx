@@ -46,7 +46,7 @@ export default function TaxPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           {CHALLENGES.map((c, i) => (
             <div key={i} className="p-4 rounded-xl border border-white/5 bg-[#050507]/60">
-              <span className="text-[#009DFF] font-mono text-xs block mb-1">0{i+1} {"//"} {c.title}</span>
+              <span className="text-[#009DFF] font-mono text-xs block mb-1">0{i+1}{"."} {c.title}</span>
               <p className="text-[11px] text-white/60 leading-relaxed">{c.desc}</p>
             </div>
           ))}
@@ -68,7 +68,7 @@ export default function TaxPage() {
         <div className="lg:col-span-6 p-4 rounded-xl border border-white/5 bg-black/40 min-h-[120px] flex flex-col justify-between font-mono">
           <span className="text-[9px] text-white/40 block border-b border-white/5 pb-1 uppercase tracking-wider">TAX SANDBOX LOGS</span>
           <p className="text-xs text-[#009DFF] my-2">{log}</p>
-          <span className="text-[8px] text-white/30 text-right">TAX CONTEXT // SANDBOX</span>
+          {/* <span className="text-[8px] text-white/30 text-right">TAX CONTEXT // SANDBOX</span> */}
         </div>
       </div>
       <div className="max-w-[1795px] mx-auto px-6 pb-12">

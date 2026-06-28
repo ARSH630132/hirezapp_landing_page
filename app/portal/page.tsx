@@ -80,7 +80,7 @@ export default function ClientPortalLandingPage() {
                 </div>
                 <div>
                   <h4 className="text-[14px] font-bold uppercase tracking-wider text-white">Client Portal Presentation</h4>
-                  <span className="text-[9px] font-mono text-[#009DFF]">BROWSER / SECURE SOCKET</span>
+                  {/* <span className="text-[9px] font-mono text-[#009DFF]">BROWSER / SECURE SOCKET</span> */}
                 </div>
               </div>
               <p className="text-[12.5px] text-white/50 leading-relaxed font-light font-sans">
@@ -111,7 +111,7 @@ export default function ClientPortalLandingPage() {
                 </div>
                 <div>
                   <h4 className="text-[14px] font-bold uppercase tracking-wider text-white">Sovereign Model Enclaves</h4>
-                  <span className="text-[9px] font-mono text-[#E4000F]">HYPERVISOR REINFORCED / eBPF</span>
+                  {/* <span className="text-[9px] font-mono text-[#E4000F]">HYPERVISOR REINFORCED / eBPF</span> */}
                 </div>
               </div>
               <p className="text-[12.5px] text-white/50 leading-relaxed font-light font-sans">
@@ -153,7 +153,7 @@ export default function ClientPortalLandingPage() {
             
             {/* Left selectors */}
             <div className="lg:col-span-4 space-y-2">
-              <span className="text-[10px] font-mono font-bold tracking-wider text-white/30 uppercase pl-3 block mb-3">WORKSPACE MODULES</span>
+              {/* <span className="text-[10px] font-mono font-bold tracking-wider text-white/30 uppercase pl-3 block mb-3">WORKSPACE MODULES</span> */}
               <div className="grid grid-cols-2 lg:grid-cols-1 gap-2">
                 {MODULES.map((mod) => {
                   const IconComp = mod.icon;

@@ -66,7 +66,7 @@ export default function HealthcarePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           {CHALLENGES.map((c, i) => (
             <div key={i} className="p-5 rounded-xl border border-white/5 bg-[#050507]/60">
-              <span className="text-[#009DFF] font-mono text-xs block mb-2">0{i+1} {"//"} {c.title}</span>
+              <span className="text-[#009DFF] font-mono text-xs block mb-2">0{i+1}{"."} {c.title}</span>
               <p className="text-xs text-white/60 leading-relaxed font-light">{c.desc}</p>
             </div>
           ))}

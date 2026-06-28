@@ -52,7 +52,7 @@ export default function FinancialServicesPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           {CHALLENGES.map((c, i) => (
             <div key={i} className="p-5 rounded-xl border border-white/5 bg-[#050507]/60">
-              <span className="text-[#E4000F] font-mono text-xs block mb-2">0{i+1} {"//"} {c.title}</span>
+              <span className="text-[#E4000F] font-mono text-xs block mb-2">0{i+1}{"."} {c.title}</span>
               <p className="text-xs text-white/60 leading-relaxed">{c.desc}</p>
             </div>
           ))}
@@ -107,7 +107,7 @@ export default function FinancialServicesPage() {
         <div className="lg:col-span-6 p-5 rounded-xl border border-white/5 bg-black/40 min-h-[140px] flex flex-col justify-between font-mono">
           <span className="text-[10px] text-white/40 block border-b border-white/5 pb-2">AUDIT SYSTEM LOGS</span>
           <p className="text-xs text-[#009DFF] mt-2">{demoLog}</p>
-          <span className="text-[9px] text-white/30 text-right block pt-2">COMPLIANCE SECTOR // ISOLATED</span>
+          {/* <span className="text-[9px] text-white/30 text-right block pt-2">COMPLIANCE SECTOR // ISOLATED</span> */}
         </div>
       </div>
 

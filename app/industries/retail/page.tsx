@@ -64,7 +64,7 @@ export default function RetailPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           {CHALLENGES.map((c, i) => (
             <div key={i} className="p-5 rounded-xl border border-white/5 bg-[#050507]/60">
-              <span className="text-[#009DFF] font-mono text-xs block mb-2">0{i+1} {"//"} {c.title}</span>
+              <span className="text-[#009DFF] font-mono text-xs block mb-2">0{i+1}{"."} {c.title}</span>
               <p className="text-xs text-white/60 leading-relaxed font-light">{c.desc}</p>
             </div>
           ))}
@@ -174,7 +174,7 @@ export default function RetailPage() {
         <div className="lg:col-span-7 p-5 rounded-xl border border-white/5 bg-black/40 min-h-[160px] flex flex-col justify-between font-mono relative overflow-hidden">
           <span className="text-[10px] text-[#009DFF] block border-b border-white/5 pb-2 uppercase tracking-wider font-bold">RETAILMESH SYSTEM LOGS</span>
           <p className="text-xs text-green-400 mt-3 leading-relaxed font-mono">{demoOutput}</p>
-          <span className="text-[9px] text-white/30 text-right block pt-3">RETAILMESH PORTAL // INSTANCE #104</span>
+          {/* <span className="text-[9px] text-white/30 text-right block pt-3">RETAILMESH PORTAL // INSTANCE #104</span> */}
         </div>
       </div>
 

@@ -524,7 +524,7 @@ Status: MODELLED - ILLUSTRATIVE ONLY
             <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#009DFF]/40 to-transparent pointer-events-none" />
             
             <div className="border-b border-white/5 pb-3">
-              <span className="text-[10px] font-mono text-white/40 block uppercase tracking-wider">VARIABLE CONTEXT PANEL</span>
+              {/* <span className="text-[10px] font-mono text-white/40 block uppercase tracking-wider">VARIABLE CONTEXT PANEL</span> */}
               <h2 className="text-sm font-bold text-white mt-1">Configure Model Inputs</h2>
             </div>
 
@@ -1120,10 +1120,10 @@ Status: MODELLED - ILLUSTRATIVE ONLY
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#00FF9D]/2 blur-3xl pointer-events-none" />
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-white/[0.04] pb-3">
               <div>
-                <span className="text-[8px] font-mono text-[#009DFF] font-bold block uppercase tracking-wider">PROJECTED RISK SCENARIOS</span>
+                {/* <span className="text-[8px] font-mono text-[#009DFF] font-bold block uppercase tracking-wider">PROJECTED RISK SCENARIOS</span> */}
                 <h3 className="text-xs font-extrabold text-white">Multi-Tier Operational Amortization Matrix</h3>
               </div>
-              <span className="text-[8px] font-mono text-white/30 uppercase">COGNITIVE MULTIPLIERS MODELLED</span>
+              {/* <span className="text-[8px] font-mono text-white/30 uppercase">COGNITIVE MULTIPLIERS MODELLED</span> */}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1206,10 +1206,10 @@ Status: MODELLED - ILLUSTRATIVE ONLY
             <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#009DFF]/20 to-transparent" />
             <div className="flex justify-between items-baseline border-b border-white/5 pb-4 mb-4">
               <div>
-                <span className="text-[9px] font-mono text-[#009DFF] font-bold block uppercase tracking-wider">VALUE CONSTRUCT MATRIX</span>
+                {/* <span className="text-[9px] font-mono text-[#009DFF] font-bold block uppercase tracking-wider">VALUE CONSTRUCT MATRIX</span> */}
                 <h3 className="text-sm font-bold text-white mt-1">Sovereign Financial Value Waterfall Chart</h3>
               </div>
-              <span className="text-[9px] font-mono text-white/30 hidden md:inline">UNIT: USD ($) // ANNUALIZED MODEL</span>
+              {/* <span className="text-[9px] font-mono text-white/30 hidden md:inline">UNIT: USD ($) // ANNUALIZED MODEL</span> */}
             </div>
             <div className="w-full overflow-x-auto scrollbar-none">
               <svg viewBox="0 0 720 230" className="w-full min-w-[580px] h-auto overflow-visible select-none" fill="none">
@@ -1381,7 +1381,7 @@ Status: MODELLED - ILLUSTRATIVE ONLY
           {/* Section D: Comparative Scenario Matrices */}
           <div className="p-6 rounded-2xl border border-white/5 bg-[#030306]/95 space-y-4">
             <div className="border-b border-white/5 pb-3">
-              <span className="text-[9px] font-mono text-white/40 block uppercase tracking-wider">AMORTIZATION MATRIX</span>
+              {/* <span className="text-[9px] font-mono text-white/40 block uppercase tracking-wider">AMORTIZATION MATRIX</span> */}
               <h3 className="text-sm font-bold text-white mt-1">Multi-Scenario Sovereign Performance Matrix</h3>
             </div>
             

@@ -51,7 +51,7 @@ export default function InsurancePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           {CHALLENGES.map((c, i) => (
             <div key={i} className="p-5 rounded-xl border border-white/5 bg-[#050507]/60">
-              <span className="text-[#E4000F] font-mono text-xs block mb-2">0{i+1} {"//"} {c.title}</span>
+              <span className="text-[#E4000F] font-mono text-xs block mb-2">0{i+1}{"."} {c.title}</span>
               <p className="text-xs text-white/60 leading-relaxed">{c.desc}</p>
             </div>
           ))}
@@ -106,7 +106,7 @@ export default function InsurancePage() {
         <div className="lg:col-span-6 p-5 rounded-xl border border-white/5 bg-black/40 min-h-[140px] flex flex-col justify-between font-mono">
           <span className="text-[10px] text-white/40 block border-b border-white/5 pb-2">TRIAGE PARSING STREAM</span>
           <p className="text-xs text-green-400 mt-2 leading-relaxed">{demoLog}</p>
-          <span className="text-[9px] text-white/30 text-right block pt-2">INSURANCE PORTAL // ISOLATED PROCESSING</span>
+          {/* <span className="text-[9px] text-white/30 text-right block pt-2">INSURANCE PORTAL // ISOLATED PROCESSING</span> */}
         </div>
       </div>
 

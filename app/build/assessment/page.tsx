@@ -571,9 +571,9 @@ CONFIDENTIALITY NOTICE: This report was compiled locally in a zero-retention env
             {/* Header section */}
             <div className="border-b border-white/5 pb-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
               <div className="space-y-2 max-w-3xl">
-                <span className="text-[10px] font-mono text-[#009DFF] font-bold uppercase tracking-widest block">
+                {/* <span className="text-[10px] font-mono text-[#009DFF] font-bold uppercase tracking-widest block">
                   BUILD-WITH-GFF // INTERACTIVE DIAGNOSTIC
-                </span>
+                </span> */}
                 <h1 className="text-3xl lg:text-5xl font-extrabold text-white tracking-tight leading-none">
                   Sovereign AI <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#009DFF] via-white to-[#00FF9D]">Readiness Assessor</span>
                 </h1>
@@ -788,7 +788,7 @@ CONFIDENTIALITY NOTICE: This report was compiled locally in a zero-retention env
               </div>
 
               {/* Right Column: Live summaries (Desktop only) */}
-              <div className="lg:col-span-3 space-y-4 order-3 lg:order-3">
+              {/* <div className="lg:col-span-3 space-y-4 order-3 lg:order-3">
                 <div className="p-4 rounded-xl border border-white/5 bg-[#030306]/90 relative overflow-hidden space-y-3">
                   <div className="border-b border-white/5 pb-2">
                     <span className="text-[9px] font-mono text-[#00FF9D] font-bold block uppercase tracking-wider">LIVE TELEMETRY PANEL</span>
@@ -815,9 +815,9 @@ CONFIDENTIALITY NOTICE: This report was compiled locally in a zero-retention env
                       Your response parameters remain local. No compliance or organizational details leave your terminal session.
                     </div>
                   </div>
-                </div>
+                </div> */}
 
-                <div className="p-4 rounded-xl border border-white/5 bg-white/[0.005] text-xs text-white/50 space-y-2">
+                {/* <div className="p-4 rounded-xl border border-white/5 bg-white/[0.005] text-xs text-white/50 space-y-2">
                   <span className="text-[9px] font-mono text-white/30 uppercase block font-semibold">QUICK JUMP GATES</span>
                   <div className="grid grid-cols-2 gap-1.5 font-mono text-[9px] font-bold">
                     <button type="button" onClick={() => { setValidationError(null); setActiveDimensionIndex(0); }} className="p-1.5 rounded bg-white/5 hover:bg-white/10 text-center uppercase border border-white/5 text-white/70">01. STRATEGY</button>
@@ -826,7 +826,7 @@ CONFIDENTIALITY NOTICE: This report was compiled locally in a zero-retention env
                     <button type="button" onClick={() => { setValidationError(null); setActiveDimensionIndex(5); }} className="p-1.5 rounded bg-white/5 hover:bg-white/10 text-center uppercase border border-white/5 text-white/70">06. STACK</button>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </motion.div>
         )}
