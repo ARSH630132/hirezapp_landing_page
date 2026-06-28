@@ -85,8 +85,8 @@ export default function ClientInvoicesPage() {
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <div>
-            <h2 className="text-xl font-bold text-white tracking-tight font-mono uppercase">Certified Invoice Ledger</h2>
-            <p className="text-xs text-white/50 mt-1">Verified commercial statements registered on GFF secure enclaves.</p>
+            <h2 className="text-xl font-bold text-white tracking-tight font-mono uppercase">Invoices & Bills</h2>
+            <p className="text-xs text-white/50 mt-1">View and track all your monthly invoices and bills.</p>
           </div>
         </div>
         <div className="text-[11px] font-mono text-white/40">
@@ -114,8 +114,8 @@ export default function ClientInvoicesPage() {
             onChange={(e) => setStatusFilter(e.target.value)}
             className="w-full h-9 rounded bg-black border border-white/10 text-[11.5px] font-mono text-white px-2 focus:outline-none focus:border-[#009DFF]/60"
           >
-            <option value="all">Status: All Ledgers</option>
-            <option value="paid">Status: Settled (Paid)</option>
+            <option value="all">Status: All Invoices</option>
+            <option value="paid">Status: Paid</option>
             <option value="processing">Status: Processing</option>
             <option value="unpaid">Status: Unpaid</option>
           </select>
@@ -127,27 +127,27 @@ export default function ClientInvoicesPage() {
         <div className="flex flex-col items-center justify-center py-20 space-y-4 border border-white/5 bg-white/[0.01] rounded-xl">
           <RefreshCw className="w-8 h-8 animate-spin text-[#009DFF]" />
           <div className="text-center">
-            <p className="text-xs font-mono font-semibold text-white tracking-wider uppercase">SYNCHRONIZING SECURE ENCLAVE LEDGER...</p>
-            <p className="text-[10px] text-white/40 font-mono mt-1">Establishing ZK-ledger tunnel to secure nodes</p>
+            <p className="text-xs font-mono font-semibold text-white tracking-wider uppercase">LOADING INVOICES...</p>
+            <p className="text-[10px] text-white/40 font-mono mt-1">Please wait a moment...</p>
           </div>
         </div>
       ) : error ? (
         <div className="flex flex-col items-center justify-center py-20 space-y-4 border border-red-500/10 bg-red-500/[0.01] rounded-xl">
           <Info className="w-8 h-8 text-red-400" />
           <div className="text-center">
-            <p className="text-xs font-mono font-semibold text-red-400 tracking-wider uppercase">ENCLAVE CONNECTIVITY LOST</p>
+            <p className="text-xs font-mono font-semibold text-red-400 tracking-wider uppercase">COULD NOT LOAD INVOICES</p>
             <p className="text-[10px] text-white/40 font-mono mt-1 max-w-xs">{error}</p>
           </div>
           <button 
             onClick={fetchInvoices}
             className="px-4 py-2 border border-red-500/20 hover:border-red-500/40 bg-red-500/5 text-red-400 font-mono text-[10.5px] uppercase font-bold rounded cursor-pointer transition-all"
           >
-            RE-INITIATE LEDGER SYNC
+            RELOAD
           </button>
         </div>
       ) : filteredInvoices.length === 0 ? (
         <div className="p-12 text-center rounded-xl border border-white/5 bg-[#050505]/40 font-mono text-xs text-white/40">
-          No secure invoice receipts matched your filter parameters.
+          No bills match your search criteria.
         </div>
       ) : (
         <div className="space-y-4">
@@ -156,12 +156,12 @@ export default function ClientInvoicesPage() {
             <table className="w-full text-left border-collapse font-mono text-[11px]">
               <thead>
                 <tr className="border-b border-white/5 bg-[#030303] text-white/45 uppercase text-[10px] tracking-wider">
-                  <th className="p-4 font-semibold">Ledger ID</th>
-                  <th className="p-4 font-semibold">Epoch Category</th>
+                  <th className="p-4 font-semibold">Bill ID</th>
+                  <th className="p-4 font-semibold">Bill Type</th>
                   <th className="p-4 font-semibold">Associated Project</th>
-                  <th className="p-4 font-semibold">Billed Amount</th>
+                  <th className="p-4 font-semibold">Amount</th>
                   <th className="p-4 font-semibold">Due Date</th>
-                  <th className="p-4 font-semibold">Integrity Seal</th>
+                  <th className="p-4 font-semibold">Security Key</th>
                   <th className="p-4 font-semibold text-right">Actions</th>
                 </tr>
               </thead>
@@ -177,7 +177,7 @@ export default function ClientInvoicesPage() {
                       <td className="p-4 text-white/85">
                         <span className="flex items-center gap-1.5">
                           <Briefcase className="w-3 h-3 text-white/30" />
-                          <span>{inv.project_name || "Sovereign Cluster Allocation"}</span>
+                          <span>{inv.project_name || "Project Billing"}</span>
                         </span>
                       </td>
                       <td className="p-4 font-bold text-[#009DFF]">{formattedAmount}</td>
@@ -200,7 +200,7 @@ export default function ClientInvoicesPage() {
                           onClick={() => setSelInvoice(inv)}
                           className="p-1 px-2.5 rounded bg-white hover:bg-white/90 text-black text-[10px] font-bold uppercase cursor-pointer"
                         >
-                          Audit
+                          View Details
                         </button>
                       </td>
                     </tr>
@@ -223,7 +223,7 @@ export default function ClientInvoicesPage() {
                 >
                   <div className="flex justify-between items-start border-b border-white/5 pb-2">
                     <div>
-                      <span className="text-[9px] text-white/30 block uppercase">Epoch Reference</span>
+                      <span className="text-[9px] text-white/30 block uppercase">Bill Number</span>
                       <span className="text-xs font-bold text-white">{inv.invoice_number}</span>
                     </div>
                     <span className={`inline-block px-2 py-0.5 rounded text-[9px] font-bold uppercase ${
@@ -246,7 +246,7 @@ export default function ClientInvoicesPage() {
                     </div>
                     <div className="flex justify-between items-center pt-1 border-t border-white/[0.03]">
                       <span>Project:</span>
-                      <span className="text-white font-bold">{inv.project_name || "Sovereign Cluster Allocation"}</span>
+                      <span className="text-white font-bold">{inv.project_name || "Project Billing"}</span>
                     </div>
                     <div className="flex justify-between items-center pt-1">
                       <span>Billed:</span>
@@ -273,7 +273,7 @@ export default function ClientInvoicesPage() {
                       ) : (
                         <>
                           <Copy className="w-3 h-3" />
-                          <span>Copy Crypt</span>
+                          <span>Copy Code</span>
                         </>
                       )}
                     </button>
@@ -292,9 +292,9 @@ export default function ClientInvoicesPage() {
             <div className="space-y-6">
               <div className="flex justify-between items-start border-b border-white/5 pb-3">
                 <div>
-                  <span className="text-[9px] bg-blue-500/10 border border-blue-500/20 text-[#009DFF] px-1.5 py-0.5 rounded font-mono font-bold uppercase">Enclave verification</span>
+                  <span className="text-[9px] bg-blue-500/10 border border-blue-500/20 text-[#009DFF] px-1.5 py-0.5 rounded font-mono font-bold uppercase">Bill Details</span>
                   <h3 className="text-lg font-bold text-white font-mono mt-1">{selInvoice.invoice_number}</h3>
-                  <span className="text-[10px] text-white/40 font-mono block mt-0.5 font-bold font-mono">Project: {selInvoice.project_name || "Sovereign Cluster Allocation"}</span>
+                  <span className="text-[10px] text-white/40 font-mono block mt-0.5 font-bold font-mono">Project: {selInvoice.project_name || "Project Billing"}</span>
                 </div>
                 <button 
                   onClick={() => {
@@ -310,7 +310,7 @@ export default function ClientInvoicesPage() {
               <div className="space-y-4 font-mono text-[11px]">
                 <div className="p-3.5 rounded bg-black border border-white/5 space-y-2">
                   <div className="flex justify-between text-white/40 text-[10px]">
-                    <span>LEDGER CRYPTO SEAL</span>
+                    <span>SECURITY KEY</span>
                     <button onClick={() => handleCopy(selInvoice.hash, "sel")} className="text-[#009DFF] hover:underline font-bold">COPY</button>
                   </div>
                   <div className="text-[9px] text-white/80 break-all select-all leading-relaxed bg-white/[0.02] p-2 rounded">
@@ -319,10 +319,10 @@ export default function ClientInvoicesPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <h4 className="text-[10.5px] font-bold text-white uppercase border-b border-white/5 pb-1">Resource Breakdown</h4>
+                  <h4 className="text-[10.5px] font-bold text-white uppercase border-b border-white/5 pb-1">Bill Items</h4>
                   <div className="space-y-1.5 text-white/70">
                     <div className="flex justify-between">
-                      <span>{selInvoice.category} SLA Allocation</span>
+                      <span>{selInvoice.category} Allocation</span>
                       <span className="text-white font-bold">
                         {typeof selInvoice.amount === "number" 
                           ? selInvoice.amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " " + selInvoice.currency 
@@ -334,11 +334,11 @@ export default function ClientInvoicesPage() {
 
                 <div className="p-3 rounded border border-white/[0.03] bg-white/[0.01] space-y-2 text-[10.5px] text-[#ffffff8c]">
                   <div className="flex justify-between">
-                    <span>Settled Epoch Date:</span>
+                    <span>Invoice Date:</span>
                     <span className="text-white">{selInvoice.issue_date}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Payment Due Date:</span>
+                    <span>Due Date:</span>
                     <span className="text-white">{selInvoice.due_date}</span>
                   </div>
                 </div>
@@ -351,12 +351,12 @@ export default function ClientInvoicesPage() {
                 className="w-full h-9 rounded border border-[#009DFF]/30 hover:border-[#009DFF]/50 bg-[#009DFF]/5 text-[#009DFF] font-semibold text-[11px] uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
-                <span>Deep Audit Ledger Enclave</span>
+                <span>View Detailed Invoice</span>
               </Link>
               
               {contactSuccess ? (
                 <div className="p-2.5 rounded border border-green-500/20 bg-green-500/5 text-green-400 font-mono text-[10.5px] text-center">
-                  Secure invoice channel initialized. Liaison notified.
+                  We got your inquiry! We will reply soon.
                 </div>
               ) : (
                 <div className="grid grid-cols-2 gap-3">
@@ -365,7 +365,7 @@ export default function ClientInvoicesPage() {
                     className="w-full h-9 rounded bg-white hover:bg-white/95 text-black font-semibold text-[11px] uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer"
                   >
                     <Download className="w-3.5 h-3.5" />
-                    <span>Receipt PDF</span>
+                    <span>Download Receipt</span>
                   </button>
                   <button 
                     onClick={() => {
@@ -375,7 +375,7 @@ export default function ClientInvoicesPage() {
                     className="w-full h-9 rounded border border-white/10 hover:border-white/20 bg-white/[0.01] text-white font-semibold text-[11px] uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer"
                   >
                     <Mail className="w-3.5 h-3.5" />
-                    <span>Inquire</span>
+                    <span>Get Help</span>
                   </button>
                 </div>
               )}

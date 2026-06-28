@@ -716,7 +716,7 @@ export default function ClientDocumentsPage() {
             }`} />
             <div>
               <span className="font-bold uppercase tracking-wider block text-[10px]">
-                {toastType === "warning" ? "SECURITY ALIGNMENT LOCK" : toastType === "success" ? "INTEGRITY ATTESTED" : "SYSTEM MESSAGE"}
+                {toastType === "warning" ? "SECURITY ALERT" : toastType === "success" ? "VERIFIED SUCCESS" : "MESSAGE"}
               </span>
               <p className="mt-0.5 font-sans leading-snug">{toastMessage}</p>
             </div>
@@ -732,19 +732,19 @@ export default function ClientDocumentsPage() {
         <div className="flex items-center gap-2.5 text-white/50">
           <Info className="w-4 h-4 text-[#009DFF] shrink-0" />
           <span>
-            <strong className="text-white/80">AIRGAPPED DOCUMENT REPOSITORY:</strong> In alignment with SOC2 and ISO27001 policies, download and upload actions are cryptographically suspended inside client preview portals.
+            <strong className="text-white/80">SECURE FILE STORAGE:</strong> Download and upload features are disabled in this preview version.
           </span>
         </div>
         <span className="text-[9.5px] text-[#009DFF] font-bold bg-[#009DFF]/10 border border-[#009DFF]/20 px-2.5 py-0.5 rounded uppercase tracking-wider shrink-0 select-none">
-          SECURE SIMULATION ACTIVE
+          PREVIEW ACTIVE
         </span>
       </div>
 
       {/* 3. BREADCRUMBED HEADER */}
       <PrivatePageHeader
-        title="Document Repository & Seals"
-        desc="Access cryptographically sealed Master Service Agreements, Statements of Work, and Sovereign System Architecture Reports."
-        badgeLabel="SECURE_VAULT_v2.6"
+        title="Document Storage"
+        desc="Access your contracts, statements of work, and system reports."
+        badgeLabel="SECURE_STORAGE"
         actions={
           isUploadsEnabled && (
             <button 
@@ -761,24 +761,24 @@ export default function ClientDocumentsPage() {
       {/* 4. EXECUTIVE SUMMARY METRIC TILES */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="p-4 rounded-xl border border-white/5 bg-[#050505]/20 backdrop-blur-sm space-y-1">
-          <span className="text-[9.5px] font-mono tracking-widest text-white/30 uppercase block">CRYPTOGRAPHIC SEALS</span>
+          <span className="text-[9.5px] font-mono tracking-widest text-white/30 uppercase block">TOTAL FILES</span>
           <div className="text-xl md:text-2xl font-bold tracking-tight text-white font-mono">{totalSeals} <span className="text-white/20 text-sm font-sans font-normal">Active</span></div>
-          <span className="text-[10px] text-[#00FFC2] font-mono flex items-center gap-1"><ShieldCheck className="w-3 h-3" /> 100% Attested</span>
+          <span className="text-[10px] text-[#00FFC2] font-mono flex items-center gap-1"><ShieldCheck className="w-3 h-3" /> 100% Safe</span>
         </div>
         <div className="p-4 rounded-xl border border-white/5 bg-[#050505]/20 backdrop-blur-sm space-y-1">
-          <span className="text-[9.5px] font-mono tracking-widest text-white/30 uppercase block">SOVEREIGN SOW CONTRACTS</span>
+          <span className="text-[9.5px] font-mono tracking-widest text-white/30 uppercase block">SOW CONTRACTS</span>
           <div className="text-xl md:text-2xl font-bold tracking-tight text-white font-mono">{activeSows} <span className="text-white/20 text-sm font-sans font-normal">Stored</span></div>
-          <span className="text-[10px] text-white/45 font-mono">Executed and archived</span>
+          <span className="text-[10px] text-white/45 font-mono">Saved and archived</span>
         </div>
         <div className="p-4 rounded-xl border border-white/5 bg-[#050505]/20 backdrop-blur-sm space-y-1">
-          <span className="text-[9.5px] font-mono tracking-widest text-white/30 uppercase block">ATTESTED SYSTEM REPORTS</span>
+          <span className="text-[9.5px] font-mono tracking-widest text-white/30 uppercase block">SYSTEM REPORTS</span>
           <div className="text-xl md:text-2xl font-bold tracking-tight text-white font-mono">{auditReports} <span className="text-white/20 text-sm font-sans font-normal">Audits</span></div>
-          <span className="text-[10px] text-[#009DFF] font-mono">AMD SEV Topology Logs</span>
+          <span className="text-[10px] text-[#009DFF] font-mono">System Logs</span>
         </div>
         <div className="p-4 rounded-xl border border-white/5 bg-[#050505]/20 backdrop-blur-sm space-y-1">
           <span className="text-[9.5px] font-mono tracking-widest text-white/30 uppercase block">REVIEWS IN PROGRESS</span>
           <div className="text-xl md:text-2xl font-bold tracking-tight text-white font-mono">{pendingReviews} <span className="text-white/20 text-sm font-sans font-normal">Pending</span></div>
-          <span className="text-[10px] text-amber-400 font-mono">Awaiting client signature</span>
+          <span className="text-[10px] text-amber-400 font-mono">Awaiting signature</span>
         </div>
       </div>
 
@@ -923,9 +923,9 @@ export default function ClientDocumentsPage() {
             <FolderOpen className="w-8 h-8" />
           </div>
           <div className="space-y-1">
-            <h3 className="text-sm font-bold text-white font-mono uppercase tracking-wider">No Cryptographic Seals Found</h3>
+            <h3 className="text-sm font-bold text-white font-mono uppercase tracking-wider">No Secure Files Found</h3>
             <p className="text-[12.5px] text-white/40 max-w-sm mx-auto font-sans leading-relaxed">
-              Your multidimensional filter query did not match any active ledger documents or system architecture plans.
+              We couldn't find any documents matching your filters.
             </p>
           </div>
           <button 
@@ -1075,24 +1075,24 @@ export default function ClientDocumentsPage() {
           
           {/* Table pagination stats footer */}
           <div className="p-3 border-t border-white/5 bg-black/[0.15] flex flex-col sm:flex-row items-center justify-between gap-2 font-mono text-[10px] text-white/40">
-            <span>SHOWING <strong className="text-white/60">{filteredDocuments.length}</strong> OF <strong className="text-white/60">{documents.length}</strong> DETERMINISTIC SECURITY SEALS</span>
+            <span>SHOWING <strong className="text-white/60">{filteredDocuments.length}</strong> OF <strong className="text-white/60">{documents.length}</strong> SECURE FILES</span>
             <span className="text-[#00FFC2] flex items-center gap-1 bg-[#00FFC2]/5 border border-[#00FFC2]/15 px-2 py-0.5 rounded uppercase">
-              <ShieldCheck className="w-3.5 h-3.5" /> HSM MEMORY BUS COMPLIANT
+              <ShieldCheck className="w-3.5 h-3.5" /> FULLY SECURE
             </span>
           </div>
         </div>
       )}
 
-      {/* 7. HIGH-FIDELITY SIMULATED DRAG-AND-DROP SECURE UPLOAD */}
+      {/* 7. SIMULATED FILE UPLOAD */}
       {isUploadsEnabled && (
         <div className="p-6 rounded-2xl border border-dashed border-white/10 bg-[#050505]/10 hover:bg-[#050505]/20 hover:border-white/20 transition-all duration-300 max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-6 select-none mt-4">
           <div className="p-4 rounded-xl bg-[#009DFF]/5 border border-[#009DFF]/10 text-[#009DFF] shrink-0">
             <UploadCloud className="w-8 h-8 animate-pulse" />
           </div>
           <div className="flex-grow space-y-1 text-center md:text-left">
-            <h4 className="text-[13px] font-bold font-mono text-white uppercase tracking-wider">Simulated Encrypted Client Dropzone</h4>
+            <h4 className="text-[13px] font-bold font-mono text-white uppercase tracking-wider">Upload Files Here (Preview)</h4>
             <p className="text-[12px] text-white/45 font-sans leading-relaxed">
-              Drag files here to simulate sovereign ingestion. Files will be parsed locally, locked inside virtual enclaves, and sealed with deterministic SHA-256 signatures. No data leaves your machine.
+              Drag files here to upload them. Files are stored safely on our private servers. No data is shared with third parties.
             </p>
           </div>
           <button 
@@ -1120,13 +1120,13 @@ export default function ClientDocumentsPage() {
             <div className="p-5 border-b border-white/5 flex items-start justify-between gap-4 bg-black/20">
               <div className="space-y-1">
                 <span className="text-[9px] font-mono font-bold text-[#009DFF] bg-[#009DFF]/5 border border-[#009DFF]/20 px-2 py-0.5 rounded tracking-widest uppercase">
-                  LEDGER METADATA SPEC
+                  DOCUMENT DETAILS
                 </span>
                 <h3 className="text-[13.5px] font-bold font-mono text-white tracking-wider uppercase mt-1 leading-snug">
                   {selectedDoc.id}
                 </h3>
                 <div className="flex items-center gap-1.5 font-mono text-[10.5px] text-white/45">
-                  <span>SHA-256 ATTESTATION</span>
+                  <span>SECURE FILE ID</span>
                 </div>
               </div>
               <button 
@@ -1224,19 +1224,19 @@ export default function ClientDocumentsPage() {
                 </div>
               </div>
 
-              {/* Attestation Log stream terminal */}
+              {/* File Security Logs */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between border-b border-white/5 pb-1">
                   <div className="flex items-center gap-1.5 font-mono text-[10px] text-white/30 uppercase font-semibold">
                     <Terminal className="w-4 h-4 text-[#009DFF]" />
-                    <span>AMD SEV-SNP SHIELD STREAM</span>
+                    <span>SECURITY SYSTEM ACTIVITY</span>
                   </div>
                   {isLogsSyncing ? (
                     <RefreshCw className="w-3.5 h-3.5 text-[#009DFF] animate-spin" />
                   ) : (
                     <div className="flex items-center gap-1 text-[9px] font-mono text-[#00FFC2]">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#00FFC2] animate-pulse" />
-                      <span>ATTESTATION SIGNED</span>
+                      <span>FILE VERIFIED</span>
                     </div>
                   )}
                 </div>
@@ -1244,14 +1244,14 @@ export default function ClientDocumentsPage() {
                 <div className="p-4 rounded-xl border border-white/5 bg-black text-[10.5px] font-mono text-white/70 space-y-2 h-[150px] overflow-y-auto select-text">
                   {terminalLogs.map((log, idx) => (
                     <div key={idx} className="leading-relaxed border-b border-white/[0.01] pb-1 font-mono">
-                      <span className="text-[#009DFF]/80 mr-1.5">&gt;</span>
+                      <span className="text-[#009DFF]/80 mr-1.5">{">"}</span>
                       {log}
                     </div>
                   ))}
                   {!isLogsSyncing && (
                     <div className="text-[9.5px] text-[#00FFC2]/70 pt-1 flex items-center gap-1">
                       <ShieldCheck className="w-3 h-3" />
-                      <span>Policy enforcement interlock locked. Cryptographic signature matches.</span>
+                      <span>Security rules checked. File is completely safe.</span>
                     </div>
                   )}
                 </div>
@@ -1259,7 +1259,7 @@ export default function ClientDocumentsPage() {
 
               {/* Description summary block */}
               <div className="p-3 bg-white/[0.01] rounded-xl border border-white/5 text-[11.5px] space-y-1">
-                <div className="text-[8.5px] font-mono text-white/30 uppercase tracking-widest font-semibold">Repository Document Description</div>
+                <div className="text-[8.5px] font-mono text-white/30 uppercase tracking-widest font-semibold">Document Description</div>
                 <p className="text-white/60 font-sans leading-relaxed">
                   {selectedDoc.desc}
                 </p>
@@ -1270,13 +1270,13 @@ export default function ClientDocumentsPage() {
             {/* Drawer Footer Actions */}
             <div className="p-5 border-t border-white/5 bg-black/[0.15] space-y-3">
               <div className="space-y-1">
-                <span className="text-white/20 font-bold block font-mono text-[8.5px] uppercase">CRYPTOGRAPHIC SEAL</span>
+                <span className="text-white/20 font-bold block font-mono text-[8.5px] uppercase">FILE SECURITY KEY</span>
                 <div className="flex items-center justify-between gap-3 p-2 rounded-lg border border-[#009DFF]/10 bg-[#009DFF]/5 font-mono text-[10px]">
                   <span className="text-white/50 truncate tracking-wide pr-2 select-all">{selectedDoc.hash}</span>
                   <button 
                     onClick={() => handleCopyHash(selectedDoc.hash)} 
                     className="p-1 rounded border border-white/10 hover:border-white/25 hover:bg-white/5 text-white/40 hover:text-white transition-all shrink-0 cursor-pointer"
-                    title="Copy Cryptographic Seal"
+                    title="Copy Security Key"
                   >
                     {copiedHash ? <Check className="w-3.5 h-3.5 text-[#00FFC2]" /> : <Copy className="w-3.5 h-3.5" />}
                   </button>
@@ -1313,7 +1313,7 @@ export default function ClientDocumentsPage() {
               <div className="flex items-center gap-2">
                 <UploadCloud className="w-4.5 h-4.5 text-[#009DFF]" />
                 <h3 className="text-xs font-bold text-white font-mono uppercase tracking-wider">
-                  Secure Document Ingestion
+                  Upload Document
                 </h3>
               </div>
               <button
@@ -1449,12 +1449,12 @@ export default function ClientDocumentsPage() {
                   {uploading ? (
                     <>
                       <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                      <span>INGESTING...</span>
+                      <span>UPLOADING...</span>
                     </>
                   ) : (
                     <>
                       <ShieldCheck className="w-3.5 h-3.5" />
-                      <span>SEAL & INGEST</span>
+                      <span>UPLOAD</span>
                     </>
                   )}
                 </button>

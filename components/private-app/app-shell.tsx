@@ -59,12 +59,8 @@ export function PrivateAppShell({
     .filter(Boolean) as SidebarLink[];
 
   return (
-    <div className="min-h-screen flex bg-[#030303] text-white overflow-x-hidden">
-      <div className="fixed top-0 left-0 right-0 z-50">
-        <SecurePreviewNotice />
-      </div>
-
-      <div className="pt-8 w-full flex">
+    <div className="h-screen flex bg-[#030303] text-white overflow-hidden">
+      <div className="w-full flex h-full overflow-hidden">
         <PrivateSidebar 
           links={links}
           activeLink={activeLink}
@@ -95,7 +91,7 @@ export function PrivateAppShell({
                 transition={{ type: "spring", bounce: 0, duration: 0.3 }}
                 role="navigation"
                 aria-label="Mobile drawer navigation"
-                className="fixed inset-y-0 left-0 z-50 w-72 bg-[#050505] border-r border-white/5 flex flex-col pt-8"
+                className="fixed inset-y-0 left-0 z-50 w-72 bg-[#050505] border-r border-white/5 flex flex-col pt-0"
               >
                 <div className="h-14 border-b border-white/5 flex items-center justify-between px-5 select-none shrink-0">
                   <div className="flex items-center gap-2">
@@ -172,7 +168,7 @@ export function PrivateAppShell({
           )}
         </AnimatePresence>
 
-        <div className="flex-grow flex flex-col min-h-[calc(100vh-2rem)] min-w-0">
+        <div className="flex-grow flex flex-col h-full min-w-0 overflow-hidden">
           <PrivateTopbar 
             user={user}
             breadcrumbs={breadcrumbs}

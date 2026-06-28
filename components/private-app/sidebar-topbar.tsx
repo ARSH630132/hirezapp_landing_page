@@ -9,7 +9,6 @@ import {
 import { motion, AnimatePresence } from "motion/react";
 import { SidebarLink, UserProfile, BreadcrumbItem } from "./types";
 import { WorkspaceBreadcrumbs, WorkspaceCommandButton } from "./navigation";
-import { NotificationBell } from "./notifications";
 import { UserAvatar } from "./notices-avatars";
 import { clearPreviewSession } from "@/lib/preview-auth";
 
@@ -201,7 +200,7 @@ export function PrivateSidebar({
       </div>
 
       {/* Main Grouped Navigation Section */}
-      <div className="flex-grow p-4 overflow-y-auto space-y-6 scrollbar-thin">
+      <div className="flex-grow p-4 overflow-hidden space-y-3">
         {groups.map((group, groupIndex) => {
           // Resolve links in this group
           const groupLinks = group.linkIds
@@ -214,7 +213,7 @@ export function PrivateSidebar({
             <div key={group.name} className="space-y-1">
               {/* Group Title - Hidden when collapsed */}
               {!collapsed && (
-                <span className="text-[9px] font-mono font-extrabold tracking-widest text-white/20 px-3 block select-none uppercase mb-2">
+                <span className="text-[9px] font-mono font-extrabold tracking-widest text-white/20 px-3 block select-none uppercase mb-1">
                   {group.name}
                 </span>
               )}
@@ -228,7 +227,7 @@ export function PrivateSidebar({
                     <button
                       key={link.id}
                       onClick={() => onLinkChange(link.id)}
-                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-all cursor-pointer group relative ${
+                      className={`w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-left transition-all cursor-pointer group relative ${
                         isActive 
                           ? "bg-white/[0.04] text-[#009DFF] border border-[#009DFF]/20 shadow-[0_0_15px_rgba(0,157,255,0.02)] font-semibold" 
                           : "text-white/50 hover:text-white hover:bg-white/[0.01] border border-transparent"
@@ -243,7 +242,6 @@ export function PrivateSidebar({
                       {!collapsed && (
                         <div className="min-w-0 flex-grow">
                           <span className="text-[12px] font-bold block truncate leading-tight">{link.label}</span>
-                          <span className="text-[9px] font-mono text-white/25 block mt-0.5 leading-none font-normal truncate group-hover:text-white/35 transition-colors">{link.desc}</span>
                         </div>
                       )}
                     </button>
@@ -329,7 +327,6 @@ export function PrivateTopbar({
 
       <div className="flex items-center gap-3">
         <WorkspaceCommandButton onClick={onSearchClick} />
-        <NotificationBell />
         
         {/* Quick Sign Out Action */}
         <button 
