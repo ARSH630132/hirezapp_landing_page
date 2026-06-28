@@ -26,7 +26,7 @@ if (accessKeyId && secretAccessKey) {
     console.error("[DYNAMODB] Failed to initialize real DynamoDB client:", err);
   }
 } else {
-  console.log("[DYNAMODB] Running in mock/fallback mode (no AWS credentials provided).");
+  console.log("[DYNAMODB] No AWS credentials provided. Real DynamoDB access is unavailable.");
 }
 
 export interface DynamoDbUser {
@@ -67,6 +67,59 @@ export async function getUserFromDynamoDB(email: string): Promise<DynamoDbUser |
   return null;
 }
 
+export async function listUsersFromDynamoDB(): Promise<DynamoDbUser[]> {
+  if (docClient) {
+    try {
+      const response = await docClient.send(
+        new ScanCommand({
+          TableName: tableName,
+        })
+      );
+      return (response.Items || []) as DynamoDbUser[];
+    } catch (err) {
+      console.error("[DYNAMODB] Error listing users from DynamoDB:", err);
+    }
+  }
+  return [];
+}
+
+export async function putUserInDynamoDB(user: DynamoDbUser): Promise<boolean> {
+  if (docClient) {
+    try {
+      await docClient.send(
+        new PutCommand({
+          TableName: tableName,
+          Item: user,
+        })
+      );
+      return true;
+    } catch (err) {
+      console.error(`[DYNAMODB] Error writing user ${user.email} to DynamoDB:`, err);
+      return false;
+    }
+  }
+  return false;
+}
+
+export async function deleteUserFromDynamoDB(email: string): Promise<boolean> {
+  const normalizedEmail = email.toLowerCase().trim();
+  if (docClient) {
+    try {
+      await docClient.send(
+        new DeleteCommand({
+          TableName: tableName,
+          Key: { email: normalizedEmail },
+        })
+      );
+      return true;
+    } catch (err) {
+      console.error(`[DYNAMODB] Error deleting user ${normalizedEmail} from DynamoDB:`, err);
+      return false;
+    }
+  }
+  return false;
+}
+
 export function hashPassword(password: string): string {
   return crypto
     .createHmac("sha256", "gff-ai-salt-2026")
@@ -79,18 +132,15 @@ export function verifyDbUserPassword(dbUser: DynamoDbUser, passwordAttempt: stri
   const storedHash = dbUser.hashed_password || dbUser.password_hash || dbUser.passwordHash;
   if (!storedHash) return false;
 
-  // 1. Try standard plain comparison (for local/mock plain passwords)
-  if (attempt === storedHash || attempt === "gff-secure-2026!" || attempt === "password123") {
+  if (attempt === storedHash) {
     return true;
   }
 
-  // 2. Try SHA256 custom hash comparison (for frontend API_MOCK_USERS custom hashes)
   const hashedAttempt = hashPassword(attempt);
   if (hashedAttempt === storedHash) {
     return true;
   }
 
-  // 3. Try bcrypt comparison (for DynamoDB real hashed passwords)
   try {
     if (storedHash.startsWith("$2a$") || storedHash.startsWith("$2b$") || storedHash.startsWith("$2y$")) {
       return bcrypt.compareSync(attempt, storedHash);
@@ -105,17 +155,17 @@ export function verifyDbUserPassword(dbUser: DynamoDbUser, passwordAttempt: stri
 export function mapDynamoUserToApiUser(dbUser: DynamoDbUser): any {
   const role = dbUser.role || "client_member";
   
-  let clearance = "CLEARANCE LEVEL I (BASIC VIEW-ONLY)";
+  let clearance = "Client member access";
   let permissions: string[] = ["read:telemetry", "read:projects", "read:ai-operations", "read:documents", "write:support"];
   
   if (role === "gff_admin") {
-    clearance = "CLEARANCE LEVEL V (SECURE PLATFORM SUPERUSER)";
+    clearance = "Admin access";
     permissions = [
       "all:*", "read:telemetry", "write:telemetry", "read:projects", "write:projects",
       "read:users", "write:users", "read:clients", "write:clients", "write:governance"
     ];
   } else if (role === "client_admin") {
-    clearance = "CLEARANCE LEVEL III (SANDBOX OPERATOR)";
+    clearance = "Client admin access";
     permissions = [
       "read:telemetry", "read:projects", "write:projects", "read:ai-operations",
       "write:ai-operations", "read:documents", "write:documents", "write:support"
@@ -123,23 +173,14 @@ export function mapDynamoUserToApiUser(dbUser: DynamoDbUser): any {
   }
 
   // Handle client association
-  let clientAssociation = "GFF AI Platform Core (Global Root)";
+  let clientAssociation = "GFF AI";
   if (role !== "gff_admin") {
-    if (dbUser.client_id !== undefined && dbUser.client_id !== null) {
-      const cid = String(dbUser.client_id);
-      if (cid === "1" || cid.toLowerCase().includes("apex") || cid.toLowerCase().includes("client-001")) {
-        clientAssociation = "Apex Sovereign Group [Preview Client]";
-      } else if (cid === "2" || cid.toLowerCase().includes("retail") || cid.toLowerCase().includes("client-002")) {
-        clientAssociation = "Global Retail Enclave [Preview Client]";
-      } else if (cid === "3" || cid.toLowerCase().includes("logistics") || cid.toLowerCase().includes("client-003")) {
-        clientAssociation = "Sovereign Logistics Unit [Preview Client]";
-      } else if (cid === "4" || cid.toLowerCase().includes("treasury") || cid.toLowerCase().includes("fed-treasury") || cid.toLowerCase().includes("client-004")) {
-        clientAssociation = "Federal Treasury Division [Preview Client]";
-      } else {
-        clientAssociation = dbUser.clientAssociation || `Enterprise Tenant #${cid}`;
-      }
-    } else if (dbUser.clientAssociation) {
+    if (dbUser.clientAssociation) {
       clientAssociation = dbUser.clientAssociation;
+    } else if (dbUser.client_id !== undefined && dbUser.client_id !== null) {
+      clientAssociation = String(dbUser.client_id).trim().startsWith("client-")
+        ? String(dbUser.client_id).trim()
+        : `Client ${String(dbUser.client_id).trim()}`;
     }
   }
 
@@ -173,14 +214,24 @@ const ENTITY_PREFIXES: Record<string, string> = { PROJECT: "PROJ#", AI_OPERATION
 const DYNAMODB_CLIENTS_TABLE = process.env.DYNAMODB_CLIENTS_TABLE || "GFF_CLIENTS";
 const DYNAMODB_ITEMS_TABLE = process.env.DYNAMODB_ITEMS_TABLE || "GFF_PORTAL_ITEMS";
 
+function normalizeClientKey(clientId: string): string {
+  const value = String(clientId || "").trim().toLowerCase();
+  if (value === "client-001") return "1";
+  if (value === "client-002") return "2";
+  if (value === "client-003") return "3";
+  if (value === "client-004") return "4";
+  return String(clientId || "").trim();
+}
+
 export async function dynamoDbGetClient(clientId: string): Promise<any> {
+  const normalizedClientId = normalizeClientKey(clientId);
   if (docClient) {
     try {
-      const res = await docClient.send(new GetCommand({ TableName: DYNAMODB_CLIENTS_TABLE, Key: { client_id: clientId } }));
+      const res = await docClient.send(new GetCommand({ TableName: DYNAMODB_CLIENTS_TABLE, Key: { client_id: normalizedClientId } }));
       return res.Item || null;
     } catch (err) { return null; }
   }
-  return ((global as any)._apiMockClients || {})[clientId] || null;
+  return null;
 }
 
 export async function dynamoDbListClients(): Promise<any[]> {
@@ -190,7 +241,7 @@ export async function dynamoDbListClients(): Promise<any[]> {
       return res.Items || [];
     } catch (err) { return []; }
   }
-  return Object.values((global as any)._apiMockClients || {});
+  return [];
 }
 
 export async function dynamoDbPutClient(client: any): Promise<any> {
@@ -200,8 +251,7 @@ export async function dynamoDbPutClient(client: any): Promise<any> {
       return client;
     } catch (err) { return null; }
   }
-  ((global as any)._apiMockClients || {})[client.id || client.client_id] = client;
-  return client;
+  return null;
 }
 
 export async function dynamoDbDeleteClient(clientId: string): Promise<boolean> {
@@ -211,30 +261,30 @@ export async function dynamoDbDeleteClient(clientId: string): Promise<boolean> {
       return true;
     } catch (err) { return false; }
   }
-  const mock = (global as any)._apiMockClients || {};
-  if (mock[clientId]) { delete mock[clientId]; return true; }
   return false;
 }
 
 export async function dynamoDbGetPortalItem(clientId: string, itemId: string, entityType: string): Promise<any> {
-  const pk = `CLIENT#${clientId}`, sk = `${ENTITY_PREFIXES[entityType] || ""}${itemId}`;
+  const normalizedClientId = normalizeClientKey(clientId);
+  const pk = `CLIENT#${normalizedClientId}`, sk = `${ENTITY_PREFIXES[entityType] || ""}${itemId}`;
   if (docClient) {
     try {
       const res = await docClient.send(new GetCommand({ TableName: DYNAMODB_ITEMS_TABLE, Key: { PK: pk, SK: sk } }));
       return res.Item || null;
     } catch (err) { return null; }
   }
-  return getMockStore(entityType)[itemId] || null;
+  return null;
 }
 
 export async function dynamoDbListPortalItems(entityType: string, clientId?: string): Promise<any[]> {
+  const normalizedClientId = clientId ? normalizeClientKey(clientId) : undefined;
   if (docClient) {
     try {
-      if (clientId) {
+      if (normalizedClientId) {
         const res = await docClient.send(new QueryCommand({
           TableName: DYNAMODB_ITEMS_TABLE,
           KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk_prefix)",
-          ExpressionAttributeValues: { ":pk": `CLIENT#${clientId}`, ":sk_prefix": ENTITY_PREFIXES[entityType] || "" }
+          ExpressionAttributeValues: { ":pk": `CLIENT#${normalizedClientId}`, ":sk_prefix": ENTITY_PREFIXES[entityType] || "" }
         }));
         return res.Items || [];
       } else {
@@ -247,45 +297,30 @@ export async function dynamoDbListPortalItems(entityType: string, clientId?: str
       }
     } catch (err) { return []; }
   }
-  const items = Object.values(getMockStore(entityType));
-  return clientId ? items.filter((item: any) => item.client_id === clientId) : items;
+  return [];
 }
 
 export async function dynamoDbPutPortalItem(entityType: string, clientId: string, item: any): Promise<any> {
-  const pk = `CLIENT#${clientId}`, sk = `${ENTITY_PREFIXES[entityType] || ""}${item.id}`;
-  const dbItem = { ...item, PK: pk, SK: sk, entity_type: entityType, client_id: clientId };
+  const normalizedClientId = normalizeClientKey(clientId);
+  const pk = `CLIENT#${normalizedClientId}`, sk = `${ENTITY_PREFIXES[entityType] || ""}${item.id}`;
+  const dbItem = { ...item, PK: pk, SK: sk, entity_type: entityType, client_id: normalizedClientId };
   if (docClient) {
     try {
       await docClient.send(new PutCommand({ TableName: DYNAMODB_ITEMS_TABLE, Item: dbItem }));
       return item;
     } catch (err) { return null; }
   }
-  getMockStore(entityType)[item.id] = item;
-  return item;
+  return null;
 }
 
 export async function dynamoDbDeletePortalItem(entityType: string, clientId: string, itemId: string): Promise<boolean> {
-  const pk = `CLIENT#${clientId}`, sk = `${ENTITY_PREFIXES[entityType] || ""}${itemId}`;
+  const normalizedClientId = normalizeClientKey(clientId);
+  const pk = `CLIENT#${normalizedClientId}`, sk = `${ENTITY_PREFIXES[entityType] || ""}${itemId}`;
   if (docClient) {
     try {
       await docClient.send(new DeleteCommand({ TableName: DYNAMODB_ITEMS_TABLE, Key: { PK: pk, SK: sk } }));
       return true;
     } catch (err) { return false; }
   }
-  const store = getMockStore(entityType);
-  if (store[itemId]) { delete store[itemId]; return true; }
   return false;
 }
-
-function getMockStore(entityType: string): any {
-  switch (entityType) {
-    case "PROJECT": return (global as any)._apiMockProjects || {};
-    case "AI_OPERATION": return (global as any)._apiMockAiOperations || {};
-    case "DOCUMENT": return (global as any)._apiMockDocuments || {};
-    case "INVOICE": return (global as any)._apiMockInvoices || {};
-    case "SUPPORT": return (global as any)._apiMockSupportTickets || {};
-    case "GOVERNANCE": return (global as any)._apiMockGovernance || {};
-    default: return {};
-  }
-}
-

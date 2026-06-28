@@ -7,7 +7,6 @@ import {
   Trash2, AlertTriangle
 } from "lucide-react";
 import { PrivatePageHeader } from "@/components/private-app";
-import { previewClientAccounts, previewProjects } from "@/lib/mock-data-model";
 
 interface Invoice {
   id: string; 
@@ -30,16 +29,9 @@ const HSM_SIGNING_LOGS = [
   "Sealing usage blocks & committing to ledger..."
 ];
 
-const INITIAL_INVOICES: Invoice[] = [
-  { id: "GFF-2026-0899", date: "2026-06-01", amount: 14820, status: "paid", dueDate: "2026-06-15", category: "Compute Epoch", clientId: "client-001", clientName: "Apex Sovereign Group", projectId: "proj-001", projectName: "Sovereign Core Sandbox 02", hash: "0xDE897FF021BC8102C019FFAD998E", billingMonth: "2026-06" },
-  { id: "GFF-2026-0914", date: "2026-06-15", amount: 3500, status: "paid", dueDate: "2026-06-30", category: "SLA Support", clientId: "client-002", clientName: "Global Retail Enclave", projectId: "proj-003", projectName: "Sovereign Mining Intel Loop", hash: "0x11B8A02FEE907C10BDE8267FEE", billingMonth: "2026-06" },
-  { id: "GFF-2026-0945", date: "2026-06-25", amount: 24900, status: "processing", dueDate: "2026-07-10", category: "Telemetry Stream", clientId: "client-001", clientName: "Apex Sovereign Group", projectId: "proj-002", projectName: "Model Guardrail Sandbox 04", hash: "0x8FDE3102C130D7B2D26788AB0E", billingMonth: "2026-06" },
-  { id: "GFF-2026-0988", date: "2026-06-27", amount: 8250, status: "unpaid", dueDate: "2026-07-15", category: "Compute Epoch", clientId: "client-004", clientName: "Federal Treasury Division", projectId: "proj-004", projectName: "Federal Ledger Enclave Alpha", hash: "0x3FBC128EE809FF9CC9810A88AA11", billingMonth: "2026-06" }
-];
-
 export default function AdminBillingPage() {
-  const [invoices, setInvoices] = useState<Invoice[]>(INITIAL_INVOICES);
-  const [loading, setLoading] = useState(false);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const [query, setQuery] = useState("");
@@ -64,23 +56,17 @@ export default function AdminBillingPage() {
 
   // Derived lists prioritizing dynamic backend API data, falling back to Phase 4 mock data
   const clientsList = useMemo(() => {
-    if (dbClients.length > 0) {
-      return dbClients;
-    }
-    return previewClientAccounts;
+    return dbClients;
   }, [dbClients]);
 
   const projects = useMemo(() => {
     if (!cId) return [];
-    if (dbProjects.length > 0) {
-      return dbProjects.filter(p => p.client_id === cId).map(p => ({
-        id: p.id,
-        name: p.name,
-        clientAccountId: p.client_id,
-        tag: p.name.substring(0, 3).toUpperCase()
-      }));
-    }
-    return previewProjects.filter(p => p.clientAccountId === cId);
+    return dbProjects.filter(p => p.client_id === cId).map(p => ({
+      id: p.id,
+      name: p.name,
+      clientAccountId: p.client_id,
+      tag: p.name.substring(0, 3).toUpperCase()
+    }));
   }, [cId, dbProjects]);
 
   // Signing State
@@ -100,22 +86,8 @@ export default function AdminBillingPage() {
     setLoading(true);
     setError(null);
     try {
-      let token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") || localStorage.getItem("gff_api_token") : null;
-      if (!token) {
-        const loginRes = await fetch("/api/v1/auth/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: "s.vance@governance.gff.ai", password: "VanceSecure2026!" })
-        });
-        if (loginRes.ok) {
-          const authData = await loginRes.json();
-          if (authData.accessToken) {
-            token = authData.accessToken;
-            localStorage.setItem("gff_ai_access_token", authData.accessToken);
-          }
-        }
-      }
-      if (!token) throw new Error("Cryptographic token not established.");
+      const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") || localStorage.getItem("gff_api_token") : null;
+      if (!token) throw new Error("Your session has expired. Please sign in again.");
 
       const res = await fetch("/api/v1/invoices", { headers: { "Authorization": `Bearer ${token}` } });
       if (res.ok) {
@@ -742,4 +714,3 @@ export default function AdminBillingPage() {
     </div>
   );
 }
-

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 import { 
-  API_MOCK_USERS, verifyJwt, MockUserDbEntry, 
+  verifyJwt,
   getClientIdFromAssociation
 } from "@/lib/api-auth";
 import {
@@ -31,10 +31,7 @@ async function getAuth(req: Request) {
     if (api.status === "inactive") return { status: 403, error: "Forbidden" };
     return { caller: api };
   }
-  const u = (API_MOCK_USERS as Record<string, MockUserDbEntry>)[email];
-  if (!u) return { status: 401, error: "Unauthorized" };
-  if (u.status === "inactive") return { status: 403, error: "Forbidden" };
-  return { caller: u };
+  return { status: 401, error: "Unauthorized" };
 }
 
 export async function GET(req: Request, { params }: { params: any }) {
@@ -71,12 +68,12 @@ export async function GET(req: Request, { params }: { params: any }) {
     const filename_val = document.filename || document.title || "document";
     const baseLocalS3 = path.join(process.cwd(), "backend", "local_s3_storage");
     
-    let filePath = path.join(baseLocalS3, document.client_id, "documents", document.id, filename_val);
+    let filePath = path.join(baseLocalS3, String(document.client_id || ""), "documents", String(document.id || ""), filename_val);
     
     if (!fs.existsSync(filePath)) {
-      const alt_client_id = getAlt(document.client_id);
+      const alt_client_id = getAlt(String(document.client_id || ""));
       if (alt_client_id) {
-        filePath = path.join(baseLocalS3, alt_client_id, "documents", document.id, filename_val);
+        filePath = path.join(baseLocalS3, alt_client_id, "documents", String(document.id || ""), filename_val);
       }
     }
 

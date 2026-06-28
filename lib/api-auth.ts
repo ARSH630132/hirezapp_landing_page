@@ -1,10 +1,12 @@
 import crypto from "crypto";
 
+const API_MOCKS_ENABLED = process.env.ENABLE_API_MOCKS === "true";
+
 export interface ApiUser {
   id: string;
   name: string;
   email: string;
-  role: "gff_admin" | "client_admin" | "client_member" | "gff_operator" | "finance_admin" | "support_agent" | "viewer" | string;
+  role: "gff_admin" | "client_admin" | "client_member" | string;
   clientAssociation: string;
   status: "active" | "inactive";
   clearance: string;
@@ -79,8 +81,22 @@ export function verifyJwt(token: string, secret: string = JWT_SECRET): Record<st
 }
 
 export const DEFAULT_API_MOCK_USERS: Record<string, MockUserDbEntry> = {
-  "s.vance@governance.gff.ai": {
+  "gff_admin@gff.ai": {
     id: "usr-001",
+    name: "GFF Admin Lead",
+    email: "gff_admin@gff.ai",
+    role: "gff_admin",
+    clientAssociation: "GFF AI",
+    status: "active",
+    clearance: "Admin access",
+    permissions: [
+      "all:*", "read:telemetry", "write:telemetry", "read:projects", "write:projects",
+      "read:users", "write:users", "read:clients", "write:clients", "write:governance"
+    ],
+    passwordHash: "password123"
+  },
+  "s.vance@governance.gff.ai": {
+    id: "usr-002",
     name: "Dr. Sarah Vance",
     email: "s.vance@governance.gff.ai",
     role: "gff_admin",
@@ -94,7 +110,7 @@ export const DEFAULT_API_MOCK_USERS: Record<string, MockUserDbEntry> = {
     passwordHash: "VanceSecure2026!"
   },
   "a.mercer@apex-sovereign.gff.ai": {
-    id: "usr-002",
+    id: "usr-003",
     name: "Alexander Mercer",
     email: "a.mercer@apex-sovereign.gff.ai",
     role: "client_admin",
@@ -107,8 +123,22 @@ export const DEFAULT_API_MOCK_USERS: Record<string, MockUserDbEntry> = {
     ],
     passwordHash: "MercerSecure2026!"
   },
+  "client_admin@apex.com": {
+    id: "usr-004",
+    name: "Apex Admin Lead",
+    email: "client_admin@apex.com",
+    role: "client_admin",
+    clientAssociation: "Apex Global Solutions",
+    status: "active",
+    clearance: "Client admin access",
+    permissions: [
+      "read:telemetry", "read:projects", "write:projects", "read:ai-operations",
+      "write:ai-operations", "read:documents", "write:documents", "write:support"
+    ],
+    passwordHash: "password123"
+  },
   "e.carter@global-retail.gff.ai": {
-    id: "usr-003",
+    id: "usr-005",
     name: "Evelyn Carter",
     email: "e.carter@global-retail.gff.ai",
     role: "client_admin",
@@ -122,7 +152,7 @@ export const DEFAULT_API_MOCK_USERS: Record<string, MockUserDbEntry> = {
     passwordHash: "CarterSecure2026!"
   },
   "m.vance@sovereign-logistics.gff.ai": {
-    id: "usr-004",
+    id: "usr-006",
     name: "Marcus Vance",
     email: "m.vance@sovereign-logistics.gff.ai",
     role: "client_member",
@@ -133,7 +163,7 @@ export const DEFAULT_API_MOCK_USERS: Record<string, MockUserDbEntry> = {
     passwordHash: "VanceLogistics2026!"
   },
   "s.jenkins@fed-treasury.gff.ai": {
-    id: "usr-005",
+    id: "usr-007",
     name: "Sarah Jenkins",
     email: "s.jenkins@fed-treasury.gff.ai",
     role: "client_member",
@@ -143,66 +173,28 @@ export const DEFAULT_API_MOCK_USERS: Record<string, MockUserDbEntry> = {
     permissions: ["read:telemetry", "read:projects", "read:ai-operations", "read:documents", "write:support"],
     passwordHash: "JenkinsSecure2026!"
   },
-  "preview-gff-operator@internal.gff.ai": {
-    id: "usr-006",
-    name: "Operator Node 6",
-    email: "preview-gff-operator@internal.gff.ai",
-    role: "gff_operator",
-    clientAssociation: "GFF AI Operations [Internal]",
-    status: "active",
-    clearance: "CLEARANCE LEVEL IV (GFF TECHNICAL OPERATOR)",
-    permissions: [
-      "read:telemetry", "read:projects", "write:projects", "read:ai-operations",
-      "write:ai-operations", "read:documents", "write:documents", "write:support"
-    ],
-    passwordHash: "gff-secure-2026!"
-  },
-  "preview-finance-admin@internal.gff.ai": {
-    id: "usr-007",
-    name: "Finance Controller",
-    email: "preview-finance-admin@internal.gff.ai",
-    role: "finance_admin",
-    clientAssociation: "GFF Corporate Finance [Internal]",
-    status: "active",
-    clearance: "CLEARANCE LEVEL III (GFF FINANCIAL CONTROLLER)",
-    permissions: [
-      "read:telemetry", "read:projects", "read:ai-operations", "read:documents",
-      "read:billing", "write:billing"
-    ],
-    passwordHash: "gff-secure-2026!"
-  },
-  "preview-support-agent@internal.gff.ai": {
+  "client_member@apex.com": {
     id: "usr-008",
-    name: "Support Liaison",
-    email: "preview-support-agent@internal.gff.ai",
-    role: "support_agent",
-    clientAssociation: "GFF Client Support [Internal]",
+    name: "Apex Analyst",
+    email: "client_member@apex.com",
+    role: "client_member",
+    clientAssociation: "Apex Global Solutions",
     status: "active",
-    clearance: "CLEARANCE LEVEL III (GFF SUPPORT WIRE)",
-    permissions: [
-      "read:telemetry", "read:projects", "read:ai-operations", "read:documents",
-      "read:support", "write:support", "read:users", "write:users"
-    ],
-    passwordHash: "gff-secure-2026!"
+    clearance: "Client member access",
+    permissions: ["read:telemetry", "read:projects", "read:ai-operations", "read:documents", "write:support"],
+    passwordHash: "password123"
   },
-  "preview-viewer@internal.gff.ai": {
-    id: "usr-009",
-    name: "Auditor Node 9",
-    email: "preview-viewer@internal.gff.ai",
-    role: "viewer",
-    clientAssociation: "Global Compliance Auditor [External]",
-    status: "active",
-    clearance: "CLEARANCE LEVEL I (READ-ONLY AUDITOR)",
-    permissions: [
-      "read:telemetry", "read:projects", "read:ai-operations", "read:documents"
-    ],
-    passwordHash: "gff-secure-2026!"
-  }
 };
 
 // Initialize the mock users database globally to persist edits in memory across hot reloads.
-if (!(global as any)._apiMockUsers) {
-  (global as any)._apiMockUsers = { ...DEFAULT_API_MOCK_USERS };
+if (!(global as any)._apiMockUsers || !API_MOCKS_ENABLED) {
+  (global as any)._apiMockUsers = API_MOCKS_ENABLED ? { ...DEFAULT_API_MOCK_USERS } : {};
+} else {
+  for (const [email, user] of Object.entries(DEFAULT_API_MOCK_USERS)) {
+    if (!(global as any)._apiMockUsers[email]) {
+      (global as any)._apiMockUsers[email] = user;
+    }
+  }
 }
 
 export const API_MOCK_USERS: Record<string, MockUserDbEntry> = (global as any)._apiMockUsers;
@@ -215,6 +207,9 @@ export function hashPassword(password: string): string {
 }
 
 export function getNextUserId(): string {
+  if (!API_MOCKS_ENABLED) {
+    return `usr-${Date.now().toString().slice(-6)}`;
+  }
   const users = Object.values(API_MOCK_USERS);
   const ids = users
     .map(u => {
@@ -330,13 +325,16 @@ export const DEFAULT_API_MOCK_PROJECTS: Record<string, ApiProject> = {
 };
 
 // Initialize globally to persist edits in memory across hot-reloads
-if (!(global as any)._apiMockProjects) {
-  (global as any)._apiMockProjects = { ...DEFAULT_API_MOCK_PROJECTS };
+if (!(global as any)._apiMockProjects || !API_MOCKS_ENABLED) {
+  (global as any)._apiMockProjects = API_MOCKS_ENABLED ? { ...DEFAULT_API_MOCK_PROJECTS } : {};
 }
 
 export const API_MOCK_PROJECTS: Record<string, ApiProject> = (global as any)._apiMockProjects;
 
 export function getNextProjectId(): string {
+  if (!API_MOCKS_ENABLED) {
+    return `proj-${Date.now().toString().slice(-6)}`;
+  }
   const projects = Object.values(API_MOCK_PROJECTS);
   const ids = projects
     .map(p => {
@@ -349,21 +347,21 @@ export function getNextProjectId(): string {
 }
 
 export function getClientNameFromId(clientId: string): string {
-  switch (clientId) {
-    case "client-001": return "Apex Sovereign Group [Preview Client]";
-    case "client-002": return "Global Retail Enclave [Preview Client]";
-    case "client-003": return "Sovereign Logistics Unit [Preview Client]";
-    case "client-004": return "Federal Treasury Division [Preview Client]";
-    default: return "GFF AI Platform Core (Global Root)";
-  }
+  const normalized = String(clientId || "").trim();
+  if (!normalized) return "Client";
+  return normalized.startsWith("client-") ? normalized : `Client ${normalized}`;
 }
 
 export function getClientIdFromAssociation(association: string): string {
-  const assoc = association.toLowerCase();
-  if (assoc.includes("apex-sovereign") || assoc.includes("apex sovereign")) return "client-001";
-  if (assoc.includes("global-retail") || assoc.includes("global retail")) return "client-002";
-  if (assoc.includes("sovereign-logistics") || assoc.includes("sovereign logistics")) return "client-003";
-  if (assoc.includes("fed-treasury") || assoc.includes("federal treasury")) return "client-004";
+  const assoc = String(association || "").toLowerCase().trim();
+  const prefixedMatch = assoc.match(/client-\d+/);
+  if (prefixedMatch) return prefixedMatch[0];
+  const numberedMatch = assoc.match(/client\s+(\d+)/);
+  if (numberedMatch) return `client-${numberedMatch[1].padStart(3, "0")}`;
+  if (assoc.includes("apex")) return "client-001";
+  if (assoc.includes("retail")) return "client-002";
+  if (assoc.includes("logistics")) return "client-003";
+  if (assoc.includes("treasury") || assoc.includes("federal")) return "client-004";
   return "client-unknown";
 }
 
@@ -444,13 +442,16 @@ export const DEFAULT_API_MOCK_AI_OPERATIONS: Record<string, ApiAiOperation> = {
 };
 
 // Initialize globally to persist edits in memory across hot-reloads
-if (!(global as any)._apiMockAiOperations) {
-  (global as any)._apiMockAiOperations = { ...DEFAULT_API_MOCK_AI_OPERATIONS };
+if (!(global as any)._apiMockAiOperations || !API_MOCKS_ENABLED) {
+  (global as any)._apiMockAiOperations = API_MOCKS_ENABLED ? { ...DEFAULT_API_MOCK_AI_OPERATIONS } : {};
 }
 
 export const API_MOCK_AI_OPERATIONS: Record<string, ApiAiOperation> = (global as any)._apiMockAiOperations;
 
 export function getNextAiOperationId(): string {
+  if (!API_MOCKS_ENABLED) {
+    return `op-${Date.now().toString().slice(-6)}`;
+  }
   const operations = Object.values(API_MOCK_AI_OPERATIONS);
   const ids = operations
     .map(o => {
@@ -559,13 +560,16 @@ export const DEFAULT_API_MOCK_INVOICES: Record<string, ApiInvoice> = {
 };
 
 // Initialize globally to persist edits in memory across hot-reloads
-if (!(global as any)._apiMockInvoices) {
-  (global as any)._apiMockInvoices = { ...DEFAULT_API_MOCK_INVOICES };
+if (!(global as any)._apiMockInvoices || !API_MOCKS_ENABLED) {
+  (global as any)._apiMockInvoices = API_MOCKS_ENABLED ? { ...DEFAULT_API_MOCK_INVOICES } : {};
 }
 
 export const API_MOCK_INVOICES: Record<string, ApiInvoice> = (global as any)._apiMockInvoices;
 
 export function getNextInvoiceId(): string {
+  if (!API_MOCKS_ENABLED) {
+    return `inv-${Date.now().toString().slice(-6)}`;
+  }
   const invoices = Object.values(API_MOCK_INVOICES);
   const ids = invoices
     .map(inv => {
@@ -695,13 +699,16 @@ export const DEFAULT_API_MOCK_GOVERNANCE: Record<string, ApiGovernanceItem> = {
 };
 
 // Initialize globally to persist edits in memory across hot-reloads
-if (!(global as any)._apiMockGovernance) {
-  (global as any)._apiMockGovernance = { ...DEFAULT_API_MOCK_GOVERNANCE };
+if (!(global as any)._apiMockGovernance || !API_MOCKS_ENABLED) {
+  (global as any)._apiMockGovernance = API_MOCKS_ENABLED ? { ...DEFAULT_API_MOCK_GOVERNANCE } : {};
 }
 
 export const API_MOCK_GOVERNANCE: Record<string, ApiGovernanceItem> = (global as any)._apiMockGovernance;
 
 export function getNextGovernanceId(): string {
+  if (!API_MOCKS_ENABLED) {
+    return `gov-${Date.now().toString().slice(-6)}`;
+  }
   const items = Object.values(API_MOCK_GOVERNANCE);
   const ids = items
     .map(g => {
@@ -851,12 +858,15 @@ export const DEFAULT_API_MOCK_DOCUMENTS: Record<string, ApiDocumentItem> = {
   }
 };
 
-if (!(global as any)._apiMockDocuments) {
-  (global as any)._apiMockDocuments = { ...DEFAULT_API_MOCK_DOCUMENTS };
+if (!(global as any)._apiMockDocuments || !API_MOCKS_ENABLED) {
+  (global as any)._apiMockDocuments = API_MOCKS_ENABLED ? { ...DEFAULT_API_MOCK_DOCUMENTS } : {};
 }
 export const API_MOCK_DOCUMENTS: Record<string, ApiDocumentItem> = (global as any)._apiMockDocuments;
 
 export function getNextDocumentId(): string {
+  if (!API_MOCKS_ENABLED) {
+    return `DOC-${Date.now().toString().slice(-6)}`;
+  }
   const ids = Object.keys(API_MOCK_DOCUMENTS).map(id => {
     const match = id.match(/doc-(\d+)/i);
     return match ? parseInt(match[1], 10) : 800;
@@ -926,8 +936,8 @@ export const DEFAULT_API_MOCK_SUPPORT_TICKETS: Record<string, ApiSupportTicket> 
   }
 };
 
-if (!(global as any)._apiMockSupportTickets) {
-  (global as any)._apiMockSupportTickets = { ...DEFAULT_API_MOCK_SUPPORT_TICKETS };
+if (!(global as any)._apiMockSupportTickets || !API_MOCKS_ENABLED) {
+  (global as any)._apiMockSupportTickets = API_MOCKS_ENABLED ? { ...DEFAULT_API_MOCK_SUPPORT_TICKETS } : {};
 }
 export const API_MOCK_SUPPORT_TICKETS: Record<string, ApiSupportTicket> = (global as any)._apiMockSupportTickets;
 
@@ -1017,12 +1027,15 @@ export const DEFAULT_API_MOCK_CLIENTS: Record<string, ApiClient> = {
   }
 };
 
-if (!(global as any)._apiMockClients) {
-  (global as any)._apiMockClients = { ...DEFAULT_API_MOCK_CLIENTS };
+if (!(global as any)._apiMockClients || !API_MOCKS_ENABLED) {
+  (global as any)._apiMockClients = API_MOCKS_ENABLED ? { ...DEFAULT_API_MOCK_CLIENTS } : {};
 }
 export const API_MOCK_CLIENTS: Record<string, ApiClient> = (global as any)._apiMockClients;
 
 export function getNextClientId(): string {
+  if (!API_MOCKS_ENABLED) {
+    return `client-${Date.now().toString().slice(-6)}`;
+  }
   const clients = Object.values(API_MOCK_CLIENTS);
   const ids = clients
     .map(c => {
@@ -1033,4 +1046,3 @@ export function getNextClientId(): string {
   const maxId = ids.length > 0 ? Math.max(...ids) : 4;
   return `client-${String(maxId + 1).padStart(3, "0")}`;
 }
-

@@ -9,7 +9,6 @@ import {
 import { motion, AnimatePresence } from "motion/react";
 import { SidebarLink, UserProfile, BreadcrumbItem } from "./types";
 import { WorkspaceBreadcrumbs, WorkspaceCommandButton } from "./navigation";
-import { RoleSwitcherPreview } from "./role-switcher";
 import { NotificationBell } from "./notifications";
 import { UserAvatar } from "./notices-avatars";
 import { clearPreviewSession } from "@/lib/preview-auth";
@@ -21,18 +20,18 @@ interface LinkGroup {
 }
 
 const clientGroups: LinkGroup[] = [
-  { name: "CORE OVERSIGHT", linkIds: ["dashboard"] },
-  { name: "OPERATIONS & INTEL", linkIds: ["projects", "ai-operations", "documents"] },
-  { name: "TELEMETRY & POLICIES", linkIds: ["analytics", "governance", "activity"] },
-  { name: "ADMIN & SETTINGS", linkIds: ["billing", "support", "settings"] },
+  { name: "Overview", linkIds: ["dashboard"] },
+  { name: "Work", linkIds: ["projects", "ai-operations", "documents"] },
+  { name: "Insights", linkIds: ["analytics", "governance"] },
+  { name: "Account", linkIds: ["billing", "support"] },
 ];
 
 const adminGroups: LinkGroup[] = [
-  { name: "CORE OVERSIGHT", linkIds: ["dashboard"] },
-  { name: "REGISTRY & USERS", linkIds: ["clients", "projects", "users"] },
-  { name: "OPERATIONS & CONTROL", linkIds: ["ai-operations", "documents"] },
-  { name: "TELEMETRY & AUDIT", linkIds: ["analytics", "governance", "activity"] },
-  { name: "SYSTEM CONFIG", linkIds: ["billing", "support", "settings"] },
+  { name: "Overview", linkIds: ["dashboard"] },
+  { name: "Clients and users", linkIds: ["clients", "projects", "users"] },
+  { name: "Operations", linkIds: ["ai-operations", "documents"] },
+  { name: "Insights", linkIds: ["analytics", "governance"] },
+  { name: "Admin", linkIds: ["billing", "support"] },
 ];
 
 
@@ -45,6 +44,7 @@ export function PrivateSidebar({
   onLinkChange,
   collapsed,
   onToggleCollapse,
+  user,
   role
 }: { 
   links: SidebarLink[];
@@ -55,25 +55,22 @@ export function PrivateSidebar({
   user: UserProfile;
   role: "Client" | "Administrator";
 }) {
-  const [activeOrg, setActiveOrg] = useState(role === "Client" ? "Apex Sovereign" : "Global Oversight");
+  const signOutPath = role === "Administrator" ? "/admin/login" : "/portal/login";
+  const [activeOrg, setActiveOrg] = useState(role === "Client" ? "Client workspace" : "GFF AI");
   const [orgDropdownOpen, setOrgDropdownOpen] = useState(false);
   const [isSwitchingOrg, setIsSwitchingOrg] = useState(false);
 
   // Sync active organization if role changes
   useEffect(() => {
-    setActiveOrg(role === "Client" ? "Apex Sovereign" : "Global Oversight");
-  }, [role]);
+    setActiveOrg(user.email.split("@")[1] || (role === "Client" ? "Client workspace" : "GFF AI"));
+  }, [role, user.email]);
 
   const clientOrgs = [
-    { name: "Apex Sovereign", id: "apex", label: "Production Enclave" },
-    { name: "Alpha Sandbox Lab", id: "alpha", label: "Staging Sandbox" },
-    { name: "Omega Beta Enclave", id: "omega", label: "Compliance Test" },
+    { name: activeOrg, id: "client", label: "Current workspace" },
   ];
 
   const adminOrgs = [
-    { name: "Global Oversight", id: "global", label: "Primary Enclave" },
-    { name: "Defense Sector Enclave", id: "defense", label: "MIL-SPEC Tunnel" },
-    { name: "Finance Sandbox", id: "finance", label: "FinReg Isolation" },
+    { name: activeOrg, id: "admin", label: "Current workspace" },
   ];
 
   const orgsList = role === "Client" ? clientOrgs : adminOrgs;
@@ -92,7 +89,7 @@ export function PrivateSidebar({
 
   return (
     <aside 
-      aria-label="Sovereign primary sidebar"
+      aria-label="Primary sidebar"
       className={`hidden lg:flex flex-col h-screen shrink-0 border-r border-white/5 bg-[#050505]/65 backdrop-blur-md select-none transition-all duration-300 ${collapsed ? "w-20" : "w-64"}`}
     >
       <div className="h-14 border-b border-white/5 flex items-center justify-between px-5">
@@ -125,7 +122,7 @@ export function PrivateSidebar({
               title={activeOrg}
               aria-expanded={orgDropdownOpen}
               aria-haspopup="listbox"
-              aria-label="Secure workspace selection"
+              aria-label="Workspace selection"
             >
               <Building2 className="w-4 h-4" />
             </button>
@@ -146,7 +143,7 @@ export function PrivateSidebar({
                   </span>
                 </div>
                 <div className="min-w-0">
-                  <span className="text-[9px] font-mono font-bold tracking-wider text-white/30 block leading-none">SECURE WORKSPACE</span>
+                  <span className="text-[9px] font-mono font-bold tracking-wider text-white/30 block leading-none">WORKSPACE</span>
                   <span className="text-[11.5px] font-sans font-extrabold text-white block mt-1 truncate group-hover:text-[#009DFF] transition-colors uppercase">
                     {activeOrg}
                   </span>
@@ -165,11 +162,11 @@ export function PrivateSidebar({
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 5 }}
                     role="listbox"
-                    aria-label="Enclave Workspace switch options"
+                    aria-label="Workspace switch options"
                     className="absolute left-0 right-0 top-full mt-1.5 z-50 rounded-xl border border-white/5 bg-[#0a0a0a] p-1.5 shadow-2xl backdrop-blur-md font-sans"
                   >
                     <div className="px-2.5 py-1 text-[8.5px] font-mono font-bold text-white/30 uppercase tracking-widest border-b border-white/5 mb-1.5">
-                      Switch Enclave Workspace
+                      Switch workspace
                     </div>
                     <div className="space-y-0.5">
                       {orgsList.map((org) => {
@@ -268,7 +265,7 @@ export function PrivateSidebar({
           <button 
             onClick={() => {
               clearPreviewSession();
-              window.location.href = "/portal/login";
+              window.location.href = signOutPath;
             }}
             className="w-full h-8 rounded-lg border border-red-500/10 hover:border-red-500/30 bg-red-950/5 hover:bg-red-950/15 text-red-400 hover:text-red-300 flex items-center justify-center gap-1.5 font-mono text-[9.5px] font-bold uppercase transition-all cursor-pointer"
           >
@@ -279,17 +276,17 @@ export function PrivateSidebar({
           <button 
             onClick={() => {
               clearPreviewSession();
-              window.location.href = "/portal/login";
+              window.location.href = signOutPath;
             }}
             className="h-8 w-8 mx-auto rounded-lg border border-red-500/10 hover:border-red-500/30 bg-red-950/5 hover:bg-red-950/15 text-red-400 hover:text-red-300 flex items-center justify-center transition-all cursor-pointer"
-            title="Deauthenticate Session"
+            title="Sign out"
           >
             <LogOut className="w-3.5 h-3.5" />
           </button>
         )}
         {!collapsed && (
           <div className="text-center font-mono text-[8px] text-white/20 select-none uppercase tracking-widest mt-1">
-            CLOCK: 2026.06.27
+            LIVE SESSION
           </div>
         )}
       </div>
@@ -332,14 +329,13 @@ export function PrivateTopbar({
 
       <div className="flex items-center gap-3">
         <WorkspaceCommandButton onClick={onSearchClick} />
-        <RoleSwitcherPreview currentRole={role} onRoleChange={onRoleChange} />
         <NotificationBell />
         
         {/* Quick Sign Out Action */}
         <button 
           onClick={() => {
             clearPreviewSession();
-            window.location.href = "/portal/login";
+            window.location.href = role === "Administrator" ? "/admin/login" : "/portal/login";
           }}
           className="h-8 w-8 md:w-auto md:px-2.5 flex items-center justify-center gap-1.5 rounded-lg border border-red-500/10 hover:border-red-500/30 bg-red-950/5 hover:bg-red-950/15 text-red-400 hover:text-red-300 transition-all cursor-pointer"
           title="Sign Out Session"

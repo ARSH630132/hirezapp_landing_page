@@ -238,7 +238,7 @@ export default function ClientGovernancePage() {
   const [error, setError] = useState<string | null>(null);
 
   const mapApiGovToPolicy = (item: any): PolicyItem => ({
-    id: item.id.toUpperCase(),
+    id: String(item.id || "").toUpperCase(),
     name: item.title,
     standard: item.standard || "ISO-27001",
     status: item.status?.toLowerCase() === "flagged" ? "warning" : item.status?.toLowerCase() === "under review" ? "critical" : "compliant",
@@ -253,7 +253,7 @@ export default function ClientGovernancePage() {
   });
 
   const mapApiGovToOversight = (item: any): OversightItem => ({
-    id: item.id.toUpperCase().replace("GOV-", "OVS-"),
+    id: String(item.id || "").toUpperCase().replace("GOV-", "OVS-"),
     title: item.title,
     project: item.project_name || "Sovereign Core Sandbox 02",
     projectId: item.project_id || "proj-001",

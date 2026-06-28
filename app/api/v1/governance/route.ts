@@ -1,26 +1,30 @@
 import { NextResponse } from "next/server";
 import { 
-  API_MOCK_USERS, API_MOCK_GOVERNANCE, API_MOCK_PROJECTS,
-  verifyJwt, MockUserDbEntry, ApiGovernanceItem, 
+  verifyJwt, ApiGovernanceItem, 
   getNextGovernanceId, getClientNameFromId, getClientIdFromAssociation 
 } from "../../../../lib/api-auth";
+import { getUserFromDynamoDB, mapDynamoUserToApiUser, dynamoDbGetClient, dynamoDbListPortalItems, dynamoDbPutPortalItem } from "../../../../lib/dynamodb-client";
 
 export const runtime = "nodejs";
 
-function getAuthCaller(req: Request) {
+async function getAuthCaller(req: Request) {
   const auth = req.headers.get("authorization");
   if (!auth?.startsWith("Bearer ")) return { status: 401, error: "Unauthorized", msg: "Missing/malformed Authorization." };
   const decoded = verifyJwt(auth.substring(7));
   if (!decoded?.email) return { status: 401, error: "Unauthorized", msg: "Invalid/expired access token." };
-  const user = (API_MOCK_USERS as Record<string, MockUserDbEntry>)[decoded.email.toLowerCase().trim()];
-  if (!user) return { status: 401, error: "Unauthorized", msg: "User not found." };
-  if (user.status === "inactive") return { status: 403, error: "Forbidden", msg: "Account inactive." };
-  return { caller: user };
+  const email = decoded.email.toLowerCase().trim();
+  const dynamoUser = await getUserFromDynamoDB(email);
+  if (dynamoUser) {
+    const mapped = mapDynamoUserToApiUser(dynamoUser);
+    if (mapped.status === "inactive") return { status: 403, error: "Forbidden", msg: "Account inactive." };
+    return { caller: mapped };
+  }
+  return { status: 401, error: "Unauthorized", msg: "User not found." };
 }
 
 export async function GET(req: Request) {
   try {
-    const auth = getAuthCaller(req);
+    const auth = await getAuthCaller(req);
     if ("status" in auth) return NextResponse.json({ success: false, error: auth.error, message: auth.msg }, { status: auth.status });
     const { caller } = auth;
     const { searchParams } = new URL(req.url);
@@ -32,7 +36,8 @@ export async function GET(req: Request) {
     const due = searchParams.get("due_date") || searchParams.get("due-date") || searchParams.get("dueDate");
     const search = searchParams.get("search");
 
-    let items = Object.values(API_MOCK_GOVERNANCE) as ApiGovernanceItem[];
+    const dbItems = await dynamoDbListPortalItems("GOVERNANCE");
+    let items = dbItems as ApiGovernanceItem[];
 
     if (caller.role !== "gff_admin") {
       const callerCid = getClientIdFromAssociation(caller.clientAssociation);
@@ -73,7 +78,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
-    const auth = getAuthCaller(req);
+    const auth = await getAuthCaller(req);
     if ("status" in auth) return NextResponse.json({ success: false, error: auth.error, message: auth.msg }, { status: auth.status });
     const { caller } = auth;
 
@@ -89,21 +94,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "Bad Request", message: "Title and client_id are required." }, { status: 400 });
     }
 
-    const valids = ["client-001", "client-002", "client-003", "client-004"];
-    if (!valids.includes(client_id)) {
+    const clientRecord = await dynamoDbGetClient(client_id);
+    if (!clientRecord) {
       return NextResponse.json({ success: false, error: "Bad Request", message: "Invalid client_id." }, { status: 400 });
     }
 
     const id = getNextGovernanceId();
-    const proj = project_id ? (API_MOCK_PROJECTS as any)[project_id] : null;
 
     const newGov: ApiGovernanceItem = {
       id,
       title: title.trim(),
       client_id: client_id.trim(),
-      client_name: getClientNameFromId(client_id),
+      client_name: clientRecord.name || getClientNameFromId(client_id),
       project_id: project_id || undefined,
-      project_name: proj ? proj.name : undefined,
+      project_name: project_id || undefined,
       severity: severity || "Low",
       status: status || "active",
       owner: owner || caller.name,
@@ -116,7 +120,7 @@ export async function POST(req: Request) {
       lastUpdated: new Date().toISOString()
     };
 
-    (API_MOCK_GOVERNANCE as Record<string, ApiGovernanceItem>)[id] = newGov;
+    await dynamoDbPutPortalItem("GOVERNANCE", newGov.client_id, newGov);
     return NextResponse.json({ success: true, governance: newGov }, { status: 201 });
   } catch (err) {
     return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });

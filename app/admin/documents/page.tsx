@@ -202,10 +202,10 @@ export default function AdminDocumentsPage() {
   // ==========================================
   // 3. REACT STATE MANAGEMENT & BACKEND INTEGRATION
   // ==========================================
-  const [documents, setDocuments] = useState<DocumentItem[]>(INITIAL_DOCUMENTS);
+  const [documents, setDocuments] = useState<DocumentItem[]>(INITIAL_DOCUMENTS.slice(0, 0));
   const [projects, setProjects] = useState<ProjectItem[]>(STATIC_PROJECTS);
   const [selectedDocId, setSelectedDocId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   // Filter states
@@ -247,22 +247,8 @@ export default function AdminDocumentsPage() {
     setLoading(true);
     setError(null);
     try {
-      let token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") || localStorage.getItem("gff_api_token") : null;
-      if (!token) {
-        const loginRes = await fetch("/api/v1/auth/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: "s.vance@governance.gff.ai", password: "VanceSecure2026!" })
-        });
-        if (loginRes.ok) {
-          const authData = await loginRes.json();
-          if (authData.accessToken) {
-            token = authData.accessToken;
-            localStorage.setItem("gff_ai_access_token", authData.accessToken);
-          }
-        }
-      }
-      if (!token) throw new Error("Cryptographic token not established.");
+      const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") || localStorage.getItem("gff_api_token") : null;
+      if (!token) throw new Error("Your session has expired. Please sign in again.");
 
       const projRes = await fetch("/api/v1/projects", { headers: { "Authorization": `Bearer ${token}` } });
       if (projRes.ok) {

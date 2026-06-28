@@ -3,11 +3,11 @@ import crypto from "crypto";
 import fs from "fs";
 import path from "path";
 import { 
-  API_MOCK_USERS, verifyJwt, MockUserDbEntry, 
+  verifyJwt,
   getClientIdFromAssociation, getNextDocumentId, getClientNameFromId
 } from "@/lib/api-auth";
 import {
-  dynamoDbPutPortalItem, getUserFromDynamoDB, mapDynamoUserToApiUser
+  dynamoDbGetClient, dynamoDbPutPortalItem, getUserFromDynamoDB, mapDynamoUserToApiUser
 } from "@/lib/dynamodb-client";
 
 export const runtime = "nodejs";
@@ -38,10 +38,7 @@ async function getAuth(req: Request) {
     if (api.status === "inactive") return { status: 403, error: "Forbidden" };
     return { caller: api };
   }
-  const u = (API_MOCK_USERS as Record<string, MockUserDbEntry>)[email];
-  if (!u) return { status: 401, error: "Unauthorized" };
-  if (u.status === "inactive") return { status: 403, error: "Forbidden" };
-  return { caller: u };
+  return { status: 401, error: "Unauthorized" };
 }
 
 export async function POST(req: Request) {
@@ -58,6 +55,10 @@ export async function POST(req: Request) {
     if (!file || !clientIdRaw) return NextResponse.json({ success: false, error: "Missing fields" }, { status: 400 });
 
     const client_id = clientIdRaw.trim();
+    const clientRecord = await dynamoDbGetClient(client_id);
+    if (!clientRecord) {
+      return NextResponse.json({ success: false, error: "Invalid client_id" }, { status: 400 });
+    }
 
     if (caller.role !== "gff_admin") {
       const callerClientId = getClientIdFromAssociation(caller.clientAssociation);
@@ -99,7 +100,7 @@ export async function POST(req: Request) {
       document_type,
       sha256: sha256_hash,
       client_id,
-      client_name: getNormalizedName(client_id),
+      client_name: clientRecord.name || getNormalizedName(client_id),
       projectId: project_id,
       project_id,
       status: "active",

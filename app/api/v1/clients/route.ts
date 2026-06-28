@@ -1,32 +1,33 @@
 import { NextResponse } from "next/server";
 import { 
-  API_MOCK_USERS, 
   verifyJwt, 
   getNextClientId, 
-  ApiClient, 
-  MockUserDbEntry 
+  ApiClient
 } from "../../../../lib/api-auth";
 import {
+  getUserFromDynamoDB,
+  mapDynamoUserToApiUser,
   dynamoDbListClients,
   dynamoDbPutClient
 } from "../../../../lib/dynamodb-client";
 
 export const runtime = "nodejs";
 
-function getAuthCaller(req: Request) {
+async function getAuthCaller(req: Request) {
   const auth = req.headers.get("authorization");
   if (!auth?.startsWith("Bearer ")) return { status: 401, error: "Unauthorized", msg: "Missing/malformed Authorization header." };
   const decoded = verifyJwt(auth.substring(7));
   if (!decoded?.email) return { status: 401, error: "Unauthorized", msg: "Invalid/expired access token." };
-  const user = (API_MOCK_USERS as Record<string, MockUserDbEntry>)[decoded.email.toLowerCase().trim()];
-  if (!user) return { status: 401, error: "Unauthorized", msg: "Authorized user not found." };
-  if (user.status === "inactive") return { status: 403, error: "Forbidden", msg: "This account is inactive." };
-  return { caller: user };
+  const dynamoUser = await getUserFromDynamoDB(decoded.email.toLowerCase().trim());
+  if (!dynamoUser) return { status: 401, error: "Unauthorized", msg: "Authorized user not found." };
+  const caller = mapDynamoUserToApiUser(dynamoUser);
+  if (caller.status === "inactive") return { status: 403, error: "Forbidden", msg: "This account is inactive." };
+  return { caller };
 }
 
 export async function GET(req: Request) {
   try {
-    const auth = getAuthCaller(req);
+    const auth = await getAuthCaller(req);
     if ("status" in auth) return NextResponse.json({ success: false, error: auth.error, message: auth.msg }, { status: auth.status });
     const { caller } = auth;
     if (caller.role !== "gff_admin" && caller.role !== "client_admin") {
@@ -81,7 +82,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
-    const auth = getAuthCaller(req);
+    const auth = await getAuthCaller(req);
     if ("status" in auth) return NextResponse.json({ success: false, error: auth.error, message: auth.msg }, { status: auth.status });
     if (auth.caller.role !== "gff_admin") {
       return NextResponse.json({ success: false, error: "Forbidden", message: "Only platform administrators can register new clients." }, { status: 403 });

@@ -27,7 +27,8 @@ import {
   StatusBadge,
   PrivatePageHeader,
   Timeline,
-  GovernancePanel
+  GovernancePanel,
+  InfoTooltip
 } from "@/components/private-app";
 
 import { mapApiOpToEnrichedAgent, EnrichedAgent } from "./mapping-helper";
@@ -300,26 +301,26 @@ export default function ClientAiOperationsPage() {
         <div className="flex items-center gap-2.5 text-white/70">
           <ShieldAlert className="w-4 h-4 text-[#009DFF] shrink-0 animate-pulse" />
           <span>
-            <strong className="text-white">COCKPIT REPRESENTATIVE TELEMETRY:</strong> This control center displays emulated telemetry data and sandboxed system parameters. Real-time live production adjustments are emulated for security.
+            <strong className="text-white">SYSTEM MONITOR:</strong> This dashboard shows simulated health metrics, logs, and active configurations of your AI systems.
           </span>
         </div>
         <span className="text-[9.5px] text-[#009DFF]/80 font-bold bg-[#009DFF]/10 border border-[#009DFF]/20 px-2 py-0.5 rounded uppercase tracking-wider shrink-0 select-none">
-          EMULATED RUNTIME
+          SYSTEM SIMULATOR
         </span>
       </div>
 
       {/* 2. PAGE HEADER */}
       <PrivatePageHeader
-        title="AI Operations Command Center"
-        desc="Central portal for continuous monitoring of managed sandbox runtimes, sovereign hardware partition metrics, and zero-trust policy validations."
-        badgeLabel="Sovereign AI Ops"
+        title="AI Agents & Systems Control Center"
+        desc="Monitor your active AI agents, view live load metrics, and track system logs."
+        badgeLabel="AI Systems Health"
         actions={
           <div className="flex gap-2 w-full md:w-auto">
             <Link
               href="/portal/control-center"
               className="flex-grow md:flex-grow-0 inline-flex h-9 items-center justify-center gap-1.5 rounded-lg bg-[#009DFF] hover:bg-[#009DFF]/90 text-white font-mono font-bold text-[11px] px-4 uppercase tracking-wider transition-all hover:shadow-[0_0_12px_rgba(0,157,255,0.25)]"
             >
-              Hardware Control Center
+              Systems Control Center
               <ArrowUpRight className="w-3.5 h-3.5" />
             </Link>
           </div>
@@ -334,23 +335,23 @@ export default function ClientAiOperationsPage() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
           </span>
-          <span className="text-white/40">OPS STATUS:</span>
-          <span className="text-[#00FFC2] font-bold">STEADY & COMPLIANT</span>
+          <span className="text-white/40">STATUS:</span>
+          <span className="text-[#00FFC2] font-bold">RUNNING & HEALTHY</span>
         </div>
         <div className="flex items-center gap-2.5 px-3 py-1 border-b md:border-b-0 md:border-r border-white/5">
           <Cpu className="w-3.5 h-3.5 text-[#009DFF]" />
-          <span className="text-white/40">SYSTEM RUNTIMES:</span>
-          <span className="text-white font-bold">5 REPL SANDBOXES</span>
+          <span className="text-white/40">AI AGENTS:</span>
+          <span className="text-white font-bold">5 ACTIVE AGENTS</span>
         </div>
         <div className="flex items-center gap-2.5 px-3 py-1 border-b md:border-b-0 md:border-r border-white/5">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-          <span className="text-white/40">INTEGRITY LOCKS:</span>
-          <span className="text-emerald-400 font-bold">ISO-27001 ACTIVE</span>
+          <span className="text-white/40">SECURITY STATUS:</span>
+          <span className="text-emerald-400 font-bold">OPTIMAL</span>
         </div>
         <div className="flex items-center gap-2.5 px-3 py-1">
           <Clock className="w-3.5 h-3.5 text-amber-400" />
-          <span className="text-white/40">MAINTENANCE CYCLE:</span>
-          <span className="text-white font-bold">AUTOMATED (2H 45M)</span>
+          <span className="text-white/40">SYSTEM CHECK:</span>
+          <span className="text-white font-bold">AUTOMATED (EVERY 2H)</span>
         </div>
       </div>
 
@@ -679,7 +680,10 @@ export default function ClientAiOperationsPage() {
                     <div className="grid grid-cols-2 gap-4 mt-3">
                       <div className="border border-[#009DFF]/30 bg-[#009DFF]/5 p-3.5 rounded-lg relative space-y-2 group hover:border-[#009DFF] transition-all">
                         <div className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-[#009DFF] animate-ping" />
-                        <span className="text-[#009DFF] font-bold block text-[9.5px]">INTEL SGX</span>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[#009DFF] font-bold block text-[9.5px]">INTEL SGX</span>
+                          <InfoTooltip content="Intel Software Guard Extensions isolate user-space code and data in hardware-protected memory segments (enclaves) to prevent host snooping." />
+                        </div>
                         <div className="text-[8.5px] text-white/50 leading-relaxed">
                           Isolated User-Space Enclave. Memory fully encrypted at silicon layer.
                         </div>
@@ -689,7 +693,10 @@ export default function ClientAiOperationsPage() {
                       </div>
                       <div className="border border-emerald-500/30 bg-emerald-500/5 p-3.5 rounded-lg relative space-y-2 group hover:border-emerald-500 transition-all">
                         <div className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping" />
-                        <span className="text-emerald-400 font-bold block text-[9.5px]">AMD SEV-SNP</span>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-emerald-400 font-bold block text-[9.5px]">AMD SEV-SNP</span>
+                          <InfoTooltip content="AMD Secure Encrypted Virtualization-Secure Nested Paging uses hardware-level cryptography to protect VM registers and tables from administrative access." />
+                        </div>
                         <div className="text-[8.5px] text-white/50 leading-relaxed">
                           Secure Nested Paging. Strict hardware CPU isolation and register lock.
                         </div>
@@ -767,6 +774,7 @@ export default function ClientAiOperationsPage() {
                 <h3 className="text-xs font-bold text-white font-mono uppercase tracking-wider">
                   Hardware Security Modules (HSM)
                 </h3>
+                <InfoTooltip content="Physical cryptographic coprocessors safeguarding and managing GFF access keys for strong continuous attestation checks." />
               </div>
               <div className="p-3 bg-green-500/5 border border-green-500/20 text-green-400 font-bold rounded flex items-center justify-between font-mono text-[11px]">
                 <span>HSM LOCK:</span>

@@ -70,23 +70,8 @@ export default function AdminUsersPage() {
     setLoading(true);
     setError(null);
     try {
-      let token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") || localStorage.getItem("gff_api_token") : null;
-      if (!token) {
-        const loginRes = await fetch("/api/v1/auth/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: "s.vance@governance.gff.ai", password: "VanceSecure2026!" })
-        });
-        if (loginRes.ok) {
-          const authData = await loginRes.json();
-          if (authData.accessToken) {
-            token = authData.accessToken;
-            localStorage.setItem("gff_ai_access_token", authData.accessToken);
-          }
-        }
-      }
-
-      if (!token) throw new Error("Authentication token missing.");
+      const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") || localStorage.getItem("gff_api_token") : null;
+      if (!token) throw new Error("Your session has expired. Please sign in again.");
 
       // Fetch current profile
       const meRes = await fetch("/api/v1/auth/me", { headers: { "Authorization": `Bearer ${token}` } });
@@ -121,7 +106,7 @@ export default function AdminUsersPage() {
   const handleRoleChange = async (userId: string, newRole: "gff_admin" | "client_admin" | "client_member") => {
     setValidationError(null);
     try {
-      const token = localStorage.getItem("gff_ai_access_token");
+      const token = localStorage.getItem("gff_ai_access_token") || localStorage.getItem("gff_api_token");
       const res = await fetch(`/api/v1/users/${userId}/role`, {
         method: "PATCH",
         headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
@@ -144,7 +129,7 @@ export default function AdminUsersPage() {
     setValidationError(null);
     const nextStatus = user.status === "active" ? "inactive" : "active";
     try {
-      const token = localStorage.getItem("gff_ai_access_token");
+      const token = localStorage.getItem("gff_ai_access_token") || localStorage.getItem("gff_api_token");
       const res = await fetch(`/api/v1/users/${user.id}/status`, {
         method: "PATCH",
         headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
@@ -268,11 +253,11 @@ export default function AdminUsersPage() {
       {/* HEADER */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold tracking-tight uppercase">Identity Provisioning Console</h2>
-          <p className="text-xs text-white/50 mt-1">Platform RBAC administration, FIDO2 physical keys, and continuous session auditing.</p>
+          <h2 className="text-xl font-bold tracking-tight uppercase">User & Team Management</h2>
+          <p className="text-xs text-white/50 mt-1">Manage user accounts, roles, access settings, and platform permissions in one place.</p>
           {!isPlatformAdmin && currentUser && (
             <div className="mt-2 text-[10px] text-amber-400 bg-amber-500/5 px-2.5 py-1 rounded border border-amber-500/10 inline-block">
-              ⚠️ VIEW-ONLY OPERATOR: Administrative credentials are required to provision identities or modify roles.
+              ⚠️ VIEW-ONLY: You need admin rights to manage users and roles.
             </div>
           )}
         </div>
@@ -282,7 +267,7 @@ export default function AdminUsersPage() {
             className="h-10 px-4 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/35 text-emerald-400 text-xs font-bold transition-all flex items-center gap-2 cursor-pointer"
           >
             <UserPlus className="w-4 h-4" />
-            <span>PROVISION NEW IDENTITY</span>
+            <span>CREATE NEW USER</span>
           </button>
         )}
       </div>
@@ -332,11 +317,11 @@ export default function AdminUsersPage() {
             <div className="p-12 text-center border border-white/5 bg-black/20 rounded-xl text-xs text-white/45">No operators found matching queries.</div>
           ) : (
             <div className="border border-white/5 bg-[#050505]/40 rounded-xl overflow-hidden divide-y divide-white/5">
-              {filteredUsers.map(user => {
+              {filteredUsers.map((user, index) => {
                 const isSelected = selectedUser?.id === user.id;
                 return (
                   <div 
-                    key={user.id} 
+                    key={`${user.email}-${index}`} 
                     onClick={() => setSelectedUser(user)}
                     className={`p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 cursor-pointer transition-colors ${
                       isSelected ? "bg-white/[0.03] border-l-2 border-[#009DFF]" : "hover:bg-white/[0.01]"
@@ -372,17 +357,17 @@ export default function AdminUsersPage() {
             <div className="rounded-xl border border-white/5 bg-[#050505]/40 p-4 space-y-4">
               <div className="flex items-center gap-2 border-b border-white/5 pb-2 select-none">
                 <Lock className="w-4 h-4 text-[#009DFF]" />
-                <span className="text-[10px] uppercase font-bold text-white/45">Identity Credential Inspector</span>
+                <span className="text-[10px] uppercase font-bold text-white/45">User Account Details</span>
               </div>
 
               <div className="space-y-3 text-xs">
-                <div><span className="text-white/30 text-[9px] block">OPERATOR NAME</span><span className="font-bold text-white text-sm">{selectedUser.name}</span></div>
-                <div><span className="text-white/30 text-[9px] block">SECURITY CLEARANCE</span><span className="text-amber-400 font-bold">{selectedUser.clearance}</span></div>
-                <div><span className="text-white/30 text-[9px] block">TRUST BOUNDARY DELEGATE</span><span className="text-white">{selectedUser.clientAssociation}</span></div>
-                <div><span className="text-white/30 text-[9px] block">OPERATIVE EMAIL</span><span className="text-[#009DFF]">{selectedUser.email}</span></div>
+                <div><span className="text-white/30 text-[9px] block">USER FULL NAME</span><span className="font-bold text-white text-sm">{selectedUser.name}</span></div>
+                <div><span className="text-white/30 text-[9px] block">SECURITY ACCESS LEVEL</span><span className="text-amber-400 font-bold">{selectedUser.clearance}</span></div>
+                <div><span className="text-white/30 text-[9px] block">CLIENT ASSOCIATION</span><span className="text-white">{selectedUser.clientAssociation}</span></div>
+                <div><span className="text-white/30 text-[9px] block">EMAIL ADDRESS</span><span className="text-[#009DFF]">{selectedUser.email}</span></div>
                 
                 <div>
-                  <span className="text-white/30 text-[9px] block mb-1">RBAC PERMISSIONS</span>
+                  <span className="text-white/30 text-[9px] block mb-1">ACCOUNT PERMISSIONS</span>
                   <div className="flex flex-wrap gap-1">
                     {ROLE_PERMISSIONS[selectedUser.role]?.map(p => (
                       <span key={p} className="text-[8px] bg-white/5 text-zinc-300 px-1 py-0.5 rounded border border-white/10">{p}</span>
@@ -392,7 +377,7 @@ export default function AdminUsersPage() {
 
                 {isPlatformAdmin && selectedUser.email !== currentUser?.email && (
                   <div className="pt-3 border-t border-white/5 space-y-2">
-                    <span className="text-white/30 text-[9px] block uppercase font-bold">Administrative Commands</span>
+                    <span className="text-white/30 text-[9px] block uppercase font-bold">Account Management Controls</span>
                     <div className="grid grid-cols-2 gap-2">
                       <button 
                         onClick={() => handleToggleStatus(selectedUser)}
@@ -405,12 +390,12 @@ export default function AdminUsersPage() {
                         disabled={isResetting}
                         className="py-1.5 bg-amber-500/10 hover:bg-amber-500/15 text-amber-400 text-[10px] rounded uppercase font-bold border border-amber-500/20 cursor-pointer"
                       >
-                        Rotate key
+                        Reset Password
                       </button>
                     </div>
                     
                     <div>
-                      <label className="text-[9px] text-white/35 uppercase font-bold block mb-1">Re-Map RBAC Role</label>
+                      <label className="text-[9px] text-white/35 uppercase font-bold block mb-1">Change User Role</label>
                       <select 
                         value={selectedUser.role}
                         onChange={(e) => handleRoleChange(selectedUser.id, e.target.value as any)}
@@ -426,7 +411,7 @@ export default function AdminUsersPage() {
                       onClick={() => handleDeleteUser(selectedUser.id, selectedUser.email)}
                       className="w-full py-1.5 bg-rose-500/10 hover:bg-rose-500/15 text-rose-400 text-[10px] rounded uppercase font-bold border border-rose-500/25 cursor-pointer transition-all mt-2"
                     >
-                      Revoke Credentials
+                      Remove User Account
                     </button>
                   </div>
                 )}
@@ -437,8 +422,8 @@ export default function AdminUsersPage() {
           {/* TELEMETRY AUDIT LOGS */}
           <div className="rounded-xl border border-white/5 bg-[#050505]/40 p-4 space-y-3 flex flex-col justify-between">
             <div className="flex justify-between items-center border-b border-white/5 pb-2">
-              <span className="text-[10px] uppercase font-bold text-white/45">FIDO2 Audit Ledger</span>
-              <span className="text-[8px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-1 rounded font-bold uppercase animate-pulse">Mesh Live</span>
+              <span className="text-[10px] uppercase font-bold text-white/45">Operator Activity Log</span>
+              <span className="text-[8px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-1 rounded font-bold uppercase animate-pulse">Live</span>
             </div>
             <div className="bg-black/40 border border-white/5 rounded-lg p-3 h-40 overflow-y-auto font-mono text-[9.5px] leading-relaxed text-zinc-400 space-y-1 scrollbar-thin">
               {auditLogs.length === 0 ? (
@@ -458,7 +443,7 @@ export default function AdminUsersPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4">
           <div className="w-full max-w-md bg-[#09090b] border border-white/10 rounded-xl overflow-hidden shadow-2xl">
             <div className="p-4 border-b border-white/10 bg-[#0c0c0e] flex items-center justify-between">
-              <span className="text-xs font-bold text-white uppercase tracking-wider">Provision Operator Identity</span>
+              <span className="text-xs font-bold text-white uppercase tracking-wider">Create New User</span>
               <button onClick={() => setIsInviteOpen(false)} className="text-white/40 hover:text-white cursor-pointer"><X className="w-4 h-4" /></button>
             </div>
 
@@ -467,18 +452,18 @@ export default function AdminUsersPage() {
                 {validationError && <div className="p-2 bg-red-500/10 border border-red-500/20 text-red-400 rounded">{validationError}</div>}
                 
                 <div className="space-y-1">
-                  <label className="text-white/45 text-[10px] uppercase font-bold block">Operator Full Name</label>
+                  <label className="text-white/45 text-[10px] uppercase font-bold block">User Full Name</label>
                   <input type="text" value={inviteName} onChange={(e) => setInviteName(e.target.value)} placeholder="e.g. Robert Vance" className="w-full p-2 bg-black border border-white/10 rounded" required />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-white/45 text-[10px] uppercase font-bold block">Secure Business Email</label>
+                  <label className="text-white/45 text-[10px] uppercase font-bold block">Email Address</label>
                   <input type="email" value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} placeholder="e.g. r.vance@sovereign.gff.ai" className="w-full p-2 bg-black border border-white/10 rounded" required />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-white/45 text-[10px] uppercase font-bold block mb-1">Target RBAC Role</label>
+                    <label className="text-white/45 text-[10px] uppercase font-bold block mb-1">User Role</label>
                     <select value={inviteRole} onChange={(e) => setInviteRole(e.target.value as any)} className="w-full p-2 bg-black border border-white/10 rounded">
                       <option value="gff_admin">gff_admin</option>
                       <option value="client_admin">client_admin</option>
@@ -486,14 +471,14 @@ export default function AdminUsersPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="text-white/45 text-[10px] uppercase font-bold block mb-1">Clearance Allocation</label>
+                    <label className="text-white/45 text-[10px] uppercase font-bold block mb-1">Access Level</label>
                     <input type="text" disabled value={ROLE_CLEARANCES[inviteRole]?.split(" ")[2]} className="w-full p-2 bg-zinc-900 border border-white/5 rounded text-amber-400 font-bold" />
                   </div>
                 </div>
 
                 {inviteRole !== "gff_admin" && (
                   <div>
-                    <label className="text-white/45 text-[10px] uppercase font-bold block mb-1">Target Trust Enclave</label>
+                    <label className="text-white/45 text-[10px] uppercase font-bold block mb-1">Select Client Organization</label>
                     <select value={inviteClient} onChange={(e) => setInviteClient(e.target.value)} className="w-full p-2 bg-black border border-white/10 rounded cursor-pointer">
                       <option value="Apex Sovereign Group [Preview Client]">Apex Sovereign Group</option>
                       <option value="Global Retail Enclave [Preview Client]">Global Retail Enclave</option>

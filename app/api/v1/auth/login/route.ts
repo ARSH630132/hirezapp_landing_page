@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { API_MOCK_USERS, verifyUserPassword, signJwt } from "@/lib/api-auth";
+import { signJwt } from "@/lib/api-auth";
 import { getUserFromDynamoDB, verifyDbUserPassword, mapDynamoUserToApiUser } from "@/lib/dynamodb-client";
 
 export const runtime = "nodejs";
@@ -25,41 +25,17 @@ export async function POST(req: Request) {
 
     const normalizedEmail = email.toLowerCase().trim();
     
-    // Attempt DynamoDB lookup first
-    let userResponse: any = null;
-    let isInactive = false;
-    let isValidPassword = false;
-
     const dynamoUser = await getUserFromDynamoDB(normalizedEmail);
-    if (dynamoUser) {
-      userResponse = mapDynamoUserToApiUser(dynamoUser);
-      isInactive = userResponse.status === "inactive";
-      isValidPassword = verifyDbUserPassword(dynamoUser, password);
-    } else {
-      // Fallback to in-memory mock users
-      const mockUser = API_MOCK_USERS[normalizedEmail];
-      if (mockUser) {
-        userResponse = {
-          id: mockUser.id,
-          name: mockUser.name,
-          email: mockUser.email,
-          role: mockUser.role,
-          clientAssociation: mockUser.clientAssociation,
-          status: mockUser.status,
-          clearance: mockUser.clearance,
-          permissions: mockUser.permissions,
-        };
-        isInactive = mockUser.status === "inactive";
-        isValidPassword = verifyUserPassword(normalizedEmail, password);
-      }
-    }
-
-    if (!userResponse) {
+    if (!dynamoUser) {
       return NextResponse.json(
         { success: false, error: "Unauthorized", message: "Invalid credentials provided." },
         { status: 401 }
       );
     }
+
+    const userResponse = mapDynamoUserToApiUser(dynamoUser);
+    const isInactive = userResponse.status === "inactive";
+    const isValidPassword = verifyDbUserPassword(dynamoUser, password);
 
     if (isInactive) {
       return NextResponse.json(
@@ -78,10 +54,11 @@ export async function POST(req: Request) {
     const tokenPayload = {
       sub: userResponse.id,
       email: userResponse.email,
-      role: userResponse.role,
-      name: userResponse.name,
-      clearance: userResponse.clearance,
-    };
+        role: userResponse.role,
+        name: userResponse.name,
+        clearance: userResponse.clearance,
+        clientAssociation: userResponse.clientAssociation,
+      };
 
     const accessToken = signJwt(tokenPayload);
 
@@ -103,4 +80,3 @@ export async function POST(req: Request) {
     );
   }
 }
-
