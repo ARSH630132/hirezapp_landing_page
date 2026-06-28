@@ -9,7 +9,6 @@ import {
 import { motion, AnimatePresence } from "motion/react";
 import { SidebarLink, UserProfile, BreadcrumbItem } from "./types";
 import { WorkspaceBreadcrumbs, WorkspaceCommandButton } from "./navigation";
-import { NotificationBell } from "./notifications";
 import { UserAvatar } from "./notices-avatars";
 import { clearPreviewSession } from "@/lib/preview-auth";
 
@@ -328,7 +327,6 @@ export function PrivateTopbar({
 
       <div className="flex items-center gap-3">
         <WorkspaceCommandButton onClick={onSearchClick} />
-        <NotificationBell />
         
         {/* Quick Sign Out Action */}
         <button 
