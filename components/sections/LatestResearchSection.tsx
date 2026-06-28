@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import SectionHeading from "@/components/SectionHeading";
+import { downloadAssetLinks } from "@/lib/cta-links";
 
 const CATS = [
   { name: "Articles", desc: "Detailed technical analyses of multi-agent orchestration and security boundaries.", color: "#E98828" },
@@ -22,29 +24,9 @@ const CHANNELS = [
 ];
 
 export default function LatestResearchSection() {
-  const [downloading, setDownloading] = useState<string | null>(null);
-  const [progress, setProgress] = useState(0);
-  const [success, setSuccess] = useState<string | null>(null);
   const [active, setActive] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [sub, setSub] = useState<"idle" | "submitting" | "success">("idle");
-
-  useEffect(() => {
-    if (!downloading) return;
-    const interval = setInterval(() => {
-      setProgress((p) => {
-        if (p >= 100) {
-          clearInterval(interval);
-          setSuccess(downloading);
-          setDownloading(null);
-          setTimeout(() => setSuccess(null), 3500);
-          return 100;
-        }
-        return p + 25;
-      });
-    }, 120);
-    return () => clearInterval(interval);
-  }, [downloading]);
 
   const handleSub = (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,18 +93,13 @@ export default function LatestResearchSection() {
                     <h4 className="text-[15px] font-bold text-white tracking-tight">{s.title}</h4>
                   </div>
                   <div className="min-w-[120px] text-right">
-                    {downloading === s.id ? (
-                      <span className="text-[#009DFF] text-[10.5px] font-mono animate-pulse block">STREAMING {progress}%</span>
-                    ) : success === s.id ? (
-                      <span className="text-emerald-400 font-mono text-[10.5px] uppercase block">✓ Streamed</span>
-                    ) : (
-                      <button 
-                        onClick={() => { setProgress(0); setDownloading(s.id); }} 
-                        className="bg-white/5 hover:bg-white/10 text-white border border-white/10 font-mono text-[10.5px] uppercase tracking-wider px-3.5 py-1.5 rounded-full cursor-pointer transition-all duration-300 block w-full md:w-auto text-center"
-                      >
-                        Stream Spec
-                      </button>
-                    )}
+                    <Link
+                      href={downloadAssetLinks[s.id]}
+                      download
+                      className="bg-white/5 hover:bg-white/10 text-white border border-white/10 font-mono text-[10.5px] uppercase tracking-wider px-3.5 py-1.5 rounded-full cursor-pointer transition-all duration-300 block w-full md:w-auto text-center"
+                    >
+                      Download Spec
+                    </Link>
                   </div>
                 </div>
               ))}

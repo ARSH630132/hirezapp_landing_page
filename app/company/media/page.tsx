@@ -1,11 +1,13 @@
 "use client";
 
+import Link from "next/link";
 import React, { useState } from "react";
 import InnerPageShell from "@/components/inner-pages/InnerPageShell";
 import InnerPageHero from "@/components/inner-pages/InnerPageHero";
 import CompanyNavigation from "@/components/inner-pages/CompanyNavigation";
 import PremiumCTA from "@/components/inner-pages/PremiumCTA";
 import { Download, Globe, FileText, Check } from "lucide-react";
+import { downloadAssetLinks } from "@/lib/cta-links";
 
 export default function CompanyMediaPage() {
   const [downloaded, setDownloaded] = useState<string | null>(null);
@@ -14,14 +16,16 @@ export default function CompanyMediaPage() {
     {
       id: "brand",
       title: "Corporate Brand Book",
-      type: "ZIP Package",
+      type: "PDF Guide",
       spec: "SVG logos, premium dark theme colors, typography guidelines.",
+      href: downloadAssetLinks.brand,
     },
     {
       id: "boilerplate",
       title: "Official Press Boilerplate",
       type: "PDF Document",
       spec: "Verified corporate descriptions of GFF AI PTE. LTD. and UEN 202621347N.",
+      href: downloadAssetLinks.boilerplate,
     },
   ];
 
@@ -65,13 +69,15 @@ export default function CompanyMediaPage() {
                     <p className="text-[12.5px] text-white/50 font-light font-sans mt-2">{asset.spec}</p>
                   </div>
 
-                  <button
+                  <Link
+                    href={asset.href}
+                    download
                     onClick={() => handleDownload(asset.id)}
                     className="w-10 h-10 rounded-xl bg-white/[0.03] border border-white/10 hover:bg-[#009DFF]/10 hover:border-[#009DFF]/30 text-white flex items-center justify-center transition-all shrink-0"
                     aria-label={`Download ${asset.title}`}
                   >
                     {downloaded === asset.id ? <Check className="w-4 h-4 text-emerald-400" /> : <Download className="w-4 h-4 text-white/70" />}
-                  </button>
+                  </Link>
                 </div>
               ))}
             </div>

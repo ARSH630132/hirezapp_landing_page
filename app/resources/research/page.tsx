@@ -1,14 +1,16 @@
 "use client";
 
+import Link from "next/link";
 import React, { useState, useMemo } from "react";
 import InnerPageShell from "@/components/inner-pages/InnerPageShell";
 import InnerPageHero from "@/components/inner-pages/InnerPageHero";
 import PremiumCTA from "@/components/inner-pages/PremiumCTA";
+import { downloadAssetLinks } from "@/lib/cta-links";
 
 const PAPERS = [
-  { t: "Dynamic Task Routing in Heuristic Multi-Agent Systems", c: "Orchestration", a: "GFF Research", y: "2026", d: "Mathematical formulation of state spaces, sub-agent spawning heuristics, and backpressure mitigation algorithms in transactional networks." },
-  { t: "Cryptographic Memory Isolation & Zero-Trust State Management", c: "Security", a: "Sovereignty Lab", y: "2026", d: "A protocol for ensuring PII token obfuscation, memory boundaries, and secure sandboxing across untrusted third-party APIs." },
-  { t: "Horizontal Scaling and Latency Synchronisation of Shared Graph Caches", c: "Scale", a: "Infrastructure Group", y: "2025", d: "Empirical analysis of sub-millisecond graph synchronization across distributed cloud fabrics under high operational load." }
+  { t: "Dynamic Task Routing in Heuristic Multi-Agent Systems", c: "Orchestration", a: "GFF Research", y: "2026", d: "Mathematical formulation of state spaces, sub-agent spawning heuristics, and backpressure mitigation algorithms in transactional networks.", href: downloadAssetLinks.routing },
+  { t: "Cryptographic Memory Isolation & Zero-Trust State Management", c: "Security", a: "Sovereignty Lab", y: "2026", d: "A protocol for ensuring PII token obfuscation, memory boundaries, and secure sandboxing across untrusted third-party APIs.", href: downloadAssetLinks.isolation },
+  { t: "Horizontal Scaling and Latency Synchronisation of Shared Graph Caches", c: "Scale", a: "Infrastructure Group", y: "2025", d: "Empirical analysis of sub-millisecond graph synchronization across distributed cloud fabrics under high operational load.", href: downloadAssetLinks.graph }
 ];
 
 export default function ResearchArchive() {
@@ -61,9 +63,9 @@ export default function ResearchArchive() {
                 </div>
                 <div className="mt-6 pt-4 border-t border-white/5 flex justify-between items-center text-[11px]">
                   <span className="text-white/30 font-mono">FORMAT: ACADEMIC PDF</span>
-                  <button onClick={() => handleDownload(p.t)} className="text-[#009DFF] font-bold uppercase tracking-wider text-[10px]">
+                  <Link href={p.href} download onClick={() => handleDownload(p.t)} className="text-[#009DFF] font-bold uppercase tracking-wider text-[10px]">
                     {downloading[p.t] ? "Decrypting..." : "Download Preprint 🛡️"}
-                  </button>
+                  </Link>
                 </div>
               </div>
             ))}

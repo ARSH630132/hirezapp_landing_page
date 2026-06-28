@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "motion/react";
 import { pageFadeVariants } from "@/lib/animations";
+import { garageCardLinks } from "@/lib/cta-links";
 import { garageCards } from "@/lib/landing-data";
 
 export default function GarageSection() {
@@ -27,10 +29,11 @@ export default function GarageSection() {
       <div className="relative z-20 mt-10 mx-auto max-w-[1746px] px-4 sm:px-8 lg:px-[63px]">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
           {garageCards.map((item) => (
-            <div
+            <Link
               key={item.title}
+              href={garageCardLinks[item.title] ?? "/company"}
               className="group relative w-full max-w-[282px] rounded-[28px] overflow-hidden bg-black/10 backdrop-blur-[8px] px-5 pt-8 pb-6 flex flex-col mx-auto transition-all duration-300 hover:-translate-y-2"
->
+            >
               <div
                 className="pointer-events-none absolute inset-0 rounded-[28px] p-[1px]"
                 style={{
@@ -82,8 +85,8 @@ export default function GarageSection() {
               </div>
               <h3 className="relative z-10 text-[18px] leading-none font-semibold text-white">{item.title}</h3>
               <p className="relative z-10 mt-3 text-[#C1C1C1] text-[16px] leading-[1.5] font-medium">{item.desc}</p>
-              <button className="relative z-10 mt-6 text-[#FF2B2B] text-[16px] leading-none font-medium text-left cursor-pointer">Learn More →</button>
-            </div>
+              <span className="relative z-10 mt-6 text-[#FF2B2B] text-[16px] leading-none font-medium text-left cursor-pointer">Learn More →</span>
+            </Link>
           ))}
         </div>
       </div>

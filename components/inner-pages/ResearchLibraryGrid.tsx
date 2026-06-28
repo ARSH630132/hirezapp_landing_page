@@ -1,6 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import React, { useState, useMemo } from "react";
+import { downloadAssetLinks } from "@/lib/cta-links";
 
 const PAPERS = [
   {
@@ -8,28 +10,32 @@ const PAPERS = [
     cat: "Agentic AI",
     time: "12 min read",
     desc: "A reference guide outlining dynamic task routing, sub-agent spawning, and transactional isolation.",
-    size: "2.4 MB PDF"
+    size: "2.4 MB PDF",
+    href: downloadAssetLinks.orch,
   },
   {
     t: "Zero-Trust Agentic Security: Multi-Layer Sandboxing",
     cat: "Security",
     time: "18 min read",
     desc: "Analysis of secure memory boundaries, PII token obfuscation, and runtime container isolation.",
-    size: "4.1 MB PDF"
+    size: "4.1 MB PDF",
+    href: downloadAssetLinks.sec,
   },
   {
     t: "Horizontal Multi-Agent Scaling & Latency Benchmarks",
     cat: "Scalability",
     time: "15 min read",
     desc: "Empirical study on microsecond-level synchronization of shared graph databases and custom caches.",
-    size: "1.8 MB PDF"
+    size: "1.8 MB PDF",
+    href: downloadAssetLinks.scaling,
   },
   {
     t: "Ensuring System Alignment: Safety Loops & Audits",
     cat: "Security",
     time: "10 min read",
     desc: "Exploring Human-in-the-Loop execution patterns, validation logic fallback states, and compliance monitoring.",
-    size: "3.2 MB PDF"
+    size: "3.2 MB PDF",
+    href: downloadAssetLinks.isolation,
   }
 ];
 
@@ -97,7 +103,7 @@ export default function ResearchLibraryGrid() {
 
               <div className="mt-5 pt-3 border-t border-white/5 flex items-center justify-between text-[11px]">
                 <span className="text-white/40 font-mono text-[10px]">{paper.size}</span>
-                <button onClick={() => handleDownload(paper.t)} className="flex items-center gap-1.5 text-white hover:text-[#009DFF] font-semibold text-[10.5px] uppercase">
+                <Link href={paper.href} download onClick={() => handleDownload(paper.t)} className="flex items-center gap-1.5 text-white hover:text-[#009DFF] font-semibold text-[10.5px] uppercase">
                   {downloading[paper.t] ? (
                     <span className="animate-pulse text-[#009DFF]">Transmitting...</span>
                   ) : downloaded[paper.t] ? (
@@ -115,7 +121,7 @@ export default function ResearchLibraryGrid() {
                       </svg>
                     </>
                   )}
-                </button>
+                </Link>
               </div>
             </div>
           ))}

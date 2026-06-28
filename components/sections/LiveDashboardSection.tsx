@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "motion/react";
 import SectionHeading from "@/components/SectionHeading";
+import { dashboardCardLinks } from "@/lib/cta-links";
 
 // Visual component for Active Clients
 const RadarVisual = () => (
@@ -453,34 +455,37 @@ export default function LiveDashboardSection() {
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.05 }}
-              className="relative group rounded-[20px] bg-[#050505] border border-white/5 hover:border-white/15 hover:bg-[#070707] transition-all duration-500 overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.4)] flex flex-col justify-between"
+              className="h-full"
             >
-              {/* Top Accent Line */}
-              <div className="absolute top-0 left-0 right-0 h-[1.5px] opacity-40 group-hover:opacity-100 transition-opacity duration-500" style={{ backgroundColor: item.color }} />
-              
-              <div className="p-6 flex flex-col gap-5 flex-grow">
-                {/* Visual block representing telemetry */}
-                <div className="group-hover:scale-[1.02] transition-transform duration-500">
-                  {renderVisual(item.iconType)}
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center justify-between gap-2">
-                    <h3 className="text-[15px] font-bold uppercase tracking-wider text-white/90 font-mono">
-                      {item.label}
-                    </h3>
+              <Link
+                href={dashboardCardLinks[item.id] ?? "/platforms/control-center"}
+                className="relative group rounded-[20px] bg-[#050505] border border-white/5 hover:border-white/15 hover:bg-[#070707] transition-all duration-500 overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.4)] flex h-full flex-col justify-between"
+              >
+                <div className="absolute top-0 left-0 right-0 h-[1.5px] opacity-40 group-hover:opacity-100 transition-opacity duration-500" style={{ backgroundColor: item.color }} />
+                
+                <div className="p-6 flex flex-col gap-5 flex-grow">
+                  <div className="group-hover:scale-[1.02] transition-transform duration-500">
+                    {renderVisual(item.iconType)}
                   </div>
 
-                  <div className="inline-flex w-fit items-center gap-1.5 px-2.5 py-0.5 rounded-md border text-[10px] font-mono font-semibold" style={{ borderColor: `${item.color}30`, backgroundColor: `${item.color}08`, color: item.color }}>
-                    <span className="w-1 h-1 rounded-full animate-pulse" style={{ backgroundColor: item.color }} />
-                    {item.status}
-                  </div>
-                </div>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <h3 className="text-[15px] font-bold uppercase tracking-wider text-white/90 font-mono">
+                        {item.label}
+                      </h3>
+                    </div>
 
-                <p className="text-[12px] text-[#808080] leading-relaxed font-normal group-hover:text-white/70 transition-colors duration-300">
-                  {item.desc}
-                </p>
-              </div>
+                    <div className="inline-flex w-fit items-center gap-1.5 px-2.5 py-0.5 rounded-md border text-[10px] font-mono font-semibold" style={{ borderColor: `${item.color}30`, backgroundColor: `${item.color}08`, color: item.color }}>
+                      <span className="w-1 h-1 rounded-full animate-pulse" style={{ backgroundColor: item.color }} />
+                      {item.status}
+                    </div>
+                  </div>
+
+                  <p className="text-[12px] text-[#808080] leading-relaxed font-normal group-hover:text-white/70 transition-colors duration-300">
+                    {item.desc}
+                  </p>
+                </div>
+              </Link>
             </motion.div>
           ))}
         </div>
