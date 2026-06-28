@@ -56,24 +56,45 @@ export function RoleSwitcherPreview({
 
   return (
     <div className="relative font-mono select-none">
-      <button onClick={() => setDropdownOpen(!dropdownOpen)} disabled={switching} className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/5 bg-black/40 text-[10px] hover:border-white/10 transition-all cursor-pointer text-white/80">
+      <button 
+        onClick={() => setDropdownOpen(!dropdownOpen)} 
+        disabled={switching} 
+        className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/5 bg-black/40 text-[10px] hover:border-white/10 transition-all cursor-pointer text-white/80 focus:outline-none focus:ring-1 focus:ring-[#009DFF]"
+        aria-expanded={dropdownOpen}
+        aria-haspopup="listbox"
+        aria-label="Simulation clearance role selection"
+      >
         <CurrentIcon className={`w-3.5 h-3.5 ${currentRoleObj.color}`} />
-        <span className="font-bold">{currentRoleObj.label.toUpperCase()}</span>
+        <span className="font-bold hidden sm:inline">{currentRoleObj.label.toUpperCase()}</span>
+        <span className="font-bold sm:hidden">{currentRoleObj.clearance}</span>
         <ChevronDown className="w-3 h-3 text-white/40 shrink-0" />
       </button>
 
       <AnimatePresence>
         {dropdownOpen && (
           <>
-            <div className="fixed inset-0 z-40" onClick={() => setDropdownOpen(false)} />
-            <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 5 }} className="absolute right-0 top-full mt-2 z-50 w-52 rounded-xl border border-white/5 bg-[#0a0a0a] p-1.5 shadow-2xl backdrop-blur-md">
+            <div className="fixed inset-0 z-40" onClick={() => setDropdownOpen(false)} aria-hidden="true" />
+            <motion.div 
+              initial={{ opacity: 0, y: 5 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              exit={{ opacity: 0, y: 5 }} 
+              role="listbox"
+              aria-label="Simulation clearance role list"
+              className="absolute right-0 top-full mt-2 z-50 w-52 rounded-xl border border-white/5 bg-[#0a0a0a] p-1.5 shadow-2xl backdrop-blur-md"
+            >
               <div className="px-2 py-1 text-[8px] font-bold text-white/30 uppercase border-b border-white/5 mb-1">Simulated Clearances</div>
               <div className="space-y-0.5">
                 {rolesList.map((r) => {
                   const RoleIcon = r.icon;
                   const isSel = activeRole === r.id;
                   return (
-                    <button key={r.id} onClick={() => triggerSwitch(r.id)} className={`w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-left transition-colors cursor-pointer text-[10px] ${isSel ? "bg-white/5 text-[#009DFF]" : "text-white/60 hover:text-white hover:bg-white/[0.02]"}`}>
+                    <button 
+                      key={r.id} 
+                      onClick={() => triggerSwitch(r.id)} 
+                      role="option"
+                      aria-selected={isSel}
+                      className={`w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-left transition-colors cursor-pointer text-[10px] focus:outline-none focus:ring-1 focus:ring-[#009DFF] ${isSel ? "bg-white/5 text-[#009DFF]" : "text-white/60 hover:text-white hover:bg-white/[0.02]"}`}
+                    >
                       <div className="flex items-center gap-2 truncate">
                         <RoleIcon className={`w-3.5 h-3.5 shrink-0 ${r.color}`} />
                         <span className="font-bold truncate">{r.label}</span>

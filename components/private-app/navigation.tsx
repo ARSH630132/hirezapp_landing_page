@@ -14,7 +14,7 @@ export function WorkspaceBreadcrumbs({
   items: BreadcrumbItem[];
 }) {
   return (
-    <nav className="flex items-center space-x-2 text-[11px] font-mono text-white/40 select-none">
+    <nav aria-label="Sovereign workspace breadcrumbs" className="flex items-center space-x-2 text-[11px] font-mono text-white/40 select-none">
       <Link href="/portal" className="hover:text-white transition-colors flex items-center gap-1">
         <Shield className="w-3.5 h-3.5 text-[#009DFF]" />
         <span>GFF CORE</span>
@@ -48,13 +48,13 @@ export function WorkspaceCommandButton({
   return (
     <button 
       onClick={onClick}
-      className="flex h-9 w-full md:w-56 items-center justify-between rounded-lg border border-white/5 bg-white/[0.02] px-3 text-left hover:border-white/15 hover:bg-white/[0.04] transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#009DFF]/30 group"
+      className="flex h-9 w-9 md:w-56 items-center justify-center md:justify-between rounded-lg border border-white/5 bg-white/[0.02] px-2 md:px-3 text-left hover:border-white/15 hover:bg-white/[0.04] transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#009DFF]/30 group shrink-0"
     >
       <div className="flex items-center gap-2 text-white/40 group-hover:text-white/60 transition-colors">
-        <Search className="w-3.5 h-3.5" />
-        <span className="text-[11.5px] font-mono tracking-wider">SECURE SEARCH...</span>
+        <Search className="w-3.5 h-3.5 shrink-0" />
+        <span className="text-[11.5px] font-mono tracking-wider hidden md:inline">SECURE SEARCH...</span>
       </div>
-      <kbd className="hidden md:inline-flex h-5 select-none items-center gap-0.5 rounded border border-white/10 bg-white/[0.03] px-1.5 font-mono text-[9px] font-medium text-white/30">
+      <kbd className="hidden md:inline-flex h-5 select-none items-center gap-0.5 rounded border border-white/10 bg-white/[0.03] px-1.5 font-mono text-[9px] font-medium text-white/30 font-bold">
         {isMac ? "⌘" : "Ctrl+"}K
       </kbd>
     </button>

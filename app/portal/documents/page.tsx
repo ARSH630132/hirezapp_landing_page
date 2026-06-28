@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { 
   Search, 
   X, 
@@ -203,11 +204,157 @@ const PREVIEW_DOCUMENTS: PortalDocument[] = [
 
 // Available filter choices
 const CATEGORIES = ["Proposals", "SOW", "Architecture", "Reports", "Invoices", "Governance", "Meeting Notes", "Delivery Assets"];
-const PROJECTS = ["Sovereign Core Sandbox 02", "Model Guardrail Sandbox 04", "Federal Ledger Enclave Alpha", "Global Platform (No Project)"];
+const PROJECTS = [
+  "Apex Sovereign Group [Preview Client]",
+  "Global Retail Enclave [Preview Client]",
+  "Sovereign Logistics Unit [Preview Client]",
+  "Federal Treasury Division [Preview Client]",
+  "Global Platform (No Project)"
+];
 const FORMATS = ["PDF", "JSON", "YAML", "CSV", "DOCX", "ZIP", "PPTX"];
 const STATUSES = ["Approved", "Signed", "In Review", "Pending Review", "Active", "Archived"];
 
+function mapApiDocToPortalDoc(apiDoc: any): PortalDocument {
+  // Map formats
+  const format: any = apiDoc.type || "PDF";
+  
+  // Map categories based on name keywords
+  let category: any = "Reports";
+  const titleLower = (apiDoc.title || apiDoc.name || "").toLowerCase();
+  if (titleLower.includes("proposal")) {
+    category = "Proposals";
+  } else if (titleLower.includes("sow") || titleLower.includes("statement of work") || titleLower.includes("contract")) {
+    category = "SOW";
+  } else if (titleLower.includes("blueprint") || titleLower.includes("architecture") || titleLower.includes("topology")) {
+    category = "Architecture";
+  } else if (titleLower.includes("ruleset") || titleLower.includes("governance") || titleLower.includes("directive") || titleLower.includes("compliance")) {
+    category = "Governance";
+  } else if (titleLower.includes("audit") || titleLower.includes("report")) {
+    category = "Reports";
+  } else if (titleLower.includes("invoice") || titleLower.includes("billing")) {
+    category = "Invoices";
+  } else if (titleLower.includes("meeting") || titleLower.includes("notes")) {
+    category = "Meeting Notes";
+  } else if (apiDoc.type === "ZIP" || titleLower.includes("asset") || titleLower.includes("config")) {
+    category = "Delivery Assets";
+  }
+
+  // Map status
+  let status: any = "Approved";
+  if (apiDoc.status === "Verified") {
+    status = "Approved";
+  } else if (apiDoc.status === "Under Review") {
+    status = "In Review";
+  } else if (apiDoc.status === "Action Required") {
+    status = "Pending Review";
+  } else if (apiDoc.status === "Superseded") {
+    status = "Archived";
+  } else {
+    status = apiDoc.status || "Approved";
+  }
+
+  return {
+    id: apiDoc.id,
+    name: apiDoc.title || apiDoc.name,
+    category: category,
+    format: format,
+    size: apiDoc.fileSize || "1.0 MB",
+    hash: apiDoc.sha256 || "0xHASH",
+    uploadedAt: apiDoc.lastUpdated || new Date().toISOString(),
+    project: apiDoc.client_name || "Global Platform (No Project)",
+    status: status,
+    version: apiDoc.version || "v1.0",
+    owner: apiDoc.owner || "Dr. Sarah Vance",
+    visibility: apiDoc.client_id === "client-001" ? "LEVEL_IV (Restricted)" : "LEVEL_I (Client View)",
+    desc: apiDoc.description || apiDoc.desc || "Cryptographically secured enclave system documentation."
+  };
+}
+
+
+function DocumentsSkeleton() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      {[1, 2, 3, 4, 5, 6].map((n) => (
+        <WorkspaceCard key={n} className="flex flex-col h-[280px] justify-between border-white/[0.03] bg-[#050505]/20 p-5 rounded-2xl relative animate-pulse">
+          <div className="space-y-3">
+            <div className="flex justify-between items-start">
+              <div className="flex items-center gap-2">
+                <div className="h-4 bg-white/5 rounded w-16 animate-pulse" />
+                <div className="h-4 bg-white/5 rounded w-12 animate-pulse" />
+              </div>
+              <div className="h-4 bg-white/5 rounded w-10 animate-pulse" />
+            </div>
+            <div className="space-y-2 pt-2">
+              <div className="h-5 bg-white/5 rounded w-5/6 animate-pulse" />
+              <div className="h-3 bg-white/5 rounded w-full animate-pulse" />
+              <div className="h-3 bg-white/5 rounded w-4/5 animate-pulse" />
+            </div>
+          </div>
+          <div className="border-t border-white/5 pt-3 mt-4 space-y-3">
+            <div className="grid grid-cols-2 gap-2 text-[10px] font-mono text-white/35">
+              <div className="h-3 bg-white/5 rounded w-12 animate-pulse" />
+              <div className="h-3 bg-white/5 rounded w-12 ml-auto animate-pulse" />
+            </div>
+            <div className="grid grid-cols-2 gap-2 pt-1">
+              <div className="h-8 bg-white/5 rounded animate-pulse" />
+              <div className="h-8 bg-white/5 rounded animate-pulse" />
+            </div>
+          </div>
+        </WorkspaceCard>
+      ))}
+    </div>
+  );
+}
+
+function DocumentsErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
+  return (
+    <div className="p-12 text-center rounded-2xl border border-red-500/10 bg-red-950/5 backdrop-blur-sm max-w-xl mx-auto space-y-4">
+      <div className="p-4 rounded-full bg-red-500/10 border border-red-500/20 inline-flex text-red-400">
+        <Shield className="w-8 h-8" />
+      </div>
+      <div className="space-y-1">
+        <h3 className="text-sm font-bold text-white font-mono uppercase tracking-wider">HSM Verification Failed</h3>
+        <p className="text-[12.5px] text-white/50 max-w-sm mx-auto font-sans leading-relaxed">
+          {message}
+        </p>
+      </div>
+      <button 
+        onClick={onRetry}
+        className="h-9 px-4 rounded-lg bg-red-600 hover:bg-red-500 text-[11px] font-mono font-bold uppercase text-white transition-all cursor-pointer shadow-[0_0_15px_rgba(239,68,68,0.2)] inline-flex items-center gap-1.5"
+      >
+        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+        <span>RETRY VERIFICATION</span>
+      </button>
+    </div>
+  );
+}
+
 export default function ClientDocumentsPage() {
+  const router = useRouter();
+  const isUploadsEnabled = process.env.NEXT_PUBLIC_PORTAL_UPLOADS_ENABLED === "true";
+
+  // Dynamic API Fetching States
+  const [documents, setDocuments] = useState<PortalDocument[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // User Profile & Scoped client ID
+  const [currentClientId, setCurrentClientId] = useState<number | null>(null);
+  const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
+  const [availableProjects, setAvailableProjects] = useState<any[]>([]);
+
+  // Real upload modal state variables
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [uploadTitle, setUploadTitle] = useState("");
+  const [uploadCategory, setUploadCategory] = useState("Reports");
+  const [uploadProjectId, setUploadProjectId] = useState<string>("");
+  const [uploadVersion, setUploadVersion] = useState("1.0.0");
+  const [uploadVisibility, setUploadVisibility] = useState("private");
+  const [uploadDescription, setUploadDescription] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
   // Filter States
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -215,6 +362,54 @@ export default function ClientDocumentsPage() {
   const [selectedFormat, setSelectedFormat] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
   
+  const fetchDocuments = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") : null;
+      if (!token) {
+        setError("AUTHENTICATION EXPIRED. PLEASE RE-LOG IN.");
+        router.push("/portal/login");
+        return;
+      }
+
+      const res = await fetch("/api/v1/documents", {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (!res.ok) {
+        throw new Error(`Enclave sync failed with status ${res.status}`);
+      }
+
+      const data = await res.json();
+      let docArray = null;
+      if (Array.isArray(data)) {
+        docArray = data;
+      } else if (data && data.success && Array.isArray(data.documents)) {
+        docArray = data.documents;
+      }
+
+      if (docArray) {
+        const mapped = docArray.map((d: any) => mapApiDocToPortalDoc(d));
+        setDocuments(mapped);
+      } else {
+        throw new Error("Handshake returned malformed enclave register.");
+      }
+    } catch (err: any) {
+      console.error("Error fetching documents:", err);
+      setError(err.message || "Decentralized ledger handshake timed out.");
+    } finally {
+      setLoading(false);
+    }
+  }, [router]);
+
+  useEffect(() => {
+    fetchDocuments();
+  }, [fetchDocuments]);
+
   // Layout States
   const [layoutMode, setLayoutMode] = useState<"grid" | "list">("grid");
 
@@ -297,17 +492,166 @@ export default function ClientDocumentsPage() {
     showToast("All filters reset successfully.", "info");
   };
 
+  // Fetch Current User & Projects for uploading
+  useEffect(() => {
+    const fetchUserDataAndProjects = async () => {
+      try {
+        const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") : null;
+        if (!token) return;
+        
+        // Fetch user
+        const meRes = await fetch("/api/v1/auth/me", {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (meRes.ok) {
+          const data = await meRes.json();
+          if (data) {
+            setCurrentClientId(data.client_id || null);
+            setCurrentUserRole(data.role || null);
+          }
+        }
+
+        // Fetch projects
+        const projRes = await fetch("/api/v1/projects", {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (projRes.ok) {
+          const data = await projRes.json();
+          const projectsList = Array.isArray(data) ? data : (data.success && Array.isArray(data.projects) ? data.projects : []);
+          setAvailableProjects(projectsList);
+        }
+      } catch (err) {
+        console.error("Error fetching user data/projects:", err);
+      }
+    };
+    fetchUserDataAndProjects();
+  }, []);
+
+  // Real secure download via API
+  const handleRealDownload = async (doc: PortalDocument) => {
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") : null;
+      if (!token) {
+        showToast("Authentication token not found.", "warning");
+        return;
+      }
+      showToast(`Transferring certified copy: ${doc.name}...`, "info");
+      
+      const res = await fetch(`/api/v1/documents/download/${doc.id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      
+      if (!res.ok) {
+        throw new Error(`Download failed with status ${res.status}`);
+      }
+      
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = doc.name;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+      
+      showToast(`Securely downloaded: ${doc.name}`, "success");
+    } catch (err: any) {
+      console.error("Error downloading document:", err);
+      showToast(`Download blocked: ${err.message}`, "warning");
+    }
+  };
+
+  // Real multipart upload
+  const handleRealUpload = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!uploadFile) {
+      setUploadError("Please select a file to upload.");
+      return;
+    }
+    
+    setUploading(true);
+    setUploadError(null);
+    
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") : null;
+      if (!token) {
+        throw new Error("Authentication token not found.");
+      }
+      
+      let targetClientId = currentClientId;
+      if (!targetClientId) {
+        const meRes = await fetch("/api/v1/auth/me", {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (meRes.ok) {
+          const meData = await meRes.json();
+          targetClientId = meData.client_id;
+        }
+      }
+      
+      if (!targetClientId) {
+        throw new Error("Could not resolve your client account assignment. Please contact support.");
+      }
+      
+      const formData = new FormData();
+      formData.append("file", uploadFile);
+      formData.append("client_id", String(targetClientId));
+      if (uploadProjectId) {
+        formData.append("project_id", uploadProjectId);
+      }
+      formData.append("title", uploadTitle || uploadFile.name);
+      formData.append("document_type", uploadCategory);
+      formData.append("version", uploadVersion);
+      formData.append("visibility", uploadVisibility);
+      formData.append("description", uploadDescription || "Cryptographically secured enclave system documentation.");
+      
+      const res = await fetch("/api/v1/documents/upload", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
+        body: formData
+      });
+      
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.detail || `Upload failed with status ${res.status}`);
+      }
+      
+      const data = await res.json();
+      if (data.success) {
+        showToast(`Document uploaded and sealed: ${uploadFile.name}`, "success");
+        setUploadFile(null);
+        setUploadTitle("");
+        setUploadDescription("");
+        setUploadVersion("1.0.0");
+        setIsUploadModalOpen(false);
+        fetchDocuments();
+      } else {
+        throw new Error(data.message || "Failed to process document upload.");
+      }
+    } catch (err: any) {
+      console.error("Upload error:", err);
+      setUploadError(err.message || "An unexpected error occurred during secure file transfer.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
   // Simulated Actions
   const handleSimulatedDownload = (doc: PortalDocument) => {
-    showToast(`DEMO SHIELD: File transfer blocked. '${doc.name}' cannot be downloaded in telemetry preview.`, "warning");
+    handleRealDownload(doc);
   };
 
   const handleSimulatedUploadClick = () => {
-    showToast("SECURE GATEWAY: Upload restricted. Local sandbox is currently in read-only audit mode.", "warning");
+    setIsUploadModalOpen(true);
   };
 
   // Filtering Logic
-  const filteredDocuments = PREVIEW_DOCUMENTS.filter((doc) => {
+  const filteredDocuments = documents.filter((doc) => {
     // 1. Text Search query (checks title, hash, id, owner)
     if (searchQuery.trim() !== "") {
       const query = searchQuery.toLowerCase();
@@ -332,10 +676,10 @@ export default function ClientDocumentsPage() {
   });
 
   // Calculate quick document statistics
-  const totalSeals = PREVIEW_DOCUMENTS.length;
-  const activeSows = PREVIEW_DOCUMENTS.filter(d => d.category === "SOW").length;
-  const auditReports = PREVIEW_DOCUMENTS.filter(d => d.category === "Reports" || d.category === "Architecture").length;
-  const pendingReviews = PREVIEW_DOCUMENTS.filter(d => d.status === "Pending Review" || d.status === "In Review").length;
+  const totalSeals = documents.length;
+  const activeSows = documents.filter(d => d.category === "SOW").length;
+  const auditReports = documents.filter(d => d.category === "Reports" || d.category === "Architecture").length;
+  const pendingReviews = documents.filter(d => d.status === "Pending Review" || d.status === "In Review").length;
 
   const getStatusColor = (status: string) => {
     const s = status.toLowerCase();
@@ -359,7 +703,7 @@ export default function ClientDocumentsPage() {
       
       {/* 1. TOAST NOTIFICATION WINDOW */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 animate-in fade-in slide-in-from-bottom duration-300">
+        <div className="fixed bottom-20 lg:bottom-6 right-4 lg:right-6 z-50 animate-in fade-in slide-in-from-bottom duration-300">
           <div className={`p-4 rounded-xl border backdrop-blur-xl shadow-2xl flex items-center gap-3 font-mono text-[12px] max-w-sm ${
             toastType === "warning" ? "border-amber-500/30 bg-amber-950/70 text-amber-300" :
             toastType === "success" ? "border-[#00FFC2]/30 bg-black/80 text-[#00FFC2]" :
@@ -402,13 +746,15 @@ export default function ClientDocumentsPage() {
         desc="Access cryptographically sealed Master Service Agreements, Statements of Work, and Sovereign System Architecture Reports."
         badgeLabel="SECURE_VAULT_v2.6"
         actions={
-          <button 
-            onClick={handleSimulatedUploadClick}
-            className="h-9 px-4 rounded border border-white/10 hover:border-[#009DFF]/30 hover:bg-[#009DFF]/5 text-[11px] font-mono font-bold uppercase text-white transition-all flex items-center justify-center gap-2 cursor-pointer bg-white/[0.01]"
-          >
-            <UploadCloud className="w-4 h-4 text-[#009DFF]" />
-            <span>Upload Document</span>
-          </button>
+          isUploadsEnabled && (
+            <button 
+              onClick={handleSimulatedUploadClick}
+              className="h-9 px-4 rounded border border-white/10 hover:border-[#009DFF]/30 hover:bg-[#009DFF]/5 text-[11px] font-mono font-bold uppercase text-white transition-all flex items-center justify-center gap-2 cursor-pointer bg-white/[0.01]"
+            >
+              <UploadCloud className="w-4 h-4 text-[#009DFF]" />
+              <span>Upload Document</span>
+            </button>
+          )
         }
       />
 
@@ -565,7 +911,11 @@ export default function ClientDocumentsPage() {
       </div>
 
       {/* 6. CONTENT VIEWS (CARD OR TABLE) */}
-      {filteredDocuments.length === 0 ? (
+      {loading ? (
+        <DocumentsSkeleton />
+      ) : error ? (
+        <DocumentsErrorState message={error} onRetry={fetchDocuments} />
+      ) : filteredDocuments.length === 0 ? (
         
         /* Empty Search Results state */
         <div className="p-12 text-center rounded-2xl border border-white/5 bg-[#050505]/20 backdrop-blur-sm max-w-xl mx-auto space-y-4">
@@ -725,7 +1075,7 @@ export default function ClientDocumentsPage() {
           
           {/* Table pagination stats footer */}
           <div className="p-3 border-t border-white/5 bg-black/[0.15] flex flex-col sm:flex-row items-center justify-between gap-2 font-mono text-[10px] text-white/40">
-            <span>SHOWING <strong className="text-white/60">{filteredDocuments.length}</strong> OF <strong className="text-white/60">{PREVIEW_DOCUMENTS.length}</strong> DETERMINISTIC SECURITY SEALS</span>
+            <span>SHOWING <strong className="text-white/60">{filteredDocuments.length}</strong> OF <strong className="text-white/60">{documents.length}</strong> DETERMINISTIC SECURITY SEALS</span>
             <span className="text-[#00FFC2] flex items-center gap-1 bg-[#00FFC2]/5 border border-[#00FFC2]/15 px-2 py-0.5 rounded uppercase">
               <ShieldCheck className="w-3.5 h-3.5" /> HSM MEMORY BUS COMPLIANT
             </span>
@@ -734,23 +1084,25 @@ export default function ClientDocumentsPage() {
       )}
 
       {/* 7. HIGH-FIDELITY SIMULATED DRAG-AND-DROP SECURE UPLOAD */}
-      <div className="p-6 rounded-2xl border border-dashed border-white/10 bg-[#050505]/10 hover:bg-[#050505]/20 hover:border-white/20 transition-all duration-300 max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-6 select-none mt-4">
-        <div className="p-4 rounded-xl bg-[#009DFF]/5 border border-[#009DFF]/10 text-[#009DFF] shrink-0">
-          <UploadCloud className="w-8 h-8 animate-pulse" />
+      {isUploadsEnabled && (
+        <div className="p-6 rounded-2xl border border-dashed border-white/10 bg-[#050505]/10 hover:bg-[#050505]/20 hover:border-white/20 transition-all duration-300 max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-6 select-none mt-4">
+          <div className="p-4 rounded-xl bg-[#009DFF]/5 border border-[#009DFF]/10 text-[#009DFF] shrink-0">
+            <UploadCloud className="w-8 h-8 animate-pulse" />
+          </div>
+          <div className="flex-grow space-y-1 text-center md:text-left">
+            <h4 className="text-[13px] font-bold font-mono text-white uppercase tracking-wider">Simulated Encrypted Client Dropzone</h4>
+            <p className="text-[12px] text-white/45 font-sans leading-relaxed">
+              Drag files here to simulate sovereign ingestion. Files will be parsed locally, locked inside virtual enclaves, and sealed with deterministic SHA-256 signatures. No data leaves your machine.
+            </p>
+          </div>
+          <button 
+            onClick={handleSimulatedUploadClick}
+            className="h-9 px-4 rounded bg-white text-black hover:bg-white/90 text-[11px] font-mono font-bold uppercase transition-all shrink-0 cursor-pointer shadow-[0_0_15px_rgba(255,255,255,0.1)]"
+          >
+            Select File
+          </button>
         </div>
-        <div className="flex-grow space-y-1 text-center md:text-left">
-          <h4 className="text-[13px] font-bold font-mono text-white uppercase tracking-wider">Simulated Encrypted Client Dropzone</h4>
-          <p className="text-[12px] text-white/45 font-sans leading-relaxed">
-            Drag files here to simulate sovereign ingestion. Files will be parsed locally, locked inside virtual enclaves, and sealed with deterministic SHA-256 signatures. No data leaves your machine.
-          </p>
-        </div>
-        <button 
-          onClick={handleSimulatedUploadClick}
-          className="h-9 px-4 rounded bg-white text-black hover:bg-white/90 text-[11px] font-mono font-bold uppercase transition-all shrink-0 cursor-pointer shadow-[0_0_15px_rgba(255,255,255,0.1)]"
-        >
-          Select File
-        </button>
-      </div>
+      )}
 
       {/* 8. DOCUMENT DETAILED METADATA DRAWER (SLIDING FROM RIGHT) */}
       {selectedDoc && (
@@ -949,6 +1301,165 @@ export default function ClientDocumentsPage() {
               </div>
             </div>
 
+          </div>
+        </div>
+      )}
+
+      {/* 9. REAL UPLOAD MODAL */}
+      {isUploadModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="w-full max-w-lg rounded-xl border border-white/10 bg-[#090909] shadow-[0_10px_50px_rgba(0,157,255,0.15)] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="p-5 border-b border-white/5 flex items-center justify-between bg-white/[0.01]">
+              <div className="flex items-center gap-2">
+                <UploadCloud className="w-4.5 h-4.5 text-[#009DFF]" />
+                <h3 className="text-xs font-bold text-white font-mono uppercase tracking-wider">
+                  Secure Document Ingestion
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsUploadModalOpen(false);
+                  setUploadError(null);
+                }}
+                className="p-1 rounded hover:bg-white/5 text-white/40 hover:text-white transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleRealUpload} className="p-6 space-y-4 text-xs font-mono">
+              {uploadError && (
+                <div className="p-3.5 rounded border border-red-500/15 bg-red-500/5 text-red-400 text-[11px] leading-relaxed">
+                  {uploadError}
+                </div>
+              )}
+
+              <div className="space-y-1.5">
+                <label className="text-white/40 uppercase block text-[9px] font-bold">Select Document/File *</label>
+                <input
+                  type="file"
+                  required
+                  onChange={(e) => {
+                    const file = e.target.files?.[0] || null;
+                    setUploadFile(file);
+                    if (file && !uploadTitle) {
+                      setUploadTitle(file.name.replace(/\.[^/.]+$/, ""));
+                    }
+                  }}
+                  className="w-full text-white/60 font-mono text-[11.5px] bg-white/[0.01] border border-white/10 rounded p-2 focus:border-[#009DFF]/30 transition-all cursor-pointer"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-white/40 uppercase block text-[9px] font-bold">Document Title *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Master Service Agreement v2"
+                  value={uploadTitle}
+                  onChange={(e) => setUploadTitle(e.target.value)}
+                  className="w-full h-9 rounded border border-white/10 bg-white/[0.02] px-3 text-white outline-none focus:border-[#009DFF]/30 transition-all font-mono"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-white/40 uppercase block text-[9px] font-bold">Category</label>
+                  <select
+                    value={uploadCategory}
+                    onChange={(e) => setUploadCategory(e.target.value)}
+                    className="w-full h-9 rounded border border-white/10 bg-[#090909] px-2 text-white outline-none focus:border-[#009DFF]/30 transition-all cursor-pointer font-bold"
+                  >
+                    {CATEGORIES.map(cat => (
+                      <option key={cat} value={cat}>{cat.toUpperCase()}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-white/40 uppercase block text-[9px] font-bold">Associated Project</label>
+                  <select
+                    value={uploadProjectId}
+                    onChange={(e) => setUploadProjectId(e.target.value)}
+                    className="w-full h-9 rounded border border-white/10 bg-[#090909] px-2 text-white outline-none focus:border-[#009DFF]/30 transition-all cursor-pointer font-bold"
+                  >
+                    <option value="">NO SPECIFIC PROJECT</option>
+                    {availableProjects.map(proj => (
+                      <option key={proj.id} value={proj.id}>
+                        {proj.id}: {proj.name.substring(0, 16)}...
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-white/40 uppercase block text-[9px] font-bold">Document Version</label>
+                  <input
+                    type="text"
+                    value={uploadVersion}
+                    onChange={(e) => setUploadVersion(e.target.value)}
+                    className="w-full h-9 rounded border border-white/10 bg-white/[0.02] px-3 text-white outline-none focus:border-[#009DFF]/30 transition-all font-mono"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-white/40 uppercase block text-[9px] font-bold">S3 Visibility</label>
+                  <select
+                    value={uploadVisibility}
+                    onChange={(e) => setUploadVisibility(e.target.value)}
+                    className="w-full h-9 rounded border border-white/10 bg-[#090909] px-2 text-white outline-none focus:border-[#009DFF]/30 transition-all cursor-pointer font-bold"
+                  >
+                    <option value="private">PRIVATE (ENCLAVE ONLY)</option>
+                    <option value="public">PUBLIC (CLIENT VISIBLE)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-white/40 uppercase block text-[9px] font-bold">Description Summary</label>
+                <textarea
+                  rows={2}
+                  placeholder="Provide technical synopsis or context requirements..."
+                  value={uploadDescription}
+                  onChange={(e) => setUploadDescription(e.target.value)}
+                  className="w-full rounded border border-white/10 bg-white/[0.02] p-3 text-white outline-none focus:border-[#009DFF]/30 transition-all font-mono resize-none"
+                />
+              </div>
+
+              <div className="pt-4 flex items-center justify-end gap-3 border-t border-white/5">
+                <button
+                  type="button"
+                  disabled={uploading}
+                  onClick={() => {
+                    setIsUploadModalOpen(false);
+                    setUploadError(null);
+                  }}
+                  className="h-9 px-4 rounded border border-white/10 text-white/60 hover:text-white hover:bg-white/5 transition-colors cursor-pointer disabled:opacity-40"
+                >
+                  CANCEL
+                </button>
+                <button
+                  type="submit"
+                  disabled={uploading}
+                  className="h-9 px-5 rounded bg-[#009DFF] hover:bg-[#0082d4] text-white font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-[0_0_15px_rgba(0,157,255,0.25)] disabled:opacity-40"
+                >
+                  {uploading ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <span>INGESTING...</span>
+                    </>
+                  ) : (
+                    <>
+                      <ShieldCheck className="w-3.5 h-3.5" />
+                      <span>SEAL & INGEST</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

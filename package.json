@@ -7,10 +7,17 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "verify-tools": "node scripts/verify-tool-logic.js"
+    "verify-tools": "node scripts/verify-tool-logic.js",
+    "backend:install": "cd backend && (test -d venv || python3 -m venv venv) && venv/bin/pip install -r requirements.txt && (test -f .env || cp .env.example .env)",
+    "backend:dev": "cd backend && venv/bin/uvicorn app.main:app --reload --port 8000",
+    "backend:seed": "cd backend && venv/bin/python app/seed.py",
+    "backend:check": "backend/venv/bin/python backend/app/test_security_utilities.py && backend/venv/bin/pytest backend/app/test_backend_smoke.py"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1075.0",
+    "@aws-sdk/lib-dynamodb": "^3.1075.0",
     "@fontsource/montserrat": "^5.2.8",
+    "bcryptjs": "^3.0.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dotted-map": "^3.1.0",
@@ -29,6 +36,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
     "@types/nodemailer": "^8.0.1",
     "@types/react": "^19",

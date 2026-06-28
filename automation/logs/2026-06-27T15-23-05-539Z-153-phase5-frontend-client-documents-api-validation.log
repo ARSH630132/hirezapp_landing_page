@@ -1,0 +1,47 @@
+## npm run lint
+exit=0
+STDOUT:
+
+> hirezapp_landing_page@0.1.0 lint
+> eslint
+
+
+STDERR:
+
+
+## npm run build
+exit=1
+STDOUT:
+
+> hirezapp_landing_page@0.1.0 build
+> next build
+
+▲ Next.js 16.2.9 (Turbopack)
+- Environments: .env
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 12.5s
+  Running TypeScript ...
+
+STDERR:
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /Users/ayushbansal/package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * /Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/package-lock.json
+
+Failed to type check.
+
+./app/api/v1/documents/[id]/route.ts:33:7
+Type error: Type 'ApiDocumentItem | undefined' is not assignable to type 'ApiDocumentItem'.
+  Type 'undefined' is not assignable to type 'ApiDocumentItem'.
+
+  [90m31 |[0m     [36mlet[0m document = ([33mAPI_MOCK_DOCUMENTS[0m [36mas[0m [33mRecord[0m<string, [33mApiDocumentItem[0m>)[docKey];
+  [90m32 |[0m     [36mif[0m (!document) {
+[31m[1m>[0m [90m33 |[0m       document = [33mObject[0m.values([33mAPI_MOCK_DOCUMENTS[0m).find(
+  [90m   |[0m       [31m[1m^[0m
+  [90m34 |[0m         d => d.id.toLowerCase() === docKey
+  [90m35 |[0m       );
+  [90m36 |[0m     }
+Next.js build worker exited with code: 1 and signal: null

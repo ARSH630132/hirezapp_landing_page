@@ -14,7 +14,7 @@ export interface PreviewSession {
   email: string;
   role: PreviewRole;
   clearance: string;
-  isMock: true;
+  isMock: boolean;
   label: string;
 }
 
@@ -85,7 +85,7 @@ export function getPreviewSession(): PreviewSession | null {
     const data = localStorage.getItem(SESSION_KEY);
     if (!data) return null;
     const parsed = JSON.parse(data);
-    if (parsed && parsed.isMock) {
+    if (parsed) {
       return parsed as PreviewSession;
     }
   } catch (e) {
@@ -107,6 +107,8 @@ export function setPreviewSession(role: PreviewRole): PreviewSession {
 export function clearPreviewSession(): void {
   if (typeof window !== "undefined") {
     localStorage.removeItem(SESSION_KEY);
+    localStorage.removeItem("gff_ai_access_token");
+    localStorage.removeItem("gff_api_token");
     window.dispatchEvent(new Event("gff_preview_session_changed"));
   }
 }

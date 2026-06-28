@@ -93,6 +93,8 @@ export function PrivateAppShell({
                 animate={{ x: 0 }}
                 exit={{ x: "-100%" }}
                 transition={{ type: "spring", bounce: 0, duration: 0.3 }}
+                role="navigation"
+                aria-label="Mobile drawer navigation"
                 className="fixed inset-y-0 left-0 z-50 w-72 bg-[#050505] border-r border-white/5 flex flex-col pt-8"
               >
                 <div className="h-14 border-b border-white/5 flex items-center justify-between px-5 select-none shrink-0">
@@ -188,7 +190,10 @@ export function PrivateAppShell({
       </div>
 
       {/* Mobile Bottom Floating Navigation Bar */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 h-16 bg-[#050505]/95 border-t border-white/5 backdrop-blur-md px-2.5 flex items-center justify-around select-none shadow-[0_-5px_25px_rgba(0,0,0,0.8)]">
+      <nav 
+        aria-label="Mobile bottom navigation" 
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-40 h-16 bg-[#050505]/95 border-t border-white/5 backdrop-blur-md px-2.5 flex items-center justify-around select-none shadow-[0_-5px_25px_rgba(0,0,0,0.8)]"
+      >
         {primaryMobileLinks.map((link) => {
           const Icon = link.icon;
           const isActive = activeLink === link.id;
@@ -196,7 +201,7 @@ export function PrivateAppShell({
             <button
               key={link.id}
               onClick={() => onLinkChange(link.id)}
-              className={`flex-grow flex flex-col items-center justify-center gap-1.5 py-1.5 transition-all cursor-pointer ${
+              className={`flex-grow flex flex-col items-center justify-center gap-1.5 py-1.5 transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#009DFF] ${
                 isActive ? "text-[#009DFF]" : "text-white/45 hover:text-white"
               }`}
             >
@@ -210,13 +215,13 @@ export function PrivateAppShell({
         {/* Toggle full drawer More button */}
         <button
           onClick={() => setMobileSidebarOpen(true)}
-          className="flex-grow flex flex-col items-center justify-center gap-1.5 py-1.5 text-white/45 hover:text-white transition-all cursor-pointer"
+          className="flex-grow flex flex-col items-center justify-center gap-1.5 py-1.5 text-white/45 hover:text-white transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#009DFF]"
           aria-label="Open more options"
         >
           <MoreHorizontal className="w-4.5 h-4.5" />
           <span className="text-[8.5px] font-mono tracking-wider font-extrabold uppercase leading-none">MORE</span>
         </button>
-      </div>
+      </nav>
 
       <CommandPalette 
         isOpen={commandPaletteOpen} 

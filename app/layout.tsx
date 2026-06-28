@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { createPageMetadata } from "@/lib/metadata";
 import { siteConfig } from "@/lib/site-config";
+import { ApiBaseUrlInterceptor } from "@/components/ApiBaseUrlInterceptor";
 
 export const metadata: Metadata = {
   ...createPageMetadata(),
@@ -31,8 +32,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="font-sans antialiased">
       <body className="min-h-full flex flex-col font-sans antialiased">
+        <ApiBaseUrlInterceptor />
         {children}
       </body>
     </html>
   );
 }
+

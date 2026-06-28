@@ -1,0 +1,46 @@
+## npm run lint
+exit=0
+STDOUT:
+
+> hirezapp_landing_page@0.1.0 lint
+> eslint
+
+
+STDERR:
+
+
+## npm run build
+exit=1
+STDOUT:
+
+> hirezapp_landing_page@0.1.0 build
+> next build
+
+▲ Next.js 16.2.9 (Turbopack)
+- Environments: .env
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 37.0s
+  Running TypeScript ...
+
+STDERR:
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /Users/ayushbansal/package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * /Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/package-lock.json
+
+Failed to type check.
+
+./app/portal/governance/page.tsx:451:14
+Type error: Property 'children' is missing in type '{ key: number; className: string; }' but required in type '{ children: ReactNode; className?: string | undefined; spotlightColor?: string | undefined; }'.
+
+  [90m449 |[0m         <div className=[32m"grid grid-cols-1 md:grid-cols-3 gap-6"[0m>
+  [90m450 |[0m           {[[35m1[0m, [35m2[0m, [35m3[0m].map(n => (
+[31m[1m>[0m [90m451 |[0m             <[33mWorkspaceCard[0m key={n} className=[32m"h-40 border border-white/5 bg-[#050505]/20 ...[0m
+  [90m    |[0m              [31m[1m^[0m
+  [90m452 |[0m           ))}
+  [90m453 |[0m         </div>
+  [90m454 |[0m       </div>
+Next.js build worker exited with code: 1 and signal: null

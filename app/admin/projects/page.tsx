@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { 
   Search, Plus, SlidersHorizontal, Check, RefreshCw, X, AlertTriangle, 
   Layers, User, Activity, Briefcase, ChevronRight, ShieldAlert, 
   Cpu, Clock, Edit2, CheckCircle2, AlertCircle, Trash2, ExternalLink
 } from "lucide-react";
 import Link from "next/link";
+import { apiClient } from "@/lib/api-client";
 
 interface AdminProject {
   id: string;
@@ -122,7 +123,9 @@ const ENCLAVE_TYPES = [
 ];
 
 export default function AdminProjectsPage() {
-  const [projects, setProjects] = useState<AdminProject[]>(INITIAL_PROJECTS);
+  const [projects, setProjects] = useState<AdminProject[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   
   // Filter States
   const [searchQuery, setSearchQuery] = useState("");
@@ -161,6 +164,48 @@ export default function AdminProjectsPage() {
     }, 3500);
   };
 
+  const getClientIdFromName = (name: string): string => {
+    const normalized = name.toLowerCase();
+    if (normalized.includes("apex")) return "client-001";
+    if (normalized.includes("retail") || normalized.includes("global")) return "client-002";
+    if (normalized.includes("logistics")) return "client-003";
+    if (normalized.includes("treasury") || normalized.includes("federal")) return "client-004";
+    return "client-001";
+  };
+
+  const fetchProjects = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await apiClient.projects.list();
+      if (res.success && res.projects) {
+        const mapped = res.projects.map(p => ({
+          id: p.id,
+          name: p.name,
+          client: p.client_name || "Apex Sovereign Group [Preview Client]",
+          phase: p.phase,
+          status: p.health || "On Track",
+          owner: p.owner,
+          nodesCount: p.nodesCount || 4,
+          enclaveType: p.enclaveType || "Intel SGX",
+          desc: p.desc || "",
+          lastUpdated: p.lastUpdated || new Date().toISOString()
+        }));
+        setProjects(mapped);
+      } else {
+        setError("Failed to fetch enclaves list from administrative backend.");
+      }
+    } catch (err: any) {
+      setError(err?.message || "Secure endpoint connection timeout. Retry authorization.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+
   const handleResetFilters = () => {
     setSearchQuery("");
     setSelectedClient("");
@@ -169,70 +214,150 @@ export default function AdminProjectsPage() {
     setSelectedOwner("");
   };
 
-  const handleUpdateStatus = (id: string, newStatus: string) => {
-    setProjects(prev => prev.map(p => p.id === id ? { ...p, status: newStatus, lastUpdated: new Date().toISOString() } : p));
-    showToast(`Project ${id} status updated: ${newStatus}`);
-  };
-
-  const handleUpdatePhase = (id: string, newPhase: string) => {
-    setProjects(prev => prev.map(p => p.id === id ? { ...p, phase: newPhase, lastUpdated: new Date().toISOString() } : p));
-    showToast(`Project ${id} phase updated: ${newPhase}`);
-  };
-
-  const handleDeprovision = (id: string) => {
-    if (confirm(`Deprovision hardware enclave registry ${id}? This halts active telemetry flows.`)) {
-      setProjects(prev => prev.filter(p => p.id !== id));
-      showToast(`Deprovisioned hardware enclave ${id}`);
+  const handleUpdateStatus = async (id: string, newStatus: string) => {
+    try {
+      const res = await apiClient.projects.update(id, {
+        health: newStatus
+      });
+      if (res.success) {
+        setProjects(prev => prev.map(p => p.id === id ? { ...p, status: newStatus, lastUpdated: new Date().toISOString() } : p));
+        showToast(`Project ${id} status updated: ${newStatus}`);
+      } else {
+        showToast(`Error updating status: Failed server sync.`);
+      }
+    } catch (err: any) {
+      showToast(`Error: ${err.message || "Failed to sync status change."}`);
     }
   };
 
-  const handleCreateProject = (e: React.FormEvent) => {
+  const handleUpdatePhase = async (id: string, newPhase: string) => {
+    try {
+      const res = await apiClient.projects.update(id, {
+        phase: newPhase
+      });
+      if (res.success) {
+        setProjects(prev => prev.map(p => p.id === id ? { ...p, phase: newPhase, lastUpdated: new Date().toISOString() } : p));
+        showToast(`Project ${id} phase updated: ${newPhase}`);
+      } else {
+        showToast(`Error updating phase: Failed server sync.`);
+      }
+    } catch (err: any) {
+      showToast(`Error: ${err.message || "Failed to sync phase change."}`);
+    }
+  };
+
+  const handleDeprovision = async (id: string) => {
+    if (confirm(`Deprovision hardware enclave registry ${id}? This halts active telemetry flows.`)) {
+      try {
+        const res = await apiClient.projects.delete(id);
+        if (res.success) {
+          setProjects(prev => prev.filter(p => p.id !== id));
+          showToast(`Deprovisioned hardware enclave ${id}`);
+        } else {
+          showToast(`Error deprovisioning: Failed server action.`);
+        }
+      } catch (err: any) {
+        showToast(`Error: ${err.message || "Failed to delete enclave registry."}`);
+      }
+    }
+  };
+
+  const handleCreateProject = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newProject.name || !newProject.desc) {
       alert("Please fill in project name and description.");
       return;
     }
 
-    const id = `PROJ-${Math.floor(206 + Math.random() * 700)}`;
-    const created: AdminProject = {
-      id,
-      name: newProject.name,
-      client: newProject.client,
-      phase: newProject.phase,
-      status: newProject.status,
-      owner: newProject.owner,
-      nodesCount: Number(newProject.nodesCount) || 4,
-      enclaveType: newProject.enclaveType,
-      desc: newProject.desc,
-      lastUpdated: new Date().toISOString()
-    };
-
-    setProjects(prev => [created, ...prev]);
-    setIsCreateModalOpen(false);
-    
-    // Reset Form
-    setNewProject({
-      name: "",
-      client: AVAILABLE_CLIENTS[0],
-      phase: AVAILABLE_PHASES[0],
-      status: AVAILABLE_STATUSES[0],
-      owner: AVAILABLE_OWNERS[0],
-      nodesCount: 4,
-      enclaveType: ENCLAVE_TYPES[0],
-      desc: ""
-    });
-
-    showToast(`Successfully registered and isolated enclave ${id}`);
+    try {
+      const payload = {
+        name: newProject.name,
+        client_id: getClientIdFromName(newProject.client),
+        phase: newProject.phase,
+        status: "active",
+        health: newProject.status,
+        owner: newProject.owner,
+        nodesCount: Number(newProject.nodesCount) || 4,
+        enclaveType: newProject.enclaveType,
+        desc: newProject.desc
+      };
+      const res = await apiClient.projects.create(payload);
+      if (res.success && res.project) {
+        const p = res.project;
+        const created: AdminProject = {
+          id: p.id,
+          name: p.name,
+          client: p.client_name || newProject.client,
+          phase: p.phase,
+          status: p.health || newProject.status,
+          owner: p.owner,
+          nodesCount: p.nodesCount || 4,
+          enclaveType: p.enclaveType,
+          desc: p.desc,
+          lastUpdated: p.lastUpdated || new Date().toISOString()
+        };
+        setProjects(prev => [created, ...prev]);
+        setIsCreateModalOpen(false);
+        
+        // Reset Form
+        setNewProject({
+          name: "",
+          client: AVAILABLE_CLIENTS[0],
+          phase: AVAILABLE_PHASES[0],
+          status: AVAILABLE_STATUSES[0],
+          owner: AVAILABLE_OWNERS[0],
+          nodesCount: 4,
+          enclaveType: ENCLAVE_TYPES[0],
+          desc: ""
+        });
+        showToast(`Successfully registered and isolated enclave ${p.id}`);
+      } else {
+        showToast("Error creating project enclave. Backend validation failed.");
+      }
+    } catch (err: any) {
+      showToast(`Error: ${err.message || "Failed to create project sandbox."}`);
+    }
   };
 
-  const handleEditProjectSubmit = (e: React.FormEvent) => {
+  const handleEditProjectSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editForm) return;
 
-    setProjects(prev => prev.map(p => p.id === editForm.id ? { ...editForm, lastUpdated: new Date().toISOString() } : p));
-    setIsEditModalOpen(false);
-    setEditForm(null);
-    showToast(`Updated enclave parameter mappings for project ${editForm.id}`);
+    try {
+      const res = await apiClient.projects.update(editForm.id, {
+        name: editForm.name,
+        client_id: getClientIdFromName(editForm.client),
+        phase: editForm.phase,
+        health: editForm.status,
+        owner: editForm.owner,
+        nodesCount: Number(editForm.nodesCount) || 4,
+        enclaveType: editForm.enclaveType,
+        desc: editForm.desc
+      });
+      if (res.success && res.project) {
+        const p = res.project;
+        const updated: AdminProject = {
+          id: p.id,
+          name: p.name,
+          client: p.client_name || editForm.client,
+          phase: p.phase,
+          status: p.health || editForm.status,
+          owner: p.owner,
+          nodesCount: p.nodesCount || 4,
+          enclaveType: p.enclaveType,
+          desc: p.desc,
+          lastUpdated: p.lastUpdated || new Date().toISOString()
+        };
+        setProjects(prev => prev.map(item => item.id === editForm.id ? updated : item));
+        setIsEditModalOpen(false);
+        setEditForm(null);
+        showToast(`Updated enclave parameter mappings for project ${editForm.id}`);
+      } else {
+        showToast("Error editing project sandbox.");
+      }
+    } catch (err: any) {
+      showToast(`Error: ${err.message || "Failed to update project."}`);
+    }
   };
 
   // Memoized Filtered Projects List
@@ -485,6 +610,30 @@ export default function AdminProjectsPage() {
         )}
       </div>
 
+      {loading ? (
+        <div className="flex flex-col items-center justify-center p-24 border border-white/5 rounded-xl bg-[#050505]/20 font-mono text-center space-y-4">
+          <RefreshCw className="w-10 h-10 text-[#009DFF] animate-spin" />
+          <h4 className="text-white text-xs font-bold uppercase tracking-widest">Synchronizing Telemetry Enclaves...</h4>
+          <p className="text-white/40 text-[10px] max-w-sm">
+            Opening secure TLS 1.3 tunnels to multi-agent sandbox clusters. Please maintain authentication handshake clearance.
+          </p>
+        </div>
+      ) : error ? (
+        <div className="flex flex-col items-center justify-center p-20 border border-red-500/10 rounded-xl bg-red-950/5 font-mono text-center space-y-4">
+          <AlertTriangle className="w-10 h-10 text-red-500 animate-pulse" />
+          <h4 className="text-red-400 text-xs font-bold uppercase tracking-widest">Enclave Tunnel Interrupted</h4>
+          <p className="text-white/50 text-[10px] max-w-sm leading-relaxed">
+            {error}
+          </p>
+          <button
+            onClick={fetchProjects}
+            className="h-8 px-4 rounded border border-red-500/20 hover:border-red-500/40 bg-red-500/10 text-[10px] font-bold text-red-400 hover:bg-red-500/20 transition-all uppercase tracking-wider cursor-pointer"
+          >
+            Retry Handshake Wire
+          </button>
+        </div>
+      ) : (
+        <>
       {/* 4. Desktop Table View */}
       <div className="hidden lg:block overflow-x-auto rounded-xl border border-white/5 bg-[#020202]/40 backdrop-blur-sm shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
         <table className="w-full border-collapse text-left text-xs font-mono">
@@ -845,6 +994,8 @@ export default function AdminProjectsPage() {
           </button>
         </div>
       )}
+        </>
+      )}
 
       {/* ============================================================================ */}
       {/* MODAL 1: PROVISION NEW PROJECT PREVIEW */}
@@ -1161,7 +1312,7 @@ export default function AdminProjectsPage() {
       {/* 7. PREVIEW LIVE TOAST ALERTS */}
       {/* ============================================================================ */}
       {toast.visible && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-3 rounded-lg border border-emerald-500/30 bg-[#050505]/95 text-[#00FFC2] font-mono text-xs shadow-[0_0_20px_rgba(0,255,194,0.15)] animate-in fade-in slide-in-from-bottom-4 duration-300">
+        <div className="fixed bottom-20 lg:bottom-6 right-4 lg:right-6 z-50 flex items-center gap-2.5 px-4 py-3 rounded-lg border border-emerald-500/30 bg-[#050505]/95 text-[#00FFC2] font-mono text-xs shadow-[0_0_20px_rgba(0,255,194,0.15)] animate-in fade-in slide-in-from-bottom-4 duration-300">
           <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
           <span>{toast.message}</span>
         </div>

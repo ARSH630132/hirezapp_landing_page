@@ -1,0 +1,21 @@
+## npm run lint
+exit=1
+STDOUT:
+
+> hirezapp_landing_page@0.1.0 lint
+> eslint
+
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/app/admin/governance/page.tsx
+  236:11  error  'token' is never reassigned. Use 'const' instead  prefer-const
+  270:11  error  'token' is never reassigned. Use 'const' instead  prefer-const
+  423:14  error  'Plus' is not defined                             react/jsx-no-undef
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/app/admin/support/page.tsx
+  550:8  error  Parsing error: JSX expressions must have one parent element
+
+✖ 4 problems (4 errors, 0 warnings)
+  2 errors and 0 warnings potentially fixable with the `--fix` option.
+
+
+STDERR:

@@ -51,6 +51,8 @@ export function NotificationBell() {
         onClick={() => setShowDropdown(!showDropdown)}
         className="relative h-9 w-9 rounded-lg border border-white/5 hover:border-white/20 hover:bg-white/[0.03] flex items-center justify-center text-white/70 hover:text-white transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#009DFF]/30"
         aria-label="System notifications"
+        aria-expanded={showDropdown}
+        aria-haspopup="dialog"
       >
         <Bell className="w-4 h-4" />
         {unreadCount > 0 && (
@@ -61,20 +63,22 @@ export function NotificationBell() {
       <AnimatePresence>
         {showDropdown && (
           <>
-            <div className="fixed inset-0 z-40" onClick={() => setShowDropdown(false)} />
+            <div className="fixed inset-0 z-40" onClick={() => setShowDropdown(false)} aria-hidden="true" />
             <motion.div 
               initial={{ opacity: 0, y: 8, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.98 }}
               transition={{ duration: 0.15 }}
-              className="absolute right-0 top-full mt-2 z-50 w-80 rounded-xl border border-white/5 bg-[#0a0a0a]/95 p-4 shadow-[0_10px_40px_rgba(0,0,0,0.8)] backdrop-blur-md"
+              role="dialog"
+              aria-label="System notifications panel"
+              className="absolute right-0 top-full mt-2 z-50 w-80 max-w-[calc(100vw-32px)] rounded-xl border border-white/5 bg-[#0a0a0a]/95 p-4 shadow-[0_10px_40px_rgba(0,0,0,0.8)] backdrop-blur-md"
             >
               <div className="flex justify-between items-center border-b border-white/5 pb-2.5 mb-2.5 font-mono">
                 <span className="text-[12px] font-bold text-white tracking-wider">SYSTEM EVENTS</span>
                 {unreadCount > 0 && (
                   <button 
                     onClick={markAllRead}
-                    className="text-[10px] text-[#009DFF] hover:underline cursor-pointer"
+                    className="text-[10px] text-[#009DFF] hover:underline cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#009DFF]"
                   >
                     Clear Badges
                   </button>

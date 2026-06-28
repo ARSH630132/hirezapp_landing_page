@@ -37,7 +37,129 @@
     "35-visual-premium-polish-pass",
     "36-link-route-content-audit",
     "37-final-full-build-and-qa",
-    "09-homepage-client-success"
+    "09-homepage-client-success",
+    "38-phase3-preflight-interactive-tools-audit",
+    "39-phase3-shared-tool-architecture",
+    "40-phase3-shared-data-models-and-validation",
+    "41-phase3-reusable-wizard-and-stepper",
+    "42-phase3-talk-to-agent-tool",
+    "43-phase3-blueprint-wizard-inputs",
+    "44-phase3-blueprint-scoring-engine-and-results",
+    "46-phase3-ai-readiness-assessment-framework",
+    "47-phase3-ai-readiness-scoring-results",
+    "49-phase3-roi-results-and-scenarios",
+    "45-phase3-blueprint-local-save-share-copy",
+    "48-phase3-roi-calculator-input-model",
+    "52-phase3-sandbox-agent-demo-catalog",
+    "50-phase3-proposal-builder-intake",
+    "51-phase3-proposal-builder-preview",
+    "53-phase3-sandbox-simulated-agent-preview",
+    "54-phase3-agent-marketplace-tool",
+    "55-phase3-foundry-studio-workflow-builder",
+    "56-phase3-build-hub-unified-experience",
+    "57-phase3-local-workspace-continuity",
+    "58-phase3-cross-tool-recommendations",
+    "59-phase3-command-center-deep-actions",
+    "60-phase3-tool-empty-loading-error-states",
+    "61-phase3-mobile-pass-build-tools",
+    "62-phase3-accessibility-pass-build-tools",
+    "63-phase3-motion-and-interaction-polish",
+    "64-phase3-visual-premium-polish-build-tools",
+    "65-phase3-tool-logic-tests-or-verification-script",
+    "66-phase3-api-contract-documentation-only",
+    "67-phase3-linking-and-cta-integration",
+    "68-phase3-final-interactive-tools-qa",
+    "69-phase4-preflight-portal-admin-audit",
+    "70-phase4-private-app-design-system",
+    "71-phase4-private-route-map",
+    "72-phase4-local-auth-session-rbac-preview",
+    "73-phase4-client-login-landing",
+    "74-phase4-login-page",
+    "75-phase4-forgot-password-otp-preview",
+    "76-phase4-private-app-shell",
+    "77-phase4-private-mock-data-model",
+    "79-phase4-client-dashboard",
+    "80-phase4-client-projects-list",
+    "78-phase4-data-table-filter-system",
+    "84-phase4-client-documents-library",
+    "86-phase4-client-billing-overview",
+    "91-phase4-client-governance",
+    "95-phase4-admin-clients-list",
+    "97-phase4-admin-projects",
+    "100-phase4-admin-ai-operations",
+    "101-phase4-admin-documents",
+    "94-phase4-admin-dashboard",
+    "99-phase4-admin-users-rbac",
+    "102-phase4-admin-billing",
+    "103-phase4-admin-support",
+    "105-phase4-admin-governance",
+    "113-phase4-route-guard-ux",
+    "114-phase4-mobile-private-workspace-pass",
+    "115-phase4-accessibility-private-workspace-pass",
+    "118-phase4-frontend-only-safety-audit",
+    "119-phase4-linking-navigation-audit",
+    "120-phase4-documentation",
+    "121-phase4-final-qa",
+    "122-phase5-preflight-backend-mvp-audit",
+    "123-phase5-backend-folder-and-dev-setup",
+    "124-phase5-backend-app-structure",
+    "125-phase5-database-session-and-base-models",
+    "126-phase5-core-domain-models",
+    "82-phase4-client-ai-operations-overview",
+    "88-phase4-client-support-center",
+    "127-phase5-pydantic-schemas",
+    "128-phase5-password-hashing-and-jwt-security",
+    "129-phase5-rbac-permissions",
+    "130-phase5-auth-endpoints",
+    "131-phase5-seed-data-and-dev-users",
+    "132-phase5-backend-run-scripts",
+    "133-phase5-api-clients-crud",
+    "134-phase5-api-users-crud",
+    "135-phase5-api-projects-crud",
+    "136-phase5-api-ai-operations-crud",
+    "138-phase5-api-billing-invoices-crud",
+    "140-phase5-api-governance-crud",
+    "143-phase5-api-dashboard-summary",
+    "144-phase5-api-analytics-summary",
+    "146-phase5-backend-smoke-tests",
+    "147-phase5-frontend-api-client",
+    "148-phase5-frontend-auth-integration",
+    "149-phase5-frontend-route-guard-backend-auth",
+    "150-phase5-frontend-client-dashboard-api",
+    "151-phase5-frontend-client-projects-api",
+    "152-phase5-frontend-client-ai-operations-api",
+    "153-phase5-frontend-client-documents-api",
+    "154-phase5-frontend-client-billing-api",
+    "155-phase5-frontend-client-support-api",
+    "137-phase5-api-documents-metadata-crud",
+    "139-phase5-api-support-tickets-crud",
+    "145-phase5-backend-error-handling-and-pagination",
+    "156-phase5-frontend-client-analytics-governance-api",
+    "158-phase5-frontend-admin-dashboard-api",
+    "159-phase5-frontend-admin-clients-users-api",
+    "160-phase5-frontend-admin-projects-aiops-api",
+    "161-phase5-frontend-admin-documents-billing-api",
+    "162-phase5-frontend-admin-support-governance-api",
+    "165-phase5-remove-old-local-preview-data-dependency",
+    "166-phase5-dev-environment-docs",
+    "167-phase5-security-limitations-docs",
+    "168-phase5-backend-frontend-smoke-qa",
+    "169-phase5-no-gff-tools-backend-regression-audit",
+    "170-phase5-final-mvp-backend-qa",
+    "171-phase6-aws-preflight-final-scope-audit",
+    "172-phase6-aws-env-and-config",
+    "173-phase6-dynamodb-table-documentation",
+    "174-phase6-dynamodb-client-and-repositories",
+    "175-phase6-auth-users-dynamodb",
+    "176-phase6-clients-and-portal-items-dynamodb",
+    "177-phase6-dashboard-analytics-dynamodb",
+    "178-phase6-s3-document-files",
+    "179-phase6-frontend-documents-s3-integration",
+    "180-phase6-seed-aws-data",
+    "181-phase6-frontend-env-and-api-finalization",
+    "182-phase6-cors-and-deployment-config",
+    "183-phase6-final-product-qa",
+    "184-phase6-final-wrap-up-docs"
   ],
   "failed": [
     {
@@ -103,9 +225,81 @@
     {
       "id": "09-homepage-client-success",
       "reason": "cline implementation failed"
+    },
+    {
+      "id": "45-phase3-blueprint-local-save-share-copy",
+      "reason": "failed after review"
+    },
+    {
+      "id": "48-phase3-roi-calculator-input-model",
+      "reason": "cline implementation failed"
+    },
+    {
+      "id": "50-phase3-proposal-builder-intake",
+      "reason": "cline implementation failed"
+    },
+    {
+      "id": "51-phase3-proposal-builder-preview",
+      "reason": "cline implementation failed"
+    },
+    {
+      "id": "53-phase3-sandbox-simulated-agent-preview",
+      "reason": "cline implementation failed"
+    },
+    {
+      "id": "74-phase4-login-page",
+      "reason": "cline implementation failed"
+    },
+    {
+      "id": "78-phase4-data-table-filter-system",
+      "reason": "cline implementation failed"
+    },
+    {
+      "id": "78-phase4-data-table-filter-system",
+      "reason": "cline implementation failed"
+    },
+    {
+      "id": "82-phase4-client-ai-operations-overview",
+      "reason": "cline implementation failed"
+    },
+    {
+      "id": "88-phase4-client-support-center",
+      "reason": "cline implementation failed"
+    },
+    {
+      "id": "94-phase4-admin-dashboard",
+      "reason": "cline implementation failed"
+    },
+    {
+      "id": "99-phase4-admin-users-rbac",
+      "reason": "cline implementation failed"
+    },
+    {
+      "id": "82-phase4-client-ai-operations-overview",
+      "reason": "cline implementation failed"
+    },
+    {
+      "id": "88-phase4-client-support-center",
+      "reason": "cline implementation failed"
+    },
+    {
+      "id": "137-phase5-api-documents-metadata-crud",
+      "reason": "failed after review"
+    },
+    {
+      "id": "139-phase5-api-support-tickets-crud",
+      "reason": "failed after review"
+    },
+    {
+      "id": "145-phase5-backend-error-handling-and-pagination",
+      "reason": "failed after review"
+    },
+    {
+      "id": "156-phase5-frontend-client-analytics-governance-api",
+      "reason": "failed after review"
     }
   ],
-  "finalStatus": "M automation/state.json",
+  "finalStatus": "",
   "finalValidationOk": true,
-  "finishedAt": "2026-06-26T09:26:55.012Z"
+  "finishedAt": "2026-06-28T00:23:52.441Z"
 }

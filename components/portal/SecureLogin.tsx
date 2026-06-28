@@ -21,6 +21,17 @@ function getDeterministicHash(input: string, length: number = 8): string {
 }
 
 
+const REAL_CREDENTIALS_MAP: Record<PreviewRole, { email: string; pass: string }> = {
+  gff_admin: { email: "s.vance@governance.gff.ai", pass: "VanceSecure2026!" },
+  client_admin: { email: "a.mercer@apex-sovereign.gff.ai", pass: "MercerSecure2026!" },
+  client_member: { email: "s.jenkins@fed-treasury.gff.ai", pass: "JenkinsSecure2026!" },
+  gff_operator: { email: "preview-gff-operator@internal.gff.ai", pass: "gff-secure-2026!" },
+  finance_admin: { email: "preview-finance-admin@internal.gff.ai", pass: "gff-secure-2026!" },
+  support_agent: { email: "preview-support-agent@internal.gff.ai", pass: "gff-secure-2026!" },
+  viewer: { email: "preview-viewer@internal.gff.ai", pass: "gff-secure-2026!" },
+};
+
+
 export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
   const router = useRouter();
   
@@ -45,10 +56,41 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
   const [telemetryLogs, setTelemetryLogs] = useState<string[]>([]);
   const consoleBottomRef = useRef<HTMLDivElement>(null);
 
+  const logTelemetry = (msg: string) => {
+    setTelemetryLogs(prev => [...prev.slice(-12), msg]);
+  };
+
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotSubmitted, setForgotSubmitted] = useState(false);
   const [forgotError, setForgotError] = useState("");
   const [forgotLoading, setForgotLoading] = useState(false);
+
+  const [apiConnected, setApiConnected] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const checkApiStatus = async () => {
+      try {
+        const res = await fetch("/api/v1/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: "", password: "" }),
+        });
+        // We expect status 400 Bad Request because we posted empty email/password.
+        // This validates the endpoint is active and working.
+        if (res.status === 400 || res.status === 401 || res.ok) {
+          setApiConnected(true);
+          logTelemetry("[SYS] API backend service connection verified. Active mode: REST API.");
+        } else {
+          setApiConnected(false);
+          logTelemetry("[SYS] API backend returned non-standard status. Active mode: DEV FALLBACK.");
+        }
+      } catch (err) {
+        setApiConnected(false);
+        logTelemetry("[SYS] API backend unreachable. Active mode: DEV FALLBACK.");
+      }
+    };
+    checkApiStatus();
+  }, []);
 
   const [mfaTimeRemaining, setMfaTimeRemaining] = useState(30);
 
@@ -81,6 +123,17 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
       if (interval) clearInterval(interval);
     };
   }, [authMethod]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (showForgot) setShowForgot(false);
+        if (showSupport) setShowSupport(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [showForgot, showSupport]);
 
   const handleOtpChange = (index: number, val: string) => {
     const sanitizedVal = val.replace(/\D/g, "");
@@ -151,18 +204,19 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
   ];
 
   useEffect(() => {
-    const mockUser = MOCK_PREVIEW_USERS[selectedRole];
-    if (mockUser) {
-      setEmail(mockUser.email);
-      setPassword("••••••••••••");
+    const creds = REAL_CREDENTIALS_MAP[selectedRole];
+    if (creds) {
+      setEmail(creds.email);
+      setPassword(creds.pass);
       setOtpCode("102486");
       
       const generatedHash = getDeterministicHash(selectedRole, 8);
+      const mockUser = MOCK_PREVIEW_USERS[selectedRole];
       const logs = [
         `[INIT] Handshake request received from node terminal.`,
-        `[IDENTITY] Resolved profile context: ${mockUser.role.toUpperCase()}`,
+        `[IDENTITY] Resolved profile context: ${selectedRole.toUpperCase()}`,
         `[SSL/TLS] Session handshake initiated via SHA-256 cipher.`,
-        `[SECURITY] Clearance key resolved: ${mockUser.clearance.split(" ")[2] || "L-3"}-${generatedHash}`,
+        `[SECURITY] Clearance key resolved: ${(mockUser?.clearance || "L-3").split(" ")[2] || "L-3"}-${generatedHash}`,
         `[SANDBOX] Memory enclave isolated. Sandbox state: READY.`
       ];
       setTelemetryLogs(logs);
@@ -189,10 +243,6 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
     }
   };
 
-  const logTelemetry = (msg: string) => {
-    setTelemetryLogs(prev => [...prev.slice(-12), msg]);
-  };
-
   useEffect(() => {
     if (consoleBottomRef.current) {
       consoleBottomRef.current.scrollIntoView({ behavior: "smooth" });
@@ -202,17 +252,104 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
   const handleAuthenticate = async () => {
     setScanning(true);
     setScanStep(0);
+    setError("");
     
-    const stepIntervals = [250, 300, 350, 400];
+    const stepIntervals = [200, 250, 300, 350];
     for (let i = 0; i < stepIntervals.length; i++) {
       await new Promise(r => setTimeout(r, stepIntervals[i]));
       setScanStep(prev => prev + 1);
     }
     
-    await new Promise(r => setTimeout(r, 400));
-    setScanning(false);
+    logTelemetry(`[AUTH] Initiating cryptographic handshake with REST API for ${email}...`);
+
+    try {
+      const res = await fetch("/api/v1/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), password }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.accessToken) {
+          logTelemetry("[AUTH] JWT token handshake complete. Verifying current enclave profile...");
+          
+          // Store access token in localStorage for MVP dev only
+          // TODO: Production hardening - Use httpOnly cookies or secure session storage rather than localStorage to prevent XSS leakage of JWT tokens.
+          localStorage.setItem("gff_ai_access_token", data.accessToken);
+          localStorage.setItem("gff_api_token", data.accessToken);
+
+          // Fetch user info using /api/v1/auth/me
+          const meRes = await fetch("/api/v1/auth/me", {
+            headers: { 
+              "Authorization": `Bearer ${data.accessToken}`,
+              "Content-Type": "application/json"
+            }
+          });
+
+          if (meRes.ok) {
+            const meData = await meRes.json();
+            if (meData.success && meData.user) {
+              const u = meData.user;
+              logTelemetry(`[AUTH] Enclave identity verified: ${u.name} (${u.role.toUpperCase()})`);
+
+              // Store session in localStorage under key gff_ai_preview_session_v1
+              const sessionObj = {
+                name: u.name,
+                email: u.email,
+                role: u.role as any,
+                clearance: u.clearance || "CLEARANCE LEVEL III (SANDBOX OPERATOR)",
+                isMock: false,
+                label: `REST-API AUTH: ${u.clientAssociation || "Core"}`
+              };
+              localStorage.setItem("gff_ai_preview_session_v1", JSON.stringify(sessionObj));
+              
+              // Dispatch change event to notify other components
+              window.dispatchEvent(new Event("gff_preview_session_changed"));
+
+              await new Promise(r => setTimeout(r, 400));
+              setScanning(false);
+
+              // Redirect based on role
+              const isGffStaff = !u.role.startsWith("client_");
+              router.push(isGffStaff ? "/admin/dashboard" : "/portal/dashboard");
+              return;
+            }
+          }
+        }
+      } else {
+        const errBody = await res.json().catch(() => null);
+        if (errBody && errBody.message) {
+          setError(errBody.message);
+          logTelemetry(`[ERROR] Verification rejected: ${errBody.message}`);
+          setScanning(false);
+          return;
+        }
+      }
+    } catch (err) {
+      logTelemetry("[SYS] API gateway unreachable.");
+      if (process.env.NEXT_PUBLIC_APP_ENV === "production") {
+        setError("API gateway unreachable. Real-time sovereign login required in production.");
+        setScanning(false);
+        return;
+      } else {
+        logTelemetry("[SYS] Activating cryptographic preview fallback...");
+      }
+    }
+
+    // --- PRESERVE ROLE PREVIEW FALLBACK ---
+    if (process.env.NEXT_PUBLIC_APP_ENV === "production") {
+      setError("Unauthorized credentials. Real-time sovereign login required in production.");
+      setScanning(false);
+      return;
+    }
+
+    logTelemetry(`[FALLBACK] Initializing dev preview session for ${selectedRole} [DEV FALLBACK]`);
     setPreviewSession(selectedRole);
     
+    await new Promise(r => setTimeout(r, 400));
+    setScanning(false);
+
     const isGffStaff = !selectedRole.startsWith("client_");
     router.push(isGffStaff ? "/admin/dashboard" : "/portal/dashboard");
   };
@@ -645,7 +782,7 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
         </Link>
       </header>
 
-      <div className="w-full max-w-[1100px] z-10 mt-14">
+      <main className="w-full max-w-[1100px] z-10 mt-14">
         <div className="text-center space-y-2 mb-8 animate-fade-in">
           <h1 className="text-xl md:text-2xl font-semibold tracking-wider font-sans text-white uppercase">Sovereign Portal Authorization</h1>
           <p className="text-xs text-zinc-400 max-w-lg mx-auto leading-relaxed">
@@ -665,10 +802,22 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
                       </h2>
                       <p className="text-[10px] text-zinc-500 mt-0.5">Initialize secure local handshake protocols.</p>
                     </div>
-                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-emerald-500/5 border border-emerald-500/20 text-emerald-400 text-[8px] font-mono font-bold tracking-widest">
-                      <span className="h-1 w-1 rounded-full bg-emerald-400 animate-pulse" />
-                      ENCLAVE ONLINE
-                    </div>
+                    {apiConnected === true ? (
+                      <div className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-emerald-500/5 border border-emerald-500/20 text-emerald-400 text-[8px] font-mono font-bold tracking-widest">
+                        <span className="h-1 w-1 rounded-full bg-emerald-400 animate-pulse" />
+                        API SECURE ONLINE
+                      </div>
+                    ) : apiConnected === false ? (
+                      <div className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-amber-500/5 border border-amber-500/20 text-amber-400 text-[8px] font-mono font-bold tracking-widest" title="Using local preview sandbox mock layer">
+                        <span className="h-1 w-1 rounded-full bg-amber-400 animate-pulse" />
+                        DEV FALLBACK ACTIVE
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-zinc-500/5 border border-zinc-800 text-zinc-400 text-[8px] font-mono font-bold tracking-widest">
+                        <RefreshCw className="w-2 h-2 animate-spin text-zinc-500" />
+                        SECURE CHECKING...
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex bg-zinc-950/90 p-1 rounded-lg border border-zinc-900" role="tablist" aria-label="Authentication Method">
@@ -1073,7 +1222,7 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
             )}
           </AnimatePresence>
         </div>
-      </div>
+      </main>
 
       {showForgot && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4 animate-fade-in" role="dialog" aria-modal="true" aria-labelledby="forgot-title">
@@ -1083,7 +1232,7 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
                 <div className="p-1.5 rounded-lg bg-[#009DFF]/10 text-[#009DFF]">
                   <Fingerprint className="w-5 h-5" />
                 </div>
-                <h3 className="font-mono font-bold text-xs uppercase tracking-wider">Passphrase Key Recovery</h3>
+                <h3 id="forgot-title" className="font-mono font-bold text-xs uppercase tracking-wider">Passphrase Key Recovery</h3>
               </div>
               <button 
                 onClick={() => setShowForgot(false)} 
@@ -1105,7 +1254,8 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
                 <p className="text-xs text-zinc-400 leading-relaxed text-left">
                   GFF AI Zero-Trust Enclaves enforce rigorous defense protocols. Reset requests require out-of-band authorization.
                 </p>
-                <input id="forgot-email" type="email" value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} placeholder="employee@gff.ai" className="w-full h-10 px-3 bg-zinc-950 border border-zinc-800 rounded-lg text-xs outline-none focus:border-[#009DFF] text-white" required />
+                <label htmlFor="forgot-email" className="sr-only">Enterprise Email Address</label>
+                <input id="forgot-email" type="email" value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} placeholder="employee@gff.ai" className="w-full h-10 px-3 bg-zinc-950 border border-zinc-800 rounded-lg text-xs outline-none focus:border-[#009DFF] focus:ring-1 focus:ring-[#009DFF] text-white" required />
                 {forgotError && <p className="text-xs text-rose-450">{forgotError}</p>}
                 <div className="flex gap-3">
                   <button type="button" onClick={() => setShowForgot(false)} className="flex-1 h-9 bg-zinc-800 rounded-lg text-xs text-zinc-400">Cancel</button>

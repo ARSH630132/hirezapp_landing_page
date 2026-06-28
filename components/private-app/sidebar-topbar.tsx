@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { 
   Lock, ChevronRight, ChevronDown, Menu, 
-  Building2, Check, Globe, Shield, RefreshCw 
+  Building2, Check, Globe, Shield, RefreshCw, LogOut 
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { SidebarLink, UserProfile, BreadcrumbItem } from "./types";
@@ -12,6 +12,7 @@ import { WorkspaceBreadcrumbs, WorkspaceCommandButton } from "./navigation";
 import { RoleSwitcherPreview } from "./role-switcher";
 import { NotificationBell } from "./notifications";
 import { UserAvatar } from "./notices-avatars";
+import { clearPreviewSession } from "@/lib/preview-auth";
 
 // Define logical grouping for links
 interface LinkGroup {
@@ -91,6 +92,7 @@ export function PrivateSidebar({
 
   return (
     <aside 
+      aria-label="Sovereign primary sidebar"
       className={`hidden lg:flex flex-col h-screen shrink-0 border-r border-white/5 bg-[#050505]/65 backdrop-blur-md select-none transition-all duration-300 ${collapsed ? "w-20" : "w-64"}`}
     >
       <div className="h-14 border-b border-white/5 flex items-center justify-between px-5">
@@ -106,7 +108,8 @@ export function PrivateSidebar({
         </Link>
         <button 
           onClick={onToggleCollapse}
-          className="text-white/20 hover:text-white/50 text-[10px] hidden lg:block cursor-pointer"
+          className="text-white/20 hover:text-white/50 text-[10px] hidden lg:block cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#009DFF] rounded"
+          aria-label={collapsed ? "Expand sidebar navigation" : "Collapse sidebar navigation"}
         >
           {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronDown className="w-4 h-4 -rotate-90" />}
         </button>
@@ -118,8 +121,11 @@ export function PrivateSidebar({
           <div className="relative flex justify-center">
             <button 
               onClick={() => setOrgDropdownOpen(!orgDropdownOpen)}
-              className="h-9 w-9 rounded-lg border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] flex items-center justify-center text-[#009DFF] transition-all cursor-pointer"
+              className="h-9 w-9 rounded-lg border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] flex items-center justify-center text-[#009DFF] transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#009DFF]"
               title={activeOrg}
+              aria-expanded={orgDropdownOpen}
+              aria-haspopup="listbox"
+              aria-label="Secure workspace selection"
             >
               <Building2 className="w-4 h-4" />
             </button>
@@ -128,7 +134,9 @@ export function PrivateSidebar({
           <div className="relative">
             <button 
               onClick={() => setOrgDropdownOpen(!orgDropdownOpen)}
-              className="w-full flex items-center justify-between px-3 py-2 rounded-lg border border-white/5 bg-[#0a0a0a]/50 hover:bg-[#0c0c0c] hover:border-white/10 transition-all text-left cursor-pointer group"
+              className="w-full flex items-center justify-between px-3 py-2 rounded-lg border border-white/5 bg-[#0a0a0a]/50 hover:bg-[#0c0c0c] hover:border-white/10 transition-all text-left cursor-pointer group focus:outline-none focus:ring-1 focus:ring-[#009DFF]"
+              aria-expanded={orgDropdownOpen}
+              aria-haspopup="listbox"
             >
               <div className="flex items-center gap-2.5 min-w-0">
                 <div className="h-5.5 w-5.5 rounded bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
@@ -151,11 +159,13 @@ export function PrivateSidebar({
             <AnimatePresence>
               {orgDropdownOpen && (
                 <>
-                  <div className="fixed inset-0 z-40" onClick={() => setOrgDropdownOpen(false)} />
+                  <div className="fixed inset-0 z-40" onClick={() => setOrgDropdownOpen(false)} aria-hidden="true" />
                   <motion.div 
                     initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 5 }}
+                    role="listbox"
+                    aria-label="Enclave Workspace switch options"
                     className="absolute left-0 right-0 top-full mt-1.5 z-50 rounded-xl border border-white/5 bg-[#0a0a0a] p-1.5 shadow-2xl backdrop-blur-md font-sans"
                   >
                     <div className="px-2.5 py-1 text-[8.5px] font-mono font-bold text-white/30 uppercase tracking-widest border-b border-white/5 mb-1.5">
@@ -168,7 +178,9 @@ export function PrivateSidebar({
                           <button
                             key={org.id}
                             onClick={() => handleOrgChange(org.name)}
-                            className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-left transition-all cursor-pointer ${
+                            role="option"
+                            aria-selected={isSel}
+                            className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-left transition-all cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#009DFF] ${
                               isSel 
                                 ? "bg-white/[0.04] text-[#009DFF] font-bold" 
                                 : "text-white/60 hover:text-white hover:bg-white/[0.02]"
@@ -251,11 +263,36 @@ export function PrivateSidebar({
         })}
       </div>
 
-      {!collapsed && (
-        <div className="p-4 border-t border-white/5 bg-black/20 text-center font-mono text-[9px] text-white/25 select-none">
-          SECURE CLOCK: 2026.06.27
-        </div>
-      )}
+      <div className="p-3 border-t border-white/5 flex flex-col gap-2 shrink-0 bg-black/10">
+        {!collapsed ? (
+          <button 
+            onClick={() => {
+              clearPreviewSession();
+              window.location.href = "/portal/login";
+            }}
+            className="w-full h-8 rounded-lg border border-red-500/10 hover:border-red-500/30 bg-red-950/5 hover:bg-red-950/15 text-red-400 hover:text-red-300 flex items-center justify-center gap-1.5 font-mono text-[9.5px] font-bold uppercase transition-all cursor-pointer"
+          >
+            <LogOut className="w-3.5 h-3.5 shrink-0" />
+            <span>Sign Out</span>
+          </button>
+        ) : (
+          <button 
+            onClick={() => {
+              clearPreviewSession();
+              window.location.href = "/portal/login";
+            }}
+            className="h-8 w-8 mx-auto rounded-lg border border-red-500/10 hover:border-red-500/30 bg-red-950/5 hover:bg-red-950/15 text-red-400 hover:text-red-300 flex items-center justify-center transition-all cursor-pointer"
+            title="Deauthenticate Session"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+          </button>
+        )}
+        {!collapsed && (
+          <div className="text-center font-mono text-[8px] text-white/20 select-none uppercase tracking-widest mt-1">
+            CLOCK: 2026.06.27
+          </div>
+        )}
+      </div>
     </aside>
   );
 }
@@ -297,6 +334,20 @@ export function PrivateTopbar({
         <WorkspaceCommandButton onClick={onSearchClick} />
         <RoleSwitcherPreview currentRole={role} onRoleChange={onRoleChange} />
         <NotificationBell />
+        
+        {/* Quick Sign Out Action */}
+        <button 
+          onClick={() => {
+            clearPreviewSession();
+            window.location.href = "/portal/login";
+          }}
+          className="h-8 w-8 md:w-auto md:px-2.5 flex items-center justify-center gap-1.5 rounded-lg border border-red-500/10 hover:border-red-500/30 bg-red-950/5 hover:bg-red-950/15 text-red-400 hover:text-red-300 transition-all cursor-pointer"
+          title="Sign Out Session"
+        >
+          <LogOut className="w-3.5 h-3.5" />
+          <span className="hidden md:inline font-mono text-[9.5px] font-bold uppercase tracking-wider">Sign Out</span>
+        </button>
+
         <div className="border-l border-white/10 h-6 mx-0.5 hidden md:block" />
         <UserAvatar user={user} showDetails={true} />
       </div>

@@ -1,0 +1,25 @@
+
+
+## npm run lint
+exit=1
+STDOUT:
+
+> hirezapp_landing_page@0.1.0 lint
+> eslint
+
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/temp-document-build/app/api/v1/documents/[id]/route.js
+  7:18  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  8:20  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/temp-document-build/app/api/v1/documents/route.js
+  6:18  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  7:20  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/temp-document-build/lib/api-auth.js
+  19:34  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+✖ 5 problems (5 errors, 0 warnings)
+
+
+STDERR:

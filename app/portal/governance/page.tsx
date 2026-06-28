@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { 
   ShieldAlert, ShieldCheck, CheckCircle, AlertCircle, FileText, Copy, Search, 
   X, ChevronRight, ChevronDown, Download, Lock, RefreshCw, UserCheck, 
@@ -232,6 +233,107 @@ export default function ClientGovernancePage() {
     }
   ]);
 
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const mapApiGovToPolicy = (item: any): PolicyItem => ({
+    id: item.id.toUpperCase(),
+    name: item.title,
+    standard: item.standard || "ISO-27001",
+    status: item.status?.toLowerCase() === "flagged" ? "warning" : item.status?.toLowerCase() === "under review" ? "critical" : "compliant",
+    severity: item.severity?.toLowerCase() || "medium",
+    projectId: item.project_id || "proj-001",
+    projectName: item.project_name || "Sovereign Core Sandbox 02",
+    agentId: item.nodeId || "agent-001",
+    agentName: item.nodeId || "RETAIL-CORE-A1",
+    desc: item.description,
+    lastChecked: item.lastUpdated ? new Date(item.lastUpdated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "11:00 AM",
+    logs: item.logs || ["Initial check registered."]
+  });
+
+  const mapApiGovToOversight = (item: any): OversightItem => ({
+    id: item.id.toUpperCase().replace("GOV-", "OVS-"),
+    title: item.title,
+    project: item.project_name || "Sovereign Core Sandbox 02",
+    projectId: item.project_id || "proj-001",
+    agent: item.nodeId || "RETAIL-CORE-A1",
+    agentId: item.nodeId || "agent-001",
+    requester: item.owner || "Alexander Mercer",
+    status: item.status?.toLowerCase() === "flagged" || item.status?.toLowerCase() === "under review" ? "pending" : item.status?.toLowerCase() === "completed" || item.status?.toLowerCase() === "remediated" ? "approved" : "rejected",
+    severity: item.severity?.toLowerCase() || "medium",
+    requestDate: item.lastUpdated || new Date().toISOString(),
+    category: item.standard === "ISO-27001" ? "Access Elevation" : item.standard === "SOC2 Type II" ? "Model Boundary Shift" : "HSM Seal Rollover",
+    desc: item.description
+  });
+
+  const mapApiDocToDocItem = (doc: any): DocItem => ({
+    id: doc.id,
+    name: doc.title,
+    size: doc.fileSize || "1.0 MB",
+    format: doc.type || doc.document_type || "PDF",
+    projectId: doc.project_id || doc.projectId || "proj-001",
+    projectName: doc.project_name || doc.projectName || "Sovereign Core Sandbox 02",
+    agentId: doc.project_id || "agent-001",
+    agentName: doc.project_name || "RETAIL-CORE-A1",
+    status: doc.status?.toLowerCase() === "verified" ? "compliant" : "warning",
+    hash: doc.sha256 || "0x" + Math.random().toString(16).substring(2, 10).toUpperCase(),
+    uploadedAt: doc.lastUpdated ? doc.lastUpdated.split('T')[0] : "2026-06-27",
+    category: doc.type?.toLowerCase() === "pdf" ? "audit" : "governance",
+    clearanceLevel: doc.visibility || "LEVEL_III"
+  });
+
+  const loadData = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") : null;
+      if (!token) {
+        setError("AUTHENTICATION EXPIRED.");
+        router.push("/portal/login");
+        return;
+      }
+
+      const [govRes, docRes] = await Promise.all([
+        fetch("/api/v1/governance", {
+          headers: { "Authorization": `Bearer ${token}` }
+        }),
+        fetch("/api/v1/documents", {
+          headers: { "Authorization": `Bearer ${token}` }
+        })
+      ]);
+
+      if (!govRes.ok || !docRes.ok) {
+        throw new Error(`Consensus failed. Gov: ${govRes.status}, Docs: ${docRes.status}`);
+      }
+
+      const govJson = await govRes.json();
+      const docJson = await docRes.json();
+
+      if (govJson.success && Array.isArray(govJson.governance)) {
+        setPolicies(govJson.governance.map(mapApiGovToPolicy));
+        setOversights(govJson.governance.map(mapApiGovToOversight));
+      }
+      let docArray = null;
+      if (Array.isArray(docJson)) {
+        docArray = docJson;
+      } else if (docJson && docJson.success && Array.isArray(docJson.documents)) {
+        docArray = docJson.documents;
+      }
+      if (docArray) {
+        setDocuments(docArray.map(mapApiDocToDocItem));
+      }
+    } catch (err: any) {
+      setError(err.message || "Failed to load governance registry.");
+    } finally {
+      setLoading(false);
+    }
+  }, [router]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
   // Filters State
   const [selProj, setSelProj] = useState("");
   const [selAgent, setSelAgent] = useState("");
@@ -340,6 +442,46 @@ export default function ClientGovernancePage() {
     { id: "step-5", title: "5. Sealed State Ledger", val: "SHA-256 Verified", desc: "Logs physical transactions into an immutable, client-managed auditing ledger." }
   ];
 
+  if (loading && policies.length === 0) {
+    return (
+      <div className="space-y-6 max-w-[1700px] mx-auto pb-16 font-mono p-4 text-white">
+        <div className="flex justify-between items-center border-b border-white/5 pb-4">
+          <div>
+            <h1 className="text-xl font-bold uppercase tracking-tight animate-pulse">Sovereign Governance</h1>
+            <p className="text-xs text-white/50 mt-1">Acquiring cryptographic consensus on ledger rulesets...</p>
+          </div>
+          <RefreshCw className="w-5 h-5 text-[#009DFF] animate-spin" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[1, 2, 3].map(n => (
+            <WorkspaceCard key={n} className="h-40 border border-white/5 bg-[#050505]/20 p-5 rounded-xl space-y-4 animate-pulse">
+              <div className="w-full h-full" />
+            </WorkspaceCard>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (error && policies.length === 0) {
+    return (
+      <div className="space-y-6 max-w-[1700px] mx-auto pb-16 font-mono p-4 text-white">
+        <WorkspaceCard className="p-8 border border-red-500/10 bg-red-950/5 text-center max-w-lg mx-auto my-12">
+          <ShieldAlert className="w-8 h-8 text-red-400 mx-auto animate-pulse" />
+          <h4 className="text-white font-bold uppercase text-sm mt-4 font-mono">GOVERNANCE CONFLICT</h4>
+          <p className="text-white/50 text-[11px] leading-relaxed my-3 font-mono">{error}</p>
+          <button
+            onClick={loadData}
+            className="mx-auto h-9 px-6 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold text-[11px] uppercase flex items-center gap-2 transition-all cursor-pointer font-mono"
+          >
+            <RefreshCw className="w-3.5 h-3.5" />
+            <span>RE-ESTABLISH SECURE LINK</span>
+          </button>
+        </WorkspaceCard>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6 max-w-[1700px] mx-auto pb-16 animate-slide-up select-none">
       
@@ -369,8 +511,18 @@ export default function ClientGovernancePage() {
             Real-time telemetry, automated guardrail verification blocks, human interlock points, and certified document audit records.
           </p>
         </div>
-        <div className="text-[10px] text-white/45 bg-white/[0.01] border border-white/5 px-2.5 py-1.5 rounded-lg">
-          Enclave Epoch: <span className="text-white font-bold font-mono">2026.E3</span>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={loadData}
+            disabled={loading}
+            className="h-8 px-3 rounded bg-white/5 hover:bg-white/10 text-[10px] font-bold uppercase text-white border border-white/10 transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-40 animate-none"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
+            <span>Sync</span>
+          </button>
+          <div className="text-[10px] text-white/45 bg-white/[0.01] border border-white/5 px-2.5 py-1.5 rounded-lg">
+            Enclave Epoch: <span className="text-white font-bold font-mono">2026.E3</span>
+          </div>
         </div>
       </div>
 
@@ -821,7 +973,7 @@ export default function ClientGovernancePage() {
       </WorkspaceCard>
 
       {/* Toast Notifications */}
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none select-none font-mono">
+      <div className="fixed bottom-20 lg:bottom-6 right-4 lg:right-6 z-50 flex flex-col gap-2 pointer-events-none select-none font-mono">
         {toasts.map(t => (
           <div 
             key={t.id} 

@@ -1,0 +1,50 @@
+## npm run lint
+exit=1
+STDOUT:
+
+> hirezapp_landing_page@0.1.0 lint
+> eslint
+
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/scripts/test-ai-operations-apis.js
+   1:22  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   2:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   3:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  11:17  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  12:13  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  13:15  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/temp-ai-op-build/app/api/v1/ai-operations/[id]/route.js
+  7:18  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  8:20  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/temp-ai-op-build/app/api/v1/ai-operations/route.js
+  6:18  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  7:20  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/temp-ai-op-build/lib/api-auth.js
+  18:34  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/temp-api-build/app/api/v1/users/[id]/role/route.js
+  5:18  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  6:20  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/temp-api-build/app/api/v1/users/[id]/route.js
+  7:18  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  8:20  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/temp-api-build/app/api/v1/users/[id]/status/route.js
+  5:18  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  6:20  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/temp-api-build/app/api/v1/users/route.js
+  6:18  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  7:20  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/temp-api-build/lib/api-auth.js
+  18:34  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+✖ 20 problems (20 errors, 0 warnings)
+
+
+STDERR:

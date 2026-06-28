@@ -1,0 +1,225 @@
+## npm run lint
+exit=0
+STDOUT:
+
+> hirezapp_landing_page@0.1.0 lint
+> eslint
+
+
+/Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/app/admin/billing/page.tsx
+  231:6  warning  React Hook useEffect has missing dependencies: 'clientsList' and 'projects'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+✖ 1 problem (0 errors, 1 warning)
+
+
+STDERR:
+
+
+## npm run build
+exit=0
+STDOUT:
+
+> hirezapp_landing_page@0.1.0 build
+> next build
+
+▲ Next.js 16.2.9 (Turbopack)
+- Environments: .env
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 22.7s
+  Running TypeScript ...
+  Finished TypeScript in 31.2s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/153) ...
+  Generating static pages using 7 workers (38/153) 
+  Generating static pages using 7 workers (76/153) 
+  Generating static pages using 7 workers (114/153) 
+✓ Generating static pages using 7 workers (153/153) in 18.2s
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /about-us
+├ ○ /admin
+├ ○ /admin/activity
+├ ○ /admin/ai-operations
+├ ○ /admin/analytics
+├ ○ /admin/billing
+├ ○ /admin/clients
+├ ƒ /admin/clients/[id]
+├ ○ /admin/dashboard
+├ ○ /admin/documents
+├ ○ /admin/governance
+├ ○ /admin/login
+├ ○ /admin/projects
+├ ƒ /admin/projects/[id]
+├ ○ /admin/settings
+├ ○ /admin/support
+├ ○ /admin/users
+├ ƒ /api/contact
+├ ƒ /api/v1/ai-operations
+├ ƒ /api/v1/ai-operations/[id]
+├ ƒ /api/v1/analytics/admin
+├ ƒ /api/v1/analytics/client
+├ ƒ /api/v1/auth/login
+├ ƒ /api/v1/auth/logout
+├ ƒ /api/v1/auth/me
+├ ƒ /api/v1/clients
+├ ƒ /api/v1/clients/[id]
+├ ƒ /api/v1/dashboard/admin
+├ ƒ /api/v1/dashboard/client
+├ ƒ /api/v1/documents
+├ ƒ /api/v1/documents/[id]
+├ ƒ /api/v1/governance
+├ ƒ /api/v1/governance/[id]
+├ ƒ /api/v1/governance/[id]/status
+├ ƒ /api/v1/invoices
+├ ƒ /api/v1/invoices/[id]
+├ ƒ /api/v1/projects
+├ ƒ /api/v1/projects/[id]
+├ ƒ /api/v1/support
+├ ƒ /api/v1/support/[id]
+├ ƒ /api/v1/support/[id]/assign
+├ ƒ /api/v1/support/[id]/status
+├ ƒ /api/v1/users
+├ ƒ /api/v1/users/[id]
+├ ƒ /api/v1/users/[id]/role
+├ ƒ /api/v1/users/[id]/status
+├ ○ /build
+├ ○ /build/assessment
+├ ○ /build/blueprint
+├ ○ /build/foundry-studio
+├ ○ /build/marketplace
+├ ○ /build/proposal
+├ ○ /build/roi
+├ ○ /build/sandbox
+├ ○ /build/talk
+├ ○ /capabilities
+├ ○ /capabilities/agents
+├ ○ /capabilities/data
+├ ○ /capabilities/engineering
+├ ○ /capabilities/governance
+├ ○ /capabilities/knowledge-graph
+├ ○ /capabilities/labs
+├ ○ /capabilities/managed-services
+├ ○ /capabilities/operations
+├ ○ /capabilities/strategy
+├ ○ /capabilities/twins
+├ ○ /capabilities/universities
+├ ○ /careers
+├ ○ /client
+├ ○ /client/control-center
+├ ○ /client/dashboard
+├ ○ /company
+├ ○ /company/advisors
+├ ○ /company/careers
+├ ○ /company/contact
+├ ○ /company/investors
+├ ○ /company/leadership
+├ ○ /company/locations
+├ ○ /company/media
+├ ○ /company/mission
+├ ○ /company/partners
+├ ○ /contact
+├ ○ /industries
+├ ○ /industries/advisory
+├ ○ /industries/audit
+├ ○ /industries/banking
+├ ○ /industries/education
+├ ○ /industries/energy
+├ ○ /industries/financial-services
+├ ○ /industries/government
+├ ○ /industries/healthcare
+├ ○ /industries/insurance
+├ ○ /industries/legal
+├ ○ /industries/life-sciences
+├ ○ /industries/manufacturing
+├ ○ /industries/mining
+├ ○ /industries/public-sector
+├ ○ /industries/retail
+├ ○ /industries/tax
+├ ○ /industries/telecom
+├ ○ /insights
+├ ○ /insights/patterns-of-intelligence
+├ ○ /investor-relations
+├ ○ /login
+├ ○ /manifest.webmanifest
+├ ○ /nda
+├ ○ /platforms
+├ ○ /platforms/agent-marketplace
+├ ○ /platforms/ai-academy
+├ ○ /platforms/assessment-mesh
+├ ○ /platforms/blueprint
+├ ○ /platforms/control-center
+├ ○ /platforms/developer-platform
+├ ○ /platforms/factory
+├ ○ /platforms/foundry
+├ ○ /platforms/garage
+├ ○ /platforms/marketplace
+├ ○ /platforms/oremesh
+├ ○ /platforms/retailmesh
+├ ○ /platforms/runtime-governance
+├ ○ /platforms/telecomverse
+├ ○ /platforms/university-oneverse
+├ ○ /portal
+├ ○ /portal/activity
+├ ○ /portal/ai-operations
+├ ƒ /portal/ai-operations/[id]
+├ ○ /portal/analytics
+├ ○ /portal/billing
+├ ○ /portal/billing/invoices
+├ ƒ /portal/billing/invoices/[id]
+├ ○ /portal/control-center
+├ ○ /portal/dashboard
+├ ○ /portal/documents
+├ ƒ /portal/documents/[id]
+├ ○ /portal/governance
+├ ○ /portal/login
+├ ○ /portal/projects
+├ ƒ /portal/projects/[id]
+├ ○ /portal/settings
+├ ○ /portal/support
+├ ƒ /portal/support/[id]
+├ ○ /privacy
+├ ○ /resources
+├ ○ /resources/architecture-library
+├ ○ /resources/blog
+├ ○ /resources/case-studies
+├ ○ /resources/developer-docs
+├ ○ /resources/downloads
+├ ○ /resources/events
+├ ○ /resources/newsroom
+├ ○ /resources/patterns-of-intelligence
+├ ○ /resources/podcasts
+├ ○ /resources/reports
+├ ○ /resources/research
+├ ○ /resources/videos
+├ ○ /resources/webinars
+├ ○ /resources/whitepapers
+├ ○ /robots.txt
+├ ○ /sitemap.xml
+├ ○ /terms
+├ ○ /why-gff-ai
+├ ○ /why-gff-ai/differentiator
+├ ○ /why-gff-ai/garage-foundry-factory
+├ ○ /why-gff-ai/global-model
+├ ○ /why-gff-ai/leadership
+├ ○ /why-gff-ai/mission
+├ ○ /why-gff-ai/operating-model
+├ ○ /why-gff-ai/technology-philosophy
+└ ○ /why-gff-ai/vision
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+
+STDERR:
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /Users/ayushbansal/package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * /Users/ayushbansal/Documents/GitHub/hirezapp_landing_page/package-lock.json
+
