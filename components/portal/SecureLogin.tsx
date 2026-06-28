@@ -70,6 +70,9 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
           const clients = payload.clients || [];
           setRegisterClients(clients);
           setRegisterClientId((current) => current || clients[0]?.id || "");
+          if (clients.length === 0) {
+            setError("No client accounts are available for self-registration yet.");
+          }
         }
       } catch (err) {
         if (!ignore) {
@@ -197,6 +200,10 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
     setInfo("");
 
     try {
+      if (!registerClientId) {
+        throw new Error("Please choose a client before creating your account.");
+      }
+
       const response = await fetch("/api/v1/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -477,6 +484,7 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
                         value={registerRole}
                         onChange={(e) => setRegisterRole(e.target.value as "client_admin" | "client_member")}
                         className="w-full h-10 px-3 rounded-lg bg-zinc-950/80 border border-zinc-800 focus:border-[#009DFF] focus:ring-1 focus:ring-[#009DFF] text-zinc-200 text-xs transition-all outline-none"
+                        style={{ colorScheme: "dark" }}
                       >
                         <option value="client_member">Client member</option>
                         <option value="client_admin">Client admin</option>
@@ -493,7 +501,12 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
                         onChange={(e) => setRegisterClientId(e.target.value)}
                         className="w-full h-10 px-3 rounded-lg bg-zinc-950/80 border border-zinc-800 focus:border-[#009DFF] focus:ring-1 focus:ring-[#009DFF] text-zinc-200 text-xs transition-all outline-none"
                         disabled={registerClientsLoading}
+                        required
+                        style={{ colorScheme: "dark" }}
                       >
+                        <option value="">
+                          {registerClientsLoading ? "Loading clients..." : registerClients.length === 0 ? "No clients available" : "Select a client"}
+                        </option>
                         {registerClients.map((client) => (
                           <option key={client.id} value={client.id}>
                             {client.name}
@@ -545,7 +558,7 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
                   <button
                     type="submit"
                     className="w-full h-10 rounded-lg bg-[#009DFF] hover:bg-[#0086db] text-black font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all disabled:opacity-70"
-                    disabled={loading}
+                    disabled={loading || registerClientsLoading || !registerClientId}
                   >
                     {loading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <UserPlus className="w-3.5 h-3.5" />}
                     {loading ? "Creating account" : "Create account"}

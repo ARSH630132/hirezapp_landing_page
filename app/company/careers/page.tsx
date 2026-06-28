@@ -62,7 +62,7 @@ export default function CompanyCareersPage() {
               </div>
 
               <div className="shrink-0">
-                <a href="mailto:careers@gff.ai" className="inline-flex h-[38px] px-5 items-center justify-center rounded-lg bg-gradient-to-r from-[#E4000F] to-[#009DFF] text-white text-[12.5px] font-semibold hover:opacity-95 transition-opacity">
+                <a href={`mailto:careers@gff.ai?subject=${encodeURIComponent(`Application: ${job.title}`)}`} className="inline-flex h-[38px] px-5 items-center justify-center rounded-lg bg-gradient-to-r from-[#E4000F] to-[#009DFF] text-white text-[12.5px] font-semibold hover:opacity-95 transition-opacity">
                   Apply Now
                 </a>
               </div>

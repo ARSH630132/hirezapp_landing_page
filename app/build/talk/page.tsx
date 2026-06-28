@@ -38,13 +38,25 @@ export default function TalkToAgentPage() {
   const [activeTab, setActiveTab] = useState<"direction" | "squad" | "timeline">("direction");
   const [isHydrated, setIsHydrated] = useState(false);
   const [isFlushing, setIsFlushing] = useState(false);
+  const descText = typeof data.desc === "string" ? data.desc : "";
 
   // Load from Workspace on mount
   useEffect(() => {
     const saved = getToolState("talk");
     if (saved) {
       if (typeof saved.currentStep === "number") setCurrentStep(saved.currentStep as 1 | 2 | 3);
-      if (saved.data) setData(saved.data);
+      if (saved.data && typeof saved.data === "object") {
+        setData((prev) => ({
+          ...prev,
+          desc: typeof saved.data.desc === "string" ? saved.data.desc : prev.desc,
+          ind: typeof saved.data.ind === "string" ? saved.data.ind : prev.ind,
+          size: typeof saved.data.size === "string" ? saved.data.size : prev.size,
+          geography: typeof saved.data.geography === "string" ? saved.data.geography : prev.geography,
+          urgency: typeof saved.data.urgency === "string" ? saved.data.urgency : prev.urgency,
+          functionTeam: typeof saved.data.functionTeam === "string" ? saved.data.functionTeam : prev.functionTeam,
+          aiStage: typeof saved.data.aiStage === "string" ? saved.data.aiStage : prev.aiStage,
+        }));
+      }
       if (typeof saved.showResults === "boolean") setShowResults(saved.showResults);
     }
     setIsHydrated(true);
@@ -218,7 +230,7 @@ export default function TalkToAgentPage() {
   const handleNext = () => {
     setValidationError(null);
     if (currentStep === 1) {
-      if (!data.desc || data.desc.trim().length < 15) {
+      if (!descText.trim() || descText.trim().length < 15) {
         setValidationError("Please describe your bottleneck challenge (minimum 15 characters) so GFF can model a precise strategy.");
         if (textareaRef.current) {
           textareaRef.current.focus();
@@ -242,7 +254,7 @@ export default function TalkToAgentPage() {
     e.preventDefault();
     setValidationError(null);
 
-    if (!data.desc || data.desc.trim().length < 15) {
+    if (!descText.trim() || descText.trim().length < 15) {
       setValidationError("Please describe your bottleneck challenge in Gate 1 before compiling.");
       setCurrentStep(1);
       return;
@@ -301,8 +313,8 @@ export default function TalkToAgentPage() {
 
   // DETERMINISTIC OUTPUT COMPILER
   const compileDeterministicResults = () => {
-    const isSearching = data.desc.toLowerCase().includes("search") || data.desc.toLowerCase().includes("find") || data.desc.toLowerCase().includes("access") || data.desc.toLowerCase().includes("accessing");
-    const isManual = data.desc.toLowerCase().includes("manual") || data.desc.toLowerCase().includes("process") || data.desc.toLowerCase().includes("hand") || data.desc.toLowerCase().includes("departments");
+    const isSearching = descText.toLowerCase().includes("search") || descText.toLowerCase().includes("find") || descText.toLowerCase().includes("access") || descText.toLowerCase().includes("accessing");
+    const isManual = descText.toLowerCase().includes("manual") || descText.toLowerCase().includes("process") || descText.toLowerCase().includes("hand") || descText.toLowerCase().includes("departments");
     const matchedIndustry = indOptions.find((opt) => opt.id === data.ind) || indOptions[0];
     const industryName = matchedIndustry.title;
 
@@ -352,7 +364,7 @@ export default function TalkToAgentPage() {
         { name: "SV-02 Policy Guardian", subtitle: "Execution Authenticator", description: "Ensures every automated action matches organizational guidelines, raising flags on anomalous requests.", code: "POLICY_ENFORCER" }
       ];
     } else {
-      proposal = `Configure a custom Sovereign Cognitive Swarm optimized for: "${data.desc.slice(0, 75)}...". The setup embeds dedicated agent pipelines inside a private environment, ensuring automated processing, safety checks, and strict data boundaries.`;
+      proposal = `Configure a custom Sovereign Cognitive Swarm optimized for: "${descText.slice(0, 75)}...". The setup embeds dedicated agent pipelines inside a private environment, ensuring automated processing, safety checks, and strict data boundaries.`;
       roiEstimate = "Boosts execution throughput by 55% while maintaining single-tenant data isolation.";
       squad = [
         { name: "AS-01 Core Executor", subtitle: "Task Processing Worker", description: "Executes primary analytical steps and organizes processed database files.", code: "CORE_WORKER" },
@@ -475,7 +487,7 @@ export default function TalkToAgentPage() {
                           key={step}
                           type="button"
                           onClick={() => {
-                            if (step < currentStep || (step === 2 && data.desc.trim().length >= 15)) {
+                            if (step < currentStep || (step === 2 && descText.trim().length >= 15)) {
                               setCurrentStep(step);
                               setValidationError(null);
                             }
@@ -487,7 +499,7 @@ export default function TalkToAgentPage() {
                               ? "bg-white/5 text-white/60 border-white/5 hover:text-white"
                               : "bg-transparent text-white/20 border-transparent cursor-not-allowed"
                           }`}
-                          disabled={step > currentStep && (step === 3 || data.desc.trim().length < 15)}
+                          disabled={step > currentStep && (step === 3 || descText.trim().length < 15)}
                         >
                           <span>GATE 0{step}</span>
                           {step < currentStep && (
@@ -555,7 +567,7 @@ export default function TalkToAgentPage() {
                             id="challenge-desc"
                             ref={textareaRef}
                             rows={5}
-                            value={data.desc}
+                            value={descText}
                             onChange={(e) => {
                               setData((prev) => ({ ...prev, desc: e.target.value }));
                               if (validationError) setValidationError(null);
@@ -566,7 +578,7 @@ export default function TalkToAgentPage() {
                             maxLength={1000}
                           />
                           <div className="absolute bottom-3 right-3 text-[9px] font-mono text-white/30">
-                            {data.desc.length} / 1000 CHARS
+                            {descText.length} / 1000 CHARS
                           </div>
                         </div>
                       </div>

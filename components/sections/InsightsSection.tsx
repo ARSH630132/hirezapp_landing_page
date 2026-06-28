@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "motion/react";
 import SectionHeading from "@/components/SectionHeading";
 import { pageFadeVariants } from "@/lib/animations";
+import { insightCardLinks } from "@/lib/cta-links";
 import { insightsCards } from "@/lib/landing-data";
 
 export default function InsightsSection() {
@@ -22,12 +24,16 @@ export default function InsightsSection() {
 
       <div className="mt-12 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 max-w-[1795px] mx-auto">
         {insightsCards.map((card) => (
-          <div key={card.title} className="rounded-[10px] border border-[#171717] bg-black/10 p-6 flex flex-col backdrop-blur-[40px]">
+          <Link
+            key={card.title}
+            href={insightCardLinks[card.title] ?? "/capabilities/labs"}
+            className="rounded-[10px] border border-[#171717] bg-black/10 p-6 flex flex-col backdrop-blur-[40px]"
+          >
             <img src={card.image} alt={card.title} className="w-full h-[190px] object-contain" />
             <h3 className="mt-6 text-[24px] leading-[30px] font-bold text-white">{card.title.toUpperCase()}</h3>
             <p className="mt-5 text-[18px] leading-[29px] font-medium text-[#C1C1C1]">{card.description}</p>
-            <button className="mt-auto pt-6 text-[#449AEB] text-[16px] leading-[24px] font-medium text-left cursor-pointer">EXPLORE LAB →</button>
-          </div>
+            <span className="mt-auto pt-6 text-[#449AEB] text-[16px] leading-[24px] font-medium text-left cursor-pointer">EXPLORE LAB →</span>
+          </Link>
         ))}
       </div>
     </motion.section>

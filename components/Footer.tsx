@@ -65,6 +65,14 @@ const footerCols = [
   }
 ];
 
+const socialLinks = [
+  { name: "LinkedIn", href: "https://www.linkedin.com/company/gff-ai/", icon: "/footer/linkedin.png" },
+  { name: "Twitter / X", href: "https://x.com/gffai", icon: "/footer/twitter.png" },
+  { name: "Email", href: "mailto:contact@gff.ai", icon: "/footer/mail.png" },
+  { name: "YouTube", href: "https://www.youtube.com/@gffai", icon: "/footer/youtube.png" },
+  { name: "Instagram", href: "https://www.instagram.com/gffai/", icon: "/footer/instagram.png" },
+];
+
 export default function Footer() {
   const [email, setEmail] = useState("");
   const [sub, setSub] = useState(false);
@@ -93,6 +101,23 @@ export default function Footer() {
                     <button type="submit" aria-label="Subscribe to newsletter" className="bg-gradient-to-r from-[#E4000F] to-[#009DFF] text-white text-[12px] font-bold px-3 py-1.5 rounded-lg">Join</button>
                   </form>
                 )}
+              </div>
+              <div className="mt-6">
+                <h4 className="text-white text-[13px] font-semibold uppercase tracking-wider">Follow</h4>
+                <div className="mt-3 flex flex-wrap gap-3">
+                  {socialLinks.map((social) => (
+                    <a
+                      key={social.name}
+                      href={social.href}
+                      target={social.href.startsWith("mailto:") ? undefined : "_blank"}
+                      rel={social.href.startsWith("mailto:") ? undefined : "noreferrer"}
+                      aria-label={social.name}
+                      className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 hover:border-[#009DFF]/40 hover:bg-white/10"
+                    >
+                      <img src={social.icon} alt={social.name} className="h-4 w-4 object-contain" />
+                    </a>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

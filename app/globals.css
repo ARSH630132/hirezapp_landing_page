@@ -172,6 +172,16 @@
   a[href]:active {
     transform: translateY(0) scale(0.99);
   }
+
+  select {
+    color-scheme: dark;
+  }
+
+  select option,
+  select optgroup {
+    background-color: #050505;
+    color: #f4f4f5;
+  }
 }
 
 @keyframes dash {
@@ -193,4 +203,3 @@
     transform: none !important;
   }
 }
-
