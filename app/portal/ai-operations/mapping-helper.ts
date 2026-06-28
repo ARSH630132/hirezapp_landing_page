@@ -34,8 +34,9 @@ export interface EnrichedAgent {
 export function mapApiOpToEnrichedAgent(op: ApiAiOperation): EnrichedAgent {
   // Generate stable mock metrics based on ID string hash to prevent flickering
   let idSum = 0;
-  for (let i = 0; i < op.id.length; i++) {
-    idSum += op.id.charCodeAt(i);
+  const opIdStr = String(op.id || "");
+  for (let i = 0; i < opIdStr.length; i++) {
+    idSum += opIdStr.charCodeAt(i);
   }
   const hash = idSum * 17;
 

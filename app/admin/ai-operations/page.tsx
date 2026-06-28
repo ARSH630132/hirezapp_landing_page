@@ -159,6 +159,9 @@ const mapApiToRichAgent = (op: any): RichAgentOperation => {
     }
   } catch (e) {}
 
+  const opIdStr = String(op.id || "");
+  const lastCharIndex = opIdStr.length > 0 ? opIdStr.charCodeAt(opIdStr.length - 1) : 0;
+
   return {
     id: op.id,
     name: op.name,
@@ -166,11 +169,11 @@ const mapApiToRichAgent = (op: any): RichAgentOperation => {
     projectName: extra.projectName || getProjectNameFromId(op.project_id),
     clientName: op.client_name,
     status: (op.status as any) || "active",
-    threads: typeof extra.threads === 'number' ? extra.threads : (op.status === "decoupled" ? 0 : 16 + (op.id.charCodeAt(op.id.length - 1) % 4) * 8),
+    threads: typeof extra.threads === 'number' ? extra.threads : (op.status === "decoupled" ? 0 : 16 + (lastCharIndex % 4) * 8),
     memory: extra.memory || (op.status === "decoupled" ? "0.0 GB / 8.0 GB" : "7.5 GB / 8.0 GB"),
-    cpu: typeof extra.cpu === 'number' ? extra.cpu : (op.status === "decoupled" ? 0 : (op.status === "warning" ? 92 : 45 + (op.id.charCodeAt(op.id.length - 1) % 10) * 4)),
-    latencyMs: typeof extra.latencyMs === 'number' ? extra.latencyMs : (op.status === "decoupled" ? 0 : (op.status === "warning" ? 95 : 12 + (op.id.charCodeAt(op.id.length - 1) % 15))),
-    uptime: typeof extra.uptime === 'number' ? extra.uptime : 99.0 + (op.id.charCodeAt(op.id.length - 1) % 100) / 100,
+    cpu: typeof extra.cpu === 'number' ? extra.cpu : (op.status === "decoupled" ? 0 : (op.status === "warning" ? 92 : 45 + (lastCharIndex % 10) * 4)),
+    latencyMs: typeof extra.latencyMs === 'number' ? extra.latencyMs : (op.status === "decoupled" ? 0 : (op.status === "warning" ? 95 : 12 + (lastCharIndex % 15))),
+    uptime: typeof extra.uptime === 'number' ? extra.uptime : 99.0 + (lastCharIndex % 100) / 100,
     enclaveType: extra.enclaveType || "Intel SGX",
     agentType: (op.agent_type as any) || "Core Model",
     severity: (op.governance_status as any) || "Low",
