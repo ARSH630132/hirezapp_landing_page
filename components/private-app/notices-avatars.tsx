@@ -18,9 +18,9 @@ export function SecurePreviewNotice({ className = "" }: { className?: string }) 
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
           <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
         </span>
-        <span className="font-bold uppercase">ZERO-TRUST SANDBOX ENCLAVE</span>
+        <span className="font-bold uppercase">SECURE WORKSPACE</span>
         <span className="hidden md:inline text-white/30">•</span>
-        <span className="text-white/70">Cryptographically isolated preview environment. State alterations are simulated local loops.</span>
+        <span className="text-white/70">You are viewing the live workspace for the account currently signed in.</span>
       </div>
     </div>
   );
@@ -81,7 +81,7 @@ export function UserAvatar({
                 
                 {/* Active Role Preview Indicator */}
                 <div className="mt-2.5 flex items-center justify-between rounded-md bg-white/[0.02] border border-white/5 px-2.5 py-1.5">
-                  <span className="text-[9px] font-mono font-semibold text-white/40">ROLE PREVIEW:</span>
+                  <span className="text-[9px] font-mono font-semibold text-white/40">ROLE:</span>
                   <span className="text-[10.5px] font-mono font-bold text-[#009DFF] uppercase tracking-wide">
                     {user.role}
                   </span>
@@ -120,7 +120,7 @@ export function UserAvatar({
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                   </svg>
-                  Deauthenticate Session
+                  Sign Out
                 </button>
               </div>
             </motion.div>

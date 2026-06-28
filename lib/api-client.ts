@@ -135,8 +135,6 @@ export interface ClientAccount {
 // CORE AUTHORIZATION & FETCH UTILITIES
 // ============================================================================
 
-import { getPreviewSession } from "./preview-auth";
-
 const TOKEN_KEY = "gff_api_token";
 
 export const getApiBaseUrl = (): string => {
@@ -150,44 +148,6 @@ export const clearStoredToken = (): void => { if (typeof window !== "undefined")
 
 export async function ensureValidToken(): Promise<string | null> {
   if (typeof window === "undefined") return null;
-  const session = getPreviewSession();
-  if (!session) return getStoredToken();
-  
-  const currentToken = getStoredToken();
-  if (currentToken) {
-    try {
-      const parts = currentToken.split(".");
-      if (parts.length === 3) {
-        const payload = JSON.parse(atob(parts[1]));
-        if (payload.email && payload.email.toLowerCase() === session.email.toLowerCase()) {
-          return currentToken;
-        }
-      }
-    } catch (e) {
-      // Decode failed
-    }
-  }
-  
-  try {
-    const res = await fetch("/api/v1/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: session.email,
-        password: "gff-secure-2026!"
-      })
-    });
-    if (res.ok) {
-      const data = await res.json();
-      if (data.success && data.accessToken) {
-        setStoredToken(data.accessToken);
-        localStorage.setItem("gff_ai_access_token", data.accessToken);
-        return data.accessToken;
-      }
-    }
-  } catch (err) {
-    console.error("Auto token sync failed:", err);
-  }
   return getStoredToken();
 }
 
@@ -204,7 +164,7 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
   if (response.status === 401) {
     if (typeof window !== "undefined") {
       clearStoredToken();
-      localStorage.removeItem("gff_ai_preview_session_v1");
+      localStorage.removeItem("gff_ai_access_token");
       window.location.href = window.location.pathname.includes("/admin") ? "/admin/login" : "/portal/login";
     }
     throw new Error("Unauthorized access. Access token cleared.");
@@ -255,27 +215,8 @@ export const dashboard = {
 };
 
 export const clients = {
-  list: async (): Promise<{ success: boolean; clients: ClientAccount[] }> => {
-    try { return await request<{ success: boolean; clients: ClientAccount[] }>("/clients"); } catch {
-      return {
-        success: true,
-        clients: [
-          { id: "client-001", name: "Apex Sovereign Group [Preview Client]", status: "active", tier: "Sovereign", region: "London", createdAt: "2026-01-15T08:00:00Z" },
-          { id: "client-002", name: "Global Retail Enclave [Preview Client]", status: "active", tier: "Enterprise", region: "New York", createdAt: "2026-02-10T10:30:00Z" },
-          { id: "client-003", name: "Sovereign Logistics Unit [Preview Client]", status: "active", tier: "Standard", region: "Frankfurt", createdAt: "2026-03-01T09:00:00Z" },
-          { id: "client-004", name: "Federal Treasury Division [Preview Client]", status: "active", tier: "Sovereign", region: "Washington D.C.", createdAt: "2026-04-18T14:15:00Z" }
-        ],
-      };
-    }
-  },
-  get: async (id: string): Promise<{ success: boolean; client: ClientAccount }> => {
-    try { return await request<{ success: boolean; client: ClientAccount }>(`/clients/${encodeURIComponent(id)}`); } catch {
-      const res = await clients.list();
-      const found = res.clients.find((c) => c.id === id);
-      if (!found) throw new Error(`Client ${id} not found.`);
-      return { success: true, client: found };
-    }
-  },
+  list: async (): Promise<{ success: boolean; clients: ClientAccount[] }> => request<{ success: boolean; clients: ClientAccount[] }>("/clients"),
+  get: async (id: string): Promise<{ success: boolean; client: ClientAccount }> => request<{ success: boolean; client: ClientAccount }>(`/clients/${encodeURIComponent(id)}`),
 };
 
 export const users = {
@@ -315,44 +256,13 @@ export const aiOperations = {
 
 export const documents = {
   list: async (filters?: any): Promise<{ success: boolean; documents: ApiDocumentItem[] }> => {
-    try {
-      const query = filters ? `?${new URLSearchParams(filters).toString()}` : "";
-      return await request<{ success: boolean; documents: ApiDocumentItem[] }>(`/documents${query}`);
-    } catch {
-      // High-fidelity local preview fallbacks
-      const fallbackDocs: ApiDocumentItem[] = [
-        { id: "DOC-801", title: "Sovereign Core Architectural Blueprint", fileSize: "12.4 MB", type: "PDF", sha256: "0xAB9811C82FFD201A99E8F3C721A0C5E89812A", client_id: "client-001", client_name: "Apex Sovereign Group", projectId: "proj-001", status: "Verified", owner: "Dr. Sarah Vance", version: "v2.4.1", lastUpdated: "2026-06-27T15:20:00Z", description: "Deep architectural layout" },
-        { id: "DOC-802", title: "SOC2 Compliance Enclave Certificate", fileSize: "4.8 MB", type: "PDF", sha256: "0xFF410D390E8F91B02AA6E8F3C2C77215446C1", client_id: "client-002", client_name: "Global Retail Enclave", projectId: "proj-002", status: "Verified", owner: "Alexander Mercer", version: "v1.1.0", lastUpdated: "2026-06-27T14:10:00Z", description: "SOC2 cert" }
-      ];
-      let filtered = fallbackDocs;
-      if (filters?.client_id) filtered = filtered.filter((d) => d.client_id === filters.client_id);
-      return { success: true, documents: filtered };
-    }
+    const query = filters ? `?${new URLSearchParams(filters).toString()}` : "";
+    return request<{ success: boolean; documents: ApiDocumentItem[] }>(`/documents${query}`);
   },
-  get: async (id: string): Promise<{ success: boolean; document: ApiDocumentItem }> => {
-    try { return await request<{ success: boolean; document: ApiDocumentItem }>(`/documents/${encodeURIComponent(id)}`); } catch {
-      const res = await documents.list();
-      const found = res.documents.find((d) => d.id.toLowerCase() === id.toLowerCase());
-      if (!found) throw new Error(`Document ${id} not found.`);
-      return { success: true, document: found };
-    }
-  },
-  create: async (data: Partial<ApiDocumentItem>): Promise<{ success: boolean; document: ApiDocumentItem }> => {
-    try { return await request<{ success: boolean; document: ApiDocumentItem }>("/documents", { method: "POST", body: JSON.stringify(data) }); } catch {
-      return { success: true, document: { id: `DOC-${Math.floor(805 + Math.random() * 100)}`, title: data.title || "Custom Provisioned", fileSize: data.fileSize || "1.0 MB", type: data.type || "JSON", sha256: "0x" + Math.random().toString(16).substring(2, 10).toUpperCase(), client_id: data.client_id || "client-001", client_name: "Apex Sovereign Group", projectId: data.projectId, status: "Verified", owner: data.owner || "System", version: "v1.0.0", lastUpdated: new Date().toISOString(), description: data.description || "" } };
-    }
-  },
-  update: async (id: string, data: Partial<ApiDocumentItem>): Promise<{ success: boolean; document: ApiDocumentItem }> => {
-    try { return await request<{ success: boolean; document: ApiDocumentItem }>(`/documents/${encodeURIComponent(id)}`, { method: "PATCH", body: JSON.stringify(data) }); } catch {
-      const docRes = await documents.get(id);
-      return { success: true, document: { ...docRes.document, ...data, lastUpdated: new Date().toISOString() } };
-    }
-  },
-  delete: async (id: string): Promise<{ success: boolean; message: string }> => {
-    try { return await request<{ success: boolean; message: string }>(`/documents/${encodeURIComponent(id)}`, { method: "DELETE" }); } catch {
-      return { success: true, message: "Deleted successfully." };
-    }
-  }
+  get: async (id: string): Promise<{ success: boolean; document: ApiDocumentItem }> => request<{ success: boolean; document: ApiDocumentItem }>(`/documents/${encodeURIComponent(id)}`),
+  create: async (data: Partial<ApiDocumentItem>): Promise<{ success: boolean; document: ApiDocumentItem }> => request<{ success: boolean; document: ApiDocumentItem }>("/documents", { method: "POST", body: JSON.stringify(data) }),
+  update: async (id: string, data: Partial<ApiDocumentItem>): Promise<{ success: boolean; document: ApiDocumentItem }> => request<{ success: boolean; document: ApiDocumentItem }>(`/documents/${encodeURIComponent(id)}`, { method: "PATCH", body: JSON.stringify(data) }),
+  delete: async (id: string): Promise<{ success: boolean; message: string }> => request<{ success: boolean; message: string }>(`/documents/${encodeURIComponent(id)}`, { method: "DELETE" })
 };
 
 export const invoices = {
@@ -368,38 +278,12 @@ export const invoices = {
 
 export const support = {
   list: async (filters?: any): Promise<{ success: boolean; tickets: ApiSupportTicket[] }> => {
-    try {
-      const query = filters ? `?${new URLSearchParams(filters).toString()}` : "";
-      return await request<{ success: boolean; tickets: ApiSupportTicket[] }>(`/support${query}`);
-    } catch {
-      const fallbackTickets: ApiSupportTicket[] = [
-        { id: "T-882", subject: "London core node replication delay above SLA threshold", client_id: "client-001", client_name: "Apex Sovereign Group", priority: "P1", category: "Infrastructure", status: "INVESTIGATING", assignedAgent: "Dr. Sarah Vance", slaSeconds: 862, description: "Latency delay spike", createdDate: "2026-06-27T14:30:00Z" },
-        { id: "T-881", subject: "Request for specialized auto-scaling GPU limits", client_id: "client-002", client_name: "Global Retail Enclave", priority: "P2", category: "Enclave Security", status: "OPEN", assignedAgent: "Alexander Mercer", slaSeconds: 11460, description: "Additional GPU override", createdDate: "2026-06-27T11:00:00Z" }
-      ];
-      let filtered = fallbackTickets;
-      if (filters?.client_id) filtered = filtered.filter((t) => t.client_id === filters.client_id);
-      return { success: true, tickets: filtered };
-    }
+    const query = filters ? `?${new URLSearchParams(filters).toString()}` : "";
+    return request<{ success: boolean; tickets: ApiSupportTicket[] }>(`/support${query}`);
   },
-  get: async (id: string): Promise<{ success: boolean; ticket: ApiSupportTicket }> => {
-    try { return await request<{ success: boolean; ticket: ApiSupportTicket }>(`/support/${encodeURIComponent(id)}`); } catch {
-      const res = await support.list();
-      const found = res.tickets.find((t) => t.id.toLowerCase() === id.toLowerCase());
-      if (!found) throw new Error(`Support ticket ${id} not found.`);
-      return { success: true, ticket: found };
-    }
-  },
-  create: async (data: Partial<ApiSupportTicket>): Promise<{ success: boolean; ticket: ApiSupportTicket }> => {
-    try { return await request<{ success: boolean; ticket: ApiSupportTicket }>("/support", { method: "POST", body: JSON.stringify(data) }); } catch {
-      return { success: true, ticket: { id: `T-${Math.floor(883 + Math.random() * 100)}`, subject: data.subject || "Enclave connection latency", client_id: data.client_id || "client-001", client_name: "Apex Sovereign Group", priority: data.priority || "P3", category: data.category || "General Support", status: "OPEN", assignedAgent: "Unassigned", slaSeconds: 7200, description: data.description || "", createdDate: new Date().toISOString() } };
-    }
-  },
-  update: async (id: string, data: Partial<ApiSupportTicket>): Promise<{ success: boolean; ticket: ApiSupportTicket }> => {
-    try { return await request<{ success: boolean; ticket: ApiSupportTicket }>(`/support/${encodeURIComponent(id)}`, { method: "PATCH", body: JSON.stringify(data) }); } catch {
-      const tRes = await support.get(id);
-      return { success: true, ticket: { ...tRes.ticket, ...data } };
-    }
-  }
+  get: async (id: string): Promise<{ success: boolean; ticket: ApiSupportTicket }> => request<{ success: boolean; ticket: ApiSupportTicket }>(`/support/${encodeURIComponent(id)}`),
+  create: async (data: Partial<ApiSupportTicket>): Promise<{ success: boolean; ticket: ApiSupportTicket }> => request<{ success: boolean; ticket: ApiSupportTicket }>("/support", { method: "POST", body: JSON.stringify(data) }),
+  update: async (id: string, data: Partial<ApiSupportTicket>): Promise<{ success: boolean; ticket: ApiSupportTicket }> => request<{ success: boolean; ticket: ApiSupportTicket }>(`/support/${encodeURIComponent(id)}`, { method: "PATCH", body: JSON.stringify(data) })
 };
 
 export const governance = {

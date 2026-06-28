@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { 
-  API_MOCK_USERS, API_MOCK_INVOICES, API_MOCK_PROJECTS, verifyJwt, 
-  MockUserDbEntry, ApiInvoice, getNextInvoiceId, getClientNameFromId, getClientIdFromAssociation 
+  verifyJwt,
+  ApiInvoice, getNextInvoiceId, getClientNameFromId, getClientIdFromAssociation 
 } from "../../../../lib/api-auth";
-import { getUserFromDynamoDB, mapDynamoUserToApiUser, dynamoDbListPortalItems, dynamoDbPutPortalItem } from "../../../../lib/dynamodb-client";
+import { getUserFromDynamoDB, mapDynamoUserToApiUser, dynamoDbGetClient, dynamoDbListPortalItems, dynamoDbPutPortalItem } from "../../../../lib/dynamodb-client";
 
 export const runtime = "nodejs";
 
@@ -20,10 +20,7 @@ async function getAuthCaller(req: Request) {
     if (mapped.status === "inactive") return { status: 403, error: "Forbidden", msg: "Account inactive." };
     return { caller: mapped };
   }
-  const u = (API_MOCK_USERS as Record<string, MockUserDbEntry>)[email];
-  if (!u) return { status: 401, error: "Unauthorized", msg: "User not found." };
-  if (u.status === "inactive") return { status: 403, error: "Forbidden", msg: "Account inactive." };
-  return { caller: u };
+  return { status: 401, error: "Unauthorized", msg: "User not found." };
 }
 
 export async function GET(req: Request) {
@@ -35,9 +32,7 @@ export async function GET(req: Request) {
     const cliF = s.get("client_id"), projF = s.get("project_id"), statF = s.get("status"), mF = s.get("month"), startF = s.get("start_date"), endF = s.get("end_date"), searchQ = s.get("search");
 
     const dbItems = await dynamoDbListPortalItems("INVOICE");
-    let invoices = dbItems.length > 0 
-      ? dbItems 
-      : (Object.values(API_MOCK_INVOICES) as ApiInvoice[]);
+    let invoices = dbItems as ApiInvoice[];
 
     const isMgr = caller.role === "gff_admin";
 
@@ -82,21 +77,22 @@ export async function POST(req: Request) {
     if (!b) return NextResponse.json({ success: false, error: "Bad Request", message: "Invalid JSON" }, { status: 400 });
 
     const { invoice_number: invN, client_id: cid, project_id: pid, amount: amt, currency: cur, status: st, issue_date: iss, due_date: due, category: cat, description: desc } = b;
-    if (!cid || typeof cid !== "string" || !cid.trim() || !["client-001", "client-002", "client-003", "client-004"].includes(cid)) {
+    if (!cid || typeof cid !== "string" || !cid.trim()) {
       return NextResponse.json({ success: false, error: "Bad Request", message: "Invalid client_id" }, { status: 400 });
     }
     if (amt === undefined || typeof amt !== "number" || amt < 0) return NextResponse.json({ success: false, error: "Bad Request", message: "Invalid amount" }, { status: 400 });
-    
+    const clientRecord = await dynamoDbGetClient(cid);
+    if (!clientRecord) {
+      return NextResponse.json({ success: false, error: "Bad Request", message: "Client not found" }, { status: 400 });
+    }
+
     const dbItems = await dynamoDbListPortalItems("INVOICE");
-    const existingInvs = dbItems.length > 0 
-      ? dbItems 
-      : Object.values(API_MOCK_INVOICES);
+    const existingInvs = dbItems;
 
     if (invN && typeof invN === "string" && invN.trim() && existingInvs.some(i => i.invoice_number.toLowerCase() === invN.toLowerCase().trim())) {
       return NextResponse.json({ success: false, error: "Bad Request", message: "Duplicate number" }, { status: 400 });
     }
 
-    const pName = pid ? (API_MOCK_PROJECTS[pid]?.name || "") : "";
     const nid = getNextInvoiceId();
     const finalN = invN?.trim() || `GFF-2026-${Math.floor(1000 + Math.random() * 9000)}`;
     const finalI = iss?.trim() || new Date().toISOString().substring(0, 10);
@@ -107,10 +103,9 @@ export async function POST(req: Request) {
     })();
 
     const newInv: ApiInvoice = {
-      id: nid, invoice_number: finalN, client_id: cid, client_name: getClientNameFromId(cid), project_id: pid || "", project_name: pName, amount: amt, currency: cur || "USD", status: st || "unpaid", issue_date: finalI, due_date: finalD, category: cat || "Compute Epoch",
+      id: nid, invoice_number: finalN, client_id: cid, client_name: clientRecord.name || getClientNameFromId(cid), project_id: pid || "", project_name: pid || "", amount: amt, currency: cur || "USD", status: st || "unpaid", issue_date: finalI, due_date: finalD, category: cat || "Compute Epoch",
       hash: b.hash || `0x${crypto.randomBytes(32).toString("hex").toUpperCase()}`, signature: b.signature || `SHA_${crypto.randomBytes(5).toString("hex").toUpperCase()}`, description: desc || "Cloud native secure enclave compute fee.", lastUpdated: new Date().toISOString()
     };
-    (API_MOCK_INVOICES as Record<string, ApiInvoice>)[nid] = newInv;
     await dynamoDbPutPortalItem("INVOICE", newInv.client_id, newInv);
     return NextResponse.json({ success: true, invoice: newInv }, { status: 201 });
   } catch (err) {

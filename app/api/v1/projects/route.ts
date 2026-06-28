@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { 
-  API_MOCK_USERS, 
   verifyJwt, 
   MockUserDbEntry, 
   ApiProject, 
@@ -9,13 +8,16 @@ import {
   getClientIdFromAssociation 
 } from "../../../../lib/api-auth";
 import {
+  getUserFromDynamoDB,
+  mapDynamoUserToApiUser,
+  dynamoDbGetClient,
   dynamoDbListPortalItems,
   dynamoDbPutPortalItem
 } from "../../../../lib/dynamodb-client";
 
 export const runtime = "nodejs";
 
-function getAuthCaller(req: Request) {
+async function getAuthCaller(req: Request) {
   const auth = req.headers.get("authorization");
   if (!auth?.startsWith("Bearer ")) {
     return { status: 401, error: "Unauthorized", msg: "Missing/malformed Authorization header." };
@@ -24,19 +26,20 @@ function getAuthCaller(req: Request) {
   if (!decoded?.email) {
     return { status: 401, error: "Unauthorized", msg: "Invalid/expired access token." };
   }
-  const user = (API_MOCK_USERS as Record<string, MockUserDbEntry>)[decoded.email.toLowerCase().trim()];
-  if (!user) {
+  const dynamoUser = await getUserFromDynamoDB(decoded.email.toLowerCase().trim());
+  if (!dynamoUser) {
     return { status: 401, error: "Unauthorized", msg: "Authorized user not found." };
   }
-  if (user.status === "inactive") {
+  const caller = mapDynamoUserToApiUser(dynamoUser);
+  if (caller.status === "inactive") {
     return { status: 403, error: "Forbidden", msg: "This account is inactive." };
   }
-  return { caller: user };
+  return { caller };
 }
 
 export async function GET(req: Request) {
   try {
-    const auth = getAuthCaller(req);
+    const auth = await getAuthCaller(req);
     if ("status" in auth) {
       return NextResponse.json({ success: false, error: auth.error, message: auth.msg }, { status: auth.status });
     }
@@ -115,7 +118,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
-    const auth = getAuthCaller(req);
+    const auth = await getAuthCaller(req);
     if ("status" in auth) {
       return NextResponse.json({ success: false, error: auth.error, message: auth.msg }, { status: auth.status });
     }
@@ -144,8 +147,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "Bad Request", message: "Missing or invalid 'client_id' field." }, { status: 400 });
     }
 
-    const validClients = ["client-001", "client-002", "client-003", "client-004"];
-    if (!validClients.includes(client_id)) {
+    const clientRecord = await dynamoDbGetClient(client_id);
+    if (!clientRecord) {
       return NextResponse.json({ success: false, error: "Bad Request", message: "Invalid 'client_id' specified." }, { status: 400 });
     }
 
@@ -154,7 +157,7 @@ export async function POST(req: Request) {
       id: newProjId,
       name: name.trim(),
       client_id: client_id,
-      client_name: getClientNameFromId(client_id),
+      client_name: clientRecord.name || getClientNameFromId(client_id),
       phase: phase || "Phase I: Planning",
       status: status || "active",
       health: health || "On Track",

@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
 import { 
-  API_MOCK_USERS, 
   API_MOCK_SUPPORT_TICKETS, 
   verifyJwt, 
-  MockUserDbEntry, 
   getClientIdFromAssociation 
 } from "../../../../../../lib/api-auth";
 import { getUserFromDynamoDB, mapDynamoUserToApiUser, dynamoDbListPortalItems, dynamoDbPutPortalItem } from "../../../../../../lib/dynamodb-client";
@@ -21,8 +19,7 @@ async function getAuthCaller(req: Request) {
     const mapped = mapDynamoUserToApiUser(dynamoUser);
     return mapped && mapped.status !== "inactive" ? mapped : null;
   }
-  const user = (API_MOCK_USERS as Record<string, MockUserDbEntry>)[email];
-  return user && user.status !== "inactive" ? user : null;
+  return null;
 }
 
 export async function PATCH(req: Request, { params }: { params: any }) {

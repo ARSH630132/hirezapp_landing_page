@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import { 
-  API_MOCK_USERS, verifyJwt, 
-  MockUserDbEntry, ApiProject, getClientNameFromId, getClientIdFromAssociation 
+  verifyJwt,
+  ApiProject, getClientNameFromId, getClientIdFromAssociation 
 } from "../../../../../lib/api-auth";
 import {
+  getUserFromDynamoDB,
+  mapDynamoUserToApiUser,
   dynamoDbListPortalItems,
   dynamoDbPutPortalItem,
   dynamoDbDeletePortalItem
@@ -11,18 +13,20 @@ import {
 
 export const runtime = "nodejs";
 
-function getAuthCaller(req: Request) {
+async function getAuthCaller(req: Request) {
   const auth = req.headers.get("authorization");
   if (!auth?.startsWith("Bearer ")) return null;
   const decoded = verifyJwt(auth.substring(7));
   if (!decoded?.email) return null;
-  const user = (API_MOCK_USERS as Record<string, MockUserDbEntry>)[decoded.email.toLowerCase().trim()];
-  return user && user.status !== "inactive" ? user : null;
+  const dynamoUser = await getUserFromDynamoDB(decoded.email.toLowerCase().trim());
+  if (!dynamoUser) return null;
+  const caller = mapDynamoUserToApiUser(dynamoUser);
+  return caller.status !== "inactive" ? caller : null;
 }
 
 export async function GET(req: Request, { params }: { params: any }) {
   try {
-    const caller = getAuthCaller(req);
+    const caller = await getAuthCaller(req);
     if (!caller) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     const { id } = await params;
     
@@ -42,7 +46,7 @@ export async function GET(req: Request, { params }: { params: any }) {
 
 export async function PATCH(req: Request, { params }: { params: any }) {
   try {
-    const caller = getAuthCaller(req);
+    const caller = await getAuthCaller(req);
     if (!caller) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     if (caller.role !== "gff_admin") return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
     const { id } = await params;
@@ -89,7 +93,7 @@ export async function PATCH(req: Request, { params }: { params: any }) {
 
 export async function DELETE(req: Request, { params }: { params: any }) {
   try {
-    const caller = getAuthCaller(req);
+    const caller = await getAuthCaller(req);
     if (!caller) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     if (caller.role !== "gff_admin") return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
     const { id } = await params;

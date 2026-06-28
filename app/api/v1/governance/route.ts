@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
 import { 
-  API_MOCK_USERS, API_MOCK_GOVERNANCE, API_MOCK_PROJECTS,
-  verifyJwt, MockUserDbEntry, ApiGovernanceItem, 
+  verifyJwt, ApiGovernanceItem, 
   getNextGovernanceId, getClientNameFromId, getClientIdFromAssociation 
 } from "../../../../lib/api-auth";
-import { getUserFromDynamoDB, mapDynamoUserToApiUser, dynamoDbListPortalItems, dynamoDbPutPortalItem } from "../../../../lib/dynamodb-client";
+import { getUserFromDynamoDB, mapDynamoUserToApiUser, dynamoDbGetClient, dynamoDbListPortalItems, dynamoDbPutPortalItem } from "../../../../lib/dynamodb-client";
 
 export const runtime = "nodejs";
 
@@ -20,10 +19,7 @@ async function getAuthCaller(req: Request) {
     if (mapped.status === "inactive") return { status: 403, error: "Forbidden", msg: "Account inactive." };
     return { caller: mapped };
   }
-  const user = (API_MOCK_USERS as Record<string, MockUserDbEntry>)[email];
-  if (!user) return { status: 401, error: "Unauthorized", msg: "User not found." };
-  if (user.status === "inactive") return { status: 403, error: "Forbidden", msg: "Account inactive." };
-  return { caller: user };
+  return { status: 401, error: "Unauthorized", msg: "User not found." };
 }
 
 export async function GET(req: Request) {
@@ -41,9 +37,7 @@ export async function GET(req: Request) {
     const search = searchParams.get("search");
 
     const dbItems = await dynamoDbListPortalItems("GOVERNANCE");
-    let items = dbItems.length > 0 
-      ? dbItems 
-      : (Object.values(API_MOCK_GOVERNANCE) as ApiGovernanceItem[]);
+    let items = dbItems as ApiGovernanceItem[];
 
     if (caller.role !== "gff_admin") {
       const callerCid = getClientIdFromAssociation(caller.clientAssociation);
@@ -100,21 +94,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "Bad Request", message: "Title and client_id are required." }, { status: 400 });
     }
 
-    const valids = ["client-001", "client-002", "client-003", "client-004"];
-    if (!valids.includes(client_id)) {
+    const clientRecord = await dynamoDbGetClient(client_id);
+    if (!clientRecord) {
       return NextResponse.json({ success: false, error: "Bad Request", message: "Invalid client_id." }, { status: 400 });
     }
 
     const id = getNextGovernanceId();
-    const proj = project_id ? (API_MOCK_PROJECTS as any)[project_id] : null;
 
     const newGov: ApiGovernanceItem = {
       id,
       title: title.trim(),
       client_id: client_id.trim(),
-      client_name: getClientNameFromId(client_id),
+      client_name: clientRecord.name || getClientNameFromId(client_id),
       project_id: project_id || undefined,
-      project_name: proj ? proj.name : undefined,
+      project_name: project_id || undefined,
       severity: severity || "Low",
       status: status || "active",
       owner: owner || caller.name,
@@ -127,7 +120,6 @@ export async function POST(req: Request) {
       lastUpdated: new Date().toISOString()
     };
 
-    (API_MOCK_GOVERNANCE as Record<string, ApiGovernanceItem>)[id] = newGov;
     await dynamoDbPutPortalItem("GOVERNANCE", newGov.client_id, newGov);
     return NextResponse.json({ success: true, governance: newGov }, { status: 201 });
   } catch (err) {

@@ -15,8 +15,7 @@ async function getAuthCaller(req: Request) {
     const mapped = mapDynamoUserToApiUser(dynamoUser);
     return mapped && mapped.status !== "inactive" ? mapped : null;
   }
-  const user = (API_MOCK_USERS as Record<string, MockUserDbEntry>)[email];
-  return user && user.status !== "inactive" ? user : null;
+  return null;
 }
 
 export async function GET(req: Request, { params }: { params: any }) {
@@ -38,10 +37,6 @@ export async function GET(req: Request, { params }: { params: any }) {
       if (dbUser) {
         user = mapDynamoUserToApiUser(dbUser);
       }
-    }
-
-    if (!user) {
-      user = (Object.values(API_MOCK_USERS) as MockUserDbEntry[]).find(u => u.id === id);
     }
 
     if (!user) return NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
@@ -77,10 +72,6 @@ export async function PATCH(req: Request, { params }: { params: any }) {
         entry = [dbUser.email.toLowerCase().trim(), mapDynamoUserToApiUser(dbUser)];
         isDynamo = true;
       }
-    }
-
-    if (!entry) {
-      entry = (Object.entries(API_MOCK_USERS) as [string, MockUserDbEntry][]).find(([_, u]) => u.id === id) || null;
     }
 
     if (!entry) return NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
@@ -122,20 +113,14 @@ export async function PATCH(req: Request, { params }: { params: any }) {
       if (typeof email !== "string" || !email.includes("@")) return NextResponse.json({ success: false, error: "Bad Request" }, { status: 400 });
       const newEmail = email.toLowerCase().trim();
       if (newEmail !== emailKey) {
-        if ((API_MOCK_USERS as Record<string, MockUserDbEntry>)[newEmail] || (await getUserFromDynamoDB(newEmail))) {
+        if (await getUserFromDynamoDB(newEmail)) {
           return NextResponse.json({ success: false, error: "Conflict", message: "Email taken." }, { status: 409 });
         }
         updated.email = newEmail;
         if (isDynamo) {
           await deleteUserFromDynamoDB(emailKey);
         }
-        delete (API_MOCK_USERS as Record<string, MockUserDbEntry>)[emailKey];
-        (API_MOCK_USERS as Record<string, MockUserDbEntry>)[newEmail] = updated;
-      } else {
-        (API_MOCK_USERS as Record<string, MockUserDbEntry>)[emailKey] = updated;
       }
-    } else {
-      (API_MOCK_USERS as Record<string, MockUserDbEntry>)[emailKey] = updated;
     }
 
     if (isDynamo || dynamoUsers.length > 0) {
@@ -183,10 +168,6 @@ export async function DELETE(req: Request, { params }: { params: any }) {
       }
     }
 
-    if (!entry) {
-      entry = (Object.entries(API_MOCK_USERS) as [string, MockUserDbEntry][]).find(([_, u]) => u.id === id) || null;
-    }
-
     if (!entry) return NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
 
     const [emailKey, user] = entry;
@@ -195,7 +176,6 @@ export async function DELETE(req: Request, { params }: { params: any }) {
     if (isDynamo) {
       await deleteUserFromDynamoDB(emailKey);
     }
-    delete (API_MOCK_USERS as Record<string, MockUserDbEntry>)[emailKey];
     return NextResponse.json({ success: true, message: "User deleted." });
   } catch (err) {
     return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });

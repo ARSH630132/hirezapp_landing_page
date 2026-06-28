@@ -1,5 +1,7 @@
 import crypto from "crypto";
 
+const API_MOCKS_ENABLED = process.env.ENABLE_API_MOCKS === "true";
+
 export interface ApiUser {
   id: string;
   name: string;
@@ -185,8 +187,8 @@ export const DEFAULT_API_MOCK_USERS: Record<string, MockUserDbEntry> = {
 };
 
 // Initialize the mock users database globally to persist edits in memory across hot reloads.
-if (!(global as any)._apiMockUsers) {
-  (global as any)._apiMockUsers = { ...DEFAULT_API_MOCK_USERS };
+if (!(global as any)._apiMockUsers || !API_MOCKS_ENABLED) {
+  (global as any)._apiMockUsers = API_MOCKS_ENABLED ? { ...DEFAULT_API_MOCK_USERS } : {};
 } else {
   for (const [email, user] of Object.entries(DEFAULT_API_MOCK_USERS)) {
     if (!(global as any)._apiMockUsers[email]) {
@@ -205,6 +207,9 @@ export function hashPassword(password: string): string {
 }
 
 export function getNextUserId(): string {
+  if (!API_MOCKS_ENABLED) {
+    return `usr-${Date.now().toString().slice(-6)}`;
+  }
   const users = Object.values(API_MOCK_USERS);
   const ids = users
     .map(u => {
@@ -320,13 +325,16 @@ export const DEFAULT_API_MOCK_PROJECTS: Record<string, ApiProject> = {
 };
 
 // Initialize globally to persist edits in memory across hot-reloads
-if (!(global as any)._apiMockProjects) {
-  (global as any)._apiMockProjects = { ...DEFAULT_API_MOCK_PROJECTS };
+if (!(global as any)._apiMockProjects || !API_MOCKS_ENABLED) {
+  (global as any)._apiMockProjects = API_MOCKS_ENABLED ? { ...DEFAULT_API_MOCK_PROJECTS } : {};
 }
 
 export const API_MOCK_PROJECTS: Record<string, ApiProject> = (global as any)._apiMockProjects;
 
 export function getNextProjectId(): string {
+  if (!API_MOCKS_ENABLED) {
+    return `proj-${Date.now().toString().slice(-6)}`;
+  }
   const projects = Object.values(API_MOCK_PROJECTS);
   const ids = projects
     .map(p => {
@@ -339,24 +347,21 @@ export function getNextProjectId(): string {
 }
 
 export function getClientNameFromId(clientId: string): string {
-  switch (clientId) {
-    case "client-001": return "Apex Sovereign Group [Preview Client]";
-    case "client-002": return "Global Retail Enclave [Preview Client]";
-    case "client-003": return "Sovereign Logistics Unit [Preview Client]";
-    case "client-004": return "Federal Treasury Division [Preview Client]";
-    default: return "GFF AI";
-  }
+  const normalized = String(clientId || "").trim();
+  if (!normalized) return "Client";
+  return normalized.startsWith("client-") ? normalized : `Client ${normalized}`;
 }
 
 export function getClientIdFromAssociation(association: string): string {
-  const assoc = association.toLowerCase();
-  if (assoc.includes("apex-sovereign") || assoc.includes("apex sovereign")) return "client-001";
-  if (assoc.includes("apex global")) return "client-001";
-  if (assoc.includes("global-retail") || assoc.includes("global retail")) return "client-002";
-  if (assoc.includes("sovereign logistics")) return "client-002";
-  if (assoc.includes("sovereign-logistics") || assoc.includes("sovereign logistics")) return "client-003";
-  if (assoc.includes("global retail group")) return "client-003";
-  if (assoc.includes("fed-treasury") || assoc.includes("federal treasury")) return "client-004";
+  const assoc = String(association || "").toLowerCase().trim();
+  const prefixedMatch = assoc.match(/client-\d+/);
+  if (prefixedMatch) return prefixedMatch[0];
+  const numberedMatch = assoc.match(/client\s+(\d+)/);
+  if (numberedMatch) return `client-${numberedMatch[1].padStart(3, "0")}`;
+  if (assoc.includes("apex")) return "client-001";
+  if (assoc.includes("retail")) return "client-002";
+  if (assoc.includes("logistics")) return "client-003";
+  if (assoc.includes("treasury") || assoc.includes("federal")) return "client-004";
   return "client-unknown";
 }
 
@@ -437,13 +442,16 @@ export const DEFAULT_API_MOCK_AI_OPERATIONS: Record<string, ApiAiOperation> = {
 };
 
 // Initialize globally to persist edits in memory across hot-reloads
-if (!(global as any)._apiMockAiOperations) {
-  (global as any)._apiMockAiOperations = { ...DEFAULT_API_MOCK_AI_OPERATIONS };
+if (!(global as any)._apiMockAiOperations || !API_MOCKS_ENABLED) {
+  (global as any)._apiMockAiOperations = API_MOCKS_ENABLED ? { ...DEFAULT_API_MOCK_AI_OPERATIONS } : {};
 }
 
 export const API_MOCK_AI_OPERATIONS: Record<string, ApiAiOperation> = (global as any)._apiMockAiOperations;
 
 export function getNextAiOperationId(): string {
+  if (!API_MOCKS_ENABLED) {
+    return `op-${Date.now().toString().slice(-6)}`;
+  }
   const operations = Object.values(API_MOCK_AI_OPERATIONS);
   const ids = operations
     .map(o => {
@@ -552,13 +560,16 @@ export const DEFAULT_API_MOCK_INVOICES: Record<string, ApiInvoice> = {
 };
 
 // Initialize globally to persist edits in memory across hot-reloads
-if (!(global as any)._apiMockInvoices) {
-  (global as any)._apiMockInvoices = { ...DEFAULT_API_MOCK_INVOICES };
+if (!(global as any)._apiMockInvoices || !API_MOCKS_ENABLED) {
+  (global as any)._apiMockInvoices = API_MOCKS_ENABLED ? { ...DEFAULT_API_MOCK_INVOICES } : {};
 }
 
 export const API_MOCK_INVOICES: Record<string, ApiInvoice> = (global as any)._apiMockInvoices;
 
 export function getNextInvoiceId(): string {
+  if (!API_MOCKS_ENABLED) {
+    return `inv-${Date.now().toString().slice(-6)}`;
+  }
   const invoices = Object.values(API_MOCK_INVOICES);
   const ids = invoices
     .map(inv => {
@@ -688,13 +699,16 @@ export const DEFAULT_API_MOCK_GOVERNANCE: Record<string, ApiGovernanceItem> = {
 };
 
 // Initialize globally to persist edits in memory across hot-reloads
-if (!(global as any)._apiMockGovernance) {
-  (global as any)._apiMockGovernance = { ...DEFAULT_API_MOCK_GOVERNANCE };
+if (!(global as any)._apiMockGovernance || !API_MOCKS_ENABLED) {
+  (global as any)._apiMockGovernance = API_MOCKS_ENABLED ? { ...DEFAULT_API_MOCK_GOVERNANCE } : {};
 }
 
 export const API_MOCK_GOVERNANCE: Record<string, ApiGovernanceItem> = (global as any)._apiMockGovernance;
 
 export function getNextGovernanceId(): string {
+  if (!API_MOCKS_ENABLED) {
+    return `gov-${Date.now().toString().slice(-6)}`;
+  }
   const items = Object.values(API_MOCK_GOVERNANCE);
   const ids = items
     .map(g => {
@@ -844,12 +858,15 @@ export const DEFAULT_API_MOCK_DOCUMENTS: Record<string, ApiDocumentItem> = {
   }
 };
 
-if (!(global as any)._apiMockDocuments) {
-  (global as any)._apiMockDocuments = { ...DEFAULT_API_MOCK_DOCUMENTS };
+if (!(global as any)._apiMockDocuments || !API_MOCKS_ENABLED) {
+  (global as any)._apiMockDocuments = API_MOCKS_ENABLED ? { ...DEFAULT_API_MOCK_DOCUMENTS } : {};
 }
 export const API_MOCK_DOCUMENTS: Record<string, ApiDocumentItem> = (global as any)._apiMockDocuments;
 
 export function getNextDocumentId(): string {
+  if (!API_MOCKS_ENABLED) {
+    return `DOC-${Date.now().toString().slice(-6)}`;
+  }
   const ids = Object.keys(API_MOCK_DOCUMENTS).map(id => {
     const match = id.match(/doc-(\d+)/i);
     return match ? parseInt(match[1], 10) : 800;
@@ -919,8 +936,8 @@ export const DEFAULT_API_MOCK_SUPPORT_TICKETS: Record<string, ApiSupportTicket> 
   }
 };
 
-if (!(global as any)._apiMockSupportTickets) {
-  (global as any)._apiMockSupportTickets = { ...DEFAULT_API_MOCK_SUPPORT_TICKETS };
+if (!(global as any)._apiMockSupportTickets || !API_MOCKS_ENABLED) {
+  (global as any)._apiMockSupportTickets = API_MOCKS_ENABLED ? { ...DEFAULT_API_MOCK_SUPPORT_TICKETS } : {};
 }
 export const API_MOCK_SUPPORT_TICKETS: Record<string, ApiSupportTicket> = (global as any)._apiMockSupportTickets;
 
@@ -1010,12 +1027,15 @@ export const DEFAULT_API_MOCK_CLIENTS: Record<string, ApiClient> = {
   }
 };
 
-if (!(global as any)._apiMockClients) {
-  (global as any)._apiMockClients = { ...DEFAULT_API_MOCK_CLIENTS };
+if (!(global as any)._apiMockClients || !API_MOCKS_ENABLED) {
+  (global as any)._apiMockClients = API_MOCKS_ENABLED ? { ...DEFAULT_API_MOCK_CLIENTS } : {};
 }
 export const API_MOCK_CLIENTS: Record<string, ApiClient> = (global as any)._apiMockClients;
 
 export function getNextClientId(): string {
+  if (!API_MOCKS_ENABLED) {
+    return `client-${Date.now().toString().slice(-6)}`;
+  }
   const clients = Object.values(API_MOCK_CLIENTS);
   const ids = clients
     .map(c => {

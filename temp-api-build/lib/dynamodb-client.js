@@ -45,7 +45,7 @@ if (accessKeyId && secretAccessKey) {
     }
 }
 else {
-    console.log("[DYNAMODB] Running in mock/fallback mode (no AWS credentials provided).");
+    console.log("[DYNAMODB] No AWS credentials provided. Real DynamoDB access is unavailable.");
 }
 async function getUserFromDynamoDB(email) {
     const normalizedEmail = email.toLowerCase().trim();
@@ -123,16 +123,13 @@ function verifyDbUserPassword(dbUser, passwordAttempt) {
     const storedHash = dbUser.hashed_password || dbUser.password_hash || dbUser.passwordHash;
     if (!storedHash)
         return false;
-    // 1. Try standard plain comparison (for local/mock plain passwords)
-    if (attempt === storedHash || attempt === "gff-secure-2026!" || attempt === "password123") {
+    if (attempt === storedHash) {
         return true;
     }
-    // 2. Try SHA256 custom hash comparison (for frontend API_MOCK_USERS custom hashes)
     const hashedAttempt = hashPassword(attempt);
     if (hashedAttempt === storedHash) {
         return true;
     }
-    // 3. Try bcrypt comparison (for DynamoDB real hashed passwords)
     try {
         if (storedHash.startsWith("$2a$") || storedHash.startsWith("$2b$") || storedHash.startsWith("$2y$")) {
             return bcryptjs_1.default.compareSync(attempt, storedHash);
@@ -168,22 +165,9 @@ function mapDynamoUserToApiUser(dbUser) {
             clientAssociation = dbUser.clientAssociation;
         }
         else if (dbUser.client_id !== undefined && dbUser.client_id !== null) {
-            const cid = String(dbUser.client_id);
-            if (cid === "1" || cid.toLowerCase().includes("apex") || cid.toLowerCase().includes("client-001")) {
-                clientAssociation = "Apex Global Solutions";
-            }
-            else if (cid === "2" || cid.toLowerCase().includes("logistics") || cid.toLowerCase().includes("client-002")) {
-                clientAssociation = "Sovereign Logistics Corp";
-            }
-            else if (cid === "3" || cid.toLowerCase().includes("retail") || cid.toLowerCase().includes("client-003")) {
-                clientAssociation = "Global Retail Group";
-            }
-            else if (cid === "4" || cid.toLowerCase().includes("treasury") || cid.toLowerCase().includes("fed-treasury") || cid.toLowerCase().includes("client-004")) {
-                clientAssociation = "Federal Treasury Division";
-            }
-            else {
-                clientAssociation = `Client ${cid}`;
-            }
+            clientAssociation = String(dbUser.client_id).trim().startsWith("client-")
+                ? String(dbUser.client_id).trim()
+                : `Client ${String(dbUser.client_id).trim()}`;
         }
     }
     const status = (dbUser.is_active === false || dbUser.status === "inactive") ? "inactive" : "active";
@@ -234,7 +218,7 @@ async function dynamoDbGetClient(clientId) {
             return null;
         }
     }
-    return (global._apiMockClients || {})[clientId] || (global._apiMockClients || {})[normalizedClientId] || null;
+    return null;
 }
 async function dynamoDbListClients() {
     if (docClient) {
@@ -246,7 +230,7 @@ async function dynamoDbListClients() {
             return [];
         }
     }
-    return Object.values(global._apiMockClients || {});
+    return [];
 }
 async function dynamoDbPutClient(client) {
     if (docClient) {
@@ -258,8 +242,7 @@ async function dynamoDbPutClient(client) {
             return null;
         }
     }
-    (global._apiMockClients || {})[client.id || client.client_id] = client;
-    return client;
+    return null;
 }
 async function dynamoDbDeleteClient(clientId) {
     if (docClient) {
@@ -270,11 +253,6 @@ async function dynamoDbDeleteClient(clientId) {
         catch (err) {
             return false;
         }
-    }
-    const mock = global._apiMockClients || {};
-    if (mock[clientId]) {
-        delete mock[clientId];
-        return true;
     }
     return false;
 }
@@ -290,7 +268,7 @@ async function dynamoDbGetPortalItem(clientId, itemId, entityType) {
             return null;
         }
     }
-    return getMockStore(entityType)[itemId] || null;
+    return null;
 }
 async function dynamoDbListPortalItems(entityType, clientId) {
     const normalizedClientId = clientId ? normalizeClientKey(clientId) : undefined;
@@ -317,10 +295,7 @@ async function dynamoDbListPortalItems(entityType, clientId) {
             return [];
         }
     }
-    const items = Object.values(getMockStore(entityType));
-    return normalizedClientId
-        ? items.filter((item) => item.client_id === clientId || item.client_id === normalizedClientId)
-        : items;
+    return [];
 }
 async function dynamoDbPutPortalItem(entityType, clientId, item) {
     const normalizedClientId = normalizeClientKey(clientId);
@@ -335,8 +310,7 @@ async function dynamoDbPutPortalItem(entityType, clientId, item) {
             return null;
         }
     }
-    getMockStore(entityType)[item.id] = item;
-    return item;
+    return null;
 }
 async function dynamoDbDeletePortalItem(entityType, clientId, itemId) {
     const normalizedClientId = normalizeClientKey(clientId);
@@ -350,21 +324,5 @@ async function dynamoDbDeletePortalItem(entityType, clientId, itemId) {
             return false;
         }
     }
-    const store = getMockStore(entityType);
-    if (store[itemId]) {
-        delete store[itemId];
-        return true;
-    }
     return false;
-}
-function getMockStore(entityType) {
-    switch (entityType) {
-        case "PROJECT": return global._apiMockProjects || {};
-        case "AI_OPERATION": return global._apiMockAiOperations || {};
-        case "DOCUMENT": return global._apiMockDocuments || {};
-        case "INVOICE": return global._apiMockInvoices || {};
-        case "SUPPORT": return global._apiMockSupportTickets || {};
-        case "GOVERNANCE": return global._apiMockGovernance || {};
-        default: return {};
-    }
 }

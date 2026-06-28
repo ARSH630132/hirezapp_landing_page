@@ -165,7 +165,7 @@ export function PrivateAppShell({
 
                 {/* Mobile Drawer Enclave Indicator */}
                 <div className="p-4 border-t border-white/5 bg-black/10 text-center font-mono text-[8.5px] text-white/20 select-none uppercase tracking-wider shrink-0">
-                  SECURE PREVIEW LOOP • 2026.06.27
+                  SECURE WORKSPACE
                 </div>
               </motion.div>
             </>

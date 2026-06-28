@@ -16,10 +16,7 @@ async function getAuthCaller(req: Request) {
     if (mapped.status === "inactive") return { status: 403, error: "Forbidden", msg: "This account is inactive." };
     return { caller: mapped };
   }
-  const user = (API_MOCK_USERS as Record<string, MockUserDbEntry>)[email];
-  if (!user) return { status: 401, error: "Unauthorized", msg: "Authorized user not found." };
-  if (user.status === "inactive") return { status: 403, error: "Forbidden", msg: "This account is inactive." };
-  return { caller: user };
+  return { status: 401, error: "Unauthorized", msg: "Authorized user not found." };
 }
 
 export async function GET(req: Request) {
@@ -38,9 +35,7 @@ export async function GET(req: Request) {
     const searchQuery = searchParams.get("search");
 
     const dynamoUsers = await listUsersFromDynamoDB();
-    let users = dynamoUsers.length > 0
-      ? dynamoUsers.map((user) => ({ ...mapDynamoUserToApiUser(user), client_id: String(user.client_id ?? "") }))
-      : (Object.values(API_MOCK_USERS) as MockUserDbEntry[]).map(({ passwordHash, ...user }) => user);
+    let users = dynamoUsers.map((user) => ({ ...mapDynamoUserToApiUser(user), client_id: String(user.client_id ?? "") }));
 
     if (caller.role === "client_admin") {
       users = users.filter((u: any) => u.clientAssociation === caller.clientAssociation);
@@ -86,7 +81,7 @@ export async function POST(req: Request) {
     }
 
     const normalizedEmail = email.toLowerCase().trim();
-    if ((API_MOCK_USERS as Record<string, MockUserDbEntry>)[normalizedEmail] || (await getUserFromDynamoDB(normalizedEmail))) {
+    if (await getUserFromDynamoDB(normalizedEmail)) {
       return NextResponse.json({ success: false, error: "Conflict", message: "User already exists." }, { status: 409 });
     }
 
@@ -114,7 +109,6 @@ export async function POST(req: Request) {
       passwordHash: hashPassword(password)
     };
 
-    (API_MOCK_USERS as Record<string, MockUserDbEntry>)[normalizedEmail] = newUser;
     await putUserInDynamoDB({
       email: normalizedEmail,
       hashed_password: newUser.passwordHash,

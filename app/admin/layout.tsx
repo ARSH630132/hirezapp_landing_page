@@ -3,9 +3,14 @@
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { PrivateAppShell, BreadcrumbItem } from "@/components/private-app";
-import { adminUser, adminSidebarLinks, adminLinkToRouteActual } from "@/components/private-app/routes-config";
-import { PreviewRouteGuard } from "@/components/private-app/PreviewRouteGuard";
-import { getPreviewSession, PreviewSession } from "@/lib/preview-auth";
+import { adminSidebarLinks, adminLinkToRouteActual } from "@/components/private-app/routes-config";
+
+type SessionUser = {
+  name: string;
+  email: string;
+  role: string;
+  clearance?: string;
+};
 
 export default function AdminPortalLayout({
   children,
@@ -14,24 +19,80 @@ export default function AdminPortalLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [session, setSession] = useState<PreviewSession | null>(null);
+  const [session, setSession] = useState<SessionUser | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setSession(getPreviewSession());
-    const handleSessionChanged = () => {
-      setSession(getPreviewSession());
+    let ignore = false;
+
+    const loadSession = async () => {
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("gff_ai_access_token") || localStorage.getItem("gff_api_token")
+          : null;
+
+      if (!token) {
+        if (!ignore) {
+          setLoading(false);
+          router.replace("/admin/login");
+        }
+        return;
+      }
+
+      try {
+        const response = await fetch("/api/v1/auth/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        const payload = await response.json().catch(() => null);
+
+        if (!response.ok || !payload?.success || !payload?.user) {
+          localStorage.removeItem("gff_ai_access_token");
+          localStorage.removeItem("gff_api_token");
+          if (!ignore) {
+            setLoading(false);
+            router.replace("/admin/login");
+          }
+          return;
+        }
+
+        if (payload.user.role !== "gff_admin") {
+          if (!ignore) {
+            setLoading(false);
+            router.replace("/portal/dashboard");
+          }
+          return;
+        }
+
+        if (!ignore) {
+          setSession(payload.user);
+          setLoading(false);
+        }
+      } catch {
+        if (!ignore) {
+          setLoading(false);
+          router.replace("/admin/login");
+        }
+      }
     };
-    window.addEventListener("gff_preview_session_changed", handleSessionChanged);
+
+    loadSession();
     return () => {
-      window.removeEventListener("gff_preview_session_changed", handleSessionChanged);
+      ignore = true;
     };
-  }, []);
+  }, [router]);
 
   // If it's an auth page, we render it directly without the app shell
   const isAuthPage = pathname === "/admin" || pathname === "/admin/login";
 
   if (isAuthPage) {
     return <>{children}</>;
+  }
+
+  if (loading || !session) {
+    return <div className="min-h-screen bg-[#030303]" />;
   }
 
   // Parse active tab from pathname
@@ -62,27 +123,24 @@ export default function AdminPortalLayout({
   };
 
   // Build current user representation
-  const activeUser = session ? {
+  const activeUser = {
     name: session.name,
     email: session.email,
-    role: (session.role === "client_admin" || session.role === "client_member") ? ("Client" as const) : ("Administrator" as const),
-    clearance: session.clearance
-  } : adminUser;
+    role: "Administrator" as const,
+    clearance: session.clearance || "Admin access"
+  };
 
   return (
-    <PreviewRouteGuard type="admin">
-      <PrivateAppShell
-        user={activeUser}
-        breadcrumbs={breadcrumbs}
-        links={adminSidebarLinks}
-        activeLink={activeLinkId}
-        onLinkChange={handleLinkChange}
-        role="Administrator"
-        onRoleChange={handleRoleChange}
-      >
-        {children}
-      </PrivateAppShell>
-    </PreviewRouteGuard>
+    <PrivateAppShell
+      user={activeUser}
+      breadcrumbs={breadcrumbs}
+      links={adminSidebarLinks}
+      activeLink={activeLinkId}
+      onLinkChange={handleLinkChange}
+      role="Administrator"
+      onRoleChange={handleRoleChange}
+    >
+      {children}
+    </PrivateAppShell>
   );
 }
-

@@ -1,13 +1,5 @@
 import { NextResponse } from "next/server";
-import { 
-  API_MOCK_USERS, 
-  API_MOCK_SUPPORT_TICKETS, 
-  verifyJwt, 
-  MockUserDbEntry, 
-  ApiSupportTicket, 
-  getClientIdFromAssociation,
-  getClientNameFromId
-} from "../../../../lib/api-auth";
+import { verifyJwt, ApiSupportTicket, getClientIdFromAssociation, getClientNameFromId } from "../../../../lib/api-auth";
 import { getUserFromDynamoDB, mapDynamoUserToApiUser, dynamoDbListPortalItems, dynamoDbPutPortalItem } from "../../../../lib/dynamodb-client";
 
 export const runtime = "nodejs";
@@ -30,14 +22,7 @@ async function getAuthCaller(req: Request) {
     }
     return { caller: mapped };
   }
-  const user = (API_MOCK_USERS as Record<string, MockUserDbEntry>)[email];
-  if (!user) {
-    return { status: 401, error: "Unauthorized", msg: "Authorized user not found." };
-  }
-  if (user.status === "inactive") {
-    return { status: 403, error: "Forbidden", msg: "This account is inactive." };
-  }
-  return { caller: user };
+  return { status: 401, error: "Unauthorized", msg: "Authorized user not found." };
 }
 
 export async function GET(req: Request) {
@@ -58,9 +43,7 @@ export async function GET(req: Request) {
     const searchQuery = searchParams.get("search");
 
     const dbItems = await dynamoDbListPortalItems("SUPPORT");
-    let tickets = dbItems.length > 0 
-      ? dbItems 
-      : (Object.values(API_MOCK_SUPPORT_TICKETS) as ApiSupportTicket[]);
+    let tickets = dbItems as ApiSupportTicket[];
 
     // Ensure bidirectional mapping of wireFeed and replies
     tickets = tickets.map(t => {
@@ -216,7 +199,6 @@ export async function POST(req: Request) {
       ]
     };
 
-    API_MOCK_SUPPORT_TICKETS[newId.toLowerCase()] = newTicket;
     await dynamoDbPutPortalItem("SUPPORT", newTicket.client_id, newTicket);
 
     return NextResponse.json({ success: true, ticket: newTicket }, { status: 201 });

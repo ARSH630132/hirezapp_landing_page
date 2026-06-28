@@ -179,7 +179,7 @@ export default function ClientDashboardPage() {
               detail="Active and total projects"
               href="/portal/projects"
               icon={Layers}
-              tooltip="The lifecycle tracking of your enterprise integration initiatives across planning, setup, and live execution stages."
+              tooltip="Your active and total projects."
             />
             <MetricCard
               label="AI Operations"
@@ -187,7 +187,7 @@ export default function ClientDashboardPage() {
               detail="Running and total AI operations"
               href="/portal/ai-operations"
               icon={Bot}
-              tooltip="Telemetry status of your active, hardware-isolated AI agent cores, memory slots, and safety alignment filters."
+              tooltip="Your current and total AI operations."
             />
             <MetricCard
               label="Documents"
@@ -195,7 +195,7 @@ export default function ClientDashboardPage() {
               detail="Verified and total documents"
               href="/portal/documents"
               icon={FileText}
-              tooltip="Secure project blueprint specifications, NDAs, or hardware compliance audit records stored with end-to-end encryption."
+              tooltip="Documents available to your client account."
             />
             <MetricCard
               label="Billing"
@@ -203,7 +203,7 @@ export default function ClientDashboardPage() {
               detail="Invoices still pending"
               href="/portal/billing"
               icon={CreditCard}
-              tooltip="A clean ledger summarizing unpaid/pending service cycles, node resource runtime fees, and cloud resource invoices."
+              tooltip="Invoices that are still pending."
             />
             <MetricCard
               label="Support"
@@ -211,7 +211,7 @@ export default function ClientDashboardPage() {
               detail="Support tickets still open"
               href="/portal/support"
               icon={HelpCircle}
-              tooltip="Secure communication channels open with your dedicated GFF Solutions Architect team for SLAs and setup issues."
+              tooltip="Support tickets that still need attention."
             />
             <MetricCard
               label="Governance"

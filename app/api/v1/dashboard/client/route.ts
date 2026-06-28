@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { API_MOCK_USERS, verifyJwt, MockUserDbEntry, getClientIdFromAssociation } from "../../../../../lib/api-auth";
+import { verifyJwt, getClientIdFromAssociation } from "../../../../../lib/api-auth";
 import { getUserFromDynamoDB, mapDynamoUserToApiUser, dynamoDbListPortalItems } from "../../../../../lib/dynamodb-client";
 
 export const runtime = "nodejs";
@@ -21,11 +21,7 @@ async function getAuthCaller(req: Request) {
     if (mapped.status === "inactive") return { status: 403, error: "Forbidden", msg: "This account is inactive." };
     return { caller: mapped };
   }
-
-  const user = (API_MOCK_USERS as Record<string, MockUserDbEntry>)[email];
-  if (!user) return { status: 401, error: "Unauthorized", msg: "Authorized user not found." };
-  if (user.status === "inactive") return { status: 403, error: "Forbidden", msg: "This account is inactive." };
-  return { caller: user };
+  return { status: 401, error: "Unauthorized", msg: "Authorized user not found." };
 }
 
 export async function GET(req: Request) {
@@ -89,5 +85,4 @@ export async function GET(req: Request) {
     return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
   }
 }
-
 

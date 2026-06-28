@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 import { 
-  API_MOCK_USERS, verifyJwt, MockUserDbEntry, 
+  verifyJwt,
   getClientIdFromAssociation
 } from "@/lib/api-auth";
 import {
@@ -31,10 +31,7 @@ async function getAuth(req: Request) {
     if (api.status === "inactive") return { status: 403, error: "Forbidden" };
     return { caller: api };
   }
-  const u = (API_MOCK_USERS as Record<string, MockUserDbEntry>)[email];
-  if (!u) return { status: 401, error: "Unauthorized" };
-  if (u.status === "inactive") return { status: 403, error: "Forbidden" };
-  return { caller: u };
+  return { status: 401, error: "Unauthorized" };
 }
 
 export async function GET(req: Request, { params }: { params: any }) {

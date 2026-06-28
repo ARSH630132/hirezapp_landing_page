@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
-import { API_MOCK_USERS, signJwt } from "@/lib/api-auth";
+import { signJwt } from "@/lib/api-auth";
 import { getUserFromDynamoDB, mapDynamoUserToApiUser } from "@/lib/dynamodb-client";
 
 export const runtime = "nodejs";
@@ -19,23 +19,7 @@ function getOtpStore(): Record<string, OtpEntry> {
 
 async function getAuthUser(email: string) {
   const dynamoUser = await getUserFromDynamoDB(email);
-  if (dynamoUser) {
-    return mapDynamoUserToApiUser(dynamoUser);
-  }
-  const mockUser = API_MOCK_USERS[email];
-  if (!mockUser) {
-    return null;
-  }
-  return {
-    id: mockUser.id,
-    name: mockUser.name,
-    email: mockUser.email,
-    role: mockUser.role,
-    clientAssociation: mockUser.clientAssociation,
-    status: mockUser.status,
-    clearance: mockUser.clearance,
-    permissions: mockUser.permissions,
-  };
+  return dynamoUser ? mapDynamoUserToApiUser(dynamoUser) : null;
 }
 
 function getTransporter() {
@@ -123,6 +107,7 @@ export async function POST(req: Request) {
         role: user.role,
         name: user.name,
         clearance: user.clearance,
+        clientAssociation: user.clientAssociation,
       });
 
       return NextResponse.json({

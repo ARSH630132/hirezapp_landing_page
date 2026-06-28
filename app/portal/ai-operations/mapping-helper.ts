@@ -137,9 +137,9 @@ export function mapApiOpToEnrichedAgent(op: ApiAiOperation): EnrichedAgent {
   }
 
   return {
-    id: op.id,
+    id: String(op.id || ""),
     name: op.name,
-    projectId: op.project_id,
+    projectId: String(op.project_id || ""),
     projectName,
     status,
     type,

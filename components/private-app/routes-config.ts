@@ -17,15 +17,15 @@ import {
 import { SidebarLink, UserProfile } from "./types";
 
 export const clientUser: UserProfile = {
-  name: "Apex Admin Lead",
-  email: "client_admin@apex.com",
+  name: "Client User",
+  email: "client@example.com",
   role: "Client",
-  clearance: "Client admin access",
+  clearance: "Client access",
 };
 
 export const adminUser: UserProfile = {
-  name: "GFF Admin Lead",
-  email: "gff_admin@gff.ai",
+  name: "Admin User",
+  email: "admin@gff.ai",
   role: "Administrator",
   clearance: "Admin access",
 };

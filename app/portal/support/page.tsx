@@ -5,7 +5,7 @@ import {
   MessageSquare, Cpu, DollarSign, FileText, Key, Shield, HelpCircle, 
   Layers, Plus, Search, ArrowLeft, Clock, Lock, Terminal, Send, X, Sparkles, RefreshCw, ChevronDown, CheckCircle2, ShieldAlert, Activity, ChevronRight, Play, Server, Radio
 } from "lucide-react";
-import { previewProjects, previewSupportTickets, SupportTicket } from "@/lib/mock-data-model";
+import { SupportTicket } from "@/lib/mock-data-model";
 import { StatusBadge, WorkspaceCard } from "@/components/private-app";
 
 interface ClientSupportTicket extends SupportTicket {
@@ -40,16 +40,13 @@ export default function ClientSupportPage() {
   const [error, setError] = useState<string | null>(null);
   const [dbProjects, setDbProjects] = useState<any[]>([]);
 
-  // Prefer backend projects data, fall back to high-fidelity Phase 4 mock data
+  // Prefer backend projects data only
   const projectsList = useMemo(() => {
-    if (dbProjects.length > 0) {
-      return dbProjects.map(p => ({
-        id: p.id,
-        name: p.name,
-        tag: p.name.substring(0, 3).toUpperCase()
-      }));
-    }
-    return previewProjects;
+    return dbProjects.map(p => ({
+      id: p.id,
+      name: p.name,
+      tag: p.name.substring(0, 3).toUpperCase()
+    }));
   }, [dbProjects]);
 
   // Enhanced UI States

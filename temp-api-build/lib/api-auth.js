@@ -20,6 +20,7 @@ exports.getNextGovernanceId = getNextGovernanceId;
 exports.getNextDocumentId = getNextDocumentId;
 exports.getNextClientId = getNextClientId;
 const crypto_1 = __importDefault(require("crypto"));
+const API_MOCKS_ENABLED = process.env.ENABLE_API_MOCKS === "true";
 const JWT_SECRET = process.env.JWT_SECRET || "gff-ai-sovereign-secure-access-token-secret-2026";
 function base64UrlEncode(str) {
     return Buffer.from(str)
@@ -181,8 +182,8 @@ exports.DEFAULT_API_MOCK_USERS = {
     },
 };
 // Initialize the mock users database globally to persist edits in memory across hot reloads.
-if (!global._apiMockUsers) {
-    global._apiMockUsers = { ...exports.DEFAULT_API_MOCK_USERS };
+if (!global._apiMockUsers || !API_MOCKS_ENABLED) {
+    global._apiMockUsers = API_MOCKS_ENABLED ? { ...exports.DEFAULT_API_MOCK_USERS } : {};
 }
 else {
     for (const [email, user] of Object.entries(exports.DEFAULT_API_MOCK_USERS)) {
@@ -199,6 +200,9 @@ function hashPassword(password) {
         .digest("hex");
 }
 function getNextUserId() {
+    if (!API_MOCKS_ENABLED) {
+        return `usr-${Date.now().toString().slice(-6)}`;
+    }
     const users = Object.values(exports.API_MOCK_USERS);
     const ids = users
         .map(u => {
@@ -293,11 +297,14 @@ exports.DEFAULT_API_MOCK_PROJECTS = {
     }
 };
 // Initialize globally to persist edits in memory across hot-reloads
-if (!global._apiMockProjects) {
-    global._apiMockProjects = { ...exports.DEFAULT_API_MOCK_PROJECTS };
+if (!global._apiMockProjects || !API_MOCKS_ENABLED) {
+    global._apiMockProjects = API_MOCKS_ENABLED ? { ...exports.DEFAULT_API_MOCK_PROJECTS } : {};
 }
 exports.API_MOCK_PROJECTS = global._apiMockProjects;
 function getNextProjectId() {
+    if (!API_MOCKS_ENABLED) {
+        return `proj-${Date.now().toString().slice(-6)}`;
+    }
     const projects = Object.values(exports.API_MOCK_PROJECTS);
     const ids = projects
         .map(p => {
@@ -309,29 +316,26 @@ function getNextProjectId() {
     return `proj-${String(maxId + 1).padStart(3, "0")}`;
 }
 function getClientNameFromId(clientId) {
-    switch (clientId) {
-        case "client-001": return "Apex Sovereign Group [Preview Client]";
-        case "client-002": return "Global Retail Enclave [Preview Client]";
-        case "client-003": return "Sovereign Logistics Unit [Preview Client]";
-        case "client-004": return "Federal Treasury Division [Preview Client]";
-        default: return "GFF AI";
-    }
+    const normalized = String(clientId || "").trim();
+    if (!normalized)
+        return "Client";
+    return normalized.startsWith("client-") ? normalized : `Client ${normalized}`;
 }
 function getClientIdFromAssociation(association) {
-    const assoc = association.toLowerCase();
-    if (assoc.includes("apex-sovereign") || assoc.includes("apex sovereign"))
+    const assoc = String(association || "").toLowerCase().trim();
+    const prefixedMatch = assoc.match(/client-\d+/);
+    if (prefixedMatch)
+        return prefixedMatch[0];
+    const numberedMatch = assoc.match(/client\s+(\d+)/);
+    if (numberedMatch)
+        return `client-${numberedMatch[1].padStart(3, "0")}`;
+    if (assoc.includes("apex"))
         return "client-001";
-    if (assoc.includes("apex global"))
-        return "client-001";
-    if (assoc.includes("global-retail") || assoc.includes("global retail"))
+    if (assoc.includes("retail"))
         return "client-002";
-    if (assoc.includes("sovereign logistics"))
-        return "client-002";
-    if (assoc.includes("sovereign-logistics") || assoc.includes("sovereign logistics"))
+    if (assoc.includes("logistics"))
         return "client-003";
-    if (assoc.includes("global retail group"))
-        return "client-003";
-    if (assoc.includes("fed-treasury") || assoc.includes("federal treasury"))
+    if (assoc.includes("treasury") || assoc.includes("federal"))
         return "client-004";
     return "client-unknown";
 }
@@ -394,11 +398,14 @@ exports.DEFAULT_API_MOCK_AI_OPERATIONS = {
     }
 };
 // Initialize globally to persist edits in memory across hot-reloads
-if (!global._apiMockAiOperations) {
-    global._apiMockAiOperations = { ...exports.DEFAULT_API_MOCK_AI_OPERATIONS };
+if (!global._apiMockAiOperations || !API_MOCKS_ENABLED) {
+    global._apiMockAiOperations = API_MOCKS_ENABLED ? { ...exports.DEFAULT_API_MOCK_AI_OPERATIONS } : {};
 }
 exports.API_MOCK_AI_OPERATIONS = global._apiMockAiOperations;
 function getNextAiOperationId() {
+    if (!API_MOCKS_ENABLED) {
+        return `op-${Date.now().toString().slice(-6)}`;
+    }
     const operations = Object.values(exports.API_MOCK_AI_OPERATIONS);
     const ids = operations
         .map(o => {
@@ -484,11 +491,14 @@ exports.DEFAULT_API_MOCK_INVOICES = {
     }
 };
 // Initialize globally to persist edits in memory across hot-reloads
-if (!global._apiMockInvoices) {
-    global._apiMockInvoices = { ...exports.DEFAULT_API_MOCK_INVOICES };
+if (!global._apiMockInvoices || !API_MOCKS_ENABLED) {
+    global._apiMockInvoices = API_MOCKS_ENABLED ? { ...exports.DEFAULT_API_MOCK_INVOICES } : {};
 }
 exports.API_MOCK_INVOICES = global._apiMockInvoices;
 function getNextInvoiceId() {
+    if (!API_MOCKS_ENABLED) {
+        return `inv-${Date.now().toString().slice(-6)}`;
+    }
     const invoices = Object.values(exports.API_MOCK_INVOICES);
     const ids = invoices
         .map(inv => {
@@ -595,11 +605,14 @@ exports.DEFAULT_API_MOCK_GOVERNANCE = {
     }
 };
 // Initialize globally to persist edits in memory across hot-reloads
-if (!global._apiMockGovernance) {
-    global._apiMockGovernance = { ...exports.DEFAULT_API_MOCK_GOVERNANCE };
+if (!global._apiMockGovernance || !API_MOCKS_ENABLED) {
+    global._apiMockGovernance = API_MOCKS_ENABLED ? { ...exports.DEFAULT_API_MOCK_GOVERNANCE } : {};
 }
 exports.API_MOCK_GOVERNANCE = global._apiMockGovernance;
 function getNextGovernanceId() {
+    if (!API_MOCKS_ENABLED) {
+        return `gov-${Date.now().toString().slice(-6)}`;
+    }
     const items = Object.values(exports.API_MOCK_GOVERNANCE);
     const ids = items
         .map(g => {
@@ -705,11 +718,14 @@ exports.DEFAULT_API_MOCK_DOCUMENTS = {
         ]
     }
 };
-if (!global._apiMockDocuments) {
-    global._apiMockDocuments = { ...exports.DEFAULT_API_MOCK_DOCUMENTS };
+if (!global._apiMockDocuments || !API_MOCKS_ENABLED) {
+    global._apiMockDocuments = API_MOCKS_ENABLED ? { ...exports.DEFAULT_API_MOCK_DOCUMENTS } : {};
 }
 exports.API_MOCK_DOCUMENTS = global._apiMockDocuments;
 function getNextDocumentId() {
+    if (!API_MOCKS_ENABLED) {
+        return `DOC-${Date.now().toString().slice(-6)}`;
+    }
     const ids = Object.keys(exports.API_MOCK_DOCUMENTS).map(id => {
         const match = id.match(/doc-(\d+)/i);
         return match ? parseInt(match[1], 10) : 800;
@@ -776,8 +792,8 @@ exports.DEFAULT_API_MOCK_SUPPORT_TICKETS = {
         ]
     }
 };
-if (!global._apiMockSupportTickets) {
-    global._apiMockSupportTickets = { ...exports.DEFAULT_API_MOCK_SUPPORT_TICKETS };
+if (!global._apiMockSupportTickets || !API_MOCKS_ENABLED) {
+    global._apiMockSupportTickets = API_MOCKS_ENABLED ? { ...exports.DEFAULT_API_MOCK_SUPPORT_TICKETS } : {};
 }
 exports.API_MOCK_SUPPORT_TICKETS = global._apiMockSupportTickets;
 exports.DEFAULT_API_MOCK_CLIENTS = {
@@ -846,11 +862,14 @@ exports.DEFAULT_API_MOCK_CLIENTS = {
         accountOwner: "Marcus Vance"
     }
 };
-if (!global._apiMockClients) {
-    global._apiMockClients = { ...exports.DEFAULT_API_MOCK_CLIENTS };
+if (!global._apiMockClients || !API_MOCKS_ENABLED) {
+    global._apiMockClients = API_MOCKS_ENABLED ? { ...exports.DEFAULT_API_MOCK_CLIENTS } : {};
 }
 exports.API_MOCK_CLIENTS = global._apiMockClients;
 function getNextClientId() {
+    if (!API_MOCKS_ENABLED) {
+        return `client-${Date.now().toString().slice(-6)}`;
+    }
     const clients = Object.values(exports.API_MOCK_CLIENTS);
     const ids = clients
         .map(c => {

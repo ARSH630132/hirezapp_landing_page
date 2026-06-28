@@ -173,7 +173,7 @@ export default function AdminDashboardPage() {
               detail="Registered client accounts"
               href="/admin/clients"
               icon={Users}
-              tooltip="The global registry of enterprise client accounts active on the GFF platform."
+              tooltip="All client accounts currently stored in the platform."
             />
             <MetricCard
               label="AI Operations"
@@ -181,7 +181,7 @@ export default function AdminDashboardPage() {
               detail="Running and total AI operations"
               href="/admin/ai-operations"
               icon={Bot}
-              tooltip="Total counts and status checks of hardware-isolated model partitions running across all tenant boundaries."
+              tooltip="Current and total AI operations across all clients."
             />
             <MetricCard
               label="Documents"
@@ -189,7 +189,7 @@ export default function AdminDashboardPage() {
               detail="Verified and total documents"
               href="/admin/documents"
               icon={FileText}
-              tooltip="Total NDAs, project blueprints, and hardware-compliance certificates securely loaded into AWS S3."
+              tooltip="Documents stored for all clients."
             />
             <MetricCard
               label="Open Support"
@@ -197,7 +197,7 @@ export default function AdminDashboardPage() {
               detail="Support tickets still open"
               href="/admin/support"
               icon={HelpCircle}
-              tooltip="Incoming customer technical requests, system re-attestation tickets, or configuration questions pending SLA review."
+              tooltip="Support tickets that still need attention."
             />
             <MetricCard
               label="Projects"

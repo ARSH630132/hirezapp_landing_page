@@ -1,12 +1,5 @@
 import { NextResponse } from "next/server";
-import { 
-  API_MOCK_USERS, 
-  API_MOCK_SUPPORT_TICKETS, 
-  verifyJwt, 
-  MockUserDbEntry, 
-  ApiSupportTicket, 
-  getClientIdFromAssociation 
-} from "../../../../../lib/api-auth";
+import { verifyJwt, ApiSupportTicket, getClientIdFromAssociation } from "../../../../../lib/api-auth";
 import { getUserFromDynamoDB, mapDynamoUserToApiUser, dynamoDbListPortalItems, dynamoDbPutPortalItem, dynamoDbDeletePortalItem } from "../../../../../lib/dynamodb-client";
 
 export const runtime = "nodejs";
@@ -22,7 +15,7 @@ async function getAuthCaller(req: Request) {
     const mapped = mapDynamoUserToApiUser(dynamoUser);
     return mapped && mapped.status !== "inactive" ? mapped : null;
   }
-  return (API_MOCK_USERS as Record<string, MockUserDbEntry>)[email] || null;
+  return null;
 }
 
 export async function GET(req: Request, { params }: { params: any }) {
@@ -34,11 +27,7 @@ export async function GET(req: Request, { params }: { params: any }) {
 
     const key = id.toLowerCase();
     const dbItems = await dynamoDbListPortalItems("SUPPORT");
-    let ticket = dbItems.find(t => t.id.toLowerCase() === key);
-
-    if (!ticket) {
-      ticket = API_MOCK_SUPPORT_TICKETS[key] || Object.values(API_MOCK_SUPPORT_TICKETS).find(t => t.id.toLowerCase() === key);
-    }
+    const ticket = dbItems.find(t => t.id.toLowerCase() === key);
 
     if (!ticket) return NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
 
@@ -73,12 +62,7 @@ export async function PATCH(req: Request, { params }: { params: any }) {
 
     const key = id.toLowerCase();
     const dbItems = await dynamoDbListPortalItems("SUPPORT");
-    let ticket = dbItems.find(t => t.id.toLowerCase() === key);
-    let isDynamo = !!ticket;
-
-    if (!ticket) {
-      ticket = API_MOCK_SUPPORT_TICKETS[key] || Object.values(API_MOCK_SUPPORT_TICKETS).find(t => t.id.toLowerCase() === key);
-    }
+    const ticket = dbItems.find(t => t.id.toLowerCase() === key);
 
     if (!ticket) return NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
 
@@ -137,11 +121,7 @@ export async function PATCH(req: Request, { params }: { params: any }) {
       (ticket as any).created_by = created_by;
     }
 
-    API_MOCK_SUPPORT_TICKETS[ticket.id.toLowerCase()] = ticket;
-
-    if (isDynamo || dbItems.length > 0) {
-      await dynamoDbPutPortalItem("SUPPORT", ticket.client_id, ticket);
-    }
+    await dynamoDbPutPortalItem("SUPPORT", ticket.client_id, ticket);
 
     return NextResponse.json({ success: true, ticket });
   } catch (err) {
@@ -158,12 +138,7 @@ export async function POST(req: Request, { params }: { params: any }) {
 
     const key = id.toLowerCase();
     const dbItems = await dynamoDbListPortalItems("SUPPORT");
-    let ticket = dbItems.find(t => t.id.toLowerCase() === key);
-    let isDynamo = !!ticket;
-
-    if (!ticket) {
-      ticket = API_MOCK_SUPPORT_TICKETS[key] || Object.values(API_MOCK_SUPPORT_TICKETS).find(t => t.id.toLowerCase() === key);
-    }
+    const ticket = dbItems.find(t => t.id.toLowerCase() === key);
 
     if (!ticket) return NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
 
@@ -240,11 +215,7 @@ export async function POST(req: Request, { params }: { params: any }) {
       timestamp: timestampStr
     });
 
-    API_MOCK_SUPPORT_TICKETS[ticket.id.toLowerCase()] = ticket;
-
-    if (isDynamo || dbItems.length > 0) {
-      await dynamoDbPutPortalItem("SUPPORT", ticket.client_id, ticket);
-    }
+    await dynamoDbPutPortalItem("SUPPORT", ticket.client_id, ticket);
 
     return NextResponse.json({ success: true, ticket: ticketAny });
   } catch (err) {
@@ -263,22 +234,11 @@ export async function DELETE(req: Request, { params }: { params: any }) {
 
     const key = id.toLowerCase();
     const dbItems = await dynamoDbListPortalItems("SUPPORT");
-    let ticket = dbItems.find(t => t.id.toLowerCase() === key);
-    let isDynamo = !!ticket;
-
-    if (!ticket) {
-      ticket = API_MOCK_SUPPORT_TICKETS[key] || Object.values(API_MOCK_SUPPORT_TICKETS).find(t => t.id.toLowerCase() === key);
-    }
+    const ticket = dbItems.find(t => t.id.toLowerCase() === key);
 
     if (!ticket) return NextResponse.json({ success: false, error: "Not Found" }, { status: 404 });
 
-    if (isDynamo || dbItems.length > 0) {
-      await dynamoDbDeletePortalItem("SUPPORT", ticket.client_id, ticket.id);
-    }
-    delete API_MOCK_SUPPORT_TICKETS[ticket.id.toLowerCase()];
-    if (API_MOCK_SUPPORT_TICKETS[key]) {
-      delete API_MOCK_SUPPORT_TICKETS[key];
-    }
+    await dynamoDbDeletePortalItem("SUPPORT", ticket.client_id, ticket.id);
     return NextResponse.json({ success: true, message: "Support ticket deleted." });
   } catch (err) {
     return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });

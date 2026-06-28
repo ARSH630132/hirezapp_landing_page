@@ -6,7 +6,6 @@ import {
   ArrowLeft, CreditCard, ShieldCheck, Copy, Check, Printer, 
   Landmark, Cpu, FileCheck, RefreshCw, Info 
 } from "lucide-react";
-import { DETAILED_INVOICES } from "../mock-billing-data";
 
 export default function ClientInvoiceDetailPage() {
   const router = useRouter();
@@ -67,21 +66,20 @@ export default function ClientInvoiceDetailPage() {
     setTimeout(() => setCopied(null), 1500);
   };
 
-  // Find match from DETAILED_INVOICES based on invoice_number, or fallback dynamically
-  const invoiceData = invoice ? (DETAILED_INVOICES[invoice.invoice_number] || {
-    projectName: invoice.project_name || "Sovereign Cluster Allocation",
-    category: invoice.category || "Compute Epoch",
+  const invoiceData = invoice ? {
+    projectName: invoice.project_name || "Project not assigned",
+    category: invoice.category || "Invoice",
     date: invoice.issue_date,
     dueDate: invoice.due_date,
     amount: typeof invoice.amount === "number" ? invoice.amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " " + invoice.currency : invoice.amount,
     hash: invoice.hash,
     signature: invoice.signature,
     items: [
-      { desc: invoice.description || "Isolated Sovereign Node Compute Allocation", cost: typeof invoice.amount === "number" ? invoice.amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " " + invoice.currency : invoice.amount }
+      { desc: invoice.description || "Invoice line item", cost: typeof invoice.amount === "number" ? invoice.amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " " + invoice.currency : invoice.amount }
     ],
-    method: "Corporate Wire Transfer (SWIFT)",
-    enclaveZone: "US-ZONE-E (VIRGINIA ENCLAVE)"
-  }) : null;
+    method: "Bank transfer",
+    enclaveZone: "Client billing workspace"
+  } : null;
 
   const triggerSealVerification = () => {
     setVerifying(true);

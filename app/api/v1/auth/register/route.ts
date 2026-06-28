@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { API_MOCK_USERS, getNextUserId, hashPassword, MockUserDbEntry } from "@/lib/api-auth";
+import { getNextUserId, hashPassword } from "@/lib/api-auth";
 import { dynamoDbGetClient, dynamoDbListClients, getUserFromDynamoDB, putUserInDynamoDB } from "@/lib/dynamodb-client";
 
 export const runtime = "nodejs";
@@ -45,7 +45,7 @@ export async function POST(req: Request) {
       );
     }
 
-    if ((API_MOCK_USERS as Record<string, MockUserDbEntry>)[email] || (await getUserFromDynamoDB(email))) {
+    if (await getUserFromDynamoDB(email)) {
       return NextResponse.json(
         { success: false, message: "An account with this email already exists." },
         { status: 409 },
@@ -60,33 +60,19 @@ export async function POST(req: Request) {
       );
     }
 
-    const user: MockUserDbEntry = {
-      id: getNextUserId(),
-      name,
-      email,
-      role,
-      clientAssociation: client.name || client.company_name || `Client ${clientId}`,
-      status: "active",
-      clearance: role === "client_admin" ? "Client admin access" : "Client member access",
-      permissions:
-        role === "client_admin"
-          ? ["read:telemetry", "read:projects", "write:projects", "read:ai-operations", "write:ai-operations", "read:documents", "write:documents", "write:support"]
-          : ["read:telemetry", "read:projects", "read:ai-operations", "read:documents", "write:support"],
-      passwordHash: hashPassword(password),
-    };
-
-    (API_MOCK_USERS as Record<string, MockUserDbEntry>)[email] = user;
+    const userId = getNextUserId();
+    const passwordHash = hashPassword(password);
     await putUserInDynamoDB({
       email,
-      hashed_password: user.passwordHash,
+      hashed_password: passwordHash,
       full_name: name,
       name,
       role,
       status: "active",
       client_id: clientId,
-      clientAssociation: user.clientAssociation,
+      clientAssociation: client.name || client.company_name || `client-${String(clientId).padStart(3, "0")}`,
       is_active: true,
-      id: user.id,
+      id: userId,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     });

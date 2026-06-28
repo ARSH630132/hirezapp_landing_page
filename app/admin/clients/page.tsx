@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { previewProjects, previewAgentOperations } from "@/lib/mock-data-model";
 import { 
   Search, Plus, User, ExternalLink, Shield, Check, Copy, 
   ChevronRight, Info, Clock, CreditCard, Layers, 
@@ -68,23 +67,8 @@ export default function AdminClientsPage() {
     setLoading(true);
     setError(null);
     try {
-      let token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") || localStorage.getItem("gff_api_token") : null;
-      if (!token) {
-        const loginRes = await fetch("/api/v1/auth/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: "s.vance@governance.gff.ai", password: "VanceSecure2026!" })
-        });
-        if (loginRes.ok) {
-          const authData = await loginRes.json();
-          if (authData.accessToken) {
-            token = authData.accessToken;
-            localStorage.setItem("gff_ai_access_token", authData.accessToken);
-          }
-        }
-      }
-
-      if (!token) throw new Error("Cryptographic token not established.");
+      const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") || localStorage.getItem("gff_api_token") : null;
+      if (!token) throw new Error("Your session has expired. Please sign in again.");
 
       const meRes = await fetch("/api/v1/auth/me", { headers: { "Authorization": `Bearer ${token}` } });
       if (meRes.ok) {
@@ -261,7 +245,7 @@ export default function AdminClientsPage() {
         </div>
         <div className="rounded-xl border border-white/5 bg-[#050505]/40 p-4 space-y-1">
           <span className="text-[10px] text-white/40 uppercase font-bold block font-mono">Active Projects</span>
-          <div className="text-2xl font-bold">{loading ? "..." : (dbProjectsCount !== null ? dbProjectsCount : previewProjects.length)}</div>
+          <div className="text-2xl font-bold">{loading ? "..." : (dbProjectsCount ?? 0)}</div>
         </div>
         <div className="rounded-xl border border-white/5 bg-[#050505]/40 p-4 space-y-1">
           <span className="text-[10px] text-white/40 uppercase font-bold block font-mono">Monitoring Status</span>

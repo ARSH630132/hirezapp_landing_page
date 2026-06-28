@@ -44,6 +44,7 @@ export function PrivateSidebar({
   onLinkChange,
   collapsed,
   onToggleCollapse,
+  user,
   role
 }: { 
   links: SidebarLink[];
@@ -55,25 +56,21 @@ export function PrivateSidebar({
   role: "Client" | "Administrator";
 }) {
   const signOutPath = role === "Administrator" ? "/admin/login" : "/portal/login";
-  const [activeOrg, setActiveOrg] = useState(role === "Client" ? "Apex Global Solutions" : "GFF AI");
+  const [activeOrg, setActiveOrg] = useState(role === "Client" ? "Client workspace" : "GFF AI");
   const [orgDropdownOpen, setOrgDropdownOpen] = useState(false);
   const [isSwitchingOrg, setIsSwitchingOrg] = useState(false);
 
   // Sync active organization if role changes
   useEffect(() => {
-    setActiveOrg(role === "Client" ? "Apex Global Solutions" : "GFF AI");
-  }, [role]);
+    setActiveOrg(user.email.split("@")[1] || (role === "Client" ? "Client workspace" : "GFF AI"));
+  }, [role, user.email]);
 
   const clientOrgs = [
-    { name: "Apex Global Solutions", id: "apex", label: "Main client" },
-    { name: "Sovereign Logistics Corp", id: "logistics", label: "Client account" },
-    { name: "Global Retail Group", id: "retail", label: "Client account" },
+    { name: activeOrg, id: "client", label: "Current workspace" },
   ];
 
   const adminOrgs = [
-    { name: "GFF AI", id: "global", label: "Main workspace" },
-    { name: "Client operations", id: "clients", label: "Shared admin view" },
-    { name: "Finance", id: "finance", label: "Admin view" },
+    { name: activeOrg, id: "admin", label: "Current workspace" },
   ];
 
   const orgsList = role === "Client" ? clientOrgs : adminOrgs;
@@ -282,14 +279,14 @@ export function PrivateSidebar({
               window.location.href = signOutPath;
             }}
             className="h-8 w-8 mx-auto rounded-lg border border-red-500/10 hover:border-red-500/30 bg-red-950/5 hover:bg-red-950/15 text-red-400 hover:text-red-300 flex items-center justify-center transition-all cursor-pointer"
-            title="Deauthenticate Session"
+            title="Sign out"
           >
             <LogOut className="w-3.5 h-3.5" />
           </button>
         )}
         {!collapsed && (
           <div className="text-center font-mono text-[8px] text-white/20 select-none uppercase tracking-widest mt-1">
-            CLOCK: 2026.06.27
+            LIVE SESSION
           </div>
         )}
       </div>

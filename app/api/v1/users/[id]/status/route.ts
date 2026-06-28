@@ -15,8 +15,7 @@ async function getAuthCaller(req: Request) {
     const mapped = mapDynamoUserToApiUser(dynamoUser);
     return mapped && mapped.status !== "inactive" ? mapped : null;
   }
-  const user = (API_MOCK_USERS as Record<string, MockUserDbEntry>)[email];
-  return user && user.status !== "inactive" ? user : null;
+  return null;
 }
 
 export async function PATCH(req: Request, { params }: { params: any }) {

@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import { 
-  API_MOCK_USERS, 
   verifyJwt, 
-  MockUserDbEntry, 
   ApiDocumentItem, 
   getClientIdFromAssociation 
 } from "../../../../../lib/api-auth";
 import {
+  getUserFromDynamoDB,
+  mapDynamoUserToApiUser,
   dynamoDbListPortalItems,
   dynamoDbPutPortalItem,
   dynamoDbDeletePortalItem
@@ -14,7 +14,7 @@ import {
 
 export const runtime = "nodejs";
 
-function getAuthCaller(req: Request) {
+async function getAuthCaller(req: Request) {
   const auth = req.headers.get("authorization");
   if (!auth?.startsWith("Bearer ")) {
     return { status: 401, error: "Unauthorized", msg: "Missing/malformed Authorization header." };
@@ -23,19 +23,20 @@ function getAuthCaller(req: Request) {
   if (!decoded?.email) {
     return { status: 401, error: "Unauthorized", msg: "Invalid/expired access token." };
   }
-  const user = (API_MOCK_USERS as Record<string, MockUserDbEntry>)[decoded.email.toLowerCase().trim()];
-  if (!user) {
+  const dynamoUser = await getUserFromDynamoDB(decoded.email.toLowerCase().trim());
+  if (!dynamoUser) {
     return { status: 401, error: "Unauthorized", msg: "Authorized user not found." };
   }
-  if (user.status === "inactive") {
+  const caller = mapDynamoUserToApiUser(dynamoUser);
+  if (caller.status === "inactive") {
     return { status: 403, error: "Forbidden", msg: "This account is inactive." };
   }
-  return { caller: user };
+  return { caller };
 }
 
 export async function GET(req: Request, { params }: { params: any }) {
   try {
-    const auth = getAuthCaller(req);
+    const auth = await getAuthCaller(req);
     if ("status" in auth) {
       return NextResponse.json({ success: false, error: auth.error, message: auth.msg }, { status: auth.status });
     }
@@ -85,7 +86,7 @@ export async function GET(req: Request, { params }: { params: any }) {
 
 export async function PATCH(req: Request, { params }: { params: any }) {
   try {
-    const auth = getAuthCaller(req);
+    const auth = await getAuthCaller(req);
     if ("status" in auth) {
       return NextResponse.json({ success: false, error: auth.error, message: auth.msg }, { status: auth.status });
     }
@@ -161,7 +162,7 @@ export async function PATCH(req: Request, { params }: { params: any }) {
 
 export async function DELETE(req: Request, { params }: { params: any }) {
   try {
-    const auth = getAuthCaller(req);
+    const auth = await getAuthCaller(req);
     if ("status" in auth) {
       return NextResponse.json({ success: false, error: auth.error, message: auth.msg }, { status: auth.status });
     }

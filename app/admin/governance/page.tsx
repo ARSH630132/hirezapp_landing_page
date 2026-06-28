@@ -140,23 +140,8 @@ export default function AdminGovernancePage() {
     setLoading(true);
     setError(null);
     try {
-      let token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") || localStorage.getItem("gff_api_token") : null;
-      if (!token) {
-        const loginRes = await fetch("/api/v1/auth/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: "s.vance@governance.gff.ai", password: "VanceSecure2026!" })
-        });
-        if (loginRes.ok) {
-          const authData = await loginRes.json();
-          if (authData.accessToken) {
-            token = authData.accessToken;
-            localStorage.setItem("gff_ai_access_token", authData.accessToken);
-          }
-        }
-      }
-
-      if (!token) throw new Error("Authentication token missing.");
+      const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") || localStorage.getItem("gff_api_token") : null;
+      if (!token) throw new Error("Your session has expired. Please sign in again.");
 
       // Fetch profile
       const meRes = await fetch("/api/v1/auth/me", { headers: { "Authorization": `Bearer ${token}` } });

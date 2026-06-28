@@ -1,8 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, Cpu, Layers, Terminal, RefreshCw } from "lucide-react";
-import { previewClientAccounts, previewProjects } from "@/lib/mock-data-model";
+import { ArrowLeft, Layers, Terminal, RefreshCw } from "lucide-react";
 
 export default function AdminClientDetailPage() {
   const router = useRouter();
@@ -11,13 +10,17 @@ export default function AdminClientDetailPage() {
   const [dbClient, setDbClient] = useState<any>(null);
   const [dbProjects, setDbProjects] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchClientAndProjects = async () => {
       setLoading(true);
       try {
         const token = typeof window !== "undefined" ? localStorage.getItem("gff_ai_access_token") || localStorage.getItem("gff_api_token") : null;
-        if (!token) return;
+        if (!token) {
+          setError("Your session has expired. Please sign in again.");
+          return;
+        }
 
         // Fetch client details
         const clientRes = await fetch(`/api/v1/clients/${id}`, {
@@ -43,6 +46,7 @@ export default function AdminClientDetailPage() {
         }
       } catch (err) {
         console.error("Error fetching client details/projects:", err);
+        setError("Unable to load client details.");
       } finally {
         setLoading(false);
       }
@@ -54,15 +58,29 @@ export default function AdminClientDetailPage() {
   }, [id]);
 
   // Derived Client and Projects data leveraging dynamic API enclaves, falling back to Phase 4 mock models
-  const client = dbClient || previewClientAccounts.find(c => c.id === id) || previewClientAccounts[0];
-  const projects = dbProjects.length > 0 ? dbProjects.map(p => ({
+  const client = dbClient;
+  const projects = dbProjects.map((p) => ({
     id: p.id,
     name: p.name,
     status: p.status
-  })) : previewProjects.filter(p => p.clientAccountId === client.id);
+  }));
 
   const [rotating, setRotating] = useState(false);
-  const [logs, setLogs] = useState<string[]>(["Secure link bound."]);
+  const [logs, setLogs] = useState<string[]>(["Client page loaded."]);
+
+  if (!loading && (!client || error)) {
+    return (
+      <div className="space-y-4 font-mono text-xs text-white">
+        <button onClick={() => router.push("/admin/clients")} className="inline-flex items-center gap-2 rounded border border-white/10 px-3 py-2 text-white/70 hover:text-white cursor-pointer">
+          <ArrowLeft className="w-3.5 h-3.5" />
+          Back to clients
+        </button>
+        <div className="rounded border border-red-500/20 bg-red-500/5 p-4 text-red-300">
+          {error || "Client not found."}
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="space-y-6 font-mono text-xs text-white">
       <div className="flex justify-between items-center border-b border-white/5 pb-4">
@@ -70,14 +88,10 @@ export default function AdminClientDetailPage() {
           <button onClick={() => router.push("/admin/clients")} className="p-1 rounded border border-white/5 text-white/50 hover:text-white cursor-pointer"><ArrowLeft className="w-3.5 h-3.5" /></button>
           <div>
             <span className="text-[9px] text-[#009DFF] bg-[#009DFF]/10 px-1 py-0.2 rounded border border-[#009DFF]/20 uppercase">OVERSIGHT: {client.id.toUpperCase()}</span>
-            <h2 className="text-sm font-bold uppercase mt-1">{client.name.replace(" [Preview Client]", "")}</h2>
+            <h2 className="text-sm font-bold uppercase mt-1">{client.name}</h2>
           </div>
         </div>
-        <button onClick={() => {
-          localStorage.setItem("gff_ai_preview_session_v1", JSON.stringify({ name: client.contactName, email: client.contactEmail, role: "client_admin", clearance: "LEVEL III", isMock: true, label: `PREVIEW: ${client.name}` }));
-          window.dispatchEvent(new Event("gff_preview_session_changed"));
-          router.push("/portal/dashboard");
-        }} className="h-7 px-2.5 rounded bg-[#009DFF] text-white cursor-pointer font-bold border-none text-[9px] uppercase">Mirror Portal</button>
+        <button onClick={() => router.push("/portal/dashboard")} className="h-7 px-2.5 rounded bg-[#009DFF] text-white cursor-pointer font-bold border-none text-[9px] uppercase">Open Client Portal</button>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-4">
@@ -87,8 +101,8 @@ export default function AdminClientDetailPage() {
               <div className="truncate">Domain: <span className="text-[#009DFF]">{client.domain}</span></div>
             </div>
             <div className="p-3 rounded border border-white/5 bg-black/40">
-              <div>Cores: <span className="text-[#00FFC2] font-bold">128 Cores</span></div>
-              <div>Hardware: <span className="text-white/80">AMD SEV-SNP</span></div>
+              <div>Region: <span className="text-[#00FFC2] font-bold">{client.region || "Not set"}</span></div>
+              <div>Status: <span className="text-white/80">{client.status || "Active"}</span></div>
             </div>
           </div>
           <div className="p-3 rounded border border-white/5 bg-black/40 space-y-2">

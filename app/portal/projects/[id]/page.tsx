@@ -114,7 +114,7 @@ export default function ClientProjectDetailPage() {
     );
   }
 
-  const projectId = project.id.toUpperCase();
+  const projectId = String(project.id || "").toUpperCase();
   const nodeMap: Record<string, string> = {
     "proj-001": "FF-701A-CH", "proj-002": "RM-404B-SG", "proj-003": "CC-302F-US", "proj-004": "TV-209O-UK", "proj-005": "ND-318E-JP"
   };

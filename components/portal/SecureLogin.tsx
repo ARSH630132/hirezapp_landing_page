@@ -5,17 +5,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { AlertCircle, CheckCircle2, Eye, EyeOff, KeyRound, Lock, Mail, RefreshCw, Shield, UserPlus } from "lucide-react";
 
-const ADMIN_ACCOUNT = {
-  label: "Admin account",
-  email: "gff_admin@gff.ai",
-  password: "password123",
-};
-
-const CLIENT_ACCOUNTS = [
-  { label: "Client admin", email: "client_admin@apex.com", password: "password123" },
-  { label: "Client member", email: "client_member@apex.com", password: "password123" },
-];
-
 type RegisterClient = {
   id: string;
   name: string;
@@ -28,8 +17,8 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
 
   const [mode, setMode] = useState<"login" | "register">("login");
   const [authMethod, setAuthMethod] = useState<"password" | "otp">("password");
-  const [email, setEmail] = useState(isAdminLogin ? ADMIN_ACCOUNT.email : CLIENT_ACCOUNTS[0].email);
-  const [password, setPassword] = useState(isAdminLogin ? ADMIN_ACCOUNT.password : CLIENT_ACCOUNTS[0].password);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [otpCode, setOtpCode] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -113,14 +102,6 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
     router.replace(query ? `${pathname}?${query}` : pathname);
   };
 
-  const setQuickAccount = (nextEmail: string, nextPassword: string) => {
-    setEmail(nextEmail);
-    setPassword(nextPassword);
-    setOtpCode("");
-    setError("");
-    setInfo("");
-  };
-
   const completeLogin = async (accessToken: string) => {
     localStorage.setItem("gff_ai_access_token", accessToken);
     localStorage.setItem("gff_api_token", accessToken);
@@ -138,19 +119,6 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
     }
 
     const user = meData.user;
-    localStorage.setItem(
-      "gff_ai_preview_session_v1",
-      JSON.stringify({
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        clearance: user.clearance || "Account access",
-        isMock: false,
-        label: user.clientAssociation || "GFF AI",
-      }),
-    );
-    window.dispatchEvent(new Event("gff_preview_session_changed"));
-
     router.push(user.role === "gff_admin" ? "/admin/dashboard" : "/portal/dashboard");
   };
 
@@ -254,8 +222,6 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
       setLoading(false);
     }
   };
-
-  const quickAccounts = isAdminLogin ? [ADMIN_ACCOUNT] : CLIENT_ACCOUNTS;
 
   return (
     <div className="min-h-screen w-full bg-[#010101] text-zinc-100 flex flex-col items-center justify-center relative px-4 py-8 md:py-16 overflow-hidden font-sans">
@@ -628,21 +594,15 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
                   </div>
                 )}
 
-                {mode === "login" ? (
-                  <div className="space-y-2">
-                    <p className="text-[9px] font-mono font-bold uppercase tracking-widest text-white/45">Test accounts</p>
-                    {quickAccounts.map((account) => (
-                      <button
-                        key={account.email}
-                        type="button"
-                        onClick={() => setQuickAccount(account.email, account.password)}
-                        className="w-full p-3 rounded-xl border border-zinc-800/60 bg-zinc-950/20 hover:bg-zinc-900/40 hover:border-zinc-700 text-left transition-all"
-                      >
-                        <p className="text-[12px] font-semibold text-white">{account.label}</p>
-                        <p className="text-[10px] text-zinc-400">{account.email}</p>
-                      </button>
-                    ))}
-                  </div>
+                {mode === "login" && !isAdminLogin ? (
+                  <button
+                    type="button"
+                    onClick={() => updateMode("register")}
+                    className="w-full p-3 rounded-xl border border-zinc-800/60 bg-zinc-950/20 hover:bg-zinc-900/40 hover:border-zinc-700 text-left transition-all"
+                  >
+                    <p className="text-[12px] font-semibold text-white">Create a new client account</p>
+                    <p className="text-[10px] text-zinc-400">Register here if you do not already have sign-in details.</p>
+                  </button>
                 ) : null}
               </div>
 
