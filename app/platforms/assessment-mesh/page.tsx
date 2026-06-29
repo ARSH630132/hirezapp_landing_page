@@ -71,6 +71,7 @@ export default function AssessmentMeshPage() {
         category="Sovereign Diagnostics"
         title="GFF Assessment Mesh Engine"
         highlightedWord="Mesh"
+         visualType="assessmentMeshEngine"
         description="A quantitative diagnostic system scanning corporate metadata, security perimeters, and database topology to compile deterministic readiness roadmaps."
         breadcrumbs={[{ label: "Platforms", href: "/platforms" }, { label: "Assessment Mesh" }]}
       />

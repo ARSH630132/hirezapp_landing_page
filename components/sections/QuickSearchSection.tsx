@@ -327,7 +327,7 @@ export default function QuickSearchSection() {
 
         {/* Clickable Templates */}
         <div className="mt-6 flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-sm max-w-4xl mx-auto">
-          <span className="text-[#A9DFFF] font-semibold mr-1 text-[13px] sm:text-sm">Click examples:</span>
+          {/* <span className="text-[#A9DFFF] font-semibold mr-1 text-[13px] sm:text-sm">Click examples:</span> */}
           {exampleSearches.map((example) => {
             const isActive = searchQuery.toLowerCase().trim() === example.toLowerCase().trim();
             return (
@@ -359,9 +359,9 @@ export default function QuickSearchSection() {
                 transition={{ duration: 0.3 }}
                 className="max-w-5xl mx-auto rounded-[30px] border border-[#178FE8]/20 bg-[#02070C]/70 p-7 sm:p-9 text-center backdrop-blur-md shadow-[0_0_45px_rgba(0,0,0,0.9),inset_0_0_45px_rgba(0,157,255,0.035)]"
               >
-                <div className="inline-flex h-11 w-11 items-center justify-center rounded-[16px] bg-[#009DFF]/8 border border-[#009DFF]/20 mb-4 text-[#009DFF] shadow-[0_0_22px_rgba(0,157,255,0.12)]">
+                {/* <div className="inline-flex h-11 w-11 items-center justify-center rounded-[16px] bg-[#009DFF]/8 border border-[#009DFF]/20 mb-4 text-[#009DFF] shadow-[0_0_22px_rgba(0,157,255,0.12)]">
                   <Sparkles className="h-5 w-5 animate-pulse" />
-                </div>
+                </div> */}
                 <h3 className="text-[18px] sm:text-xl font-semibold text-white tracking-wide">Enterprise Intelligent Concierge</h3>
                 <p className="mt-2 text-sm text-white/58 max-w-2xl mx-auto leading-relaxed font-normal">
                   Our instant search indexing maps core architectural capabilities, delivery platforms, active research whitepapers, and build specifications across GFF AI's entire ecosystem.

@@ -9,6 +9,7 @@ export default function ManagedServicesPage() {
   "category": "Operations",
   "title": "Managed AI Services",
   "highlightedWord": "Managed",
+  "visualType":"managedAIServices",
   "description": "End-to-end management of custom models and operational stacks with 24/7 SLA monitoring, optimization, and upgrades.",
   "activeLayerId": "operations",
   "useCases": [

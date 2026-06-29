@@ -78,9 +78,11 @@ type VisualType =
 | "advisors"
 | "careers"
 | "investors"
+| "managedAIServices"
 | "media"
 | "research"
 | "agentEconomyMission"
+| "assessmentMeshEngine"
 | "industryAI"
 | "referenceArchitecture"
 | "engineeringWhitepapers"
@@ -110,11 +112,23 @@ const visualMap: Record<VisualType, VisualConfig> = {
     second: "#E98828",
     alt: "Garage",
   },
+  managedAIServices: {
+  Icon: Cpu,
+  color: "#009DFF",
+  second: "#00D6A3",
+  alt: "Managed AI Services",
+},
   gffFramework: {
   Icon: Factory,
   color: "#F74539",
   second: "#009DFF",
   alt: "Garage, Foundry, and Factory Framework",
+},
+assessmentMeshEngine: {
+  Icon: Network,
+  color: "#009DFF",
+  second: "#C084FC",
+  alt: "GFF Assessment Mesh Engine",
 },
   enterpriseAutonomyVision: {
   Icon: Globe2,
