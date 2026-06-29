@@ -203,3 +203,8 @@
     transform: none !important;
   }
 }
+button,
+a,
+[role="button"] {
+  cursor: pointer;
+}
