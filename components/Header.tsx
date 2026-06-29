@@ -127,10 +127,10 @@ export default function Header({ contactHref = "/#contact" }: HeaderProps) {
         <div className="fixed inset-0 z-[999] xl:hidden bg-black/65" onClick={() => setIsMenuOpen(false)}>
           <div className="absolute left-0 right-0 bottom-0 rounded-t-[28px] bg-[#050505] px-6 pt-6 pb-8 max-h-[90vh] overflow-y-auto scrollbar-thin scrollbar-thumb-white/10" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between pb-5 border-b border-white/10">
-              <div>
+              <Link href="/" onClick={() => setIsMenuOpen(false)} className="block">
                 <p className="text-white text-[18px] font-semibold">GFF AI</p>
                 <p className="text-white/50 text-[13px]">Navigation Menu</p>
-              </div>
+              </Link>
               <button onClick={() => setIsMenuOpen(false)} className="text-white text-[34px] leading-none" aria-label="Close Menu">×</button>
             </div>
             <div className="mt-6 flex flex-col">

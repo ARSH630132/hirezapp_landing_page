@@ -1,11 +1,20 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "motion/react";
 import SectionHeading from "@/components/SectionHeading";
 import { pageFadeVariants } from "@/lib/animations";
 import { foundrySteps } from "@/lib/landing-data";
 
 export default function FoundrySection() {
+  const foundryLinks = [
+    "/platforms/garage",
+    "/platforms/foundry",
+    "/platforms/factory",
+    "/build/talk",
+    "/platforms/control-center",
+  ];
+
   return (
     <motion.section
       id="foundry"
@@ -23,9 +32,10 @@ export default function FoundrySection() {
       />
 
       <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 max-w-[1795px] mx-auto">
-        {foundrySteps.map((item) => (
-          <div
+        {foundrySteps.map((item, index) => (
+          <Link
             key={item.title}
+            href={foundryLinks[index] ?? "/platforms/foundry"}
             className="group relative rounded-[20px] p-[1px] transition-all duration-300 hover:-translate-y-3 hover:scale-[1.02]"
             style={{ background: item.borderGradient }}
           >
@@ -47,7 +57,7 @@ export default function FoundrySection() {
                 <p className="mt-3 text-[15px] leading-[1.5] font-medium text-[#C1C1C1]">{item.desc}</p>
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
 

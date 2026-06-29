@@ -242,23 +242,7 @@ export function ToolSidebarProgress({ steps, currentStepIndex, onStepClick }: To
 // 5. ToolPreviewNotice
 // ==========================================
 export function ToolPreviewNotice() {
-  // return (
-  //   <div className="p-4 rounded-xl border border-white/5 bg-white/[0.01] flex items-start gap-3.5 text-xs">
-  //     <div className="p-2 rounded bg-white/5 border border-white/10 shrink-0 mt-0.5 text-[#009DFF]">
-  //       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-  //         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 15v2m0-6v2m0-6h.01M12 2a10 10 0 110 20 10 10 0 010-20z" />
-  //       </svg>
-  //     </div>
-  //     <div className="space-y-1">
-  //       <h4 className="font-bold text-white font-mono text-[10px] uppercase tracking-wider">SANDBOX COMPLIANCE SIMULATION</h4>
-  //       <p className="text-white/50 text-[11px] leading-relaxed font-light">
-  //         This modeling framework operates as a localized Web Sandbox in compliance with GFF security blueprints. 
-  //         Calculations are calculated deterministically on memory buffers. In keeping with our zero-retention architecture, 
-  //         no parameter schemas or variables are sent to public clouds.
-  //       </p>
-  //     </div>
-  //   </div>
-  // );
+  return null;
 }
 
 // ==========================================
@@ -729,4 +713,3 @@ export function ToolDataCard({ label, value, status = "neutral", detail }: ToolD
     </div>
   );
 }
-

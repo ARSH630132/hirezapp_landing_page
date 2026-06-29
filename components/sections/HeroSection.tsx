@@ -1,11 +1,20 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "motion/react";
 import { pageFadeVariants } from "@/lib/animations";
-import { heroActions } from "@/lib/landing-data";
 
 export default function HeroSection() {
+  const quickLinks: Record<string, string> = {
+    "Animated Foundry": "/#foundry",
+    "Live Agent Counter": "/#live-dashboard",
+    "Live Projects": "/#live-dashboard",
+    Countries: "/#live-dashboard",
+    "Client Logos": "/#client-success",
+    "Scroll Indicator": "/#journey",
+  };
+
   return (
     <motion.section
       id="home"
@@ -37,37 +46,30 @@ Transformation Company
         </p>
 
         <div className="mt-10 lg:mt-12 flex flex-col sm:flex-row flex-wrap gap-4 w-full">
-          <a
+          <Link
             href="/build/blueprint"
 className="h-[50px] rounded-full px-6 flex items-center justify-center gap-[10px] hover:opacity-90 transition-all duration-300 overflow-hidden"
 style={{
   background: "linear-gradient(90deg, #E4000F 0%, #009DFF 100%)"
 }}          >
             <span className="text-white text-[16px] leading-none font-semibold whitespace-nowrap">Generate My Enterprise AI Blueprint</span>
-          </a>
-          <a
-            href="/experience"
+          </Link>
+          <Link
+            href="/#experience"
             className="h-[50px] rounded-full border border-[#969696] bg-transparent px-6 flex items-center justify-center gap-[10px] hover:border-white/50 transition-colors"
           >
             <span className="text-white text-[16px] leading-none font-medium whitespace-nowrap">Experience GFF AI Live</span>
-          </a>
+          </Link>
         </div>
         <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-4 max-w-[520px]">
-  {[
-    "Animated Foundry",
-    "Live Agent Counter",
-    "Live Projects",
-    "Countries",
-    "Client Logos",
-    "Scroll Indicator",
-  ].map((item) => (
-    <button
+  {Object.entries(quickLinks).map(([item, href]) => (
+    <Link
       key={item}
-      type="button"
-      className="w-full h-[42px] rounded-full border border-white/15 bg-white/[0.04] px-4 text-white/75 text-[12px] font-medium hover:border-[#009DFF]/50 hover:text-white hover:bg-[#009DFF]/10 transition-all"
+      href={href}
+      className="flex w-full h-[42px] rounded-full border border-white/15 bg-white/[0.04] px-4 text-white/75 text-[12px] font-medium hover:border-[#009DFF]/50 hover:text-white hover:bg-[#009DFF]/10 transition-all items-center justify-center text-center"
     >
       {item}
-    </button>
+    </Link>
   ))}
 </div>
         <div className="mt-12 pt-8 border-t border-white/10 grid grid-cols-2 lg:grid-cols-3 gap-4">

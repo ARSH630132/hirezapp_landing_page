@@ -92,7 +92,13 @@ export default function ClientPortalLayout({
   }
 
   if (loading || !session) {
-    return <div className="min-h-screen bg-[#030303]" />;
+    return (
+      <div className="min-h-screen bg-[#030303] flex items-center justify-center px-6 text-center">
+        <div className="rounded-xl border border-white/5 bg-[#050505]/40 px-5 py-4 text-[12px] text-white/60">
+          Loading secure client workspace...
+        </div>
+      </div>
+    );
   }
 
   // Parse active tab from pathname

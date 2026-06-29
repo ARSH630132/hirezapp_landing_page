@@ -348,7 +348,7 @@ export default function BuildHubPage() {
         description="Construct, simulate, validate, and launch custom multi-agent execution systems using our self-service diagnostic suite, roadmap engines, and commercial scoping nodes."
       />
 
-      <div className="max-w-[1795px] mx-auto px-6 lg:px-16 pb-24 space-y-16">
+      <div className="max-w-[1795px] mx-auto px-4 sm:px-6 lg:px-16 pb-24 space-y-16 overflow-x-hidden">
         
         {/* Sovereign Workspace Continuity Control Panel */}
         <WorkspaceContinuityPanel />
@@ -377,7 +377,7 @@ export default function BuildHubPage() {
 
             {/* Scrollable Timeline Row */}
             <div className="relative overflow-x-auto pb-4 scrollbar-none border-b border-white/5">
-              <div className="min-w-[940px] flex items-center justify-between relative px-2 py-4">
+              <div className="min-w-[820px] sm:min-w-[940px] flex items-center justify-between relative px-2 py-4">
                 <div className="absolute top-[38px] left-8 right-8 h-[2px] bg-white/5 z-0" />
                 <div 
                   className="absolute top-[38px] left-8 h-[2px] bg-gradient-to-r from-[#E4000F] to-[#009DFF] z-0 transition-all duration-500" 

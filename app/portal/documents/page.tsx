@@ -28,6 +28,7 @@ import {
   Info
 } from "lucide-react";
 import { PrivatePageHeader, WorkspaceCard } from "@/components/private-app";
+import { getClientIdFromAssociation } from "@/lib/api-auth";
 
 // ============================================================================
 // 1. DATA MODELS & MOCKS
@@ -339,7 +340,7 @@ export default function ClientDocumentsPage() {
   const [error, setError] = useState<string | null>(null);
 
   // User Profile & Scoped client ID
-  const [currentClientId, setCurrentClientId] = useState<number | null>(null);
+  const [currentClientId, setCurrentClientId] = useState<string | null>(null);
   const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
   const [availableProjects, setAvailableProjects] = useState<any[]>([]);
 
@@ -506,7 +507,7 @@ export default function ClientDocumentsPage() {
         if (meRes.ok) {
           const data = await meRes.json();
           if (data) {
-            setCurrentClientId(data.user?.client_id || null);
+            setCurrentClientId(data.user?.client_id ? String(data.user.client_id) : null);
             setCurrentUserRole(data.user?.role || null);
           }
         }
@@ -589,6 +590,9 @@ export default function ClientDocumentsPage() {
         if (meRes.ok) {
           const meData = await meRes.json();
           targetClientId = meData.user?.client_id;
+          if (!targetClientId && typeof meData.user?.clientAssociation === "string") {
+            targetClientId = getClientIdFromAssociation(meData.user.clientAssociation);
+          }
         }
       }
       
@@ -1467,5 +1471,3 @@ export default function ClientDocumentsPage() {
     </div>
   );
 }
-
-

@@ -403,6 +403,7 @@ export default function LiveDashboardSection() {
 
   return (
     <motion.section 
+      id="live-dashboard"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}

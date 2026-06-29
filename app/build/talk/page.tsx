@@ -709,6 +709,7 @@ export default function TalkToAgentPage() {
                             value={data.geography}
                             onChange={(e) => setData((prev) => ({ ...prev, geography: e.target.value }))}
                             className="w-full h-10 rounded-lg border border-white/10 bg-black text-white px-3 text-xs outline-none focus:border-[#009DFF] transition-all"
+                            style={{ colorScheme: "dark" }}
                           >
                             <option value="">No explicit geographical boundary</option>
                             {geoOptions.map((opt) => (
@@ -727,6 +728,7 @@ export default function TalkToAgentPage() {
                             value={data.urgency}
                             onChange={(e) => setData((prev) => ({ ...prev, urgency: e.target.value }))}
                             className="w-full h-10 rounded-lg border border-white/10 bg-black text-white px-3 text-xs outline-none focus:border-[#009DFF] transition-all"
+                            style={{ colorScheme: "dark" }}
                           >
                             <option value="">Not strictly scheduled</option>
                             {urgencyOptions.map((opt) => (
@@ -745,6 +747,7 @@ export default function TalkToAgentPage() {
                             value={data.functionTeam}
                             onChange={(e) => setData((prev) => ({ ...prev, functionTeam: e.target.value }))}
                             className="w-full h-10 rounded-lg border border-white/10 bg-black text-white px-3 text-xs outline-none focus:border-[#009DFF] transition-all"
+                            style={{ colorScheme: "dark" }}
                           >
                             <option value="">Cross-department focus</option>
                             {functionOptions.map((opt) => (
@@ -763,6 +766,7 @@ export default function TalkToAgentPage() {
                             value={data.aiStage}
                             onChange={(e) => setData((prev) => ({ ...prev, aiStage: e.target.value }))}
                             className="w-full h-10 rounded-lg border border-white/10 bg-black text-white px-3 text-xs outline-none focus:border-[#009DFF] transition-all"
+                            style={{ colorScheme: "dark" }}
                           >
                             <option value="">No current frameworks assessed</option>
                             {aiStageOptions.map((opt) => (

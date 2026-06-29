@@ -56,6 +56,46 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
   }, []);
 
   useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const token = localStorage.getItem("gff_ai_access_token") || localStorage.getItem("gff_api_token");
+    if (!token) {
+      return;
+    }
+
+    let ignore = false;
+
+    const redirectIfAuthenticated = async () => {
+      try {
+        const response = await fetch("/api/v1/auth/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        const payload = await response.json().catch(() => null);
+
+        if (ignore || !response.ok || !payload?.success || !payload?.user) {
+          return;
+        }
+
+        const destination = payload.user.role === "gff_admin" ? "/admin/dashboard" : "/portal/dashboard";
+        router.replace(destination);
+        router.refresh();
+      } catch {
+        // Leave the form visible when the token cannot be validated.
+      }
+    };
+
+    redirectIfAuthenticated();
+    return () => {
+      ignore = true;
+    };
+  }, [router]);
+
+  useEffect(() => {
     if (mode !== "register" || isAdminLogin) {
       return;
     }
@@ -122,7 +162,9 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
     }
 
     const user = meData.user;
-    router.push(user.role === "gff_admin" ? "/admin/dashboard" : "/portal/dashboard");
+    const destination = user.role === "gff_admin" ? "/admin/dashboard" : "/portal/dashboard";
+    router.replace(destination);
+    router.refresh();
   };
 
   const handlePasswordLogin = async () => {

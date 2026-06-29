@@ -61,7 +61,7 @@ export async function POST(req: Request) {
     }
 
     if (caller.role !== "gff_admin") {
-      const callerClientId = getClientIdFromAssociation(caller.clientAssociation);
+      const callerClientId = caller.client_id || getClientIdFromAssociation(caller.clientAssociation);
       if (client_id !== callerClientId && getAlt(client_id) !== callerClientId) {
         return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
       }

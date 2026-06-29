@@ -201,7 +201,7 @@ export default function ClientSuccessSection() {
         logIndexRef.current = 1;
       }
     }, playSpeed);
-}, [playSpeed, activePatternId]);
+}, [activePattern.logs, playSpeed]);
   useEffect(() => {
   setStreamedLogs([activePattern.logs[0]]);
   logIndexRef.current = 1;
@@ -241,6 +241,7 @@ export default function ClientSuccessSection() {
 
   return (
     <motion.section 
+      id="client-success"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
@@ -525,4 +526,3 @@ className="w-full bg-[#020202] px-6 lg:px-16 mt-25 lg:pt-0 lg:pb-24 py-10 relati
     </motion.section>
   );
 }
-

@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import React, { useState } from "react";
 import InnerPageShell from "@/components/inner-pages/InnerPageShell";
 import InnerPageHero from "@/components/inner-pages/InnerPageHero";
@@ -69,7 +68,7 @@ export default function CompanyMediaPage() {
                     <p className="text-[12.5px] text-white/50 font-light font-sans mt-2">{asset.spec}</p>
                   </div>
 
-                  <Link
+                  <a
                     href={asset.href}
                     download
                     onClick={() => handleDownload(asset.id)}
@@ -77,7 +76,7 @@ export default function CompanyMediaPage() {
                     aria-label={`Download ${asset.title}`}
                   >
                     {downloaded === asset.id ? <Check className="w-4 h-4 text-emerald-400" /> : <Download className="w-4 h-4 text-white/70" />}
-                  </Link>
+                  </a>
                 </div>
               ))}
             </div>

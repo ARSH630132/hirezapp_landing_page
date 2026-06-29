@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import React, { useState, useMemo } from "react";
 import { downloadAssetLinks } from "@/lib/cta-links";
 
@@ -103,7 +102,7 @@ export default function ResearchLibraryGrid() {
 
               <div className="mt-5 pt-3 border-t border-white/5 flex items-center justify-between text-[11px]">
                 <span className="text-white/40 font-mono text-[10px]">{paper.size}</span>
-                <Link href={paper.href} download onClick={() => handleDownload(paper.t)} className="flex items-center gap-1.5 text-white hover:text-[#009DFF] font-semibold text-[10.5px] uppercase">
+                <a href={paper.href} download onClick={() => handleDownload(paper.t)} className="flex items-center gap-1.5 text-white hover:text-[#009DFF] font-semibold text-[10.5px] uppercase">
                   {downloading[paper.t] ? (
                     <span className="animate-pulse text-[#009DFF]">Transmitting...</span>
                   ) : downloaded[paper.t] ? (
@@ -121,7 +120,7 @@ export default function ResearchLibraryGrid() {
                       </svg>
                     </>
                   )}
-                </Link>
+                </a>
               </div>
             </div>
           ))}

@@ -64,6 +64,7 @@ const steps = [
 export default function JourneySection() {
   return (
     <motion.section
+      id="journey"
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}

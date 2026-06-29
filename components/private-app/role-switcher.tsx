@@ -66,6 +66,7 @@ export function RoleSwitcherPreview({
               role="listbox"
               aria-label="Role list"
               className="absolute right-0 top-full mt-2 z-50 w-52 rounded-xl border border-white/5 bg-[#0a0a0a] p-1.5 shadow-2xl backdrop-blur-md"
+              style={{ colorScheme: "dark" }}
             >
               <div className="px-2 py-1 text-[8px] font-bold text-white/30 uppercase border-b border-white/5 mb-1">
                 MVP Roles
