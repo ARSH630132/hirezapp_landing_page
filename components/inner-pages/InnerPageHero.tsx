@@ -12,7 +12,11 @@ import {
   FlaskConical,
   Cpu,
   DollarSign,
+  BookOpenCheck,
   Building2,
+  ServerCog,
+  DraftingCompass,
+  CircuitBoard,
 Target,
 Network,
 MapPin,
@@ -46,7 +50,10 @@ type VisualType =
   | "engineering"
   | "agents"
   | "governance"
+  | "enterprisePlatforms"
  | "marketplace"
+ | "coEngineering"
+ | "technicalCapabilities"
 | "labs"
 | "countries"
 | "humanoid"
@@ -61,6 +68,8 @@ type VisualType =
 | "careers"
 | "investors"
 | "media"
+| "research"
+| "industryAI"
 | "contact";
 
 type VisualConfig = {
@@ -78,6 +87,24 @@ const visualMap: Record<VisualType, VisualConfig> = {
     second: "#E98828",
     alt: "Garage",
   },
+  coEngineering: {
+  Icon: Compass,
+  color: "#E98828",
+  second: "#009DFF",
+  alt: "Sovereign Co-Engineering Workshop",
+},
+  enterprisePlatforms: {
+  Icon: ServerCog, // ya Server
+  color: "#009DFF",
+  second: "#E98828",
+  alt: "Enterprise Platforms",
+},
+technicalCapabilities: {
+  Icon: CircuitBoard,
+  color: "#009DFF",
+  second: "#C084FC",
+  alt: "Technical Capabilities",
+},
   foundry: {
     icon: "/ai_foundary/foundry.svg",
     color: "#E98828",
@@ -90,6 +117,12 @@ const visualMap: Record<VisualType, VisualConfig> = {
     second: "#009DFF",
     alt: "Factory",
   },
+  industryAI: {
+  Icon: Network,
+  color: "#009DFF",
+  second: "#F74539",
+  alt: "AI Industry Ecosystem",
+},
   operate: {
     icon: "/intellegent_enterprise/robot.svg",
     color: "#F74539",
@@ -157,7 +190,12 @@ humanoid: {
   second: "#009DFF",
   alt: "Humanoid",
 },
-
+research: {
+  Icon: BookOpenCheck,
+  color: "#009DFF",
+  second: "#C084FC",
+  alt: "Research Intelligence Library",
+},
 financial: {
   Icon: DollarSign,
   color: "#FACC15",

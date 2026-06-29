@@ -151,8 +151,13 @@ export default function IndustriesPage() {
 
   return (
     <InnerPageShell>
-      <InnerPageHero category="Enterprise Verticals" title="AI Engineered for Your Industry" highlightedWord="Industry" description="GFF AI engineers custom cognitive frameworks calibrated for strict security and compliance." />
-      <div className="max-w-[1795px] mx-auto px-6 pb-12">
+<InnerPageHero
+  category="Enterprise Verticals"
+  title="AI Engineered for Your Industry"
+  highlightedWord="Industry"
+  visualType="industryAI"
+  description="GFF AI engineers custom cognitive frameworks calibrated for strict security and compliance."
+/>      <div className="max-w-[1795px] mx-auto px-6 pb-12">
         <div className="flex flex-wrap justify-center gap-2 mb-8">
           {S_DATA.map((ind) => (
             <button key={ind.id} onClick={() => setTab(ind.id)} className={`px-4 py-2 rounded-full text-xs font-semibold border transition-all ${tab === ind.id ? "bg-white text-black border-white" : "bg-white/5 text-white/70 border-white/5 hover:text-white"}`}>{ind.title}</button>

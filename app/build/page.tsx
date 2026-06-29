@@ -345,6 +345,7 @@ export default function BuildHubPage() {
         category="Build With GFF Hub"
         title="Sovereign Co-Engineering Workshop"
         highlightedWord="Sovereign"
+        visualType="coEngineering"
         description="Construct, simulate, validate, and launch custom multi-agent execution systems using our self-service diagnostic suite, roadmap engines, and commercial scoping nodes."
       />
 

@@ -39,6 +39,7 @@ export default function CapabilitiesPage() {
         category="Systems Engineering"
         title="Technical Capabilities"
         highlightedWord="Capabilities"
+        visualType="technicalCapabilities"
         description="GFF AI engineers resilient, high-throughput, and secure enterprise-grade systems architectures designed to elevate core business operations with autonomous cognitive intelligence."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Capabilities" }]}
       />

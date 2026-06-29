@@ -29,6 +29,7 @@ const stack = [
         category="Productized Assets"
         title="Enterprise Platforms"
         highlightedWord="Platforms"
+         visualType="enterprisePlatforms"
         description="Sovereign software platform suite to co-create and operate multi-agent systems."
       />
       <div className="max-w-[1795px] mx-auto px-6 lg:px-16 pb-24 space-y-20">

@@ -24,6 +24,7 @@ export default function ResourcesPage() {
         category="Knowledge Vault"
         title="Research & Intelligence Library"
         highlightedWord="Research & Intelligence"
+        visualType= "research"
         description="Access institutional-grade insights, academic breakthroughs, reference architectures, and standardized cognitive paradigms engineered for sovereign enterprises."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Resources" }]}
       />
