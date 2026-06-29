@@ -18,6 +18,7 @@ const stack = [
   { name: "AI Academy", spec: "Structured AI learning, enablement, and adoption programs.", path: "/platforms/ai-academy" },
   { name: "University OneVerse", spec: "AI platform layer for university operations and learning ecosystems.", path: "/platforms/university-oneverse" },
   { name: "Assessment Mesh", spec: "Evaluate readiness, workflows, governance, and AI maturity.", path: "/platforms/assessment-mesh" },
+  { name: "Product", spec: "Explore productized assets, reusable building blocks, and enterprise-ready accelerators.", path: "/products" },
   { name: "OREMesh", spec: "Sovereign edge mesh for offline-first mining and remote operations.", path: "/platforms/oremesh" },
   { name: "RetailMesh", spec: "Omnichannel register ingestion and retail operations support.", path: "/platforms/retailmesh" },
   { name: "TelecomVerse", spec: "Carrier-grade signaling, automation, and field dispatch intelligence.", path: "/platforms/telecomverse" },
