@@ -3,6 +3,7 @@
 import { useState } from "react";
 import SectionHeading from "@/components/SectionHeading";
 import Link from "next/link";
+import { Activity, ArrowUpRight, Bot, Calculator, Layers, Network, Sparkles, Workflow } from "lucide-react";
 
 export default function InteractiveExperienceSection() {
   const [tab, setTab] = useState(0);
@@ -15,12 +16,54 @@ export default function InteractiveExperienceSection() {
   const [flow, setFlow] = useState("Status: Idle");
 
   const tools = [
-    { name: "Talk to Agent", link: "/build/talk" },
-    // { name: "Blueprint Generator", link: "/build/blueprint" },
-    { name: "AI Readiness", link: "/build/assessment" },
-    { name: "ROI Calculator", link: "/build/roi" },
-    { name: "Marketplace", link: "/platforms/marketplace" },
-    { name: "Foundry Studio", link: "/platforms/foundry" },
+    {
+      name: "Talk to Agent",
+      link: "/build/talk",
+      desc: "Consult strategy, governance, and architecture agents.",
+      status: "Live Synapse",
+      accent: "#009DFF",
+      Icon: Bot,
+    },
+    {
+      name: "Blueprint Generator",
+      link: "/build/blueprint",
+      desc: "Generate sovereign multi-agent roadmaps and DAGs.",
+      status: "Topology",
+      accent: "#9D00FF",
+      Icon: Network,
+    },
+    {
+      name: "AI Readiness",
+      link: "/build/assessment",
+      desc: "Score data, governance, infrastructure, and workflow maturity.",
+      status: "Diagnostic",
+      accent: "#00FF9D",
+      Icon: Activity,
+    },
+    {
+      name: "ROI Calculator",
+      link: "/build/roi",
+      desc: "Model savings, productivity lift, and delivery economics.",
+      status: "Forecast",
+      accent: "#E4000F",
+      Icon: Calculator,
+    },
+    {
+      name: "Marketplace",
+      link: "/platforms/marketplace",
+      desc: "Explore certified enterprise agent blueprints and recipes.",
+      status: "Registry",
+      accent: "#E98828",
+      Icon: Layers,
+    },
+    {
+      name: "Foundry Studio",
+      link: "/platforms/foundry",
+      desc: "Design deterministic workflows in the co-creation layer.",
+      status: "DAG Studio",
+      accent: "#00C2FF",
+      Icon: Workflow,
+    },
   ];
 
   const handleSend = (text: string) => {
@@ -42,24 +85,55 @@ export default function InteractiveExperienceSection() {
           Hands-on simulation tools. Preview GFF multi-agent capabilities in secure client-side sandboxes.
         </p>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-4 flex lg:flex-col gap-3 overflow-x-auto pb-4 lg:pb-0 scrollbar-none">
+        <div className="relative">
+          <div className="absolute inset-0 -z-10 bg-[linear-gradient(rgba(0,157,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(157,0,255,0.08)_1px,transparent_1px)] bg-[size:42px_42px] opacity-40" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {tools.map((t, idx) => (
-              <button
+              <Link
                 key={t.name}
-                type="button"
+                href={t.link}
                 onClick={() => setTab(idx)}
-                className={`flex-shrink-0 w-[190px] lg:w-full text-left rounded-xl border p-4 transition-all cursor-pointer ${
-                  tab === idx ? "bg-[#050B18] border-[#009DFF]/40" : "bg-[#010101]/60 border-white/5 hover:bg-white/[0.02]"
-                }`}
+                className="group relative min-h-[196px] overflow-hidden rounded-2xl border border-white/10 bg-[#030509]/90 p-5 text-left transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-[#060a12]"
+                style={{
+                  boxShadow: tab === idx ? `0 0 0 1px ${t.accent}80, 0 22px 70px ${t.accent}26` : undefined,
+                }}
               >
-                <span className="text-[9px] font-mono text-white/30">0{idx + 1} / tool</span>
-                <h3 className="text-[14px] font-semibold text-white/90 mt-1">{t.name}</h3>
-              </button>
+                <span className="absolute -right-14 -top-14 h-36 w-36 rounded-full blur-3xl opacity-20 transition-opacity duration-300 group-hover:opacity-45" style={{ backgroundColor: t.accent }} />
+                <span className="absolute inset-x-0 top-0 h-px opacity-60" style={{ background: `linear-gradient(90deg, transparent, ${t.accent}, transparent)` }} />
+                <span className="absolute left-0 top-0 h-full w-full translate-x-[-120%] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent transition-transform duration-700 group-hover:translate-x-[120%]" />
+
+                <span className="relative flex items-start justify-between gap-4">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-xl border bg-white/[0.03] transition-transform duration-300 group-hover:scale-105" style={{ borderColor: `${t.accent}55`, color: t.accent }}>
+                    <t.Icon className="h-5 w-5" />
+                  </span>
+                  <span className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[9px] font-mono uppercase tracking-[0.18em] text-white/45">
+                    0{idx + 1} / tool
+                  </span>
+                </span>
+
+                <span className="relative mt-6 block">
+                  <span className="mb-2 flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.18em]" style={{ color: t.accent }}>
+                    <Sparkles className="h-3 w-3 animate-pulse" />
+                    {t.status}
+                  </span>
+                  <h3 className="text-xl font-semibold tracking-tight text-white transition-colors duration-300 group-hover:text-white">{t.name}</h3>
+                  <p className="mt-3 min-h-[42px] text-sm leading-relaxed text-white/55">{t.desc}</p>
+                </span>
+
+                <span className="relative mt-5 flex items-center justify-between border-t border-white/10 pt-4">
+                  <span className="flex items-center gap-1.5">
+                    {[0, 1, 2].map((dot) => (
+                      <span key={dot} className="h-1.5 w-1.5 rounded-full opacity-70" style={{ backgroundColor: t.accent }} />
+                    ))}
+                    <span className="ml-2 text-[10px] font-mono uppercase tracking-[0.16em] text-white/35">Open Workspace</span>
+                  </span>
+                  <ArrowUpRight className="h-4 w-4 text-white/45 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-white" />
+                </span>
+              </Link>
             ))}
           </div>
 
-          <div className="lg:col-span-8">
+          {/* <div className="lg:col-span-8">
             <div className="w-full min-h-[360px] rounded-2xl border border-white/10 bg-[#04060b] p-6 sm:p-8 flex flex-col justify-between shadow-2xl">
               <div>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-white/5 pb-4">
@@ -146,7 +220,7 @@ export default function InteractiveExperienceSection() {
                 <Link href={tools[tab].link} className="shrink-0 text-[#009DFF] font-bold hover:underline">Launch Sandbox &rarr;</Link>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </section>
