@@ -94,6 +94,7 @@ export default function InvestorRelationsPage() {
             description="Strategic allocators and partners may request an operational review with high discretion."
             primaryLabel="Connect with IR Desk"
             primaryHref="mailto:investors@gff.ai"
+            // primaryHref="https://mail.google.com/mail/?view=cm&fs=1&to=investors@gff.ai"
             secondaryLabel="Review Privacy Framework"
             secondaryHref="/privacy"
           />
