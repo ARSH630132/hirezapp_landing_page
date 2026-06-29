@@ -58,6 +58,13 @@ const staticSearchDatabase: SearchItem[] = [
     link: "/build?solution=gcc",
     keywords: ["gcc", "global capability center", "scale", "offshore", "governance", "center of excellence", "coe", "build ai gcc"]
   },
+  {
+    title: "Banking AI Control Tower",
+    category: "Build With GFF",
+    description: "Coordinate customer onboarding, risk review, document intelligence, audit trails, and service operations through governed banking AI workflows.",
+    link: "/build?solution=banking-control-tower",
+    keywords: ["banking", "bank", "finance", "financial services", "control tower", "risk", "audit", "document intelligence", "customer onboarding", "build ai for banking"]
+  },
 
   // Industries
   {
@@ -72,7 +79,7 @@ const staticSearchDatabase: SearchItem[] = [
     category: "Industries",
     description: "Empower extraction, manufacturing, and supply chain divisions with asset predictive maintenance, procurement advisors, and field operations copilot.",
     link: "/industries",
-    keywords: ["industry", "mining", "manufacturing", "procurement", "supply chain", "maintenance", "resources", "oil", "gas"]
+    keywords: ["industry", "mining", "manufacturing", "procurement", "supply chain", "maintenance", "resources", "oil", "gas", "mining ai"]
   },
   {
     title: "Health & Life Sciences",
@@ -86,14 +93,28 @@ const staticSearchDatabase: SearchItem[] = [
     category: "Industries",
     description: "Modern civic services, transparent grant scoring, learning operations support, and modern campus AI tools designed for educational institutions.",
     link: "/industries",
-    keywords: ["public service", "education", "civic", "grant", "campus", "learning", "government", "school", "university", "academic"]
+    keywords: ["public service", "education", "civic", "grant", "campus", "learning", "government", "school", "university", "academic", "create university ai lab"]
   },
   {
     title: "Consumer & Digital Industry",
     category: "Industries",
     description: "Bring rapid intelligence, hyper-personalization, and continuous customer experience optimization to consumer-facing retail and telecom brands.",
     link: "/industries",
-    keywords: ["consumer", "digital", "retail", "telecom", "customer experience", "personalization", "sales"]
+    keywords: ["consumer", "digital", "retail", "telecom", "customer experience", "personalization", "sales", "retail ai"]
+  },
+  {
+    title: "Insurance & Risk Operations",
+    category: "Industries",
+    description: "AI patterns for policy servicing, claims intake, underwriting review, broker support, fraud detection, and regulated insurance operations.",
+    link: "/industries",
+    keywords: ["insurance", "claims", "policy", "underwriting", "broker", "fraud", "risk", "servicing", "insurance ai"]
+  },
+  {
+    title: "GCC & Enterprise Shared Services",
+    category: "Industries",
+    description: "Operating models for global capability centers, shared service teams, transformation offices, delivery hubs, and AI centers of excellence.",
+    link: "/industries",
+    keywords: ["gcc", "global capability center", "shared services", "center of excellence", "coe", "delivery hub", "enterprise operations", "build ai gcc"]
   },
 
   // Capabilities
@@ -139,7 +160,6 @@ const staticSearchDatabase: SearchItem[] = [
     link: "/capabilities",
     keywords: ["operations", "monitoring", "orchestration", "deployment", "system", "health", "ops", "automation"]
   },
-
   // Platforms
   {
     title: "AI Factory Platform",
