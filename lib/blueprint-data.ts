@@ -18,7 +18,7 @@ export const industryOptions = [
   { value: "Healthcare", label: "Healthcare & Life Sciences" },
   { value: "Education", label: "Education" },
   { value: "Manufacturing", label: "Manufacturing & Automotive" },
-  { value: "Tech", label: "Technology & Software" },
+  { value: "Tech", label: "Government & Sovereign" },
   { value: "Other", label: "Other Services / General" },
 ];
 

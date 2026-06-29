@@ -227,8 +227,12 @@ export async function dynamoDbGetClient(clientId: string): Promise<any> {
   const normalizedClientId = normalizeClientKey(clientId);
   if (docClient) {
     try {
-      const res = await docClient.send(new GetCommand({ TableName: DYNAMODB_CLIENTS_TABLE, Key: { client_id: normalizedClientId } }));
-      return res.Item || null;
+      const keys: (string | number)[] = normalizedClientId === clientId ? [normalizedClientId] : [normalizedClientId, clientId];
+      if (/^\d+$/.test(normalizedClientId)) keys.push(Number(normalizedClientId));
+      for (const key of keys) {
+        const res = await docClient.send(new GetCommand({ TableName: DYNAMODB_CLIENTS_TABLE, Key: { client_id: key } }));
+        if (res.Item) return res.Item;
+      }
     } catch (err) { return null; }
   }
   return null;

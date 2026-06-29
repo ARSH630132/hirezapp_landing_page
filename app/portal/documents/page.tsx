@@ -583,17 +583,22 @@ export default function ClientDocumentsPage() {
       }
       
       let targetClientId = currentClientId;
+      let targetUserRole = currentUserRole;
       if (!targetClientId) {
         const meRes = await fetch("/api/v1/auth/me", {
           headers: { "Authorization": `Bearer ${token}` }
         });
         if (meRes.ok) {
           const meData = await meRes.json();
+          targetUserRole = meData.user?.role || targetUserRole;
           targetClientId = meData.user?.client_id;
           if (!targetClientId && typeof meData.user?.clientAssociation === "string") {
             targetClientId = getClientIdFromAssociation(meData.user.clientAssociation);
           }
         }
+      }
+      if (targetClientId === "client-unknown" && targetUserRole === "gff_admin") {
+        targetClientId = availableProjects.find((project: any) => project.id === uploadProjectId)?.client_id || availableProjects.find((project: any) => project.client_id)?.client_id || "client-001";
       }
       
       if (!targetClientId) {
@@ -622,7 +627,7 @@ export default function ClientDocumentsPage() {
       
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.detail || `Upload failed with status ${res.status}`);
+        throw new Error(errData.detail || errData.message || errData.error || `Upload failed with status ${res.status}`);
       }
       
       const data = await res.json();
