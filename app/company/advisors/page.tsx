@@ -33,6 +33,7 @@ export default function CompanyAdvisorsPage() {
         category="Strategic Advisory"
         title="Governed by Industry-Standard Advisors"
         highlightedWord="Advisors"
+        visualType="advisors"
         description="Our Strategic Advisory Board brings together leading perspectives in compliance, secure systems, and enterprise scaling to assure GFF operations meet the highest institutional standards."
       />
 

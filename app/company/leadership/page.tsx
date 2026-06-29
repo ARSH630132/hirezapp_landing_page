@@ -46,6 +46,7 @@ export default function CompanyLeadershipPage() {
         category="Corporate Leadership"
         title="Led by Visionaries in AI Architecture"
         highlightedWord="AI Architecture"
+        visualType="leadership"
         description="GFF AI is founded and led by CEO Dr. Ashish Chandra, coordinating a global team of systems architects, safety researchers, and deployment specialists."
       />
 

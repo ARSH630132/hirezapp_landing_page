@@ -33,6 +33,7 @@ export default function CompanyMissionPage() {
         category="Our Core Mission"
         title="Engineering Trust for the Autonomous Era"
         highlightedWord="Autonomous"
+        visualType="mission"
         description="We believe agentic networks will drive the next industrial revolution. Our mission is to provide the trust infrastructure, safety bounds, and scale protocols required to run them."
       />
 

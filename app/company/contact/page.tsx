@@ -37,6 +37,7 @@ export default function CompanyContactPage() {
         category="Secure Gateway"
         title="Decoupled Engagement Hub"
         highlightedWord="Hub"
+        visualType="contact"
         description="Initiate validation sandbox sessions, structure enterprise pilot programs, or connect with specific functional representatives across GFF AI\s zero-trust gateway."
       />
       <div className="max-w-[1795px] mx-auto px-6 lg:px-16 pb-32">

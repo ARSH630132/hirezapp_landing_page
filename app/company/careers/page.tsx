@@ -36,6 +36,7 @@ export default function CompanyCareersPage() {
         category="Join the Mission"
         title="Careers at GFF AI"
         highlightedWord="Careers"
+        visualType="careers"
         description="We are looking for expert systems engineers, cognitive researchers, and technical architects to build the next layer of industrial automation."
       />
 

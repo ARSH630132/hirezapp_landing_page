@@ -12,6 +12,16 @@ import {
   FlaskConical,
   Cpu,
   DollarSign,
+  Building2,
+Target,
+Network,
+MapPin,
+Handshake,
+BriefcaseBusiness,
+TrendingUp,
+Radio,
+MessageCircle,
+Users,
   type LucideIcon,
 } from "lucide-react";
 interface InnerPageHeroProps {
@@ -41,7 +51,17 @@ type VisualType =
 | "countries"
 | "humanoid"
 | "financial"
-| "universityLab";
+| "universityLab"
+| "profile"
+| "mission"
+| "leadership"
+| "locations"
+| "partners"
+| "advisors"
+| "careers"
+| "investors"
+| "media"
+| "contact";
 
 type VisualConfig = {
   icon?: string;
@@ -150,6 +170,75 @@ universityLab: {
   color: "#C084FC",
   second: "#A855F7",
   alt: "University AI Lab",
+},
+profile: {
+  Icon: Building2,
+  color: "#009DFF",
+  second: "#E4000F",
+  alt: "Company Profile",
+},
+
+mission: {
+  Icon: Target,
+  color: "#F74539",
+  second: "#FACC15",
+  alt: "Mission",
+},
+
+leadership: {
+  Icon: Users,
+  color: "#C084FC",
+  second: "#009DFF",
+  alt: "Leadership",
+},
+
+locations: {
+  Icon: MapPin,
+  color: "#00D6A3",
+  second: "#009DFF",
+  alt: "Locations",
+},
+
+partners: {
+  Icon: Handshake,
+  color: "#E98828",
+  second: "#009DFF",
+  alt: "Partners",
+},
+
+advisors: {
+  Icon: Compass,
+  color: "#F97316",
+  second: "#F74539",
+  alt: "Advisors",
+},
+
+careers: {
+  Icon: BriefcaseBusiness,
+  color: "#009DFF",
+  second: "#00D6A3",
+  alt: "Careers",
+},
+
+investors: {
+  Icon: TrendingUp,
+  color: "#FACC15",
+  second: "#F74539",
+  alt: "Investors",
+},
+
+media: {
+  Icon: Radio,
+  color: "#F74539",
+  second: "#C084FC",
+  alt: "Media",
+},
+
+contact: {
+  Icon: MessageCircle,
+  color: "#009DFF",
+  second: "#E4000F",
+  alt: "Contact",
 },
 };
 

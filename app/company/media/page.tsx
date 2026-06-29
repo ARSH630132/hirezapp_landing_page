@@ -40,6 +40,7 @@ export default function CompanyMediaPage() {
         category="Media Kit"
         title="Official Brand Resources and Assets"
         highlightedWord="Resources"
+        visualType="media"
         description="Access verified company information, downloadable high-resolution logos, and official boilerplate statements for publication."
       />
 

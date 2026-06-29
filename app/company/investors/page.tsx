@@ -32,6 +32,7 @@ export default function CompanyInvestorsPage() {
         category="Investor Relations"
         title="Fiscal Integrity & Systemic Trust"
         highlightedWord="Integrity"
+        visualType="investors"
         description="GFF AI PTE. LTD. maintains strict operational discipline, governed by a rigorous risk-management framework and transparent institutional standards."
       />
 

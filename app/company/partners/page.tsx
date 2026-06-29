@@ -33,6 +33,7 @@ export default function CompanyPartnersPage() {
         category="Partner Ecosystem"
         title="Accelerating the Agent Economy Together"
         highlightedWord="Agent Economy"
+         visualType="partners"
         description="We align with elite systems integrators, leading academic laboratories, and core infrastructure providers to establish reliable standards for autonomous enterprise operations."
       />
 

@@ -33,6 +33,7 @@ export default function CompanyProfilePage() {
         category="Corporate Profile"
         title="Architects of the Agent Economy"
         highlightedWord="Agent Economy"
+        visualType="profile"
         description="GFF AI PTE. LTD. (UEN 202621347N) is a premier global AI strategy and deployment firm. We build and scale high-throughput, secure, and compliant agentic systems to run complex workflows for global enterprises."
       />
 
