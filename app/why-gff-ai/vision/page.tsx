@@ -88,6 +88,7 @@ export default function VisionPage() {
         category="Strategic Outlook"
         title="Our Vision: Empowering Enterprise Autonomy"
         highlightedWord="Enterprise Autonomy"
+        visualType="enterpriseAutonomyVision"
         description="Pioneering the next era of high-throughput corporate agency, where sovereign networks of self-correcting agents execute board strategies with precision."
         breadcrumbs={[
           { label: "Home", href: "/" },

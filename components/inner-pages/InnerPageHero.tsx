@@ -3,6 +3,7 @@
 import React from "react";
 import { motion } from "motion/react";
 import {
+  FileText,
   Compass,
   Settings,
   Bot,
@@ -12,18 +13,21 @@ import {
   FlaskConical,
   Cpu,
   DollarSign,
-  BookOpenCheck,
+  // BookOpenCheck,
   Building2,
-  ServerCog,
-  DraftingCompass,
+  // ServerCog,
+  // DraftingCompass,
   CircuitBoard,
 Target,
 Network,
 MapPin,
 Handshake,
-BriefcaseBusiness,
+// BriefcaseBusiness,
 TrendingUp,
 Radio,
+BookOpen,
+Server,
+Briefcase,
 MessageCircle,
 Users,
   type LucideIcon,
@@ -61,6 +65,11 @@ type VisualType =
 | "humanoid"
 | "financial"
 | "universityLab"
+| "operatingModel"
+| "executiveLeadership"
+| "globalDeliveryModel"
+| "technologyPhilosophy"
+| "coreDifferentiator"
 | "profile"
 | "mission"
 | "leadership"
@@ -71,6 +80,7 @@ type VisualType =
 | "investors"
 | "media"
 | "research"
+| "agentEconomyMission"
 | "industryAI"
 | "referenceArchitecture"
 | "engineeringWhitepapers"
@@ -81,6 +91,8 @@ type VisualType =
 | "executiveMasterclasses"
 | "globalSummits"
 | "assetDownloads"
+| "enterpriseAutonomyVision"
+| "gffFramework"
 | "contact";
 
 type VisualConfig = {
@@ -98,8 +110,20 @@ const visualMap: Record<VisualType, VisualConfig> = {
     second: "#E98828",
     alt: "Garage",
   },
+  gffFramework: {
+  Icon: Factory,
+  color: "#F74539",
+  second: "#009DFF",
+  alt: "Garage, Foundry, and Factory Framework",
+},
+  enterpriseAutonomyVision: {
+  Icon: Globe2,
+  color: "#009DFF",
+  second: "#00D6A3",
+  alt: "Empowering Enterprise Autonomy",
+},
   developerDocs: {
-  Icon: ServerCog,
+  Icon: Server,
   color: "#009DFF",
   second: "#F74539",
   alt: "Developer Docs",
@@ -111,6 +135,12 @@ caseStudies: {
   second: "#F74539",
   alt: "Case Studies",
 },
+agentEconomyMission: {
+  Icon: Network,
+  color: "#009DFF",
+  second: "#F74539",
+  alt: "Architects of the Agent Economy",
+},
 
 corporateBlog: {
   Icon: MessageCircle,
@@ -118,7 +148,40 @@ corporateBlog: {
   second: "#E98828",
   alt: "Corporate Blog",
 },
+operatingModel: {
+  Icon: Settings,
+  color: "#009DFF",
+  second: "#F74539",
+  alt: "Operating Model",
+},
 
+executiveLeadership: {
+  Icon: Users,
+  color: "#F74539",
+  second: "#009DFF",
+  alt: "Executive Leadership",
+},
+
+globalDeliveryModel: {
+  Icon: Globe2,
+  color: "#009DFF",
+  second: "#00D6A3",
+  alt: "Global Delivery Model",
+},
+
+technologyPhilosophy: {
+  Icon: CircuitBoard,
+  color: "#009DFF",
+  second: "#C084FC",
+  alt: "Technology Philosophy",
+},
+
+coreDifferentiator: {
+  Icon: Target,
+  color: "#F74539",
+  second: "#E98828",
+  alt: "Core Differentiator",
+},
 multimediaKeynotes: {
   Icon: Radio,
   color: "#009DFF",
@@ -147,13 +210,13 @@ assetDownloads: {
   alt: "Asset Downloads",
 },
   referenceArchitecture: {
-  Icon: DraftingCompass,
+  Icon: FileText,
   color: "#009DFF",
   second: "#E98828",
   alt: "Reference Architecture Library",
 },
   engineeringWhitepapers: {
-  Icon: DraftingCompass,
+  Icon: FileText,
   color: "#009DFF",
   second: "#F74539",
   alt: "Engineering Whitepapers",
@@ -165,20 +228,20 @@ assetDownloads: {
   alt: "Insurance Claims & Policy AI",
 },
   coEngineering: {
-  Icon: Compass,
+  Icon: FileText,
   color: "#E98828",
   second: "#009DFF",
   alt: "Sovereign Co-Engineering Workshop",
 },
 
   enterprisePlatforms: {
-  Icon: ServerCog, // ya Server
+  Icon: Server, // ya Server
   color: "#009DFF",
   second: "#E98828",
   alt: "Enterprise Platforms",
 },
 "research-publications": {
-  Icon: BookOpenCheck,
+  Icon: BookOpen,
   color: "#009DFF",
   second: "#F74539",
   alt: "Theoretical Research & Publications",
@@ -275,7 +338,7 @@ humanoid: {
   alt: "Humanoid",
 },
 research: {
-  Icon: BookOpenCheck,
+  Icon: BookOpen,
   color: "#009DFF",
   second: "#C084FC",
   alt: "Research Intelligence Library",
@@ -336,7 +399,7 @@ advisors: {
 },
 
 careers: {
-  Icon: BriefcaseBusiness,
+  Icon: Briefcase,
   color: "#009DFF",
   second: "#00D6A3",
   alt: "Careers",

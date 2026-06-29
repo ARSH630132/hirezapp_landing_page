@@ -45,6 +45,7 @@ export default function DifferentiatorPage() {
         category="Proprietary IP"
         title="Our Differentiator & Research Division"
         highlightedWord="Differentiator"
+        visualType="coreDifferentiator"
         description="GFF AI PTE LTD. goes beyond general-purpose tools to engineer quantitative benchmarks and sovereign reference architectures."
         breadcrumbs={[
           { label: "Home", href: "/" },

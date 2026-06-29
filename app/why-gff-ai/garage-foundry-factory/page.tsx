@@ -67,6 +67,7 @@ export default function GarageFoundryFactoryPage() {
         category="Delivery Methodology"
         title="Garage, Foundry, and Factory Framework"
         highlightedWord="Garage, Foundry, and Factory"
+        visualType="gffFramework"
         description="Our structured engineering lifecycle bridges abstract academic ideas and boardroom execution through secure, localized stages of validation."
         breadcrumbs={[
           { label: "Home", href: "/" },

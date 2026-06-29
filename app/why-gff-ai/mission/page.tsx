@@ -68,6 +68,7 @@ export default function MissionPage() {
         category="Corporate Ethos"
         title="Our Mission: Architects of the Agent Economy"
         highlightedWord="Agent Economy"
+          visualType="agentEconomyMission"
         description="GFF AI PTE LTD. is dedicated to engineering safe, sovereign agentic infrastructure to securely scale enterprise cognitive intelligence."
         breadcrumbs={[
           { label: "Home", href: "/" },

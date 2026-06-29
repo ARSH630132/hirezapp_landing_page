@@ -67,6 +67,7 @@ export default function GlobalModelPage() {
         category="Global Presence"
         title="Our Global Delivery Model"
         highlightedWord="Global Delivery Model"
+        visualType="globalDeliveryModel"
         description="GFF AI PTE LTD. deploys enterprise sandboxes across three primary geopolitical delivery hubs to guarantee sovereignty, compliance, and velocity."
         breadcrumbs={[
           { label: "Home", href: "/" },

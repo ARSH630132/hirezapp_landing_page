@@ -67,6 +67,7 @@ export default function OperatingModelPage() {
         category="Operational Excellence"
         title="Our Operating Model & Execution Lifecycle"
         highlightedWord="Operating Model"
+        visualType="operatingModel"
         description="We implement rigorous software engineering and governance controls to structure the lifecycle of autonomous multi-agent clusters."
         breadcrumbs={[
           { label: "Home", href: "/" },

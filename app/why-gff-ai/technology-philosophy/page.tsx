@@ -67,6 +67,7 @@ export default function TechnologyPhilosophyPage() {
         category="Technical Ethos"
         title="Our Technology Philosophy & Architecture"
         highlightedWord="Technology Philosophy"
+        visualType="technologyPhilosophy"
         description="The GFF AI Reference Architecture provides a robust, cryptographically isolated structural blueprint designed to prevent prompt drift and state decay."
         breadcrumbs={[
           { label: "Home", href: "/" },

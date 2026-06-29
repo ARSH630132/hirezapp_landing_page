@@ -67,6 +67,7 @@ export default function LeadershipPage() {
       <InnerPageHero
         category="Corporate Governance"
         title="Executive Leadership"
+        visualType="executiveLeadership"
         highlightedWord="Leadership"
         description="Meet GFF AI PTE LTD.'s strategic leadership directing the safe integration of autonomous digital labour inside international enterprises."
         breadcrumbs={[
