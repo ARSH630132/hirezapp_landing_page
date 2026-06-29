@@ -34,6 +34,7 @@ export default function ScalePage() {
         title="GFF AI Scale"
         highlightedWord="Scale"
         description="Propagate proven agent templates across departments, geographies, and hybrid enterprise environments."
+        visualType="scale"
       />
 
       <div className="max-w-[1795px] mx-auto px-6 lg:px-16 pb-24 space-y-16">

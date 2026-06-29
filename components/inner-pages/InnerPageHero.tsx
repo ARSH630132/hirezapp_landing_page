@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { motion } from "motion/react";
 
 interface InnerPageHeroProps {
   category?: string;
@@ -10,6 +11,128 @@ interface InnerPageHeroProps {
   description: string;
   breadcrumbs?: Array<{ label: string; href?: string }>;
   centered?: boolean;
+  visualType?: "default" | "garage" | "foundry" | "factory" | "operate" | "optimize" | "scale";
+}
+
+const visualMap = {
+  garage: {
+    icon: "/ai_foundary/garage.svg",
+    color: "#F74539",
+    second: "#E98828",
+    alt: "Garage",
+  },
+  foundry: {
+    icon: "/ai_foundary/foundry.svg",
+    color: "#E98828",
+    second: "#F74539",
+    alt: "Foundry",
+  },
+  factory: {
+    icon: "/ai_foundary/factory.svg",
+    color: "#0186E4",
+    second: "#009DFF",
+    alt: "Factory",
+  },
+  operate: {
+    icon: "/intellegent_enterprise/robot.svg",
+    color: "#F74539",
+    second: "#E4000F",
+    alt: "Operate",
+  },
+  optimize: {
+    icon: "/intellegent_enterprise/blueprint.svg",
+    color: "#e23f34",
+    second: "#F74539",
+    alt: "Optimize",
+  },
+  scale: {
+    icon: "/intellegent_enterprise/industry.svg",
+    color: "#dd2531",
+    second: "#E4000F",
+    alt: "Scale",
+  },
+};
+
+function HeroVisual({
+  type,
+}: {
+  type: "garage" | "foundry" | "factory" | "operate" | "optimize" | "scale";
+}) {
+  const visual = visualMap[type];
+
+  return (
+    <div className="relative z-10 w-full h-full flex items-center justify-center">
+      <div
+        className="absolute inset-0 opacity-40"
+        style={{
+          backgroundImage: `linear-gradient(${visual.color}14 1px, transparent 1px), linear-gradient(90deg, ${visual.second}10 1px, transparent 1px)`,
+          backgroundSize: "34px 34px",
+        }}
+      />
+
+      <div
+        className="absolute inset-8 rounded-[22px] border bg-black/10"
+        style={{ borderColor: `${visual.color}26`, backgroundColor: `${visual.color}08` }}
+      />
+
+      <motion.div
+        className="absolute inset-10 rounded-[20px] border"
+        style={{ borderColor: `${visual.color}40` }}
+        animate={{ opacity: [0.25, 0.65, 0.25], scale: [0.96, 1, 0.96] }}
+        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      <motion.div
+        className="absolute w-[72%] h-[72%] rounded-full blur-[48px]"
+        style={{
+          background: `radial-gradient(circle, ${visual.color}35 0%, ${visual.second}18 42%, transparent 70%)`,
+        }}
+        animate={{ opacity: [0.35, 0.75, 0.35] }}
+        transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      <motion.div
+        className="relative w-[220px] h-[220px] flex items-center justify-center"
+        animate={{ y: [0, -6, 0] }}
+        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+      >
+        <img
+          src={visual.icon}
+          alt={visual.alt}
+          className="w-[180px] h-[180px] object-contain"
+          style={{ filter: `drop-shadow(0 0 28px ${visual.color}88)` }}
+        />
+      </motion.div>
+
+      <motion.div
+        className="absolute bottom-[18%] left-[18%] w-3 h-3 rounded-full"
+        style={{ backgroundColor: visual.color, boxShadow: `0 0 18px ${visual.color}` }}
+        animate={{ scale: [1, 1.45, 1], opacity: [0.5, 1, 0.5] }}
+        transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      <motion.div
+        className="absolute top-[22%] right-[20%] w-3 h-3 rounded-full"
+        style={{ backgroundColor: visual.second, boxShadow: `0 0 18px ${visual.second}` }}
+        animate={{ scale: [1, 1.45, 1], opacity: [0.5, 1, 0.5] }}
+        transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      <motion.div
+        className="absolute top-[30%] left-[22%] w-[70px] h-px bg-gradient-to-r from-transparent to-transparent"
+        style={{ borderTop: `1px solid ${visual.color}` }}
+        animate={{ opacity: [0.15, 0.85, 0.15], x: [-8, 8, -8] }}
+        transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      <motion.div
+        className="absolute bottom-[28%] right-[20%] w-[86px] h-px bg-gradient-to-r from-transparent to-transparent"
+        style={{ borderTop: `1px solid ${visual.second}` }}
+        animate={{ opacity: [0.15, 0.85, 0.15], x: [8, -8, 8] }}
+        transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+      />
+    </div>
+  );
 }
 
 export default function InnerPageHero({
@@ -18,6 +141,7 @@ export default function InnerPageHero({
   highlightedWord,
   highlightColor = "gradient",
   description,
+  visualType = "default",
   breadcrumbs,
   centered = false,
 }: InnerPageHeroProps) {
@@ -82,25 +206,30 @@ export default function InnerPageHero({
           <div className="lg:col-span-5 flex justify-center items-center relative">
             <div className="relative w-full aspect-square max-w-[360px] rounded-[24px] border border-white/5 bg-gradient-to-br from-[#0c0c0e] to-[#040405] p-6 shadow-2xl flex items-center justify-center overflow-hidden group">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70%] h-[70%] bg-gradient-to-tr from-[#E4000F]/10 to-[#009DFF]/10 rounded-full blur-[40px]" />
-              <svg className="w-full h-full relative z-10" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g className="animate-[spin_40s_linear_infinite] origin-center">
-                  <circle cx="200" cy="200" r="140" stroke="url(#ringG)" strokeWidth="1" strokeDasharray="5 15" className="opacity-40" />
-                  <circle cx="200" cy="200" r="100" stroke="url(#ringG)" strokeWidth="1" strokeDasharray="20 10" className="opacity-25" />
-                  <circle cx="200" cy="200" r="70" stroke="url(#ringG)" strokeWidth="1.5" className="opacity-15" />
-                  <path d="M200 40 L200 360 M40 200 L360 200 M87 87 L313 313" stroke="white" strokeWidth="0.5" className="opacity-10" />
-                  <circle cx="200" cy="60" r="4" fill="#E4000F" />
-                  <circle cx="200" cy="340" r="4" fill="#009DFF" />
-                  <circle cx="60" cy="200" r="4" fill="#009DFF" />
-                  <circle cx="340" cy="200" r="4" fill="#E4000F" />
-                </g>
-                <circle cx="200" cy="200" r="36" fill="#050505" stroke="url(#ringG)" strokeWidth="2" />
-                <defs>
-                  <linearGradient id="ringG" x1="0" y1="0" x2="400" y2="400" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#E4000F" />
-                    <stop offset="1" stopColor="#009DFF" />
-                  </linearGradient>
-                </defs>
-              </svg>
+
+              {visualType !== "default" ? (
+                <HeroVisual type={visualType} />
+              ) : (
+                <svg className="w-full h-full relative z-10" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <g className="animate-[spin_40s_linear_infinite] origin-center">
+                    <circle cx="200" cy="200" r="140" stroke="url(#ringG)" strokeWidth="1" strokeDasharray="5 15" className="opacity-40" />
+                    <circle cx="200" cy="200" r="100" stroke="url(#ringG)" strokeWidth="1" strokeDasharray="20 10" className="opacity-25" />
+                    <circle cx="200" cy="200" r="70" stroke="url(#ringG)" strokeWidth="1.5" className="opacity-15" />
+                    <path d="M200 40 L200 360 M40 200 L360 200 M87 87 L313 313" stroke="white" strokeWidth="0.5" className="opacity-10" />
+                    <circle cx="200" cy="60" r="4" fill="#E4000F" />
+                    <circle cx="200" cy="340" r="4" fill="#009DFF" />
+                    <circle cx="60" cy="200" r="4" fill="#009DFF" />
+                    <circle cx="340" cy="200" r="4" fill="#E4000F" />
+                  </g>
+                  <circle cx="200" cy="200" r="36" fill="#050505" stroke="url(#ringG)" strokeWidth="2" />
+                  <defs>
+                    <linearGradient id="ringG" x1="0" y1="0" x2="400" y2="400" gradientUnits="userSpaceOnUse">
+                      <stop stopColor="#E4000F" />
+                      <stop offset="1" stopColor="#009DFF" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+              )}
             </div>
           </div>
         )}

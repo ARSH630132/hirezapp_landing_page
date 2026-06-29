@@ -43,6 +43,7 @@ export default function ControlCenterPage() {
         highlightedWord="Control Center"
         description="Monitor agent swarm health, enforce cryptographic compliance, track cloud compute spend, and audit system-wide delivery operations from a secure single-pane glass console."
         breadcrumbs={[{ label: "Platforms", href: "/platforms" }, { label: "Control Center" }]}
+        visualType="optimize"
       />
 
       <div className="max-w-[1795px] mx-auto px-6 lg:px-16 pb-24 space-y-20">

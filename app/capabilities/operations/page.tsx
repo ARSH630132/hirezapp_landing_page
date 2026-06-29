@@ -11,6 +11,7 @@ export default function OperationsPage() {
   "highlightedWord": "Operations",
   "description": "Deploy automated operational monitors tracking semantic latency, cost anomalies, token consumption, and fallback systems.",
   "activeLayerId": "operations",
+  "visualType":"operate",
   "useCases": [
     {
       "title": "Latency Telemetry",

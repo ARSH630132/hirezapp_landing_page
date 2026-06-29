@@ -25,6 +25,7 @@ export default function FactoryPage() {
         title="GFF AI Factory"
         highlightedWord="Factory"
         description="Scale, monitor, operate, and monetize sovereign agent networks at global scale."
+     visualType="factory"
       />
       <div className="max-w-[1795px] mx-auto px-6 lg:px-16 pb-24 space-y-16">
         <MotionReveal className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center py-10 border-y border-white/5">

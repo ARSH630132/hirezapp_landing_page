@@ -39,6 +39,7 @@ interface CapabilitySubpageProps {
   title: string;
   highlightedWord: string;
   description: string;
+    visualType?: "default" | "garage" | "foundry" | "factory" | "operate" | "optimize" | "scale";
   useCases: UseCase[];
   activeLayerId: "experience" | "agentic" | "knowledge" | "data" | "governance" | "operations";
   deliveryModels: DeliveryModel[];
@@ -77,6 +78,7 @@ export default function CapabilitySubpageFamily({
   title,
   highlightedWord,
   description,
+  visualType = "default",
   useCases,
   activeLayerId,
   deliveryModels,
@@ -91,11 +93,12 @@ export default function CapabilitySubpageFamily({
   return (
     <InnerPageShell>
       <InnerPageHero
-        category={category}
-        title={title}
-        highlightedWord={highlightedWord}
-        description={description}
-        breadcrumbs={[
+  category={category}
+  title={title}
+  highlightedWord={highlightedWord}
+  description={description}
+  visualType={visualType}
+  breadcrumbs={[
           { label: "Home", href: "/" },
           { label: "Capabilities", href: "/capabilities" },
           { label: title }

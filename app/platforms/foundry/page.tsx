@@ -27,6 +27,7 @@ export default function FoundryPage() {
         title="Foundry Studio"
         highlightedWord="Foundry"
         description="Design deterministic multi-agent architectures with visual DAG orchestration."
+        visualType="foundry"
       />
       <div className="max-w-[1795px] mx-auto px-6 lg:px-16 pb-24 space-y-16">
         <MotionReveal className="grid grid-cols-1 lg:grid-cols-12 gap-8 py-10 border-y border-white/5">
