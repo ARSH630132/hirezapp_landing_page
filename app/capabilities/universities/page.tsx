@@ -9,6 +9,7 @@ export default function UniversitiesPage() {
   "category": "Academy",
   "title": "AI Enablement & Academics",
   "highlightedWord": "Enablement",
+  "visualType":"universityLab",
   "description": "Upskill internal developers and empower strategic leaders with corporate-grade technical AI enablement academies.",
   "activeLayerId": "experience",
   "useCases": [

@@ -50,6 +50,7 @@ export default function CompanyLocationsPage() {
         title="Physical Hubs Operating at Global Scale"
         highlightedWord="Global Scale"
         description="GFF AI coordinates operations across three primary global regions, ensuring 24/7 telemetry monitoring, continuous engineering, and secure system redundancy."
+        visualType="countries"
       />
 
       <section className="relative w-full px-6 lg:px-16 pb-16">

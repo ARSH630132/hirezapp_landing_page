@@ -43,6 +43,7 @@ export default function FinancialServicesPage() {
         category="Vertical Solutions"
         title="Financial Services AI Architectures"
         highlightedWord="Financial"
+        visualType="financial"
         description="Deploy secure, regulatory-compliant multi-agent cognitive layers over complex capital markets ledger systems."
         breadcrumbs={[{ label: "Industries", href: "/industries" }, { label: "Financial Services" }]}
       />

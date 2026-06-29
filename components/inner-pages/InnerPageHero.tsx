@@ -11,6 +11,7 @@ import {
   Factory,
   FlaskConical,
   Cpu,
+  DollarSign,
   type LucideIcon,
 } from "lucide-react";
 interface InnerPageHeroProps {
@@ -35,8 +36,12 @@ type VisualType =
   | "engineering"
   | "agents"
   | "governance"
-  | "marketplace"
-  | "labs";
+ | "marketplace"
+| "labs"
+| "countries"
+| "humanoid"
+| "financial"
+| "universityLab";
 
 type VisualConfig = {
   icon?: string;
@@ -118,6 +123,33 @@ labs: {
   color: "#C084FC",
   second: "#A855F7",
   alt: "AI Labs",
+},
+countries: {
+  Icon: Globe2,
+  color: "#00D6A3",
+  second: "#00FFF0",
+  alt: "Countries",
+},
+
+humanoid: {
+  Icon: Bot,
+  color: "#8EEBFF",
+  second: "#009DFF",
+  alt: "Humanoid",
+},
+
+financial: {
+  Icon: DollarSign,
+  color: "#FACC15",
+  second: "#F74539",
+  alt: "Financial Services",
+},
+
+universityLab: {
+  Icon: FlaskConical,
+  color: "#C084FC",
+  second: "#A855F7",
+  alt: "University AI Lab",
 },
 };
 

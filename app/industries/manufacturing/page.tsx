@@ -54,6 +54,7 @@ export default function ManufacturingPage() {
         category="Vertical Solutions"
         title="Industrial Manufacturing Solutions"
         highlightedWord="Manufacturing"
+        visualType="humanoid"
         description="Deploy real-time factory floor cognitive systems, automated maintenance routing, and supplier orchestration layers on safe, high-availability computing infrastructure."
         breadcrumbs={[{ label: "Industries", href: "/industries" }, { label: "Manufacturing" }]}
       />
