@@ -21,11 +21,19 @@ export default function ClientPortalLayout({
   const router = useRouter();
   const [session, setSession] = useState<SessionUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const isAuthPage = pathname === "/portal" || pathname === "/portal/login" || pathname === "/login";
 
   useEffect(() => {
+    if (isAuthPage) {
+      setLoading(false);
+      return;
+    }
+
     let ignore = false;
 
     const loadSession = async () => {
+      setLoading(true);
+
       const token =
         typeof window !== "undefined"
           ? localStorage.getItem("gff_ai_access_token") || localStorage.getItem("gff_api_token")
@@ -82,11 +90,9 @@ export default function ClientPortalLayout({
     return () => {
       ignore = true;
     };
-  }, [router]);
+  }, [isAuthPage, pathname, router]);
 
   // If it's an auth page, we render it directly without the app shell
-  const isAuthPage = pathname === "/portal" || pathname === "/portal/login" || pathname === "/login";
-
   if (isAuthPage) {
     return <>{children}</>;
   }

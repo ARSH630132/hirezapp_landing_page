@@ -83,7 +83,6 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
 
         const destination = payload.user.role === "gff_admin" ? "/admin/dashboard" : "/portal/dashboard";
         router.replace(destination);
-        router.refresh();
       } catch {
         // Leave the form visible when the token cannot be validated.
       }
@@ -164,7 +163,6 @@ export default function SecureLogin({ defaultRole }: { defaultRole?: string }) {
     const user = meData.user;
     const destination = user.role === "gff_admin" ? "/admin/dashboard" : "/portal/dashboard";
     router.replace(destination);
-    router.refresh();
   };
 
   const handlePasswordLogin = async () => {
