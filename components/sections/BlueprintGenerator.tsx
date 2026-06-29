@@ -366,7 +366,7 @@ const loginBlueprintUser = async (email: string, code: string) => {
             <span className="text-[10px] font-mono text-white/50 uppercase tracking-wider block">
               2. Select Organization Scale <span className="text-[#087DF3]">*</span>
             </span>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {companySizeOptions.map((opt) => {
                 const isSelected = data.companySize === opt.value;
                 return (
@@ -449,7 +449,7 @@ const loginBlueprintUser = async (email: string, code: string) => {
 
         return (
           <div className="space-y-4">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
               <span className="text-[10px] font-mono text-white/50 uppercase tracking-wider block">
                 Select Strategic Targets (Max 3) <span className="text-[#087DF3]">*</span>
               </span>
@@ -542,7 +542,7 @@ const loginBlueprintUser = async (email: string, code: string) => {
             <span className="text-[10px] font-mono text-white/50 uppercase tracking-wider block">
               1. Select Primary Bottleneck Category <span className="text-[#087DF3]">*</span>
             </span>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
               {challengeOptions.map((opt) => {
                 const isSelected = data.biggestChallenge === opt.value;
                 const cleanLabel = opt.label.split(" & ").pop()?.split(" Constraint").shift() || opt.label;
@@ -565,7 +565,7 @@ const loginBlueprintUser = async (email: string, code: string) => {
           </div>
 
           <div className="space-y-3 pt-6 border-t border-white/5">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
               <label htmlFor="blueprint-roadblock" className="text-[10px] font-mono text-white/50 uppercase tracking-wider block cursor-pointer">
                 2. Describe Roadblock In Detail <span className="text-[#087DF3]">*</span>
               </label>
@@ -731,27 +731,27 @@ if (verifiedBlueprintEmail !== data.email.toLowerCase().trim()) {
   const renderResult = (data: WizardData, result: any, onReset: () => void) => {
     return (
       <div className="space-y-8 anim-slide-up text-white" role="region" aria-live="polite" aria-label="Sovereign Enterprise AI Blueprint Report">
-        <div className="p-6 md:p-8 rounded-2xl border border-[#087DF3]/30 bg-gradient-to-r from-[#030d1d] to-[#04060c] flex items-center justify-between shadow-lg">
-          <div>
+        <div className="p-5 sm:p-6 md:p-8 rounded-2xl border border-[#087DF3]/30 bg-gradient-to-r from-[#030d1d] to-[#04060c] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shadow-lg">
+          <div className="min-w-0">
             <span className="text-[10px] font-mono font-bold text-[#087DF3] uppercase tracking-widest">VERIFIED COMPLETED ASSESSMENT</span>
-            <h3 className="text-2xl font-bold tracking-tight text-white mt-1">Your Custom GFF AI Blueprint is Synthesized</h3>
-            <p className="text-xs text-white/60 mt-1">
+            <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-white mt-1 leading-tight">Your Custom GFF AI Blueprint is Synthesized</h3>
+            <p className="text-xs text-white/60 mt-1 break-words">
               Generated for enterprise gate credential <span className="text-[#087DF3] font-bold font-mono">{data.email}</span>
             </p>
           </div>
-          <div className="hidden sm:block">
+          <div className="hidden sm:block shrink-0">
             <span className="text-xs font-mono font-bold bg-[#E98828]/15 text-[#E98828] border border-[#E98828]/20 px-3 py-1.5 rounded-lg">PORTAL_VERIFIED_SECURE</span>
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8 items-stretch">
+        <div className="flex flex-col lg:flex-row gap-5 lg:gap-8 items-stretch">
           {/* Score Circular Dial */}
-          <div className="lg:w-1/3 rounded-2xl border border-white/10 bg-[#030712]/40 backdrop-blur-md p-6 flex flex-col justify-center items-center text-center relative overflow-hidden group">
+          <div className="lg:w-1/3 rounded-2xl border border-white/10 bg-[#030712]/40 backdrop-blur-md p-5 sm:p-6 flex flex-col justify-center items-center text-center relative overflow-hidden group">
             <div className="absolute inset-0 bg-gradient-to-b from-[#087DF3]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
             <span className="text-[10px] uppercase tracking-widest font-extrabold text-white/40 block mb-6 font-mono">AI READINESS MODEL</span>
 
             {/* Circular Gauge */}
-            <div className="relative w-36 h-36 flex items-center justify-center mb-6">
+            <div className="relative w-32 h-32 sm:w-36 sm:h-36 flex items-center justify-center mb-6">
               <svg className="w-full h-full -rotate-90">
                 <circle cx="72" cy="72" r="64" className="stroke-white/5 fill-none" strokeWidth="6" />
                 <circle 
@@ -766,12 +766,12 @@ if (verifiedBlueprintEmail !== data.email.toLowerCase().trim()) {
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-5xl font-black tracking-tighter text-white">{result.score}</span>
+                <span className="text-4xl sm:text-5xl font-black tracking-tighter text-white">{result.score}</span>
                 <span className="text-[11px] font-mono text-white/40">/ 100 SCORE</span>
               </div>
             </div>
 
-            <div className="px-5 py-2 rounded-full border border-[#087DF3]/40 bg-[#087DF3]/15 shadow-[0_0_15px_rgba(8,125,243,0.2)] text-xs font-black text-white uppercase tracking-wider">
+            <div className="px-4 sm:px-5 py-2 rounded-full border border-[#087DF3]/40 bg-[#087DF3]/15 shadow-[0_0_15px_rgba(8,125,243,0.2)] text-[11px] sm:text-xs font-black text-white uppercase tracking-wider break-words">
               {result.category}
             </div>
           </div>
@@ -779,13 +779,13 @@ if (verifiedBlueprintEmail !== data.email.toLowerCase().trim()) {
 
           {/* Recommended Solution & Impact */}
           <div className="lg:w-2/3 flex flex-col justify-between gap-6">
-            <div className="rounded-2xl border border-white/10 bg-[#030712]/40 backdrop-blur-md p-6 space-y-3 relative overflow-hidden">
+            <div className="rounded-2xl border border-white/10 bg-[#030712]/40 backdrop-blur-md p-5 sm:p-6 space-y-3 relative overflow-hidden">
               <span className="text-[10px] uppercase tracking-widest font-bold text-[#087DF3]">RECOMMENDED GFF AI SOLUTION</span>
               <h4 className="text-lg md:text-xl font-extrabold text-white">{result.solution.title}</h4>
               <p className="text-xs md:text-sm text-white/70 leading-relaxed">{result.solution.description}</p>
             </div>
 
-            <div className="rounded-2xl border border-white/10 bg-[#030712]/40 backdrop-blur-md p-6 space-y-3 relative overflow-hidden">
+            <div className="rounded-2xl border border-white/10 bg-[#030712]/40 backdrop-blur-md p-5 sm:p-6 space-y-3 relative overflow-hidden">
               <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-[#087DF3] to-[#E98828]" />
               <span className="text-[10px] uppercase tracking-widest font-bold text-[#E98828]">EXPECTED BUSINESS IMPACT (MODELLED)</span>
               <p className="text-sm md:text-base font-bold text-white/90 leading-normal">{result.impact.metric}</p>
@@ -795,9 +795,9 @@ if (verifiedBlueprintEmail !== data.email.toLowerCase().trim()) {
         </div>
 
         {data.customChallengeText && (
-          <div className="rounded-2xl border border-white/5 bg-[#030712]/30 p-6 space-y-3">
+          <div className="rounded-2xl border border-white/5 bg-[#030712]/30 p-5 sm:p-6 space-y-3">
             <span className="text-[10px] uppercase tracking-widest font-mono font-bold text-white/40 block">Your Roadblock Context</span>
-            <p className="text-xs md:text-sm text-white/70 italic leading-relaxed">"{data.customChallengeText}"</p>
+            <p className="text-xs md:text-sm text-white/70 italic leading-relaxed break-words">"{data.customChallengeText}"</p>
           </div>
         )}
 
@@ -805,7 +805,7 @@ if (verifiedBlueprintEmail !== data.email.toLowerCase().trim()) {
         <div className="space-y-4">
           <span className="text-[10px] uppercase tracking-widest font-extrabold text-[#087DF3] block tracking-wider font-mono">Enterprise AI Readiness Dimension Breakdown</span>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
             {/* Card 1: AI Maturity Index */}
             <div className="p-5 rounded-2xl border border-white/5 bg-[#030712]/30 hover:border-[#087DF3]/30 hover:bg-[#030712]/50 transition-all duration-300 flex flex-col justify-between relative overflow-hidden group">
               <div className="absolute top-0 left-0 w-[2px] h-full bg-[#087DF3] opacity-50 group-hover:opacity-100 transition-opacity" />
@@ -944,9 +944,9 @@ if (verifiedBlueprintEmail !== data.email.toLowerCase().trim()) {
         `}} />
 
         {/* Opportunities Nodes */}
-        <div className="rounded-2xl border border-white/10 bg-[#030712]/45 p-6 space-y-4 print:bg-white print:border-slate-300 print:shadow-none">
+        <div className="rounded-2xl border border-white/10 bg-[#030712]/45 p-5 sm:p-6 space-y-4 print:bg-white print:border-slate-300 print:shadow-none">
           <span className="text-[10px] uppercase tracking-widest font-extrabold text-white/40 block tracking-wider print:text-slate-500">Synthesized Top 5 Recommended AI Opportunity Nodes</span>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
             {result.opportunities.map((opp: string, idx: number) => (
               <div key={idx} className="p-4 rounded-xl border border-white/5 bg-white/[0.01] hover:border-white/10 hover:bg-white/[0.03] transition duration-200 flex flex-col justify-between min-h-[145px] print:bg-white print:border-slate-200 print:shadow-none">
                 <div>
@@ -964,7 +964,7 @@ if (verifiedBlueprintEmail !== data.email.toLowerCase().trim()) {
 
 
         {/* Timeline roadmap */}
-        <div className="rounded-2xl border border-white/10 bg-[#030712]/45 p-6 space-y-4 relative overflow-hidden">
+        <div className="rounded-2xl border border-white/10 bg-[#030712]/45 p-5 sm:p-6 space-y-4 relative overflow-hidden">
           <span className="text-[10px] uppercase tracking-widest font-extrabold text-white/40 block tracking-wider font-mono">90-Day Sovereign Implementation Roadmap</span>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
             <div className="space-y-2 relative pl-6 border-l border-[#087DF3]/30">
@@ -1011,11 +1011,11 @@ if (verifiedBlueprintEmail !== data.email.toLowerCase().trim()) {
         <div className="space-y-4 pt-6 border-t border-white/5 print:hidden">
           {/* Privacy Note */}
           <div className="p-3.5 rounded-xl bg-emerald-950/20 border border-emerald-500/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-white/70">
-            <div className="flex items-center gap-2">
+            <div className="flex items-start gap-2 min-w-0">
               <svg className="w-5 h-5 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6M12 3v18M12 3a11.959 11.959 0 018.402 3M21 12c0 1.69-.133 3.35-.388 4.97a11.956 11.956 0 01-1.722 3.824M19.5 12c0-1.268-.312-2.46-.864-3.514M16.5 12c0-2.43-.353-4.78-.99-7" />
               </svg>
-              <span>
+              <span className="min-w-0 break-words">
                 <strong>Sovereign Privacy Active:</strong> This interactive preview is sandboxed inside your own local browser. No data is stored on external GFF servers.
               </span>
             </div>
@@ -1025,7 +1025,7 @@ if (verifiedBlueprintEmail !== data.email.toLowerCase().trim()) {
           </div>
 
           {/* Left side actions: Local actions */}
-          <div className="flex flex-wrap gap-2.5">
+          <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2.5">
             {/* Copy Summary */}
             <button
               type="button"
@@ -1061,7 +1061,7 @@ PRIVACY NOTICE: Generated locally on the client edge. No data is stored on serve
                 setIsCopied(true);
                 setTimeout(() => setIsCopied(false), 2000);
               }}
-              className={`px-4 h-[46px] rounded-lg border text-xs font-bold uppercase tracking-wider font-mono flex items-center justify-center gap-2 transition duration-200 cursor-pointer ${
+              className={`w-full sm:w-auto px-4 h-[46px] rounded-lg border text-xs font-bold uppercase tracking-wider font-mono flex items-center justify-center gap-2 transition duration-200 cursor-pointer ${
                 isCopied
                   ? "bg-emerald-500/20 border-emerald-500/30 text-emerald-400"
                   : "border-white/10 text-white hover:border-white/20 hover:bg-white/5"
@@ -1077,7 +1077,7 @@ PRIVACY NOTICE: Generated locally on the client edge. No data is stored on serve
             <button
               type="button"
               onClick={() => handleSaveLocally(data, result.score, result.category)}
-              className={`px-4 h-[46px] rounded-lg border text-xs font-bold uppercase tracking-wider font-mono flex items-center justify-center gap-2 transition duration-200 cursor-pointer ${
+              className={`w-full sm:w-auto px-4 h-[46px] rounded-lg border text-xs font-bold uppercase tracking-wider font-mono flex items-center justify-center gap-2 transition duration-200 cursor-pointer ${
                 isSaved
                   ? "bg-[#087DF3]/20 border-[#087DF3]/40 text-[#087DF3]"
                   : "border-white/10 text-white hover:border-[#087DF3]/30 hover:bg-white/5"
@@ -1093,7 +1093,7 @@ PRIVACY NOTICE: Generated locally on the client edge. No data is stored on serve
             <button
               type="button"
               onClick={() => window.print()}
-              className="px-4 h-[46px] rounded-lg border border-white/10 text-xs font-bold uppercase tracking-wider text-white hover:border-white/20 hover:bg-white/5 transition duration-200 font-mono flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full sm:w-auto px-4 h-[46px] rounded-lg border border-white/10 text-xs font-bold uppercase tracking-wider text-white hover:border-white/20 hover:bg-white/5 transition duration-200 font-mono flex items-center justify-center gap-2 cursor-pointer"
             >
               <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6.72 13.82l-.24-2.13A3 3 0 003.53 9H3m12.9-.26c.312-.273.685-.414 1.1-.414H18a3 3 0 012.916 2.316l.24 2.13c.121.574-.1 1.156-.563 1.5l-.364.273a3.483 3.483 0 01-1.896.616H5.66c-.69 0-1.35-.224-1.897-.616l-.363-.273a2.006 2.006 0 01-.563-1.5L2.616 11A3 3 0 015.532 9h.45m12 0c0-1.657-1.343-3-3-3h-6c-1.657 0-3 1.343-3 3m12 0H6m3 4v3a1 1 0 001 1h4a1 1 0 001-1v-3" />
@@ -1117,7 +1117,7 @@ PRIVACY NOTICE: Generated locally on the client edge. No data is stored on serve
                   }
                 }
               }}
-              className={`px-4 h-[46px] rounded-lg border text-xs font-bold uppercase tracking-wider font-mono flex items-center justify-center gap-2 transition duration-200 cursor-pointer ${
+              className={`w-full sm:w-auto px-4 h-[46px] rounded-lg border text-xs font-bold uppercase tracking-wider font-mono flex items-center justify-center gap-2 transition duration-200 cursor-pointer ${
                 isShared
                   ? "bg-purple-500/20 border-purple-500/30 text-purple-400"
                   : "border-white/10 text-white hover:border-purple-500/30 hover:bg-white/5"
@@ -1131,20 +1131,20 @@ PRIVACY NOTICE: Generated locally on the client edge. No data is stored on serve
           </div>
 
           {/* Right side actions: Reset and Next actions */}
-          <div className="flex flex-wrap gap-2.5">
+          <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2.5">
             <button
               type="button"
               onClick={() => {
                 setHistoryLoaded(null);
                 onReset();
               }}
-              className="px-6 h-[46px] rounded-lg border border-white/10 text-xs font-bold uppercase tracking-wider text-white hover:border-white/20 hover:bg-white/5 transition duration-200 font-mono cursor-pointer"
+              className="w-full sm:w-auto px-6 h-[46px] rounded-lg border border-white/10 text-xs font-bold uppercase tracking-wider text-white hover:border-white/20 hover:bg-white/5 transition duration-200 font-mono cursor-pointer"
             >
               Reset Assessment
             </button>
             <a
               href="/contact"
-              className="px-6 h-[46px] inline-flex items-center justify-center rounded-lg bg-[#009DFF] text-xs font-bold uppercase tracking-wider text-black hover:bg-[#009DFF]/90 transition duration-200 font-mono shadow-[0_0_15px_rgba(0,157,255,0.25)]"
+              className="w-full sm:w-auto px-6 h-[46px] inline-flex items-center justify-center rounded-lg bg-[#009DFF] text-xs font-bold uppercase tracking-wider text-black hover:bg-[#009DFF]/90 transition duration-200 font-mono shadow-[0_0_15px_rgba(0,157,255,0.25)]"
             >
               Secure Engineering Sync
             </a>
@@ -1189,14 +1189,14 @@ PRIVACY NOTICE: Generated locally on the client edge. No data is stored on serve
 
 
   return (
-    <div className="w-full min-h-screen bg-[#020204] space-y-6 ">
+    <div className="w-full min-h-screen bg-[#020204] space-y-6 overflow-x-hidden">
       {/* Top Title Section */}
-      <div className="relative border-b border-white/5 pb-8 mb-4 print:hidden mt-10">
-<div className="space-y-3 max-w-full mx-auto text-center">
+      <div className="relative border-b border-white/5 pb-8 mb-4 print:hidden mt-6 sm:mt-10 flex flex-col gap-5 lg:block">
+<div className="space-y-3 max-w-full mx-auto text-center px-1">
             {/* <span className="text-[10px] font-mono text-[#087DF3] font-bold uppercase tracking-widest block">
             Sovereign Self-Assessment Engine
           </span> */}
-          <h1 className="text-3xl lg:text-5xl font-extrabold text-white tracking-tight leading-none whitespace-nowrap">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight">
             Sovereign Enterprise{" "}
             <span className="bg-gradient-to-r from-white via-white to-[#087DF3] bg-clip-text text-transparent">
               AI Blueprint Generator
@@ -1207,11 +1207,11 @@ PRIVACY NOTICE: Generated locally on the client edge. No data is stored on serve
         </div>
 
         {/* Local History Vault Button */}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-3">
+        <div className="flex justify-center lg:absolute lg:right-0 lg:top-1/2 lg:-translate-y-1/2 lg:justify-start lg:items-center lg:gap-3">
           <button
             type="button"
             onClick={() => setIsDrawerOpen(true)}
-            className="px-4 py-2.5 rounded-xl border border-white/10 bg-white/[0.02] text-xs font-bold font-mono uppercase tracking-wider text-white hover:border-[#087DF3]/40 hover:bg-[#087DF3]/10 transition-all duration-300 flex items-center gap-2 group cursor-pointer"
+            className="w-full sm:w-auto justify-center px-4 py-2.5 rounded-xl border border-white/10 bg-white/[0.02] text-[11px] sm:text-xs font-bold font-mono uppercase tracking-wider text-white hover:border-[#087DF3]/40 hover:bg-[#087DF3]/10 transition-all duration-300 flex items-center gap-2 group cursor-pointer"
           >
             <svg className="w-4 h-4 text-[#087DF3] group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
