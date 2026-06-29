@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { X, MoreHorizontal, Lock } from "lucide-react";
 import { UserProfile, BreadcrumbItem, SidebarLink } from "./types";
@@ -94,14 +95,14 @@ export function PrivateAppShell({
                 className="fixed inset-y-0 left-0 z-50 w-72 bg-[#050505] border-r border-white/5 flex flex-col pt-0"
               >
                 <div className="h-14 border-b border-white/5 flex items-center justify-between px-5 select-none shrink-0">
-                  <div className="flex items-center gap-2">
+                  <Link href="/" onClick={() => setMobileSidebarOpen(false)} className="flex items-center gap-2" aria-label="Go to home page">
                     <div className="h-5.5 w-5.5 rounded border border-[#009DFF]/30 bg-[#009DFF]/5 flex items-center justify-center text-[#009DFF]">
                       <Lock className="w-3.5 h-3.5" />
                     </div>
                     <span className="text-[13px] font-black font-mono tracking-widest text-white leading-none">
                       GFF <span className="text-[#009DFF]">AI</span>
                     </span>
-                  </div>
+                  </Link>
                   <button 
                     onClick={() => setMobileSidebarOpen(false)}
                     className="text-white/40 hover:text-white cursor-pointer p-1"
