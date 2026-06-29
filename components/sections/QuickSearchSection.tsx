@@ -271,11 +271,11 @@ export default function QuickSearchSection() {
         </p>
 
         {/* AI Concierge Search Box */}
-        <div className="mt-10 relative max-w-3xl mx-auto group">
-          <div className="absolute -inset-[1px] rounded-[24px] bg-gradient-to-r from-white/10 via-[#009DFF]/20 to-white/10 opacity-75 blur-[2px] group-focus-within:from-[#E4000F]/30 group-focus-within:to-[#009DFF]/40 transition-all duration-500 pointer-events-none" />
+        <div className="mt-10 relative max-w-4xl mx-auto group">
+          <div className="absolute -inset-[1px] rounded-[28px] bg-gradient-to-r from-[#E4000F]/35 via-[#009DFF]/55 to-[#E4000F]/35 opacity-80 blur-[3px] group-focus-within:opacity-100 transition-all duration-500 pointer-events-none" />
           
-          <div className="relative flex items-center rounded-[24px] bg-[#050505] border border-white/10 text-white focus-within:border-white/20 transition-all duration-300 shadow-[0_0_30px_rgba(0,0,0,0.85)]">
-            <div className="absolute left-6 pointer-events-none text-white/40 group-focus-within:text-[#009DFF] transition-colors duration-300">
+          <div className="relative flex items-center rounded-[28px] bg-[#03070C]/95 border border-[#178FE8]/25 text-white focus-within:border-[#009DFF]/70 transition-all duration-300 shadow-[0_0_34px_rgba(0,0,0,0.9),inset_0_0_30px_rgba(0,157,255,0.04)]">
+            <div className="absolute left-5 flex h-11 w-11 items-center justify-center rounded-full bg-[#071527] border border-[#009DFF]/20 text-[#009DFF] pointer-events-none group-focus-within:border-[#009DFF]/55 group-focus-within:shadow-[0_0_22px_rgba(0,157,255,0.22)] transition-all duration-300">
               <Search className="h-5 w-5" />
             </div>
 
@@ -285,7 +285,7 @@ export default function QuickSearchSection() {
               onChange={(e) => setSearchQuery(e.target.value)}
               aria-label="Search GFF AI solutions"
               placeholder="Ask GFF AI (e.g. Build AI for Banking or Mining)..."
-              className="w-full pl-15 pr-14 py-5 bg-transparent text-white text-[15px] sm:text-[17px] leading-relaxed focus:outline-none placeholder-white/25 font-normal tracking-wide"
+              className="w-full pl-[76px] pr-14 py-5 bg-transparent text-white text-[15px] sm:text-[17px] leading-relaxed focus:outline-none placeholder-white/34 font-normal tracking-wide"
             />
 
             <AnimatePresence>
@@ -295,7 +295,7 @@ export default function QuickSearchSection() {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
                   onClick={() => setSearchQuery("")}
-                  className="absolute right-6 p-1.5 rounded-full text-white/40 hover:text-white hover:bg-white/5 transition-all cursor-pointer"
+                  className="absolute right-6 p-1.5 rounded-full text-white/45 hover:text-white hover:bg-[#009DFF]/10 transition-all cursor-pointer"
                   title="Clear search"
                 >
                   <X className="h-4.5 w-4.5" />
@@ -306,18 +306,18 @@ export default function QuickSearchSection() {
         </div>
 
         {/* Clickable Templates */}
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-sm max-w-3xl mx-auto">
-          <span className="text-white/45 font-medium mr-1 text-[13px] sm:text-sm">Click examples:</span>
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-sm max-w-4xl mx-auto">
+          <span className="text-[#A9DFFF] font-semibold mr-1 text-[13px] sm:text-sm">Click examples:</span>
           {exampleSearches.map((example) => {
             const isActive = searchQuery.toLowerCase().trim() === example.toLowerCase().trim();
             return (
               <button
                 key={example}
                 onClick={() => setSearchQuery(example)}
-                className={`px-4 py-2 rounded-[98px] text-[12px] sm:text-[13px] font-medium border transition-all duration-300 cursor-pointer ${
+                className={`px-4 py-2 rounded-[98px] text-[12px] sm:text-[13px] font-semibold border transition-all duration-300 cursor-pointer ${
                   isActive
-                    ? "bg-[#009DFF]/10 border-[#009DFF]/30 text-[#009DFF] shadow-[0_0_15px_rgba(0,157,255,0.1)]"
-                    : "bg-white/[0.02] border-white/5 text-white/60 hover:text-white hover:border-white/15 hover:bg-white/[0.04]"
+                    ? "bg-gradient-to-r from-[#E4000F]/20 to-[#009DFF]/20 border-[#009DFF]/55 text-white shadow-[0_0_18px_rgba(0,157,255,0.16)]"
+                    : "bg-[#050A10]/80 border-[#1D6EA8]/25 text-white/68 hover:text-white hover:border-[#009DFF]/45 hover:bg-[#071527]"
                 }`}
               >
                 {example}
@@ -337,23 +337,23 @@ export default function QuickSearchSection() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -15 }}
                 transition={{ duration: 0.3 }}
-                className="max-w-4xl mx-auto rounded-[28px] border border-white/5 bg-[#030303]/40 p-8 sm:p-10 text-center backdrop-blur-md shadow-2xl"
+                className="max-w-5xl mx-auto rounded-[30px] border border-[#178FE8]/20 bg-[#02070C]/70 p-7 sm:p-9 text-center backdrop-blur-md shadow-[0_0_45px_rgba(0,0,0,0.9),inset_0_0_45px_rgba(0,157,255,0.035)]"
               >
-                {/* <div className="inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-[#009DFF]/5 border border-[#009DFF]/10 mb-4 text-[#009DFF]">
+                <div className="inline-flex h-11 w-11 items-center justify-center rounded-[16px] bg-[#009DFF]/8 border border-[#009DFF]/20 mb-4 text-[#009DFF] shadow-[0_0_22px_rgba(0,157,255,0.12)]">
                   <Sparkles className="h-5 w-5 animate-pulse" />
-                </div> */}
-                <h3 className="text-[17px] sm:text-lg font-semibold text-white tracking-wide">Enterprise Intelligent Concierge</h3>
-                <p className="mt-2 text-sm text-white/50 max-w-2xl mx-auto leading-relaxed font-normal">
+                </div>
+                <h3 className="text-[18px] sm:text-xl font-semibold text-white tracking-wide">Enterprise Intelligent Concierge</h3>
+                <p className="mt-2 text-sm text-white/58 max-w-2xl mx-auto leading-relaxed font-normal">
                   Our instant search indexing maps core architectural capabilities, delivery platforms, active research whitepapers, and build specifications across GFF AI's entire ecosystem.
                 </p>
-                <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-3 text-left">
+                <div className="mt-7 grid grid-cols-2 sm:grid-cols-3 gap-3 text-left">
                   {Object.entries(categoryColors).map(([cat, color]) => (
                     <div
                       key={cat}
-                      className="flex items-center gap-3 rounded-[16px] bg-[#050505]/60 border border-white/[0.03] p-4 transition-all duration-300 hover:border-white/10"
+                      className="group flex items-center gap-3 rounded-[16px] bg-[#050A10]/80 border border-[#178FE8]/12 p-4 transition-all duration-300 hover:border-[#009DFF]/35 hover:bg-[#071527]"
                     >
-                      <span className="h-2 w-2 rounded-full shrink-0" style={{ backgroundColor: color }} />
-                      <span className="text-[12px] sm:text-[13px] font-semibold text-white/80 tracking-wide uppercase">{cat}</span>
+                      <span className="h-2.5 w-2.5 rounded-full shrink-0 shadow-[0_0_14px_currentColor] transition-transform duration-300 group-hover:scale-125" style={{ backgroundColor: color, color }} />
+                      <span className="text-[12px] sm:text-[13px] font-semibold text-white/82 tracking-wide uppercase">{cat}</span>
                     </div>
                   ))}
                 </div>
