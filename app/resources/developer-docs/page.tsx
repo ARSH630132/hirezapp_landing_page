@@ -191,6 +191,7 @@ export default function DeveloperDocsPage() {
         category="Sovereign Developer Hub"
         title="Local Sandbox & Developer Guide"
         highlightedWord="Developer Guide"
+        visualType="developerDocs"
         description="Comprehensive setup specifications, cryptographic handshake protocols, and interactive references for configuring the Phase 5 local MVP backend."
         breadcrumbs={[
           { label: "Home", href: "/" },

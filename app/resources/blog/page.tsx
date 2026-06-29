@@ -17,6 +17,8 @@ export default function BlogHubPage() {
         category="Editorial Publications"
         title="Sovereign Perspectives & Essays"
         highlightedWord="Sovereign Perspectives"
+        visualType="corporateBlog"
+
         description="Strategic analysis, philosophical alignment paradigms, and technical insights from the GFF editorial board."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Resources", href: "/resources" }, { label: "Blog" }]}
       />

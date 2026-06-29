@@ -27,6 +27,7 @@ export default function WebinarsPage() {
         category="Training & Education"
         title="Executive Webinars & Masterclasses"
         highlightedWord="Webinars & Masterclasses"
+        visualType="executiveMasterclasses"
         description="Connect with lead systems engineers, compliance experts, and C-suite strategists to explore sovereign multi-agent deployment safety."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Resources", href: "/resources" }, { label: "Webinars" }]}
       />

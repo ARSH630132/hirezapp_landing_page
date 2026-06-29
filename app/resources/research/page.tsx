@@ -35,6 +35,7 @@ export default function ResearchArchive() {
         category="Academic Archive"
         title="Theoretical Research & Publications"
         highlightedWord="Research & Publications"
+        visualType="research-publications"
         description="Explore Peer-Reviewed Papers and Scientific Formulations Driving Secure Enterprise Multi-Agent Autonomy."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Resources", href: "/resources" }, { label: "Research" }]}
       />

@@ -28,6 +28,7 @@ export default function DownloadsPage() {
         category="Asset Utilities"
         title="Verified Toolkit & Asset Downloads"
         highlightedWord="Toolkit & Asset"
+        visualType="assetDownloads"
         description="Access compliance spreadsheets, offline sandbox calculators, and Docker utility containers signed by our security group."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Resources", href: "/resources" }, { label: "Downloads" }]}
       />

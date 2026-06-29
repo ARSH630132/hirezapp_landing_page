@@ -46,10 +46,12 @@ type VisualType =
   | "operate"
   | "optimize"
   | "scale"
+  | "research-publications"
   | "strategy"
   | "engineering"
   | "agents"
   | "governance"
+  | "insuranceAI"
   | "enterprisePlatforms"
  | "marketplace"
  | "coEngineering"
@@ -70,6 +72,15 @@ type VisualType =
 | "media"
 | "research"
 | "industryAI"
+| "referenceArchitecture"
+| "engineeringWhitepapers"
+| "developerDocs"
+| "caseStudies"
+| "corporateBlog"
+| "multimediaKeynotes"
+| "executiveMasterclasses"
+| "globalSummits"
+| "assetDownloads"
 | "contact";
 
 type VisualConfig = {
@@ -87,17 +98,90 @@ const visualMap: Record<VisualType, VisualConfig> = {
     second: "#E98828",
     alt: "Garage",
   },
+  developerDocs: {
+  Icon: ServerCog,
+  color: "#009DFF",
+  second: "#F74539",
+  alt: "Developer Docs",
+},
+
+caseStudies: {
+  Icon: TrendingUp,
+  color: "#009DFF",
+  second: "#F74539",
+  alt: "Case Studies",
+},
+
+corporateBlog: {
+  Icon: MessageCircle,
+  color: "#009DFF",
+  second: "#E98828",
+  alt: "Corporate Blog",
+},
+
+multimediaKeynotes: {
+  Icon: Radio,
+  color: "#009DFF",
+  second: "#F74539",
+  alt: "Multimedia Keynotes",
+},
+
+executiveMasterclasses: {
+  Icon: Users,
+  color: "#009DFF",
+  second: "#E98828",
+  alt: "Executive Masterclasses",
+},
+
+globalSummits: {
+  Icon: Globe2,
+  color: "#009DFF",
+  second: "#F74539",
+  alt: "Global Summits",
+},
+
+assetDownloads: {
+  Icon: ShieldCheck,
+  color: "#009DFF",
+  second: "#E98828",
+  alt: "Asset Downloads",
+},
+  referenceArchitecture: {
+  Icon: DraftingCompass,
+  color: "#009DFF",
+  second: "#E98828",
+  alt: "Reference Architecture Library",
+},
+  engineeringWhitepapers: {
+  Icon: DraftingCompass,
+  color: "#009DFF",
+  second: "#F74539",
+  alt: "Engineering Whitepapers",
+},
+  insuranceAI: {
+  Icon: ShieldCheck,
+  color: "#009DFF",
+  second: "#00C389",
+  alt: "Insurance Claims & Policy AI",
+},
   coEngineering: {
   Icon: Compass,
   color: "#E98828",
   second: "#009DFF",
   alt: "Sovereign Co-Engineering Workshop",
 },
+
   enterprisePlatforms: {
   Icon: ServerCog, // ya Server
   color: "#009DFF",
   second: "#E98828",
   alt: "Enterprise Platforms",
+},
+"research-publications": {
+  Icon: BookOpenCheck,
+  color: "#009DFF",
+  second: "#F74539",
+  alt: "Theoretical Research & Publications",
 },
 technicalCapabilities: {
   Icon: CircuitBoard,

@@ -24,6 +24,7 @@ export default function CaseStudiesPage() {
         category="Operational Proofs"
         title="Enterprise Case Studies"
         highlightedWord="Case Studies"
+        visualType="caseStudies"
         description="Explore detailed analysis of verified multi-agent integrations across audit, finance, advisory, and energy sectors."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Resources", href: "/resources" }, { label: "Case Studies" }]}
       />

@@ -24,6 +24,7 @@ export default function EventsPage() {
         category="Global Footprint"
         title="Physical Summits & Executive Roundtables"
         highlightedWord="Physical Summits"
+        visualType="globalSummits"
         description="GFF AI connects systems engineers, developers, and C-suite leaders globally. Explore upcoming summits, developer workshops, and private Chatham House dinners."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Resources", href: "/resources" }, { label: "Events" }]}
       />

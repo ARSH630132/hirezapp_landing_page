@@ -28,6 +28,7 @@ export default function WhitepapersPage() {
         category="Technical Specs"
         title="Engineering Whitepapers"
         highlightedWord="Engineering Whitepapers"
+        visualType="engineeringWhitepapers"
         description="Detailed framework whitepapers and system specifications. Read our core design paradigms for safe model orchestrations."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Resources", href: "/resources" }, { label: "Whitepapers" }]}
       />

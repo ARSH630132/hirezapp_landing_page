@@ -1,5 +1,5 @@
 "use client";
-
+import Link from "next/link";
 import React, { useState, useMemo } from "react";
 import InnerPageShell from "@/components/inner-pages/InnerPageShell";
 import InnerPageHero from "@/components/inner-pages/InnerPageHero";
@@ -84,11 +84,12 @@ export default function ResourcesPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((cat) => (
-            <div
-  key={cat.s}
-  className="group relative rounded-[24px] border border-white/5 bg-[#050505]/40 backdrop-blur-[8px] p-6 flex flex-col justify-between hover:border-white/12 transition-all duration-300"
->
+       {filtered.map((cat) => (
+  <Link
+    key={cat.s}
+    href={cat.h}
+    className="group relative rounded-[24px] border border-white/5 bg-[#050505]/40 backdrop-blur-[8px] p-6 flex flex-col justify-between hover:border-white/12 transition-all duration-300 cursor-pointer block"
+  >
               <div>
                 <div className="flex items-center justify-between text-[9px] font-mono uppercase text-white/40 mb-4">
                   <span className="text-[#009DFF] font-bold tracking-widest">{cat.tg}</span>
@@ -103,14 +104,12 @@ export default function ResourcesPage() {
               </div>
               <div className="mt-8 pt-4 border-t border-white/5 flex items-center justify-end text-[11px] text-white/40">
                 {/* <span className="font-mono text-[9px] uppercase tracking-wider group-hover:text-white/60 transition-colors">Access Directory →</span> */}
-                <a
-  href={cat.h}
-  className="text-white/30 hover:text-white transition-colors"
->
+             
+<span className="text-white/30 group-hover:text-white transition-colors">
   VERIFIED PREVIEW
-</a>
+</span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

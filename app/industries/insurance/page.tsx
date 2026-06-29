@@ -42,6 +42,7 @@ export default function InsurancePage() {
         category="Vertical Solutions"
         title="Insurance Claims & Policy AI"
         highlightedWord="Insurance"
+        visualType="insuranceAI"
         description="Deploy secure document-parsing pipelines, instant policy validation, and underwriting copilots under strict safety guardrails."
         breadcrumbs={[{ label: "Industries", href: "/industries" }, { label: "Insurance" }]}
       />

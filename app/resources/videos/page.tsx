@@ -19,6 +19,7 @@ export default function VideosPage() {
         category="Media Room"
         title="Keynotes & Video Demonstrations"
         highlightedWord="Keynotes & Video"
+        visualType="multimediaKeynotes"
         description="Stream GFF technical presentations, keynotes, and live system demonstrations of sovereign agent environments."
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Resources", href: "/resources" }, { label: "Videos" }]}
       />
