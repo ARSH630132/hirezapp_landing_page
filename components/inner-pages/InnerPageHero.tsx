@@ -2,7 +2,17 @@
 
 import React from "react";
 import { motion } from "motion/react";
-
+import {
+  Compass,
+  Settings,
+  Bot,
+  ShieldCheck,
+  Globe2,
+  Factory,
+  FlaskConical,
+  Cpu,
+  type LucideIcon,
+} from "lucide-react";
 interface InnerPageHeroProps {
   category?: string;
   title: string;
@@ -11,10 +21,32 @@ interface InnerPageHeroProps {
   description: string;
   breadcrumbs?: Array<{ label: string; href?: string }>;
   centered?: boolean;
-  visualType?: "default" | "garage" | "foundry" | "factory" | "operate" | "optimize" | "scale";
+  visualType?: "default" | VisualType;
 }
 
-const visualMap = {
+type VisualType =
+  | "garage"
+  | "foundry"
+  | "factory"
+  | "operate"
+  | "optimize"
+  | "scale"
+  | "strategy"
+  | "engineering"
+  | "agents"
+  | "governance"
+  | "marketplace"
+  | "labs";
+
+type VisualConfig = {
+  icon?: string;
+  Icon?: LucideIcon;
+  color: string;
+  second: string;
+  alt: string;
+};
+
+const visualMap: Record<VisualType, VisualConfig> = {
   garage: {
     icon: "/ai_foundary/garage.svg",
     color: "#F74539",
@@ -51,14 +83,47 @@ const visualMap = {
     second: "#E4000F",
     alt: "Scale",
   },
+  strategy: {
+  Icon: Compass,
+  color: "#F97316",
+  second: "#FACC15",
+  alt: "AI Strategy",
+},
+engineering: {
+  Icon: Settings,
+  color: "#3B82F6",
+  second: "#60A5FA",
+  alt: "AI Engineering",
+},
+agents: {
+  Icon: Bot,
+  color: "#F74539",
+  second: "#FF7A70",
+  alt: "Agentic AI",
+},
+governance: {
+  Icon: ShieldCheck,
+  color: "#2563EB",
+  second: "#009DFF",
+  alt: "AI Governance",
+},
+marketplace: {
+  Icon: Globe2,
+  color: "#F74539",
+  second: "#009DFF",
+  alt: "AI Marketplace",
+},
+labs: {
+  Icon: FlaskConical,
+  color: "#C084FC",
+  second: "#A855F7",
+  alt: "AI Labs",
+},
 };
 
-function HeroVisual({
-  type,
-}: {
-  type: "garage" | "foundry" | "factory" | "operate" | "optimize" | "scale";
-}) {
+function HeroVisual({ type }: { type: VisualType }) {
   const visual = visualMap[type];
+const DynamicIcon = visual.Icon;
 
   return (
     <div className="relative z-10 w-full h-full flex items-center justify-center">
@@ -96,12 +161,23 @@ function HeroVisual({
         animate={{ y: [0, -6, 0] }}
         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
       >
-        <img
-          src={visual.icon}
-          alt={visual.alt}
-          className="w-[180px] h-[180px] object-contain"
-          style={{ filter: `drop-shadow(0 0 28px ${visual.color}88)` }}
-        />
+{visual.icon ? (
+  <img
+    src={visual.icon}
+    alt={visual.alt}
+    className="w-[180px] h-[180px] object-contain"
+    style={{ filter: `drop-shadow(0 0 28px ${visual.color}88)` }}
+  />
+) : DynamicIcon ? (
+  <DynamicIcon
+    className="w-[150px] h-[150px]"
+    strokeWidth={1.8}
+    style={{
+      color: visual.color,
+      filter: `drop-shadow(0 0 28px ${visual.color}88)`,
+    }}
+  />
+) : null}
       </motion.div>
 
       <motion.div
@@ -208,7 +284,7 @@ export default function InnerPageHero({
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70%] h-[70%] bg-gradient-to-tr from-[#E4000F]/10 to-[#009DFF]/10 rounded-full blur-[40px]" />
 
               {visualType !== "default" ? (
-                <HeroVisual type={visualType} />
+                <HeroVisual type={visualType as VisualType} />
               ) : (
                 <svg className="w-full h-full relative z-10" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <g className="animate-[spin_40s_linear_infinite] origin-center">

@@ -11,6 +11,7 @@ export default function StrategyPage() {
   "highlightedWord": "Strategy",
   "description": "Architect custom readiness blueprints, feasibility studies, and ROI simulations aligned with executive strategy.",
   "activeLayerId": "experience",
+  "visualType": "strategy",
   "useCases": [
     {
       "title": "Transformation Blueprinting",

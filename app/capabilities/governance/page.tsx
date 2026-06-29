@@ -11,6 +11,7 @@ export default function GovernancePage() {
   "highlightedWord": "Governance",
   "description": "Implement continuous safety guardrails, real-time input/output sanitization, PII shielding, and compliance audit logging.",
   "activeLayerId": "governance",
+  "visualType": "governance",
   "useCases": [
     {
       "title": "Real-Time Input Filtering",

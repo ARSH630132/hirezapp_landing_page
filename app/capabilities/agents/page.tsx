@@ -11,6 +11,7 @@ export default function AgentsPage() {
   "highlightedWord": "Agents",
   "description": "Deploy multi-agent orchestrations and goal-directed cognitive loops that run business workflows with high autonomy.",
   "activeLayerId": "agentic",
+  "visualType": "operate",
   "useCases": [
     {
       "title": "Goal-Directed Workflows",

@@ -11,6 +11,7 @@ export default function LabsPage() {
   "highlightedWord": "Labs",
   "description": "Rapid incubation sandbox designed to stress-test frontier models, model fine-tuning, and prompt optimization loops.",
   "activeLayerId": "experience",
+  "visualType": "labs",
   "useCases": [
     {
       "title": "Frontier Weight Audits",

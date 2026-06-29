@@ -119,14 +119,18 @@ export default function AgentMarketplacePage() {
 
   return (
     <InnerPageShell>
-      <InnerPageHero
-        category="Platforms & Modules"
-        title="Agent Marketplace and Enterprise Blueprint Registry"
-        highlightedWord="Marketplace"
-        highlightColor="blue"
-        description="Deploy verified, pre-scoped sovereign agent patterns designed for secure, autonomous operations across knowledge synthesis, deep regulatory auditing, complex supply chains, and executive decision-making."
-        breadcrumbs={[{ label: "Platforms", href: "/platforms" }, { label: "Agent Marketplace" }]}
-      />
+  <InnerPageHero
+  category="Platforms & Modules"
+  title="Agent Marketplace and Enterprise Blueprint Registry"
+  highlightedWord="Marketplace"
+  highlightColor="blue"
+  visualType="marketplace"
+  description="Deploy verified, pre-scoped sovereign agent patterns designed for secure, autonomous operations across knowledge synthesis, deep regulatory auditing, complex supply chains, and executive decision-making."
+  breadcrumbs={[
+    { label: "Platforms", href: "/platforms" },
+    { label: "Agent Marketplace" }
+  ]}
+/>
 
       <div className="max-w-[1795px] mx-auto px-6 lg:px-16 pb-24 space-y-24">
         

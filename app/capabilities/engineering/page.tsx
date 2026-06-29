@@ -11,6 +11,7 @@ export default function EngineeringPage() {
   "highlightedWord": "Engineering",
   "description": "Build and scale custom foundation networks, low-latency API architectures, and localized LLM deployments.",
   "activeLayerId": "agentic",
+  "visualType": "engineering",
   "useCases": [
     {
       "title": "Low-Latency Microservices",
