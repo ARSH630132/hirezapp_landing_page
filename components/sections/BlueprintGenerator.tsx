@@ -241,6 +241,8 @@ export default function BlueprintGenerator() {
   const [isShared, setIsShared] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [historyLoaded, setHistoryLoaded] = useState<string | null>(null);
+  const [verifiedBlueprintEmail, setVerifiedBlueprintEmail] = useState("");
+const [blueprintLoginError, setBlueprintLoginError] = useState("");
 
   // Expose stepper actions to load states back in
   const [stepperActions, setStepperActions] = useState<WizardStepperSystemActions<WizardData> | null>(null);
@@ -274,6 +276,7 @@ export default function BlueprintGenerator() {
       score: currentScore,
       category: currentCategory,
     };
+ 
 
     const updated = [newItem, ...savedList.filter(item => item.data.email !== currentData.email || item.score !== currentScore)];
     setSavedList(updated);
@@ -287,6 +290,36 @@ export default function BlueprintGenerator() {
     setIsSaved(true);
     setTimeout(() => setIsSaved(false), 3000);
   };
+const loginBlueprintUser = async (email: string, code: string) => {
+  try {
+    setBlueprintLoginError("");
+
+    const response = await fetch("/api/v1/auth/otp", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        action: "verify",
+        email: email.toLowerCase().trim(),
+        code,
+      }),
+    });
+
+    const payload = await response.json().catch(() => null);
+
+    if (!response.ok || !payload?.success || !payload?.accessToken) {
+      throw new Error(payload?.message || "Blueprint login failed.");
+    }
+
+    localStorage.setItem("gff_ai_access_token", payload.accessToken);
+    localStorage.setItem("gff_api_token", payload.accessToken);
+
+    setVerifiedBlueprintEmail(email.toLowerCase().trim());
+  } catch (err: any) {
+    setBlueprintLoginError(err.message || "Blueprint login failed.");
+  }
+};
 
   const initialData: WizardData = {
     industry: "",
@@ -563,8 +596,12 @@ export default function BlueprintGenerator() {
           return "Verification PIN is required. Please request and enter the access PIN.";
         }
         if (data.enteredOtp !== "123456") {
-          return "Invalid verification PIN. Use the simulated PIN '123456' to proceed.";
-        }
+  return "Invalid verification PIN. Use the simulated PIN '123456' to proceed.";
+}
+
+if (verifiedBlueprintEmail !== data.email.toLowerCase().trim()) {
+  return blueprintLoginError || "Please wait, blueprint login is being completed.";
+}
         return null;
       },
       render: ({ data, onChange }) => {
@@ -637,7 +674,15 @@ export default function BlueprintGenerator() {
                       type="text"
                       maxLength={6}
                       value={data.enteredOtp || ""}
-                      onChange={(e) => onChange({ enteredOtp: e.target.value.replace(/\D/g, "") })}
+                      
+                      onChange={(e) => {
+  const nextOtp = e.target.value.replace(/\D/g, "");
+  onChange({ enteredOtp: nextOtp });
+
+  if (nextOtp === "123456") {
+    loginBlueprintUser(data.email || "", nextOtp);
+  }
+}}
                       placeholder="Enter 6-digit PIN"
                       className="w-full h-[46px] rounded-xl border border-white/10 bg-black/50 px-4 text-xs sm:text-sm text-center tracking-[0.4em] font-mono text-white focus:border-[#087DF3] outline-none transition"
                     />
