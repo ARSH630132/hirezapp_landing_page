@@ -4,10 +4,22 @@ import React from "react";
 import InnerPageShell from "@/components/inner-pages/InnerPageShell";
 import InnerPageHero from "@/components/inner-pages/InnerPageHero";
 import PremiumCTA from "@/components/inner-pages/PremiumCTA";
-
+import Link from "next/link";
 const POSTS = [
-  { t: "The Architecture of Sovereign Memory: Isolation in High-Throughput Agent Networks", c: "SOVEREIGNTY", r: "8 min read", d: "How physical memory isolation protocols prevent data leakage and align runtime parameters under dynamic international law." },
-  { t: "Deterministic Multi-Agent Execution: Replacing Probabilistic Hallucinations with Finite Logic Gate Fallbacks", c: "ALIGNMENT", r: "11 min read", d: "Exploring GFF's dual-loop validation framework which enforces human control boundaries over autonomous micro-transactions." }
+  {
+    t: "The Architecture of Sovereign Memory: Isolation in High-Throughput Agent Networks",
+    c: "SOVEREIGNTY",
+    r: "8 min read",
+    d: "How physical memory isolation protocols prevent data leakage and align runtime parameters under dynamic international law.",
+    h: "/resources/blog/sovereign-memory",
+  },
+  {
+    t: "Deterministic Multi-Agent Execution: Replacing Probabilistic Hallucinations with Finite Logic Gate Fallbacks",
+    c: "ALIGNMENT",
+    r: "11 min read",
+    d: "Exploring GFF's dual-loop validation framework which enforces human control boundaries over autonomous micro-transactions.",
+    h: "/resources/blog/deterministic-multi-agent-execution",
+  },
 ];
 
 export default function BlogHubPage() {
@@ -38,8 +50,12 @@ export default function BlogHubPage() {
               </div>
               <div className="mt-8 pt-4 border-t border-white/5 flex items-center justify-between text-[11px] text-white/30 font-mono">
                 <span>By GFF Editorial Board</span>
-                <span className="text-[#009DFF] font-bold cursor-pointer hover:text-white transition-colors">Read Essay →</span>
-              </div>
+<Link
+  href={post.h}
+  className="text-[#009DFF] font-bold cursor-pointer hover:text-white transition-colors"
+>
+  Read Essay →
+</Link>              </div>
             </div>
           ))}
         </div>

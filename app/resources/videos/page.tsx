@@ -6,9 +6,20 @@ import InnerPageHero from "@/components/inner-pages/InnerPageHero";
 import PremiumCTA from "@/components/inner-pages/PremiumCTA";
 
 const VIDEOS = [
-  { id: "v1", title: "Sovereign Multi-Agent Systems: Launch Keynote Singapore", duration: "18:42", desc: "A full stream of Dr. Ashish Chandra detailing GFF's core sovereign multi-agent architecture in Singapore." },
-  { id: "v2", title: "Security Walkthrough: Memory Sandboxes & mTLS Boundaries", duration: "12:15", desc: "A technical screen-capture guide illustrating real-time containment loops under active malware simulation." }
-];
+{
+  id: "v1",
+  youtubeId: "hFhFlj9fciI",
+  title: "Sovereign Multi-Agent Systems: Launch Keynote Singapore",
+  duration: "9:55",
+  desc: "A full stream of Dr. Ashish Chandra detailing GFF's core sovereign multi-agent architecture in Singapore."
+},
+{
+  id: "v2",
+  youtubeId: "qPjFV7Zbt8w",
+  title: "Security Walkthrough: Memory Sandboxes & mTLS Boundaries",
+  duration: "9:25",
+  desc: "A technical screen-capture guide illustrating real-time containment loops under active malware simulation."
+}];
 
 export default function VideosPage() {
   const [playing, setPlaying] = useState<string | null>(null);
@@ -29,17 +40,24 @@ export default function VideosPage() {
           <div key={vid.id} className="rounded-[24px] border border-white/5 bg-[#050505]/40 overflow-hidden flex flex-col justify-between hover:border-white/10 transition-all group">
             <div className="aspect-video bg-black relative flex items-center justify-center border-b border-white/5">
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-10" />
-              {playing === vid.id ? (
-                <div className="relative z-20 text-center px-4">
-                  <span className="w-3 h-3 rounded-full bg-red-500 animate-ping inline-block mr-2" />
-                  <span className="text-[11px] font-mono text-white/80">STREAMING HIGH-DEFINITION SECURE FEED</span>
-                  <button onClick={() => setPlaying(null)} className="block mt-4 mx-auto px-4 py-1.5 rounded-full text-[10px] font-mono bg-white text-black font-bold uppercase tracking-wider">Pause Stream</button>
-                </div>
-              ) : (
-                <button onClick={() => setPlaying(vid.id)} className="relative z-20 w-16 h-16 rounded-full bg-white/10 hover:bg-[#009DFF] border border-white/20 hover:border-transparent flex items-center justify-center text-white transition-all group-hover:scale-105">
-                  <svg className="w-6 h-6 fill-current ml-1" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
-                </button>
-              )}
+              {playing === vid.id && vid.youtubeId ? (
+  <iframe
+    className="absolute inset-0 w-full h-full z-20"
+    src={`https://www.youtube.com/embed/${vid.youtubeId}?autoplay=1`}
+    title={vid.title}
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowFullScreen
+  />
+) : (
+  <button
+    onClick={() => setPlaying(vid.id)}
+    className="relative z-20 w-16 h-16 rounded-full bg-white/10 hover:bg-[#009DFF] border border-white/20 hover:border-transparent flex items-center justify-center text-white transition-all group-hover:scale-105"
+  >
+    <svg className="w-6 h-6 fill-current ml-1" viewBox="0 0 24 24">
+      <path d="M8 5v14l11-7z" />
+    </svg>
+  </button>
+)}
             </div>
             <div className="p-6">
               <div className="flex justify-between text-[10px] font-mono text-white/40 mb-2">
