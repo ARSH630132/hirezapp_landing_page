@@ -29,6 +29,7 @@ BookOpen,
 Server,
 Briefcase,
 MessageCircle,
+BriefcaseBusiness,
 Users,
   type LucideIcon,
 } from "lucide-react";
@@ -57,6 +58,7 @@ type VisualType =
   | "governance"
   | "insuranceAI"
   | "enterprisePlatforms"
+  | "investorRelations"
  | "marketplace"
  | "coEngineering"
  | "technicalCapabilities"
@@ -95,6 +97,9 @@ type VisualType =
 | "assetDownloads"
 | "enterpriseAutonomyVision"
 | "gffFramework"
+| "termsOfService"
+| "privacyPolicy"
+| "mutualNDA"
 | "contact";
 
 type VisualConfig = {
@@ -112,6 +117,24 @@ const visualMap: Record<VisualType, VisualConfig> = {
     second: "#E98828",
     alt: "Garage",
   },
+  mutualNDA: {
+  Icon: Handshake,
+  color: "#E4000F",
+  second: "#009DFF",
+  alt: "Mutual NDA Protocol",
+},
+  privacyPolicy: {
+  Icon: ShieldCheck,
+  color: "#00D6A3",
+  second: "#009DFF",
+  alt: "Privacy & Data Sovereign Policy",
+},
+  termsOfService: {
+  Icon: FileText,
+  color: "#009DFF",
+  second: "#E98828",
+  alt: "Terms of Service & SLA Guide",
+},
   managedAIServices: {
   Icon: Cpu,
   color: "#009DFF",
@@ -135,6 +158,12 @@ assessmentMeshEngine: {
   color: "#009DFF",
   second: "#00D6A3",
   alt: "Empowering Enterprise Autonomy",
+},
+investorRelations: {
+  Icon: TrendingUp,
+  color: "#00D6A3",
+  second: "#009DFF",
+  alt: "Investor Relations Pathway",
 },
   developerDocs: {
   Icon: Server,

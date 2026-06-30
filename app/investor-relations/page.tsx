@@ -19,6 +19,7 @@ export default function InvestorRelationsPage() {
           category="Financial Operations"
           title="Investor Relations Pathway"
           highlightedWord="Investor"
+          visualType="investorRelations"
           description="Access GFF AI's institutional milestones, strategic corporate phases, and capital-efficient enterprise growth trajectories."
         />
 

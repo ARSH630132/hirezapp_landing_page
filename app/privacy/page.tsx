@@ -19,6 +19,7 @@ export default function PrivacyPolicyPage() {
           category="Legal & Compliance"
           title="Privacy & Data Sovereign Policy"
           highlightedWord="Sovereign"
+          visualType="privacyPolicy"
           description="Learn how GFF AI enforces cryptographic boundaries, strict tenant decoupling, and SOC2-compliant logging to protect enterprise assets."
         />
 

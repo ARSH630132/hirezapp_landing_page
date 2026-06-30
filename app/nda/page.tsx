@@ -35,6 +35,7 @@ export default function NdaPage() {
           category="Legal & Compliance"
           title="Mutual NDA Protocol"
           highlightedWord="Protocol"
+          visualType="mutualNDA"
           description="Safeguard proprietary codebases, vector weights, model parameters, and corporate credentials under premium security."
         />
 

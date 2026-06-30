@@ -24,6 +24,7 @@ export default function TermsOfServicePage() {
           category="Legal & Compliance"
           title="Terms of Service & SLA Guide"
           highlightedWord="Terms"
+          visualType="termsOfService"
           description="Review compute parameter quotas, tenant rate-limits, and sovereign SLA guarantees governing the GFF AI runtime stages."
         />
 
