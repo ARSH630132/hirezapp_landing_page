@@ -55,6 +55,7 @@ export default function EducationPage() {
         category="Vertical Solutions"
         title="Enterprise Cognitive Platforms for Education"
         highlightedWord="Education"
+        visualType="educationPlatforms"
         description="Empower academic institutions, automate administrative operations, and deploy high-fidelity interactive labs using GFF AI Academy and University OneVerse."
         breadcrumbs={[{ label: "Industries", href: "/industries" }, { label: "Education" }]}
       />

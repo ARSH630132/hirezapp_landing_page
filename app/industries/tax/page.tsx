@@ -38,6 +38,7 @@ export default function TaxPage() {
         category="Vertical Solutions"
         title="Sovereign Tax Intelligence Architectures"
         highlightedWord="Tax"
+        visualType="taxIntelligence"
         description="Integrate high-accuracy document intelligence layers and dynamic compliance search networks over secure corporate records."
         breadcrumbs={[{ label: "Industries", href: "/industries" }, { label: "Tax" }]}
       />

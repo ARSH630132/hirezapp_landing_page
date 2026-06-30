@@ -54,6 +54,7 @@ export default function MiningPage() {
         category="Vertical Solutions"
         title="Enterprise Extraction & Mining"
         highlightedWord="Mining"
+        visualType="miningExtraction"
         description="Deploy field operations support, automated safety compliance audits, and real-time remote site asset visibility over high-reliability OREMesh platforms."
         breadcrumbs={[{ label: "Industries", href: "/industries" }, { label: "Mining" }]}
       />

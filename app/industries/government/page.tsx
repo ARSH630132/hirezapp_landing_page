@@ -57,6 +57,7 @@ export default function GovernmentPage() {
         category="Vertical Solutions"
         title="Government & Public Administration Cognitive Tiers"
         highlightedWord="Government"
+        visualType="governmentAdministration"
         description="Streamline administrative workflows, enhance public policy search, and organize case documentation under isolated, high-security frameworks."
         breadcrumbs={[{ label: "Industries", href: "/industries" }, { label: "Government" }]}
       />

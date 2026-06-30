@@ -57,6 +57,7 @@ export default function TelecomPage() {
         category="Vertical Solutions"
         title="Telecom Network & Customer Cognitive Layers"
         highlightedWord="Telecom"
+        visualType="telecomNetworks"
         description="Optimize network operations, resolve customer inquiries with direct intent, and streamline field dispatches securely using the TelecomVerse core platform."
         breadcrumbs={[{ label: "Industries", href: "/industries" }, { label: "Telecom" }]}
       />

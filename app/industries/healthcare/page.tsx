@@ -56,6 +56,7 @@ export default function HealthcarePage() {
         category="Vertical Solutions"
         title="Enterprise Healthcare Cognitive Systems"
         highlightedWord="Healthcare"
+        visualType="healthcareCognitive"
         description="Deploy high-security, HIPAA-aligned cognitive routing layers to automate complex administrative workflows, unify internal knowledge, and streamline non-clinical operations."
         breadcrumbs={[{ label: "Industries", href: "/industries" }, { label: "Healthcare" }]}
       />

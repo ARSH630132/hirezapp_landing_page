@@ -30,6 +30,16 @@ Server,
 Briefcase,
 MessageCircle,
 BriefcaseBusiness,
+  HeartPulse,
+  Dna,
+  GraduationCap,
+  ShoppingBag,
+  Pickaxe,
+  Zap,
+  Landmark,
+  ClipboardCheck,
+  Receipt,
+  Scale,
 Users,
   type LucideIcon,
 } from "lucide-react";
@@ -51,6 +61,17 @@ type VisualType =
   | "operate"
   | "optimize"
   | "scale"
+  | "healthcareCognitive"
+| "lifeSciencesCompute"
+| "educationPlatforms"
+| "retailSolutions"
+| "miningExtraction"
+| "energyGrid"
+| "telecomNetworks"
+| "governmentAdministration"
+| "auditInfrastructure"
+| "taxIntelligence"
+| "legalDocumentIntelligence"
   | "research-publications"
   | "strategy"
   | "engineering"
@@ -117,6 +138,70 @@ const visualMap: Record<VisualType, VisualConfig> = {
     second: "#E98828",
     alt: "Garage",
   },
+  healthcareCognitive: {
+  Icon: HeartPulse,
+  color: "#E4000F",
+  second: "#009DFF",
+  alt: "Enterprise Healthcare Cognitive Systems",
+},
+lifeSciencesCompute: {
+  Icon: Dna,
+  color: "#00D6A3",
+  second: "#009DFF",
+  alt: "Cognitive Compute for Life Sciences",
+},
+educationPlatforms: {
+  Icon: GraduationCap,
+  color: "#009DFF",
+  second: "#E98828",
+  alt: "Enterprise Cognitive Platforms for Education",
+},
+retailSolutions: {
+  Icon: ShoppingBag,
+  color: "#E98828",
+  second: "#009DFF",
+  alt: "Enterprise Retail Solutions",
+},
+miningExtraction: {
+  Icon: Pickaxe,
+  color: "#E4000F",
+  second: "#E98828",
+  alt: "Enterprise Extraction & Mining",
+},
+energyGrid: {
+  Icon: Zap,
+  color: "#00D6A3",
+  second: "#009DFF",
+  alt: "Energy & Grid Cognitive Systems",
+},
+telecomNetworks: {
+  Icon: Radio,
+  color: "#009DFF",
+  second: "#C084FC",
+  alt: "Telecom Network & Customer Cognitive Layers",
+},governmentAdministration: {
+  Icon: Landmark,
+  color: "#009DFF",
+  second: "#E4000F",
+  alt: "Government & Public Administration Cognitive Tiers",
+},
+auditInfrastructure: {
+  Icon: ClipboardCheck,
+  color: "#00D6A3",
+  second: "#009DFF",
+  alt: "Enterprise Audit Cognitive Infrastructure",
+},taxIntelligence: {
+  Icon: Receipt,
+  color: "#E98828",
+  second: "#009DFF",
+  alt: "Sovereign Tax Intelligence Architectures",
+},
+legalDocumentIntelligence: {
+  Icon: Scale,
+  color: "#E4000F",
+  second: "#009DFF",
+  alt: "Enterprise Legal Document Intelligence",
+},
   mutualNDA: {
   Icon: Handshake,
   color: "#E4000F",

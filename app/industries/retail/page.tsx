@@ -54,6 +54,7 @@ export default function RetailPage() {
         category="Vertical Solutions"
         title="Enterprise Retail Solutions"
         highlightedWord="Retail"
+        visualType="retailSolutions"
         description="Orchestrate customer journeys, synchronize omnichannel merchandising standards, and empower store associates with secure retail computing networks."
         breadcrumbs={[{ label: "Industries", href: "/industries" }, { label: "Retail" }]}
       />

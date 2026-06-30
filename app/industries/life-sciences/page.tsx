@@ -55,6 +55,7 @@ export default function LifeSciencesPage() {
         category="Vertical Solutions"
         title="Cognitive Compute for Life Sciences"
         highlightedWord="Life Sciences"
+        visualType="lifeSciencesCompute"
         description="Accelerate regulatory compilation, secure compound search, and trial operations with sovereign, high-throughput cognitive architectures."
         breadcrumbs={[{ label: "Industries", href: "/industries" }, { label: "Life Sciences" }]}
       />

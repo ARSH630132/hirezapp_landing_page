@@ -57,6 +57,7 @@ export default function EnergyPage() {
         category="Vertical Solutions"
         title="Energy & Grid Cognitive Systems"
         highlightedWord="Energy"
+        visualType="energyGrid"
         description="Deploy real-time plant telemetry processing, field service coordination, and secure compliance search engines under isolated security."
         breadcrumbs={[{ label: "Industries", href: "/industries" }, { label: "Energy" }]}
       />

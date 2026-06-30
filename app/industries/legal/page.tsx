@@ -38,6 +38,7 @@ export default function LegalPage() {
         category="Vertical Solutions"
         title="Enterprise Legal Document Intelligence"
         highlightedWord="Legal"
+        visualType="legalDocumentIntelligence"
         description="Deploy secure corporate memory networks and private legal research workflows to analyze matters, contracts, and compliance risk."
         breadcrumbs={[{ label: "Industries", href: "/industries" }, { label: "Legal" }]}
       />

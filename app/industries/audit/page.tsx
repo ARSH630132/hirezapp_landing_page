@@ -38,6 +38,7 @@ export default function AuditPage() {
         category="Vertical Solutions"
         title="Enterprise Audit Cognitive Infrastructure"
         highlightedWord="Audit"
+        visualType="auditInfrastructure"
         description="Deploy secure, read-only sovereign agent systems to augment professional audit workflows."
         breadcrumbs={[{ label: "Industries", href: "/industries" }, { label: "Audit" }]}
       />
