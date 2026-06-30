@@ -393,15 +393,21 @@ export default function BuildHubPage() {
                       onClick={() => setActiveStage(stg)} 
                       className="flex flex-col items-center relative z-10 group focus:outline-none w-[95px] shrink-0"
                     >
-                      <div className={`w-11 h-11 rounded-full border-2 flex items-center justify-center text-xs font-mono font-bold transition-all duration-300 ${
-                        act 
-                          ? "bg-black border-[#009DFF] text-[#009DFF] shadow-[0_0_15px_rgba(0,157,255,0.4)] scale-110" 
-                          : stg.n < activeStage.n 
-                            ? "bg-gradient-to-r from-[#E4000F] to-[#009DFF] border-transparent text-white" 
-                            : "bg-[#020202] border-white/10 text-white/40 group-hover:border-white/30"
-                      }`}>
-                        {stg.n}
-                      </div>
+              <div
+  className={`relative z-10 overflow-hidden w-11 h-11 rounded-full border-2 flex items-center justify-center text-xs font-mono font-bold transition-all duration-300 ${
+    act
+      ? "bg-black border-[#009DFF] text-[#009DFF] shadow-[0_0_15px_rgba(0,157,255,0.4)] scale-110"
+      : stg.n < activeStage.n
+        ? "border-transparent text-white"
+        : "bg-[#020202] border-white/10 text-white/40 group-hover:border-white/30"
+  }`}
+>
+  {stg.n < activeStage.n && !act && (
+    <span className="absolute inset-0 bg-gradient-to-r from-[#E4000F] to-[#009DFF]" />
+  )}
+
+  <span className="relative z-10">{stg.n}</span>
+</div>
                       <span className={`text-[10px] mt-2.5 font-bold tracking-tight truncate w-full text-center transition-colors ${
                         act ? "text-[#009DFF]" : "text-white/60 group-hover:text-white"
                       }`}>
